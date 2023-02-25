@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-import environ
+#import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -75,25 +75,15 @@ WSGI_APPLICATION = 'BugaLink.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, False)
-)
-# reading .env file
-environ.Env.read_env()
-
-SECRET_KEY = env('SECRET_KEY')
-
-DEBUG = env('DEBUG')
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'BugaLink',
-        'USER': 'BugaLink',
-        'PASSWORD': 'User1_pass',
-        'HOST': env('POSTGRESQL_HOST'),
-        'PORT': env('POSTGRESQL_PORT'),
+        'NAME': 'bugalink',
+        'USER': 'buga',
+        'PASSWORD': 'bugalink',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 

@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "name": "Abraham Cobelo Galindo",
+    "role": "Backend Developer",
+    "imageUrl": "/assets/people/Abraham Cobelo Galindo.jpeg"
+  },
+  {
+    "id": 2,
+    "name": "Álvaro Vázquez Ortiz",
+    "role": "Polyvalent Developer",
+    "imageUrl": "/assets/people/Álvaro Vázquez Ortiz.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Andrés Durán Terrero",
+    "role": "Frontend Developer",
+    "imageUrl": "/assets/people/Andrés Durán Terrero.png"
+  },
+  {
+    "id": 4,
+    "name": "Carlos M. Vinagre Lorenzo",
+    "role": "Frontend Developer",
+    "imageUrl": "/assets/people/Carlos M Vinagre Lorenzo.jpg"
+  },
+  {
+    "id": 5,
+    "name": "Carmen Galván",
+    "role": "Polyvalent Developer",
+    "imageUrl": "/assets/people/Carmen Galván.jpg"
+  },
+  {
+    "id": 6,
+    "name": "Enrique Prada",
+    "role": "Polyvalent Developer",
+    "imageUrl": "/assets/people/Enrique Prada.jpg"
+  },
+  {
+    "id": 7,
+    "name": "Francisco Botello Romero",
+    "role": "Backend Developer",
+    "imageUrl": "/assets/people/Francisco Botello Romero.jpg"
+  },
+  {
+    "id": 8,
+    "name": "Francisco Javier Vázquez Monge",
+    "role": "Polyvalent Developer",
+    "imageUrl": "/assets/people/Francisco Javier Vázquez monge.jpeg"
+  },
+  {
+    "id": 9,
+    "name": "Gonzalo Martínez Martínez",
+    "role": "Backend Developer",
+    "imageUrl": "/assets/people/Gonzalo Martínez Martínez.jpg"
+  },
+  {
+    "id": 10,
+    "name": "Ignacio Planas Thiriet",
+    "role": "Backend Team Leader",
+    "imageUrl": "/assets/people/Ignacio Planas Thiriet.jpg"
+  },
+  {
+    "id": 11,
+    "name": "Marta Sampedro Bernal",
+    "role": "Frontend Developer",
+    "imageUrl": "/assets/people/Marta Sampedro Bernal.jpeg"
+  },
+  {
+    "id": 12,
+    "name": "Matthew Bwye Lera",
+    "role": "Backend Developer",
+    "imageUrl": "/assets/people/Matthew Bwye Lera.png"
+  },
+  {
+    "id": 13,
+    "name": "Pablo José Robledo Campa",
+    "role": "Frontend Developer",
+    "imageUrl": "/assets/people/Pablo Jose Robeldo Campa.jpeg"
+  },
+  {
+    "id": 14,
+    "name": "Pedro Parrilla Bascón",
+    "role": "Polyvalent Team Leader",
+    "imageUrl": "/assets/people/Pedro Parrilla Bascón.jpeg"
+  },
+  {
+    "id": 15,
+    "name": "Víctor Soto Berenguer",
+    "role": "Frontend Team Leader",
+    "imageUrl": "/assets/people/Victor Soto Berenguer.jpeg"
+  }
+]

@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700&family=PT+Serif:wght@400;700&display=swap');
+
+/* purgecss start ignore */
+@tailwind base;
+@tailwind components;
+/* purgecss end ignore */
+@tailwind utilities;
+
+@layer components {
+  .sectionSize {
+    @apply lg:px-48 md:px-12 px-4 py-14 flex flex-col items-center;
+  }
+  .secondaryTitle {
+    @apply font-pt-serif text-3xl bg-left-bottom bg-no-repeat pb-8 px-16 mb-8;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+svg {
+  fill: currentColor;
+}
+
+.font-pt-serif {
+  font-family: PT Serif, serif;
+}
+
+.font-montserrat {
+  font-family: Montserrat, sans-serif;
+}
+
+.bg-secondary {
+  --tw-bg-opacity: 1;
+  background-color: rgba(229, 279, 234, var(--tw-bg-opacity));
+}
+
+.fill-secondary {
+  fill: rgb(229, 279, 234);
+}
+
+.growing-underline {
+  display: block;
+  position: relative;
+  padding: 0.2em 0;
+  overflow: hidden;
+}
+
+.growing-underline::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0.1em;
+  background-color: black;
+  transition: opacity 300ms, transform 300ms;
+  opacity: 1;
+  transform: translate3d(-100%, 0, 0);
+}
+
+.growing-underline:hover::after,
+.growing-underline:focus::after {
+  transform: translate3d(0, 0, 0);
+}

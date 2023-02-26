@@ -1,0 +1,12 @@
+# environment variables
+.env
+
+# virtual environment
+
+/venv/
+
+# pycache
+
+bugalink-backend/BugaLink/__pycache__/
+bugalink-backend/newsletter/__pycache__/
+bugalink-backend/newsletter/migrations/__pycache__/

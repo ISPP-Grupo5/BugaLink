@@ -18,6 +18,6 @@ python -m venv venv
 ```
 Una vez hecho esto podemos ejecutar el script "backend-startup.cmd".
 ### Ejecución del frontend
-Se debe tener instalado node.js. Para ejecutar el frontend debemos ejecutar el script "frontend-startup.cmd".
+Se debe tener acceso al comando npm. Para ejecutar el frontend debemos ejecutar el script "frontend-startup.cmd".
 ### Ejecución del proyecto completo
 Si queremos ejecutar el proyecto completo debemos ejecutar el script "startup.cmd"

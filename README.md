@@ -12,10 +12,13 @@ HOST='localhost' # Host que escucha la base de datos
 PORT='5432' # Puerto que escucha la base de datos
 ```
 
-Es necesario también crear un entorno virtual python en la raiz del proyecto. Su directorio debe llamarse "venv" para que funcionen correctamente los scripts de inicialización.
+Es necesario también crear un entorno virtual python en la raiz del proyecto, y activarlo:
+
 ```
 python -m venv venv
+.\venv\Scripts\activate # en windows.
 ```
+
 Una vez hecho esto podemos ejecutar el script "backend-startup.cmd".
 ### Ejecución del frontend
 Se debe tener acceso al comando npm. Para ejecutar el frontend debemos ejecutar el script "frontend-startup.cmd".

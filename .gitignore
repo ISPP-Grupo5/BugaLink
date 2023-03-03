@@ -1,16 +1,13 @@
-# environment variables
-.env
-
-# virtual environment
-
-/venv/
-
-# pycache
-
-bugalink-backend/BugaLink/__pycache__/
-bugalink-backend/newsletter/__pycache__/
-bugalink-backend/newsletter/migrations/__pycache__/
-
+# ========================= PYTHON =========================
 # IDE configuration
 
 .vscode/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/

@@ -66,3 +66,7 @@ a {
 .unselectable {
   user-select: none;
 }
+
+img svg button {
+  user-select: none;
+}

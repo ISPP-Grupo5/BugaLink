@@ -24,7 +24,7 @@ export function BackButton() {
   );
 }
 
-export function BackButtonText({text}) {
+export function BackButtonText({ text }) {
   return (
     <Link
       href="/#/"

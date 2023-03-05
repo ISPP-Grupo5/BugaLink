@@ -4,9 +4,14 @@ import Layout from '../components/Layout';
 export default function Home() {
   return (
     <Layout>
-      Hello, world!
-      <br />
-      <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/map">Detalles viaje (Mapa)</Link>
+      <div className="flex flex-col">
+        <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/map">
+          Detalles viaje (Mapa)
+        </Link>
+        <Link href="/users/qyahXxJc/routines/passenger/new">
+          Crear rutina (pasajero)
+        </Link>
+      </div>
     </Layout>
   );
 }

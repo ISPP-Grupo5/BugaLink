@@ -1,22 +1,16 @@
-// https://vercel.com/blog/introducing-vercel-og-image-generation-fast-dynamic-social-card-images
 import { ImageResponse } from '@vercel/og';
 import { NextRequest } from 'next/server';
-import Logo from '/public/assets/Logo.svg';
+import Logo from '/public/icons/Bugalink.svg';
 
 export const config = {
   runtime: 'edge',
 };
 
+// This component handles the generation of the thumbnail images that appear when you share a link on social media.
+// https://vercel.com/blog/introducing-vercel-og-image-generation-fast-dynamic-social-card-images
+
 export default function handler(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
-
-    // ?title=<title>
-    const hasTitle = searchParams.has('title');
-    const title = hasTitle
-      ? searchParams.get('title')?.slice(0, 100)
-      : 'BugaLink';
-
     return new ImageResponse(
       (
         <div

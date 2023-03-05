@@ -15,30 +15,58 @@ class LiftStatus(Enum):
         return [(key.value, key.name) for key in cls]
 
 
+from django.db import models
+
+
+class Coord(models.Field):
+    def __init__(self, *args, **kwargs):
+        kwargs['max_length'] = 50
+        super().__init__(*args, **kwargs)
+
+    def from_db_value(self, value, expression, connection):
+        if value is None:
+            return None
+        return list(map(float, value.split(',')))
+
+    def to_python(self, value):
+        if isinstance(value, list):
+            return value
+        if value is None:
+            return None
+        return list(map(float, value.split(',')))
+
+    def get_prep_value(self, value):
+        if not value:
+            return value
+        return ','.join(str(coord) for coord in value)
+
+    def db_type(self, connection):
+        return 'varchar'
+
+
 class Passenger(models.Model):
     user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
-    address = models.CharField(max_length=256)
     city = models.CharField(max_length=256)
     province = models.CharField(max_length=256)
     biography = models.CharField(max_length=256)
     birth_date = models.DateField()
-    balance = models.BooleanField()
-    profile_pic = models.CharField(max_length=256)
+    balance = models.DecimalField(max_digits=8, decimal_places=2)
+    photo = models.FileField(null=True)
     verified = models.BooleanField(default=False)
-    entry_date = models.CharField(max_length=2048)
+    entry_date = models.DateField()
 
 
 class Driver(models.Model):
     passenger = models.OneToOneField(Passenger, primary_key=True, on_delete=models.CASCADE)
-    preferences = models.CharField(max_length=256)
-    biography = models.CharField(max_length=256)  # A revisar, duplicado en Passenger.biography
+    preferences = models.CharField(max_length=2048)
+    biography = models.CharField(max_length=256)
     has_driver_license = models.BooleanField()
     has_sworn_declaration = models.BooleanField()
     entry_date = models.DateField
-    sworn_declaration = models.CharField(max_length=256)
-    driver_license = models.CharField(max_length=256)
-    dni_front = models.CharField(max_length=256)
-    dni_back = models.CharField(max_length=256)
+    sworn_declaration = models.FileField()
+    driver_license = models.FileField()
+    dni_front = models.FileField()
+    dni_back = models.FileField()
 
 
 class Rating(models.Model):
@@ -49,11 +77,11 @@ class Rating(models.Model):
 
 
 class Vehicle(models.Model):
-    driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
+    driver = models.ManyToManyField(Driver)
     model = models.CharField(max_length=256)
     registration = models.CharField(max_length=256)
     has_insurance = models.BooleanField(max_length=256)
-    insurance = models.CharField(max_length=256)
+    insurance = models.FileField()
 
 
 class DriverRoutine(models.Model):
@@ -63,8 +91,8 @@ class DriverRoutine(models.Model):
     default_num_seats = models.IntegerField()
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    location = models.CharField(max_length=256)
-    end_location = models.CharField(max_length=256)
+    start_location = Coord(null=True)
+    end_location = Coord(null=True)
     frecuency = models.CharField(max_length=256)
     one_lift = models.BooleanField(default=False)
 
@@ -76,8 +104,8 @@ class Lift(models.Model):
     status = models.CharField(max_length=256, choices=LiftStatus.choices(), default=LiftStatus.Pending_start)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    location = models.CharField(max_length=256)
-    end_location = models.CharField(max_length=256)
+    start_location = Coord(null=True)
+    end_location = Coord(null=True)
 
 
 class IndividualLift(models.Model):
@@ -85,9 +113,9 @@ class IndividualLift(models.Model):
     passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    location = models.CharField(max_length=256)
-    end_location = models.CharField(max_length=256)
-    price = models.BooleanField()
+    start_location = Coord(null=True)
+    end_location = Coord(null=True)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
     status = models.CharField(max_length=256, choices=LiftStatus.choices(), default=LiftStatus.Pending_start)
 
 
@@ -98,8 +126,8 @@ class TravellerRoutine(models.Model):
     start_place = models.CharField(max_length=256)
     end_place = models.CharField(max_length=256)
     frequency = models.CharField(max_length=256)
-    time_diff_before = models.DateTimeField()
-    time_diff_after = models.DateTimeField()
+    time_diff_before = models.DurationField()
+    time_diff_after = models.DurationField()
 
 
 class CreditCard(models.Model):
@@ -120,7 +148,7 @@ class FavDirection(models.Model):
     name = models.CharField(max_length=256)
     direction = models.CharField(max_length=256)
     city = models.CharField(max_length=256)
-    location = models.CharField(max_length=256)
+    start_location = Coord(null=True)
     cp = models.CharField(max_length=256)
 
 
@@ -136,7 +164,6 @@ class DiscountCode(models.Model):
 class IndividualDiscountCode(models.Model):
     code = models.CharField(max_length=256, unique=True)
     discount_perc = models.FloatField()
-    lifts = models.IntegerField()
     start_date = models.DateField()
     end_date = models.DateField()
     disabled = models.BooleanField()

@@ -1,8 +1,18 @@
+# IDE configuration
+
+.vscode/
+
 # environment variables
 .env
 
-# virtual environment
-
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 /venv/
 /.venv/
 
@@ -13,6 +23,4 @@ bugalink-backend/newsletter/__pycache__/
 bugalink-backend/newsletter/migrations/__pycache__/
 *.pyc
 
-# IDE configuration
 
-.vscode/

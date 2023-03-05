@@ -15,11 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from newsletter import views
-from api import views
+from newsletter.views import newsletter_post
+from api.views import users
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('newsletter/', views.newsletter_post.as_view()),
-    path('api/users', views.users.as_view())
+    path('newsletter/', newsletter_post.as_view()),
+    path('api/users', users.as_view())
 ]

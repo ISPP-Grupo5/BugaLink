@@ -53,7 +53,6 @@ class Passenger(models.Model):
     balance = models.DecimalField(max_digits=8, decimal_places=2)
     photo = models.FileField(null=True)
     verified = models.BooleanField(default=False)
-    entry_date = models.DateField()
 
 
 class Driver(models.Model):
@@ -89,8 +88,8 @@ class DriverRoutine(models.Model):
     default_vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='default_vehicle')
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='vehicle')
     default_num_seats = models.IntegerField()
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+    start_date = models.TimeField()
+    end_date = models.TimeField()
     start_location = Coord(null=True)
     end_location = Coord(null=True)
     frecuency = models.CharField(max_length=256)

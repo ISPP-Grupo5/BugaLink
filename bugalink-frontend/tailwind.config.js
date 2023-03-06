@@ -1,18 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    './app/**/*.{js,ts,jsx,tsx}',
-    './pages/**/*.{js,ts,jsx,tsx}',
-    './components/**/*.{js,ts,jsx,tsx}',
-
-    // Or if using `src` directory:
-    './src/**/*.{js,ts,jsx,tsx}',
-  ],
+  content: ['./pages/**/*.tsx', './components/**/*.tsx'],
   theme: {
     colors: {
-      'bg-base': '#f1f1f1',
+      transparent: 'transparent',
+      base: '#f1f1f1',
       black: '#000000',
-      'light-grey': '#d7d7d7',
+      'light-gray': '#e0e0e0',
       gray: '#696969', // nice
       'dark-grey': '#464646',
       white: '#ffffff',
@@ -27,6 +21,13 @@ module.exports = {
     extend: {
       fontFamily: {
         lato: ['Lato'],
+      },
+      boxShadow: {
+        't-sm': '0 -1px 2px 0 rgba(0, 0, 0, 0.05)',
+        't-md':
+          '0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        't-lg':
+          '0 -10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
       },
     },
   },

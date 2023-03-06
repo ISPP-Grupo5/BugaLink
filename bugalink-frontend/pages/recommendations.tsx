@@ -36,7 +36,7 @@ const trips = [
 export default function TripList() {
   return (
     <>
-      <div className="ml-3.5">
+      <div className="ml-4">
         <p className="font-lato font-semibold text-3xl">Recomendaciones</p>
         <p className="font-lato font-thin text-base text-gray mb-5 leading-3">
           En base a tu horario sin cubrir

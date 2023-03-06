@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
-import BackButton from '../../../../components/buttons/Back';
 import Layout from '../../../../components/Layout';
+import { BackButton } from '../../../../components/buttons/Back';
 import Car from '/public/assets/car.svg';
 import Progress from '/public/assets/progress.svg';
 

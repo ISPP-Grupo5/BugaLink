@@ -24,11 +24,16 @@ export function BackButton() {
   );
 }
 
-export function BackButtonText({ text }) {
+type Params = {
+  text: string;
+  className?: string;
+};
+
+export function BackButtonText({ text, className }: Params) {
   return (
     <Link
       href="/#/"
-      className="pl-3 pr-3 py-3 fixed top-0 left-2 bg-white w-full"
+      className={`pl-3 pr-3 py-3 fixed top-0 left-0 rounded-b-xl w-full shadow-lg bg-white ${className}`}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

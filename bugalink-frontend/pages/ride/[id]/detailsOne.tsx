@@ -8,7 +8,7 @@ import CTAButton from '../../../components/buttons/CTA';
 export default function DetailsOne() {
   return (
     <div className="flex justify-center h-screen bg-base">
-        <BackButtonText text="Detalles del viaje" />
+      <BackButtonText text="Detalles del viaje" />
       <div className="w-11/12 bg-white pb-44">
         {/* Profile header */}
         <div className="flex flex-row items-center justify-between px-5 py-2 pt-20">
@@ -19,9 +19,7 @@ export default function DetailsOne() {
             />
             <div className="flex flex-col ml-3">
               <p className="text-lg font-bold leading-normal">Jesús Marchena</p>
-              <p className="text-xs font-normal">
-                ⭐ 4.8 - 14 valoraciones
-              </p>
+              <p className="text-xs font-normal">⭐ 4.8 - 14 valoraciones</p>
             </div>
             <div className="flex flex-col ml-5">
               <button className="rounded-full w-7 h-7 flex items-center justify-center border border-turquoise">
@@ -66,7 +64,7 @@ export default function DetailsOne() {
         <div className="px-5 py-2">
           <p className="text-xs font-normal">Fecha y hora</p>
           <p className="text-xs font-medium text-justify">
-          📅 Todos los viernes a las 21:00
+            📅 Todos los viernes a las 21:00
           </p>
         </div>
         <div className="px-5 py-2">
@@ -77,9 +75,7 @@ export default function DetailsOne() {
           <p className="text-xs font-medium text-justify">
             🎶 Prefiero ir escuchando música
           </p>
-          <p className="text-xs font-medium text-justify">
-            🐾 Acepto mascotas
-          </p>
+          <p className="text-xs font-medium text-justify">🐾 Acepto mascotas</p>
           <p className="text-xs font-medium text-justify">
             🚭 No fumar en el coche
           </p>
@@ -87,8 +83,8 @@ export default function DetailsOne() {
         <div className="px-5 py-2">
           <p className="text-xs font-normal">Nota del condutor</p>
           <p className="text-xs font-medium text-justify">
-            ✏ También puedo recoger pasajeros en otro punto si me pilla de camino.
-            Mejor pregúntame por chat antes de reservar asiento
+            ✏ También puedo recoger pasajeros en otro punto si me pilla de
+            camino. Mejor pregúntame por chat antes de reservar asiento
           </p>
         </div>
       </div>
@@ -109,7 +105,7 @@ export default function DetailsOne() {
           </div>
         </div>
         <div className="flex justify-center">
-          <CTAButton className='my-6 w-11/12' text='SOLICITAR' />
+          <CTAButton className="my-6 w-11/12" text="SOLICITAR" />
         </div>
       </div>
     </div>

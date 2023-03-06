@@ -75,11 +75,7 @@ export default function DetailsOne() {
           />
           <div className="flex flex-col ml-3">
             <p className="text-lg font-bold">Jesús Marchena</p>
-            <p className="text-xs font-normal">
-              {' '}
-              <img src="/assets/star.svg" className="w-3 h-3 mb-1 inline" /> 4.8
-              - 14 valoraciones
-            </p>
+            <p className="text-xs font-normal">⭐ 4.8 - 14 valoraciones</p>
           </div>
           <div className="flex flex-col ml-5">
             <button className="rounded-full w-7 h-7 flex items-center justify-center border border-turquoise">

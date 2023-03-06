@@ -17,6 +17,7 @@ export default function Home() {
         <Link href="/users/qyahXxJc/routines/driver/new">
           Crear rutina (conductor)
         </Link>
+        <Link href="/recommendations">Recomendaciones</Link>
       </div>
     </Layout>
   );

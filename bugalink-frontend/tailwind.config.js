@@ -8,6 +8,7 @@ module.exports = {
       black: '#000000',
       'light-gray': '#e0e0e0',
       gray: '#696969', // nice
+      'dark-grey': '#464646',
       white: '#ffffff',
       red: '#d00000',
       'red-dark': '#da0000',
@@ -15,6 +16,7 @@ module.exports = {
       turquoise: '#38a3a5',
       green: '#75a538',
       yellow: '#f9c200',
+      'border-color': '#DADADA',
     },
     extend: {
       fontFamily: {

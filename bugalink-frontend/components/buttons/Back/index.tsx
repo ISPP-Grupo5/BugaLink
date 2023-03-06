@@ -4,7 +4,7 @@ export default function BackButton() {
   return (
     <Link
       href="/#/"
-      className="fixed top-2 left-2 pl-3 pr-2 py-3 rounded-full shadow-xl bg-base"
+      className="fixed top-2 left-2 pl-3 pr-2 py-3 rounded-full shadow-xl bg-baseOrigin"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

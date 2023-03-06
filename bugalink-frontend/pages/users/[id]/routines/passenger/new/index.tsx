@@ -22,7 +22,6 @@ export default function NewRoutine() {
         <div className="h-full">
           <TextField
             type={'text'}
-            placeholder={'Dirección'}
             fieldName={'Desde'}
             content={originAddress}
             setContent={setOriginAddress}
@@ -31,7 +30,6 @@ export default function NewRoutine() {
           />
           <TextField
             type={'text'}
-            placeholder={'Dirección'}
             fieldName={'Hasta'}
             content={destinationAddress}
             setContent={setDestinationAddress}
@@ -52,7 +50,7 @@ export default function NewRoutine() {
             {days.map((day) => (
               <p
                 key={day}
-                className={`w-full h-full py-2.5 transition-colors duration-300 ${
+                className={`w-full h-full py-2 transition-colors duration-300 ${
                   selectedDays.includes(day) ? 'bg-turquoise text-white' : ''
                 }`}
                 onClick={() => {

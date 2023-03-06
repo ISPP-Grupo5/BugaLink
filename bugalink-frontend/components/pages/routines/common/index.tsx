@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import BackButton from '../../../buttons/Back';
+import { BackButton } from '../../../buttons/Back';
 import CTAButton from '../../../buttons/CTA';
 import PlusMinusCounter from '../../../buttons/PlusMinusCounter';
 import TextField from '../../../forms/TextField';

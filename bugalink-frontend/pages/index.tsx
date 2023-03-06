@@ -5,6 +5,9 @@ export default function Home() {
   return (
     <Layout>
       <div className="flex flex-col">
+        <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne">
+          Detalles viaje (1)
+        </Link>
         <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/map">
           Detalles viaje (Mapa)
         </Link>

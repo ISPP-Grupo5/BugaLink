@@ -19,7 +19,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-env = dotenv_values("config.env")
+
+#This is for the correct reading of the .env file
+config_file = BASE_DIR.parent.joinpath("config.env")
+env = dotenv_values(dotenv_path=config_file)
 
 SECRET_KEY = 'django-insecure-br8yvhx^^w#x0e3i03qy($-^q49(xk-9uhf^=vj8igoa-8g#75'
 
@@ -40,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'newsletter',
+    'bugalinkapp'
 ]
 
 MIDDLEWARE = [

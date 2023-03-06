@@ -1,7 +1,8 @@
 import { useRouter } from 'next/router';
 
-const router = useRouter();
+
 export function BackButton() {
+  const router = useRouter();
   return (
     <button
       onClick={() => router.back()}
@@ -31,6 +32,7 @@ type Params = {
 };
 
 export function BackButtonText({ text, className }: Params) {
+  const router = useRouter();
   return (
     <button
       onClick={() => router.back()}

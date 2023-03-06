@@ -9,7 +9,7 @@ export default function TimePicker({ time, setTime }: Params) {
       type="time"
       name={'pick-time'}
       value={time}
-      className="bg-light-gray rounded-md p-1.5 w-min "
+      className="bg-base rounded-md px-3 py-1 w-min"
       onChange={(e) => setTime(e.target.value)}
     />
   );

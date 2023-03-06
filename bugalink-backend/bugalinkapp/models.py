@@ -128,11 +128,11 @@ class IndividualLift(models.Model):
     start_location = Coord(null=True)
     end_location = Coord(null=True)
     price = models.DecimalField(max_digits=8, decimal_places=2)
-    status = models.CharField(max_length=256, choices=AcceptationStatus.choices(),
-                              default=AcceptationStatus.Pending_Confirmation)
+    lift_status = models.CharField(max_length=256, choices=LiftStatus.choices(), default=LiftStatus.Pending_start)
+    acceptation_status = models.CharField(max_length=256, choices=AcceptationStatus.choices(), default=AcceptationStatus.Pending_Confirmation)
 
 
-class TravellerRoutine(models.Model):
+class PassengerRoutine(models.Model):
     passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
     start_date = models.TimeField()
     end_date = models.TimeField()
@@ -184,7 +184,7 @@ class IndividualDiscountCode(models.Model):
     lifts_left = models.IntegerField()
 
 
-class TravellerDiscountCode(models.Model):
+class PassengerDiscountCode(models.Model):
     discount = models.ForeignKey(DiscountCode, on_delete=models.CASCADE)
     passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
     activation_date = models.DateField()

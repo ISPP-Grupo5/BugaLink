@@ -2,7 +2,6 @@ import React from 'react';
 import Avatar from '/public/assets/avatar.svg';
 import MapPin from '/public/assets/map-pin.svg';
 import OrigenPin from '/public/assets/origen-pin.svg';
-import Star from '/public/assets/star.svg';
 import Calendar from '/public/assets/calendar.svg';
 
 export default function TripCard({
@@ -25,7 +24,7 @@ export default function TripCard({
             className="flex items-center justify-center border-gray border-solid border rounded-full 
             shadow-md text-black font-lato font-semibold text-xs bg-white relative -mt-2 w-11 h-4"
           >
-            <Star /> {rating}
+            ⭐ {rating}
           </button>
         </div>
         <span className="font-lato font-thin text-xs text-gray col-span-2">

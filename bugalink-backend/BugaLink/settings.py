@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 from pathlib import Path
+from urllib.parse import urlparse
 from dotenv import dotenv_values
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,7 +31,24 @@ SECRET_KEY = 'django-insecure-br8yvhx^^w#x0e3i03qy($-^q49(xk-9uhf^=vj8igoa-8g#75
 
 DEBUG = env['DEBUG']
 
-ALLOWED_HOSTS = []
+#####
+# Provisional para desplegar en APP ENGINE
+APPENGINE_URL = env("APPENGINE_URL", default=None)
+if APPENGINE_URL:
+    # Ensure a scheme is present in the URL before it's processed.
+    if not urlparse(APPENGINE_URL).scheme:
+        APPENGINE_URL = f"https://{APPENGINE_URL}"
+
+    ALLOWED_HOSTS = [urlparse(APPENGINE_URL).netloc]
+    CSRF_TRUSTED_ORIGINS = [APPENGINE_URL]
+    SECURE_SSL_REDIRECT = True
+else:
+    ALLOWED_HOSTS = ["*"]
+#
+#####
+
+
+#ALLOWED_HOSTS = []
 
 
 # Application definition

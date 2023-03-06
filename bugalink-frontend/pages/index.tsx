@@ -11,6 +11,9 @@ export default function Home() {
         <Link href="/users/qyahXxJc/routines/passenger/new">
           Crear rutina (pasajero)
         </Link>
+        <Link href="/users/qyahXxJc/routines/driver/new">
+          Crear rutina (conductor)
+        </Link>
       </div>
     </Layout>
   );

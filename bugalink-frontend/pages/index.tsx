@@ -6,6 +6,10 @@ export default function Home() {
     <Layout>
       Hello, world!
       <br />
+      <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne">
+        Detalles viaje (1)
+      </Link>
+      <br />
       <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/map">Detalles viaje (Mapa)</Link>
     </Layout>
   );

@@ -13,7 +13,7 @@ const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 type Props = {
   userType: 'passenger' | 'driver';
   freeSeatsNumber?: number;
-  setFreeSeatsNumber?: (number) => void;
+  setFreeSeatsNumber?: (freeSeats: number) => void;
 };
 
 export default function NewRoutine({
@@ -98,7 +98,7 @@ const PassengersCounter = ({ freeSeatsNumber, setFreeSeatsNumber }) => {
   return (
     <div className="mt-4 flex flex-col justify-center w-full">
       <p className="text-xl font-bold mb-2">¿Cuántos asientos ofreces?</p>
-      <div className="relative w-full text-center bg-light-gray font-semibold p-1 rounded-xl flex justify-between items-center">
+      <div className="relative w-full text-center bg-base font-semibold p-1 rounded-xl flex justify-between items-center">
         <button
           className="w-10 h-10 bg-white rounded-lg text-xl flex items-center justify-center"
           onClick={() =>

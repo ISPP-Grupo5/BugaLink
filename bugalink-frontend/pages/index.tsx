@@ -70,9 +70,15 @@ export default function Home() {
                 <Card />  
                 <Card /> 
                 <Card />
+                <Card /> 
+                <Card />
+                <Card />
           </div>
 
           <div className="relative w-full flex -space-x-7 snap-x snap-mandatory overflow-x-auto mt-2"> 
+                <DriverCard /> 
+                <DriverCard /> 
+                <DriverCard /> 
                 <DriverCard /> 
                 <DriverCard /> 
                 <DriverCard /> 

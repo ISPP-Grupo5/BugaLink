@@ -93,7 +93,7 @@ class DriverRoutine(models.Model):
     one_lift = models.BooleanField(default=False)
 
 class Lift(models.Model):
-    driver_routine = models.ManyToManyField(DriverRoutine)  # ManytoMany?
+    driver_routine = models.ManyToManyField(DriverRoutine)  # ManytoMany? es OnetoMany 
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
     default_num_seats = models.IntegerField()   # Relacionarlo con default_num_seats
     status = models.CharField(max_length=256, choices=LiftStatus.choices(), default=LiftStatus.Pending_start)

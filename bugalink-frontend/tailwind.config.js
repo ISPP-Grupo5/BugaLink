@@ -10,9 +10,11 @@ module.exports = {
   ],
   theme: {
     colors: {
-      base: '#f1f1f1',
+      'bg-base': '#f1f1f1',
       black: '#000000',
+      'light-grey': '#d7d7d7',
       gray: '#696969', // nice
+      'dark-grey': '#464646',
       white: '#ffffff',
       red: '#d00000',
       'red-dark': '#da0000',
@@ -20,6 +22,7 @@ module.exports = {
       turquoise: '#38a3a5',
       green: '#75a538',
       yellow: '#f9c200',
+      'border-color': '#DADADA',
     },
     extend: {
       fontFamily: {

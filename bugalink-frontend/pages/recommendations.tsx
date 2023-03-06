@@ -37,8 +37,8 @@ export default function TripList() {
   return (
     <>
       <div className="ml-3.5">
-        <p className="font-lato font-semibold text-[28px]">Recomendaciones</p>
-        <p className="font-lato font-thin text-[15px] text-[#696969] mb-3">
+        <p className="font-lato font-semibold text-3xl">Recomendaciones</p>
+        <p className="font-lato font-thin text-base text-gray mb-5 leading-3">
           En base a tu horario sin cubrir
         </p>
       </div>

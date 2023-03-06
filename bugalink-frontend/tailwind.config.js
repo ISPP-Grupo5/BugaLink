@@ -18,8 +18,10 @@ module.exports = {
       'red-dark': '#da0000',
       'red-button': '#ff7e7e',
       turquoise: '#38a3a5',
+      'dark-turquoise': '#287F81',
       green: '#75a538',
       yellow: '#f9c200',
+      'border-color': '#DADADA',
     },
     extend: {
       fontFamily: {

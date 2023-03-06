@@ -8,17 +8,16 @@ import Calendar from '/public/icons/Vista-Principal/calendar.svg';
 
 export default function Home() {
   return (
-    <Layout>
-      <div className='flex flex-col h-full'>
+      <div className='h-full w-full bg-base'>
         
         <div className="flex flex-col">
           <span className='relative grid grid-cols-2 mt-0.5'>
 
-            <div className='text-center text-ellipsis mt-12 -ml-10'>
-              <p className='text-2xl inline-block align-botton font-semibold'> Hola, Pedro</p>
+            <div className='text-center text-ellipsis mt-12'>
+              <p className='text-3xl inline-block align-botton font-semibold'> Hola, Pedro</p>
             </div>
             
-            <div className='absolute text-center rounded-full -right-3 -top-4 w-25 h-25 '>
+            <div className='absolute text-center rounded-full -right-3 -top-4 scale-75'>
               <img src="/icons/Vista-Principal/hombre.png" className='object-scale-down h-40 w-40 mx-auto scale-50'/> {/*TODO Añadir el icono en concreto*/}
             </div>
 
@@ -86,10 +85,11 @@ export default function Home() {
           </div>
 
         </div>
-            Hello, world!
-            <br/>
-            <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/map">Detalles viaje (Mapa)</Link>
+        <div>
+          Hello, world!
+          <br/>
+          <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/map">Detalles viaje (Mapa)</Link>
+        </div>
       </div>
-    </Layout>
   );
 }

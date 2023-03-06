@@ -31,7 +31,7 @@ export default function DriverCard(){
             <div className='relative text-left text-ellipsis text-white text-xs mr-5'>
               <p className="text-lightGray">Origen</p>
               <svg className='absolute top-6 scale-105  fill-green' width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 6.38611C4 5.48494 4.73054 4.75439 5.63171 4.75439C6.53289 4.7544 7.26343 5.48494 7.26343 6.38611C7.26343 7.28728 6.53288 8.01782 5.63171 8.01782C4.73054 8.01782 4 7.28728 4 6.38611Z" stroke="white" stroke-width="8"/>
+                <path d="M4 6.38611C4 5.48494 4.73054 4.75439 5.63171 4.75439C6.53289 4.7544 7.26343 5.48494 7.26343 6.38611C7.26343 7.28728 6.53288 8.01782 5.63171 8.01782C4.73054 8.01782 4 7.28728 4 6.38611Z" stroke="white" strokeWidth="8"/>
               </svg>
               <p className="pl-4 pt-2">Plaza de Armas</p>
             </div>
@@ -39,7 +39,7 @@ export default function DriverCard(){
             <div className='relative text-left text-ellipsis text-white text-xs'>
               <p className="text-lightGray">Destino</p>
               <svg className='absolute top-6 scale-125  fill-green' width="12" height="13" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7.26343 5.63171C7.26343 6.53288 6.53288 7.26343 5.63171 7.26343C4.73054 7.26343 4 6.53288 4 5.63171C4 4.73054 4.73054 4 5.63171 4C6.53288 4 7.26343 4.73054 7.26343 5.63171Z" stroke="#E7FBAF" stroke-width="8"/>
+                <path d="M7.26343 5.63171C7.26343 6.53288 6.53288 7.26343 5.63171 7.26343C4.73054 7.26343 4 6.53288 4 5.63171C4 4.73054 4.73054 4 5.63171 4C6.53288 4 7.26343 4.73054 7.26343 5.63171Z" stroke="#E7FBAF" strokeWidth="8"/>
                 <path d="M11.2634 6.58571C10.7941 10.0578 6.57033 15.0179 5.63171 15.0179C4.69309 15.0179 0.469309 10.0578 0 6.58568C0 3.29841 2.5214 9.56178 5.63171 9.56178C8.74202 9.56178 11.2634 3.29844 11.2634 6.58571Z" fill="#E7FBAF"/>
                 <path d="M11.2634 6.58571C10.7941 10.0578 6.57033 15.0179 5.63171 15.0179C4.69309 15.0179 0.469309 10.0578 0 6.58568C0 3.29841 2.5214 9.56178 5.63171 9.56178C8.74202 9.56178 11.2634 3.29844 11.2634 6.58571Z" fill="#E7FBAF"/>
               </svg>

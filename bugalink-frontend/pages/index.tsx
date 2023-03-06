@@ -8,6 +8,7 @@ import Calendar from '/public/icons/Vista-Principal/calendar.svg';
 
 export default function Home() {
   return (
+
       <div className='h-full w-full bg-baseOrigin'>
         
         <div className="flex flex-col">
@@ -85,11 +86,27 @@ export default function Home() {
           </div>
 
         </div>
-        <div>
-          Hello, world!
-          <br/>
-          <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/map">Detalles viaje (Mapa)</Link>
+        <div className="flex flex-col">
+          <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne">
+            Detalles viaje (1)
+          </Link>
+          <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/map">
+            Detalles viaje (Mapa)
+          </Link>
+          <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsTwo">
+            Detalles viaje (2)
+          </Link>
+          <Link href="/users/qyahXxJc/routines/passenger/new">
+            Crear rutina (pasajero)
+          </Link>
+          <Link href="/users/qyahXxJc/routines/driver/new">
+            Crear rutina (conductor)
+          </Link>
+          <Link href="/recommendations">
+            Recomendaciones
+          </Link>
         </div>
       </div>
+
   );
 }

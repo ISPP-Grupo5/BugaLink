@@ -10,7 +10,7 @@ module.exports = {
   ],
   theme: {
     colors: {
-      base: '#f1f1f1',
+      baseOrigin: '#f1f1f1',
       black: '#000000',
       lightGray: '#d7d7d7',
       gray: '#696969', // nice

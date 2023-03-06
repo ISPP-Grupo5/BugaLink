@@ -8,7 +8,7 @@ import Calendar from '/public/icons/Vista-Principal/calendar.svg';
 
 export default function Home() {
   return (
-      <div className='h-full w-full bg-base'>
+      <div className='h-full w-full bg-baseOrigin'>
         
         <div className="flex flex-col">
           <span className='relative grid grid-cols-2 mt-0.5'>
@@ -27,7 +27,7 @@ export default function Home() {
         <div className='flex  py-10'>
           <span className='grid grid-cols-3 justify-items-center w-full'>
             
-            <Link href='#' className='bg-base' >
+            <Link href='#' className='bg-baseOrigin' >
               <div className=''>
                 <Calendar className='bg-white rounded-xl '/>
               </div>
@@ -35,21 +35,21 @@ export default function Home() {
               <p className='text-lg text-center font-bold'>Horarios</p>
             </Link>
 
-            <Link href='#' className='bg-base'>
+            <Link href='#' className='bg-baseOrigin'>
               <div className='relative content-center'>
                 <Chat className='bg-white rounded-xl '/>
                 <p className='absolute bg-lightRed w-7 h-7 rounded-full text-white text-center  -left-2 -top-2'>3</p>
               </div>
 
-              <p className='bg-base text-lg text-center font-bold'>Chats</p>
+              <p className='bg-baseOrigin text-lg text-center font-bold'>Chats</p>
             </Link>
 
-            <Link href='#'className='bg-base'>
+            <Link href='#'className='bg-baseOrigin'>
               <div className=''>
                 <House className='bg-white rounded-xl '/>
               </div>
               
-              <p className='bg-base text-lg text-center font-bold'>Dirrecciones</p>
+              <p className='bg-baseOrigin text-lg text-center font-bold'>Dirrecciones</p>
             </Link>
           </span>
           

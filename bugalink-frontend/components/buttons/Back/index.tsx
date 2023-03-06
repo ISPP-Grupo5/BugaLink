@@ -1,10 +1,12 @@
-import Link from 'next/link';
+import { useRouter } from 'next/router';
+
 
 export function BackButton() {
+  const router = useRouter();
   return (
-    <Link
-      href="/#/"
-      className="fixed top-2 left-2 pl-3 pr-2 py-3 rounded-full shadow-xl bg-base"
+    <button
+      onClick={() => router.back()}
+      className="fixed top-2 left-2 pl-3 pr-2 py-3 rounded-full shadow-xl bg-base z-50"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -20,7 +22,7 @@ export function BackButton() {
           d="M10 19l-7-7m0 0l7-7m-7 7h18"
         />
       </svg>
-    </Link>
+    </button>
   );
 }
 
@@ -30,9 +32,10 @@ type Params = {
 };
 
 export function BackButtonText({ text, className }: Params) {
+  const router = useRouter();
   return (
-    <Link
-      href="/#/"
+    <button
+      onClick={() => router.back()}
       className={`pl-3 pr-3 py-3 fixed top-0 left-0 rounded-b-xl w-full shadow-lg bg-white ${className}`}
     >
       <svg
@@ -50,7 +53,7 @@ export function BackButtonText({ text, className }: Params) {
         />
       </svg>
       <span className="font-semibold text-2xl">{text}</span>
-    </Link>
+    </button>
   );
 }
 

@@ -191,7 +191,7 @@ class PassengerDiscountCode(models.Model):
     activation_date = models.DateField()
     lifts_left = models.IntegerField()
     active = models.BooleanField(default=True)
-=======
+
 from django.conf import settings
 from django.shortcuts import reverse
 

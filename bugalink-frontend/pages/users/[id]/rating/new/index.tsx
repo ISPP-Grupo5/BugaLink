@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import BackButton from '../../../../../components/buttons/Back';
+import { BackButtonText } from '../../../../../components/buttons/Back';
 // import Chat from '/public/assets/chat.svg';
 // import SourcePin from '/public/assets/source-pin.svg';
 // import TargetPin from '/public/assets/map-mark.svg';
@@ -38,7 +38,7 @@ export default function Rating() {
 
   return (
     <div className="flex justify-center h-screen bg-base">
-      <BackButton />
+      <BackButtonText text="¿Cómo ha ido el viaje?" />
       <div className="w-11/12 bg-white pb-44">
         {/* Profile header */}
         <div

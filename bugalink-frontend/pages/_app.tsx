@@ -56,8 +56,10 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
       {/* Base layout for new pages */}
       <AnimatePresence mode="wait" initial={false}>
         <MobileLayout>
-          {/* TODO: AnimatedLayout won't work unless it's re-rendered every time a new page is mounted */}
-          <Component {...pageProps} key={router.asPath} />
+          <AnimatedLayout>
+            {/* TODO: AnimatedLayout won't work unless it's re-rendered every time a new page is mounted */}
+            <Component {...pageProps} key={router.asPath} />
+          </AnimatedLayout>
         </MobileLayout>
       </AnimatePresence>
     </>

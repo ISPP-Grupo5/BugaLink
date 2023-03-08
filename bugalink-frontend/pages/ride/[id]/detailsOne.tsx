@@ -9,11 +9,11 @@ export default function DetailsOne() {
   return (
     // TODO: use AnimatedLayout everywhere via _app.tsx
     // <AnimatedLayout>
-    <div className="flex justify-center h-screen bg-base">
+    <div className="flex flex-col items-center justify-center h-screen">
       <BackButtonText text="Detalles del viaje" />
-      <div className="w-11/12 bg-white pb-44 overflow-y-scroll max-h-full">
+      <div className="bg-white pb-44 overflow-y-scroll max-h-full">
         {/* Profile header */}
-        <div className="flex flex-row items-center justify-between px-5 py-2 pt-20">
+        <div className="flex flex-row items-center justify-between px-5 py-2">
           <div className="flex flex-row items-center">
             <img
               src="/assets/mocks/profile1.png"
@@ -91,8 +91,8 @@ export default function DetailsOne() {
         </div>
       </div>
       {/* Trip request */}
-      <div className="w-full absolute bottom-0 bg-white rounded-t-xl shadow-t-lg">
-        <div className="flex flex-row items-center justify-between px-5 py-2">
+      <div className="w-full absolute bottom-0 bg-white rounded-t-xl shadow-t-md pt-5">
+        <div className="flex flex-row items-center justify-between px-5">
           <div className="flex flex-col">
             <p className="text-xs font-normal">Tipo de viaje</p>
             <p className="text-xl font-bold">Recurrente</p>
@@ -107,7 +107,7 @@ export default function DetailsOne() {
           </div>
         </div>
         <div className="flex justify-center">
-          <CTAButton className="my-6 w-11/12" text="SOLICITAR" />
+          <CTAButton className="my-4 w-11/12" text="SOLICITAR" />
         </div>
       </div>
     </div>

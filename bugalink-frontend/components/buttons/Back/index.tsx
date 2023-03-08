@@ -5,7 +5,7 @@ export function BackButton() {
   return (
     <button
       onClick={() => router.back()}
-      className="fixed top-2 left-2 pl-3 pr-2 py-3 rounded-full shadow-xl bg-baseOrigin z-50"
+      className="absolute top-2 left-2 pl-3 pr-2 py-3 rounded-full shadow-xl bg-baseOrigin z-50"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -35,7 +35,7 @@ export function BackButtonText({ text, className }: Params) {
   return (
     <button
       onClick={() => router.back()}
-      className={`pl-3 pr-3 py-3 fixed top-0 left-0 rounded-b-xl w-full shadow-lg bg-white ${className}`}
+      className={`pl-3 pr-3 py-3 absolute top-0 left-0 rounded-b-xl w-full shadow-lg bg-white ${className}`}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

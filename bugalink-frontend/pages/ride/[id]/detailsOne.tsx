@@ -7,9 +7,11 @@ import CTAButton from '../../../components/buttons/CTA';
 
 export default function DetailsOne() {
   return (
+    // TODO: use AnimatedLayout everywhere via _app.tsx
+    // <AnimatedLayout>
     <div className="flex justify-center h-screen bg-base">
       <BackButtonText text="Detalles del viaje" />
-      <div className="w-11/12 bg-white pb-44 overflow-y-scroll max-h-[100%]">
+      <div className="w-11/12 bg-white pb-44 overflow-y-scroll max-h-full">
         {/* Profile header */}
         <div className="flex flex-row items-center justify-between px-5 py-2 pt-20">
           <div className="flex flex-row items-center">
@@ -83,13 +85,13 @@ export default function DetailsOne() {
         <div className="px-5 py-2">
           <p className="text-xs font-normal">Nota del condutor</p>
           <p className="text-xs font-medium text-justify">
-            ✏ También puedo recoger pasajeros en otro punto si me pilla de
+            ✏️ También puedo recoger pasajeros en otro punto si me pilla de
             camino. Mejor pregúntame por chat antes de reservar asiento
           </p>
         </div>
       </div>
       {/* Trip request */}
-      <div className="w-full fixed bottom-0 left-0 bg-white rounded-t-xl shadow-t-lg">
+      <div className="w-full absolute bottom-0 bg-white rounded-t-xl shadow-t-lg">
         <div className="flex flex-row items-center justify-between px-5 py-2">
           <div className="flex flex-col">
             <p className="text-xs font-normal">Tipo de viaje</p>
@@ -109,5 +111,6 @@ export default function DetailsOne() {
         </div>
       </div>
     </div>
+    // </AnimatedLayout>
   );
 }

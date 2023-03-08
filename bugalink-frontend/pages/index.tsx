@@ -1,13 +1,15 @@
 import Link from 'next/link';
-import Layout from '../components/Layout';
-import Card from '../components/cards/Passanger';
-import DriverCard from '../components/cards/Driver';
+import DriverCard from '../components/cards/driver';
+import Card from '../components/cards/passenger';
+import AnimatedLayout from '../components/layouts/animated';
+import Calendar from '/public/icons/Vista-Principal/calendar.svg';
 import Chat from '/public/icons/Vista-Principal/chat.svg';
 import House from '/public/icons/Vista-Principal/house.svg';
-import Calendar from '/public/icons/Vista-Principal/calendar.svg';
 
 export default function Home() {
   return (
+    // TODO: use AnimatedLayout everywhere via _app.tsx
+    // <AnimatedLayout>
     <div className="h-full w-full bg-baseOrigin">
       <div className="flex flex-col">
         <span className="relative grid grid-cols-2 mt-0.5">
@@ -35,7 +37,7 @@ export default function Home() {
               <Calendar className="bg-white rounded-xl " />
             </div>
 
-            <p className="text-lg text-center font-bold">Horarios</p>
+            <p className="text-lg text-center">Horarios</p>
           </Link>
 
           <Link href="#" className="bg-baseOrigin">
@@ -46,7 +48,7 @@ export default function Home() {
               </p>
             </div>
 
-            <p className="bg-baseOrigin text-lg text-center font-bold">Chats</p>
+            <p className="bg-baseOrigin text-lg text-center">Chats</p>
           </Link>
 
           <Link href="#" className="bg-baseOrigin">
@@ -54,18 +56,18 @@ export default function Home() {
               <House className="bg-white rounded-xl " />
             </div>
 
-            <p className="bg-baseOrigin text-lg text-center font-bold">
-              Dirrecciones
-            </p>
+            <p className="bg-baseOrigin text-lg text-center">Direcciones</p>
           </Link>
         </span>
       </div>
 
       <div className="relative" data-carousel="static">
         <span className="grid grid-cols-2 -mt-4">
-          <p className="text-xl text-left ml-5 font-bold">Próximos viajes</p>
+          <p className="text-xl text-left ml-5 font-semibold">
+            Próximos viajes
+          </p>
           <a href="#">
-            <p className="text-xl text-right mr-8 text-turquoise font-bold">
+            <p className="text-xl text-right mr-8 text-turquoise font-semibold">
               Historial
             </p>
           </a>
@@ -108,5 +110,6 @@ export default function Home() {
         <Link href="/recommendations">Recomendaciones</Link>
       </div>
     </div>
+    // </AnimatedLayout>
   );
 }

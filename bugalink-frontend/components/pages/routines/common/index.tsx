@@ -4,7 +4,6 @@ import CTAButton from '../../../buttons/CTA';
 import PlusMinusCounter from '../../../buttons/PlusMinusCounter';
 import TextField from '../../../forms/TextField';
 import TimePicker from '../../../forms/TimePicker';
-import Layout from '../../../Layout';
 
 const MIN_FREE_SEATS = 1;
 const MAX_FREE_SEATS = 8;
@@ -29,10 +28,10 @@ export default function NewRoutine({
   const [selectedDays, setSeletedDays] = useState([]);
 
   return (
-    <Layout>
+    <div>
       <BackButton />
-      <img src="/assets/mocks/map.png" className="w-full fixed" />
-      <form className="fixed w-full flex flex-col bg-white bottom-0 rounded-t-3xl pb-4 pt-8 px-10">
+      <img src="/assets/mocks/map.png" className="w-full" />
+      <form className="absolute w-full bottom-0 bg-white rounded-t-3xl flex flex-col pb-4 pt-8 px-10 z-10">
         <TextField
           type={'text'}
           fieldName={'Desde'}
@@ -101,6 +100,6 @@ export default function NewRoutine({
         )}
         <CTAButton className="mt-6 w-full" text="CREAR" />
       </form>
-    </Layout>
+    </div>
   );
 }

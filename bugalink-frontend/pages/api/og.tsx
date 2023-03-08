@@ -1,5 +1,4 @@
 import { ImageResponse } from '@vercel/og';
-import { NextRequest } from 'next/server';
 import Logo from '/public/icons/Bugalink.svg';
 
 export const config = {
@@ -9,7 +8,7 @@ export const config = {
 // This component handles the generation of the thumbnail images that appear when you share a link on social media.
 // https://vercel.com/blog/introducing-vercel-og-image-generation-fast-dynamic-social-card-images
 
-export default function handler(req: NextRequest) {
+export default function handler() {
   try {
     return new ImageResponse(
       (
@@ -50,8 +49,7 @@ export default function handler(req: NextRequest) {
         height: 630,
       }
     );
-  } catch (e: any) {
-    console.log(`${e.message}`);
+  } catch (e: unknown) {
     return new Response(`Failed to generate the image`, {
       status: 500,
     });

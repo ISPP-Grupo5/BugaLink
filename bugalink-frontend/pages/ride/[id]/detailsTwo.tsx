@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { BackButtonText } from '../../../components/buttons/Back';
-import Chat from '/public/assets/chat.svg';
 import SourcePin from '/public/assets/source-pin.svg';
 import TargetPin from '/public/assets/map-mark.svg';
 import Dots from '/public/assets/dots.svg';
@@ -8,6 +7,7 @@ import CTAButton from '../../../components/buttons/CTA';
 import AnimatedLayout from '../../../components/layouts/animated';
 import PlusMinusCounter from '../../../components/buttons/PlusMinusCounter';
 import { useState } from 'react';
+import ProfileHeader from '../../../components/ProfileHeader';
 
 const MIN_RESERVED_SEATS = 1;
 const MAX_RESERVED_SEATS = 8; // TODO: Get max free seats the driver offers from the backend
@@ -76,28 +76,7 @@ export default function DetailsTwo() {
         </div>
 
         {/* Profile header */}
-        <div className="flex flex-row items-center justify-between py-2">
-          <div className="flex flex-row items-center">
-            <img
-              src="/assets/mocks/profile1.png"
-              className="w-11 h-11 rounded-full"
-            />
-            <div className="flex flex-col ml-3">
-              <p className="text-lg font-bold">Jesús Marchena</p>
-              <p className="text-xs font-normal">⭐ 4.8 - 14 valoraciones</p>
-            </div>
-            <div className="flex flex-col ml-5">
-              <button className="rounded-full w-7 h-7 flex items-center justify-center border border-turquoise">
-                <Chat className="w-3 h-3" />
-              </button>
-            </div>
-            <div className="flex flex-col ml-3">
-              <button className="rounded-full w-20 h-7 flex items-center justify-center border border-turquoise">
-                <p className="text-xs font-bold text-turquoise">Ver perfil</p>
-              </button>
-            </div>
-          </div>
-        </div>
+        <ProfileHeader />
         <div className="flex flex-row">
           <p className="text-dark-turquoise font-normal">
             Añade una nota al conductor

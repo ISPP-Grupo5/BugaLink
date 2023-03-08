@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { BackButtonText } from '../../../components/buttons/Back';
-import Chat from '/public/assets/chat.svg';
 import SourcePin from '/public/assets/source-pin.svg';
 import TargetPin from '/public/assets/map-mark.svg';
 import CTAButton from '../../../components/buttons/CTA';
+import ProfileHeader from '../../../components/ProfileHeader';
 
 export default function DetailsOne() {
   return (
@@ -13,27 +13,8 @@ export default function DetailsOne() {
       <BackButtonText text="Detalles del viaje" />
       <div className="bg-white pb-44 overflow-y-scroll max-h-full">
         {/* Profile header */}
-        <div className="flex flex-row items-center justify-between px-5 py-2">
-          <div className="flex flex-row items-center">
-            <img
-              src="/assets/mocks/profile1.png"
-              className="w-11 h-11 rounded-full"
-            />
-            <div className="flex flex-col ml-3">
-              <p className="text-lg font-bold leading-normal">Jesús Marchena</p>
-              <p className="text-xs font-normal">⭐ 4.8 - 14 valoraciones</p>
-            </div>
-            <div className="flex flex-col ml-5">
-              <button className="rounded-full w-7 h-7 flex items-center justify-center border border-turquoise">
-                <Chat className="w-3 h-3" />
-              </button>
-            </div>
-            <div className="flex flex-col ml-3">
-              <button className="rounded-full w-20 h-7 flex items-center justify-center border border-turquoise">
-                <p className="text-xs font-bold text-turquoise">Ver perfil</p>
-              </button>
-            </div>
-          </div>
+        <div className='px-5'>
+          <ProfileHeader />
         </div>
         {/* Source and target destinations */}
         <div className="grid grid-cols-2 px-5 py-2 gap-2">

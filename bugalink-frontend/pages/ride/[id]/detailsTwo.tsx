@@ -1,11 +1,17 @@
 import Link from 'next/link';
+import { useState } from 'react';
 import { BackButtonText } from '../../../components/buttons/Back';
 import Chat from '/public/assets/chat.svg';
 import SourcePin from '/public/assets/source-pin.svg';
 import TargetPin from '/public/assets/map-mark.svg';
 import Dots from '/public/assets/dots.svg';
+import PlusMinusCounter from '../../../components/buttons/PlusMinusCounter';
+
+const MIN_SELECTED_SEATS = 1;
+const MAX_SELECTED_SEATS = 8;
 
 export default function DetailsOne() {
+  const [selectedSeats, setSelectedSeats] = useState(1);
   return (
     <div className="flex flex-col h-full">
       <BackButtonText text="Detalles del viaje" />
@@ -46,21 +52,19 @@ export default function DetailsOne() {
       </div>
 
       {/* Seats selector */}
-      <div className="grid grid-rows-2 justify-items-center items-center mb-3">
-        <span className="font-lato font-semibold text-sm ml-4">
+      <div className="grid grid-rows-2 justify-items-center items-center justify-center mb-3">
+        <span className="font-lato font-bold text-xl ml-4">
           ¿Cuántas plazas quieres reservar?
         </span>
-        <div className="grid grid-cols-6 bg-base rounded-md h-11 w-4/5 justify-items-center items-center">
-          <div className="grid justify-items-center content-center rounded-md bg-white w-8 h-8">
-            <span className="font-lato font-bold text-2xl">-</span>
-          </div>
-          <div className="col-span-4">
-            <span className="font-lato font-bold text-2xl">2</span>
-          </div>
-          <div className="grid justify-items-center content-center rounded-md bg-white w-8 h-8">
-            <span className="font-lato font-bold text-2xl">+</span>
-          </div>
-        </div>
+        <PlusMinusCounter
+          text={selectedSeats.toString()}
+          onMinusClick={() =>
+            setSelectedSeats(Math.max(MIN_SELECTED_SEATS, selectedSeats - 1))
+          }
+          onPlusClick={() =>
+            setSelectedSeats(Math.min(MAX_SELECTED_SEATS, selectedSeats + 1))
+          }
+        />
       </div>
       <div className="grid justify-items-center">
         <hr className="mt-4 mb-4 w-80 text-border-color" />

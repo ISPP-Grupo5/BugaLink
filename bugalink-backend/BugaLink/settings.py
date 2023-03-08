@@ -33,7 +33,7 @@ DEBUG = env['DEBUG']
 
 #####
 # Provisional para desplegar en APP ENGINE
-APPENGINE_URL = env("APPENGINE_URL", default=None)
+APPENGINE_URL = env['APPENGINE_URL']
 if APPENGINE_URL:
     # Ensure a scheme is present in the URL before it's processed.
     if not urlparse(APPENGINE_URL).scheme:

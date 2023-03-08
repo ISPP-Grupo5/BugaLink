@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import DriverCard from '../components/cards/driver';
-import Card from '../components/cards/passenger';
-import AnimatedLayout from '../components/layouts/animated';
+import PassengerCard from '../components/cards/passenger';
 import Calendar from '/public/icons/Vista-Principal/calendar.svg';
 import Chat from '/public/icons/Vista-Principal/chat.svg';
 import House from '/public/icons/Vista-Principal/house.svg';
@@ -30,7 +29,7 @@ export default function Home() {
         </span>
       </div>
 
-      <div className="flex  py-10">
+      <div className="flex py-10">
         <span className="grid grid-cols-3 justify-items-center w-full">
           <Link href="#" className="bg-baseOrigin">
             <div className="">
@@ -74,12 +73,12 @@ export default function Home() {
         </span>
 
         <div className="relative w-full flex -space-x-7 snap-x snap-mandatory overflow-x-auto">
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
-          <Card />
+          <PassengerCard />
+          <PassengerCard />
+          <PassengerCard />
+          <PassengerCard />
+          <PassengerCard />
+          <PassengerCard />
         </div>
 
         <div className="relative w-full flex -space-x-7 snap-x snap-mandatory overflow-x-auto mt-2">

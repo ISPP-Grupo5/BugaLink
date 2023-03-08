@@ -9,7 +9,7 @@ export default function DetailsOne() {
   return (
     <div className="flex justify-center h-screen bg-base">
       <BackButtonText text="Detalles del viaje" />
-      <div className="w-11/12 bg-white pb-44">
+      <div className="w-11/12 bg-white pb-44 overflow-y-scroll max-h-[100%]">
         {/* Profile header */}
         <div className="flex flex-row items-center justify-between px-5 py-2 pt-20">
           <div className="flex flex-row items-center">

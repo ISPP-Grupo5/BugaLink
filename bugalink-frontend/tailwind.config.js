@@ -20,7 +20,7 @@ module.exports = {
       turquoise: '#38a3a5',
       'dark-turquoise': '#287F81',
       green: '#75a538',
-      lightTurquoise: "#7cc3c4",
+      lightTurquoise: '#7cc3c4',
       yellow: '#f9c200',
       'border-color': '#DADADA',
     },

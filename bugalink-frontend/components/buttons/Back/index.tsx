@@ -6,7 +6,6 @@ export function BackButton() {
     <button
       onClick={() => router.back()}
       className="fixed top-2 left-2 pl-3 pr-2 py-3 rounded-full shadow-xl bg-baseOrigin z-50"
-
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

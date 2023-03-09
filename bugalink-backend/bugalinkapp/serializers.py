@@ -13,4 +13,4 @@ class individual_lift_acceptance_serializer(serializers.ModelSerializer):
     class Meta:
     
         model = IndividualLift
-        fields = ['id_individual_lift', 'acceptation_status']
+        fields = ['id_individual_lift', 'dni_driver', 'acceptation_status']

@@ -1,4 +1,4 @@
-import Recommendation from '../components/Layout/recommendation';
+import TripCard from '../components/cards/recommendation';
 
 const trips = [
   {
@@ -44,7 +44,7 @@ export default function TripList() {
       </div>
       <div className="trip-list grid justify-items-center">
         {trips.map((trip) => (
-          <Recommendation
+          <TripCard
             key={trip.name}
             type={trip.tipo}
             rating={trip.valoracion}

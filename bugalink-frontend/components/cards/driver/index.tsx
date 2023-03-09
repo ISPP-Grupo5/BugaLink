@@ -8,8 +8,7 @@ export default function DriverCard() {
     >
       <span className="bg-white relative rounded-2xl shadow-lg">
         <div className="absolute right-0 z-10 text-right text-ellipsis">
-          <p className="text-sm inline-block align-top bg-green text-white rounded-bl-xl rounded-tr-xl p-1">
-            {' '}
+          <p className="text-sm inline-block align-top bg-green text-white rounded-bl-xl rounded-tr-xl px-2 py-1">
             COMO CONDUCTOR
           </p>
         </div>
@@ -88,7 +87,7 @@ export default function DriverCard() {
               fill="#E7FBAF"
             />
           </svg>
-          <p className="pl-4 pt-2 text-sm">Centro Comercial Lagoh</p>
+          <p className="pl-4 pt-2 text-xs">Centro Comercial Lagoh</p>
         </div>
 
         <div className="text-left text-ellipsis text-white text-xs bt-3">

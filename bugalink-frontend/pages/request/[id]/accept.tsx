@@ -1,6 +1,8 @@
+import Link from 'next/link';
 import { BackButtonText } from '../../../components/buttons/Back';
 import CTAButton from '../../../components/buttons/CTA';
 import AnimatedLayout from '../../../components/layouts/animated';
+import MapPreview from '../../../components/MapPreview';
 import ProfileHeader from '../../../components/ProfileHeader';
 import TripDetails from '../../../components/TripDetails';
 
@@ -27,10 +29,14 @@ export default function AcceptRequest() {
             usuarios de la aplicación.
           </p>
         </div>
+
         {/* Details */}
-        <div className="py-2 mt-36">
+        <div className="py-2 mt-4">
+          <hr className="mt-3 mb-3 w-full text-border-color" />
           <p className="font-lato font-bold text-xl">Detalles del viaje</p>
         </div>
+        {/* Map preview */}
+        <MapPreview />
         <TripDetails
           date="Cada viernes a partir del 16 de febrero de 2023"
           originHour="21:00"
@@ -47,7 +53,7 @@ export default function AcceptRequest() {
             No puedo llevar a este pasajero
           </p>
         </div>
-        <CTAButton className="w-4/5" text={'ACEPTAR'} />
+        <CTAButton className="w-11/12" text={'ACEPTAR'} />
       </div>
     </AnimatedLayout>
   );

@@ -4,6 +4,7 @@ import SourcePin from '/public/assets/source-pin.svg';
 import TargetPin from '/public/assets/map-mark.svg';
 import CTAButton from '../../../components/buttons/CTA';
 import ProfileHeader from '../../../components/ProfileHeader';
+import MapPreview from '../../../components/MapPreview';
 
 export default function DetailsOne() {
   return (
@@ -38,14 +39,7 @@ export default function DetailsOne() {
           </div>
         </div>
         {/* Map preview */}
-        <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/map">
-          <div className="flex flex-row items-center justify-between px-5 py-2">
-            <img
-              src="/assets/mocks/map.png"
-              className="w-full h-48 object-cover rounded-lg"
-            />
-          </div>
-        </Link>
+        <MapPreview />
         {/* Details */}
         <div className="px-5 py-2">
           <p className="text-xs font-normal">Fecha y hora</p>

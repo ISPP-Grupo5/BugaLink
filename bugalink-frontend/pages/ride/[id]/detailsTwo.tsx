@@ -6,6 +6,7 @@ import PlusMinusCounter from '../../../components/buttons/PlusMinusCounter';
 import { useState } from 'react';
 import ProfileHeader from '../../../components/ProfileHeader';
 import TripDetails from '../../../components/TripDetails';
+import MapPreview from '../../../components/MapPreview';
 
 const MIN_RESERVED_SEATS = 1;
 const MAX_RESERVED_SEATS = 8; // TODO: Get max free seats the driver offers from the backend
@@ -18,12 +19,7 @@ export default function DetailsTwo() {
       <BackButtonText text="Detalles del viaje" />
       <div className="flex flex-col px-4 pb-4 pt-2 h-full overflow-y-scroll bg-white">
         {/* Map preview */}
-        <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/map">
-          <img
-            src="/assets/mocks/map.png"
-            className="w-full max-h-44 flex object-cover rounded-lg"
-          />
-        </Link>
+        <MapPreview />
         {/* Details */}
         <TripDetails
           date="Viernes 16 de febrero de 2023"

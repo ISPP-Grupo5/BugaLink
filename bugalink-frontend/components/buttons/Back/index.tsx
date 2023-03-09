@@ -30,13 +30,17 @@ type Params = {
   className?: string;
 };
 
-export function BackButtonText({ text, className }: Params) {
+export function BackButtonText({ text, className = '' }: Params) {
   const router = useRouter();
   return (
-    <div className="flex flex-row bg-transparent w-full mb-14 z-50">
+    <div
+      className={
+        'sticky flex flex-row bg-white w-full z-50 px-4 py-3 ' + className
+      }
+    >
       <button
         onClick={() => router.back()}
-        className={`absolute pl-3 pr-3 py-3 top-0 left-0 text-left w-full bg-white ${className}`}
+        className="top-0 left-0 text-left w-full bg-white"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

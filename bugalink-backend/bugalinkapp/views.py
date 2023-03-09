@@ -36,3 +36,56 @@ class users(APIView):
             return IndividualLift.objects.filter(user = User.objects.get(idUser=request.data['idUser']), status = 'F')
         except User.DoesNotExist:
             raise Http404
+
+class individualLifts(APIView):
+    def get_individual_lift(self, request): 
+        try:
+            return IndividualLift.objects.get(id_individualLift = request.data['id_individualLift'])
+        except IndividualLift.DoesNotExist:
+            raise Http404
+        
+    """
+    def get_individual_lifts_driver(self, request): 
+        try:
+            driver = Driver.objects.get(dni_driver = request.data['dni_driver'])
+            driverRoutine = DriverRoutine.objects.get(dni_driver = driver.dni)
+            lift = Lift.objects.get(id_driver_routine = driverRoutine.id_driver_routine)
+            individualLift = IndividualLift.objects.get(id_lift = lift.id_individual_lift)
+            return individualLift
+        except IndividualLift.DoesNotExist:
+            raise Http404
+    """
+        
+    def put_individual_lift(self, request): 
+        try:
+            individual_lift = IndividualLift.objects.get(id_individual_lift = request.data['id_individual_lift'])
+            acceptation_status = AcceptationStatus.Pending_Confirmation
+            match request.data['acceptation_status']:
+                case 'accept':
+                    acceptation_status = AcceptationStatus.Accepted
+                case 'cancel':
+                    acceptation_status = AcceptationStatus.Cancelled
+            individual_lift.acceptation_status = acceptation_status
+            IndividualLift.objects.put(individual_lift)
+        except IndividualLift.DoesNotExist:
+            raise Http404
+        
+    """
+    Por si se prefiere hacer uso de estas funciones
+    """    
+    
+    def accept_individual_lift(self, request): 
+        try:
+            individual_lift = IndividualLift.objects.get(id_individual_lift = request.data['id_individual_lift'])
+            individual_lift.acceptation_status = AcceptationStatus.Accepted
+            IndividualLift.objects.put(individual_lift)
+        except IndividualLift.DoesNotExist:
+            raise Http404
+        
+    def cancel_individual_lift(self, request): 
+        try:
+            individual_lift = IndividualLift.objects.get(id_individual_lift = request.data['id_individual_lift'])
+            individual_lift.acceptation_status = AcceptationStatus.Cancelled
+            IndividualLift.objects.put(individual_lift)
+        except IndividualLift.DoesNotExist:
+            raise Http404

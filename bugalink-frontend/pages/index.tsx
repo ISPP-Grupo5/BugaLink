@@ -107,6 +107,7 @@ export default function Home() {
         </Link>
         <Link href="/recommendations">Recomendaciones</Link>
         <Link href="/users/qyahXxJc/rating/new/problem">Reportar problema</Link>
+        <Link href="/request/V1StGXR8_Z5jdHi6B-myT/accept">Aceptar petición</Link>
       </div>
     </div>
   );

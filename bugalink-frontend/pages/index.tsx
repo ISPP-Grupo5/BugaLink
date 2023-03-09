@@ -106,6 +106,7 @@ export default function Home() {
           Crear rutina (conductor)
         </Link>
         <Link href="/recommendations">Recomendaciones</Link>
+        <Link href="/users/qyahXxJc/rating/new/problem">Reportar problema</Link>
       </div>
     </div>
   );

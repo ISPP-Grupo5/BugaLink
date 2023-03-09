@@ -16,10 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from newsletter.views import newsletter_post
-from bugalinkapp.views import users
+from bugalinkapp.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('newsletter/', newsletter_post.as_view()),
-    path('api/users', users.as_view())
+    path('api/users', users.as_view()),
+    path('api/individualLifts', individualLifts.as_view())
 ]

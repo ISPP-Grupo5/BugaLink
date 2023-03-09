@@ -1,15 +1,14 @@
 import { motion } from 'framer-motion';
-import Layout from '../../../../components/Layout';
 import { BackButton } from '../../../../components/buttons/Back';
 import Car from '/public/assets/car.svg';
 import Progress from '/public/assets/progress.svg';
 
 export default function RideMap() {
   return (
-    <Layout>
+    <>
       <BackButton />
       <img src="/assets/mocks/map.png" className="w-full" />
-      <div className="fixed w-full bottom-0 bg-white rounded-t-3xl drop-shadow-md grid grid-rows-2 px-5 py-6 z-10">
+      <div className="absolute w-full bottom-0 bg-white rounded-t-3xl drop-shadow-md grid grid-rows-2 px-5 py-6 z-10">
         <span className="grid grid-cols-2 mb-4">
           <div className="text-left text-ellipsis">
             <p className="font-light text-gray text-xs">Origen</p>
@@ -39,7 +38,7 @@ export default function RideMap() {
           </span>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
 

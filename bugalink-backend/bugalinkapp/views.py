@@ -36,3 +36,11 @@ class users(APIView):
             return IndividualLift.objects.filter(user = User.objects.get(idUser=request.data['idUser']), status = 'F')
         except User.DoesNotExist:
             raise Http404
+        
+    def get_sporadic_individual_lifts(self,request):
+        try:
+            individual_lift = IndividualLift.objects.get(idIndividualLift = request.data['idIndividualLift']) 
+            lift = Lift.objects.get(idLift = individual_lift.lift) 
+            return DriverRoutine.objects.get(idDriverRoutine = lift.idLift).one_lift
+        except User.DoesNotExist:
+            raise Http404

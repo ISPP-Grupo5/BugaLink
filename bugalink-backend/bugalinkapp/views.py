@@ -44,17 +44,20 @@ class individualLifts(APIView):
         except IndividualLift.DoesNotExist:
             raise Http404
         
-    """
+    #Es imposible que funcione porque las PK no están implementadas en el models.py
     def get_individual_lifts_driver(self, request): 
         try:
+            individualLifts = []
+            
             driver = Driver.objects.get(dni_driver = request.data['dni_driver'])
-            driverRoutine = DriverRoutine.objects.get(dni_driver = driver.dni)
-            lift = Lift.objects.get(id_driver_routine = driverRoutine.id_driver_routine)
-            individualLift = IndividualLift.objects.get(id_lift = lift.id_individual_lift)
-            return individualLift
+            driverRoutines = DriverRoutine.objects.filter(dni_drivers = driver.dni)
+            for driverRoutine in driverRoutines:
+                lifts = list(Lift.objects.filter(id_driver_routine = driverRoutine.id_driver_routine))
+                for lift in lifts:
+                    individualLifts += list(IndividualLift.objects.filter(id_lift = lift.id_individual_lift))
+            return individualLifts
         except IndividualLift.DoesNotExist:
             raise Http404
-    """
         
     def put_individual_lift(self, request): 
         try:

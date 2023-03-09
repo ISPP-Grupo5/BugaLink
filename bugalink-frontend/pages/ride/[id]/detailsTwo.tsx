@@ -25,7 +25,14 @@ export default function DetailsTwo() {
           />
         </Link>
         {/* Details */}
-        <TripDetails />
+        <TripDetails
+          date="Viernes 16 de febrero de 2023"
+          originHour="21:00"
+          destinationHour="21:15"
+          origin="Escuela Técnica Superior de Ingeniería Informática (ETSII), 41002
+          Sevilla"
+          destination="Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla"
+        />
 
         {/* Seats selector */}
         <div className="grid grid-rows-2 justify-items-center items-center mb-3">
@@ -47,7 +54,11 @@ export default function DetailsTwo() {
         </div>
 
         {/* Profile header */}
-        <ProfileHeader />
+        <ProfileHeader
+          name="Jesús Marchena"
+          rating="4.8"
+          numberOfRatings="14"
+        />
         <div className="flex flex-row">
           <p className="text-dark-turquoise font-normal">
             Añade una nota al conductor

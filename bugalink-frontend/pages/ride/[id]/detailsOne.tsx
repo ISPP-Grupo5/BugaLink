@@ -13,9 +13,12 @@ export default function DetailsOne() {
       <BackButtonText text="Detalles del viaje" />
       <div className="bg-white pb-44 overflow-y-scroll max-h-full">
         {/* Profile header */}
-        <div className='px-5'>
-          <ProfileHeader />
-        </div>
+        <ProfileHeader
+          name="Jesús Marchena"
+          rating="4.8"
+          numberOfRatings="14"
+          className="px-5"
+        />
         {/* Source and target destinations */}
         <div className="grid grid-cols-2 px-5 py-2 gap-2">
           <div>

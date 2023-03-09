@@ -2,18 +2,32 @@ import SourcePin from '/public/assets/source-pin.svg';
 import TargetPin from '/public/assets/map-mark.svg';
 import Dots from '/public/assets/dots.svg';
 
-export default function TripDetails() {
+type Params = {
+  date: string;
+  originHour: string;
+  destinationHour: string;
+  origin: string;
+  destination: string;
+};
+
+export default function TripDetails({
+  date,
+  originHour,
+  destinationHour,
+  origin,
+  destination,
+}: Params) {
   return (
     <div>
       {/* Details */}
       <div className="py-2">
         <p className="text-xs">
-          Cada viernes a partir del 16 de febrero de 2023
+          {date}
         </p>
       </div>
       <div className="grid justify-items-center items-center grid-cols-8 grid-rows-5 mt-2 text-sm">
         <span className="font-bold self-start justify-self-end row-span-2">
-          21:00
+          {originHour}
         </span>
         <div className=" h-full w-full flex flex-col items-center justify-between pt-1 pb-6 row-span-5">
           <SourcePin />
@@ -21,18 +35,17 @@ export default function TripDetails() {
           <TargetPin />
         </div>
         <span className="col-span-6 row-span-2">
-          Escuela Técnica Superior de Ingeniería Informática (ETSII), 41002
-          Sevilla
+          {origin}
         </span>
 
         <hr className="col-span-6 w-full text-border-color" />
 
         <span className="font-bold self-start justify-self-end row-span-2">
-          21:15
+          {destinationHour}
         </span>
 
         <span className="col-span-6 row-span-2">
-          Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla
+          {destination}
         </span>
       </div>
       <hr className="mt-3 mb-3 w-full text-border-color" />

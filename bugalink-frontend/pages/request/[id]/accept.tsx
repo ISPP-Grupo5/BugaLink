@@ -10,7 +10,11 @@ export default function AcceptRequest() {
       <BackButtonText text="Solicitud de viaje" />
       <div className="flex flex-col px-4 pb-4 pt-2 h-full overflow-y-scroll bg-white">
         {/* Profile header */}
-        <ProfileHeader />
+        <ProfileHeader
+          name="Jesús Marchena"
+          rating="4.8"
+          numberOfRatings="14"
+        />
         <div className="flex flex-row mt-4">
           <p className="text-sm font-normal text-dark-grey text-justify">
             Nota del pasajero
@@ -27,7 +31,14 @@ export default function AcceptRequest() {
         <div className="py-2 mt-36">
           <p className="font-lato font-bold text-xl">Detalles del viaje</p>
         </div>
-        <TripDetails />
+        <TripDetails
+          date="Cada viernes a partir del 16 de febrero de 2023"
+          originHour="21:00"
+          destinationHour="21:15"
+          origin="Escuela Técnica Superior de Ingeniería Informática (ETSII), 41002
+          Sevilla"
+          destination="Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla"
+        />
       </div>
       {/* Trip request */}
       <div className="flex flex-col w-full items-center justify-between py-6 bg-white rounded-t-lg shadow-t-md px-4 z-50">

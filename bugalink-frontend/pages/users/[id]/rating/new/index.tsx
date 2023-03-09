@@ -5,6 +5,7 @@ import { BackButton, BackButtonText } from '../../../../../components/buttons/Ba
 // import TargetPin from '/public/assets/map-mark.svg';
 // import CTAButton from '../../../components/buttons/CTA';
 import React, { useState } from 'react';
+import CTAButton from '../../../../../components/buttons/CTA';
 
 export default function Rating() {
   const [rating, setRating] = useState(0);
@@ -201,9 +202,9 @@ export default function Rating() {
             </h2>
 
           </div>
-          <a href="link" style={{ color: '#DA0000', marginTop: '60px', fontSize: '14px' }}>¿Has tenido algún problema? <b style={{ fontSize: '14px' }}>Háznoslo saber</b></a>
+          <a href="link" style={{ color: '#DA0000', marginTop: '60px',marginBottom: '-13px', fontSize: '14px' }}>¿Has tenido algún problema? <b style={{ fontSize: '14px' }}>Háznoslo saber</b></a>
 
-          <button
+          {/* <button
             style={{
               marginTop: '15px',
               padding: '10px',
@@ -217,8 +218,8 @@ export default function Rating() {
             }}
             onClick={handleSubmit}
           >
-            ENVIAR
-          </button>
+          </button> */}
+          <CTAButton className="mt-6 w-full" text="ENVIAR"/>
         </div>
       </div>
     </div >

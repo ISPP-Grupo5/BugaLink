@@ -11,7 +11,7 @@ export default function ProfileHeader({
   name,
   rating,
   numberOfRatings,
-  className
+  className,
 }: Params) {
   return (
     <div className={`${className}`}>
@@ -24,7 +24,9 @@ export default function ProfileHeader({
           />
           <div className="flex flex-col ml-3">
             <p className="text-lg font-bold leading-normal">{name}</p>
-            <p className="text-xs font-normal">⭐ {rating} - {numberOfRatings} valoraciones</p>
+            <p className="text-xs font-normal">
+              ⭐ {rating} - {numberOfRatings} valoraciones
+            </p>
           </div>
           <div className="flex flex-col ml-5">
             <button className="rounded-full w-7 h-7 flex items-center justify-center border border-turquoise">

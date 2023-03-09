@@ -1,12 +1,17 @@
-import Link from 'next/link';
+import { Drawer } from '@mui/material';
+import { useState } from 'react';
 import { BackButtonText } from '../../../components/buttons/Back';
 import CTAButton from '../../../components/buttons/CTA';
+import TextAreaField from '../../../components/forms/TextAreaField';
 import AnimatedLayout from '../../../components/layouts/animated';
 import MapPreview from '../../../components/MapPreview';
 import ProfileHeader from '../../../components/ProfileHeader';
 import TripDetails from '../../../components/TripDetails';
 
 export default function AcceptRequest() {
+  const [drawerDecline, setDrawerDecline] = useState(false);
+  const [reason, setReason] = useState('');
+
   return (
     <AnimatedLayout className="flex flex-col justify-between">
       <BackButtonText text="Solicitud de viaje" />
@@ -47,11 +52,36 @@ export default function AcceptRequest() {
         />
       </div>
       {/* Trip request */}
-      <div className="flex flex-col w-full items-center justify-between py-6 bg-white rounded-t-lg shadow-t-md px-4 z-50">
+      <div className="flex flex-col w-full items-center justify-between py-6 bg-white rounded-t-lg shadossw-t-md px-4 z-50">
         <div className="flex flex-row pb-3">
-          <p className="text-md font-medium text-red-dark">
+          <p
+            className="text-md font-medium text-red-dark cursor-pointer"
+            onClick={() => setDrawerDecline(true)}
+          >
             No puedo llevar a este pasajero
           </p>
+          <Drawer
+            anchor="bottom"
+            open={drawerDecline}
+            onClose={() => setDrawerDecline(false)}
+          >
+            <div className="flex m-5">
+              <p className="font-lato font-bold text-xl">Motivo del rechazo</p>
+            </div>
+            <div className="flex flex-col mx-5 mb-2">
+              <TextAreaField
+                fieldName="Resume brevemente el motivo"
+                content={reason}
+                setContent={setReason}
+                inputClassName="w-full items-center"
+                maxLength={1000}
+                rows={5}
+              />
+            </div>
+            <div className="flex flex-col items-center mb-5">
+              <CTAButton className="w-11/12 bg-red-button" text={'RECHAZAR'} />
+            </div>
+          </Drawer>
         </div>
         <CTAButton className="w-11/12" text={'ACEPTAR'} />
       </div>

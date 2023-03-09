@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BackButtonText } from '../../../../../components/buttons/Back';
+import { BackButton, BackButtonText } from '../../../../../components/buttons/Back';
 // import Chat from '/public/assets/chat.svg';
 // import SourcePin from '/public/assets/source-pin.svg';
 // import TargetPin from '/public/assets/map-mark.svg';
@@ -38,7 +38,7 @@ export default function Rating() {
 
   return (
     <div className="flex justify-center h-screen bg-base">
-      <BackButtonText text="¿Cómo ha ido el viaje?" />
+      <BackButton />
       <div className="w-11/12 bg-white pb-44">
         {/* Profile header */}
         <div
@@ -48,9 +48,12 @@ export default function Rating() {
             alignItems: 'center',
             marginTop: '20px',
           }}
-          className="flex flex-row items-center justify-between px-5 py-2 pt-20"
-        >
-          <div className="flex flex-row items-center">
+          className="flex flex-row items-center justify-between px-5 py-2 pt-20">
+          <div className="font-bold">
+            <p style={{ fontWeight: '600', fontSize: '28px', lineHeight: '28px' }} className="text-xl font-Lato">¿Cómo ha ido el viaje?</p>
+          </div>
+          <div style={{ marginTop: '70px' }} className="flex flex-row items-center">
+
             <img
               src="/assets/mocks/avatar1.png"
               className="w-18 h-18 rounded-full "
@@ -67,8 +70,8 @@ export default function Rating() {
           }}
           className="grid grid-cols-2 px-5 py-2 gap-2"
         >
-          <div className="font-bold">
-            <p className="text-xl font-Lato">Pablo Delfín López</p>
+          <div style={{ marginTop: '-20px' }} className="font-bold">
+            <p style={{ fontWeight: '700', fontSize: '18px', lineHeight: '16px' }} className="text-xl font-Lato">Pablo Delfín López</p>
           </div>
         </div>
 
@@ -112,12 +115,12 @@ export default function Rating() {
               );
             })}
           </div>
-          <h2 style={{ fontSize: '14px', marginBottom: '10px' }}>
+          <h2 style={{ fontWeight: '400', fontSize: '14px', marginBottom: '10px' }}>
             No te preocupes, las valoraciones son anónimas
           </h2>
 
-          <div>
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <div style={{ display: 'flex'}}>
+            <div style={{ display: 'flex', flexDirection: 'row', marginTop: '70px' }}>
               <button
                 style={{
                   borderRadius: '50%',
@@ -127,9 +130,9 @@ export default function Rating() {
                   border: '2px solid #38A3A5',
                   cursor: 'pointer',
                   margin: '10px',
-                  opacity: button1Selected ? 1 : 0.5,
                   outline: 'none',
                   display: 'flex',
+                  marginRight: '50px',
                   justifyContent: 'center',
                 }}
                 onClick={handleButton1Click}
@@ -140,6 +143,7 @@ export default function Rating() {
                   alt="Button 1"
                 />
               </button>
+
               <button
                 style={{
                   borderRadius: '50%',
@@ -149,7 +153,6 @@ export default function Rating() {
                   border: '2px solid #38A3A5',
                   cursor: 'pointer',
                   margin: '10px',
-                  opacity: button2Selected ? 1 : 0.5,
                   outline: 'none',
                   display: 'flex',
                   justifyContent: 'center',
@@ -171,9 +174,9 @@ export default function Rating() {
                   border: '2px solid #38A3A5',
                   cursor: 'pointer',
                   margin: '10px',
-                  opacity: button3Selected ? 1 : 0.5,
                   outline: 'none',
                   display: 'flex',
+                  marginLeft: '50px',
                   justifyContent: 'center',
                 }}
                 onClick={handleButton3Click}
@@ -184,20 +187,33 @@ export default function Rating() {
                   alt="Button 3"
                 />
               </button>
+
             </div>
           </div>
+          <div style={{ display: 'flex', marginTop:'-6px'}}>
+            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px' , textAlign: 'center'}}>
+              Buena conducción
+            </h2>
+            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }}>
+              Conductor agradable
+            </h2><h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }}>
+              Ya nos conocíamos
+            </h2>
+
+          </div>
+          <a href="link" style={{ color: '#DA0000', marginTop: '60px', fontSize: '14px' }}>¿Has tenido algún problema? <b style={{ fontSize: '14px' }}>Háznoslo saber</b></a>
 
           <button
             style={{
-              marginTop: '20px',
+              marginTop: '15px',
               padding: '10px',
               borderRadius: '20px',
               backgroundColor: '#38A3A5',
               color: 'white',
               fontSize: '18px',
               cursor: 'pointer',
-              width: '150px',
-              height: '50px',
+              width: '314px',
+              height: '62px',
             }}
             onClick={handleSubmit}
           >
@@ -205,6 +221,6 @@ export default function Rating() {
           </button>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

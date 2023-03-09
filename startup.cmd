@@ -1,2 +1,2 @@
-start ./backend-startup.cmd
-start ./frontend-startup.cmd
+start .\backend-startup.cmd
+start .\frontend-startup.cmd

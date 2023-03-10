@@ -106,7 +106,6 @@ export default function Home() {
           Crear rutina (conductor)
         </Link>
         <Link href="/recommendations">Recomendaciones</Link>
-        <Link href="/schedule/myS">Mi horario</Link>
       </div>
     </div>
   );

@@ -13,7 +13,9 @@ export default function MySchedule({ rol, avatar, date, dots }) {
           </div>
           <div className="grid col-span-3 place-items-center mt-2 justify-center relative">
             <p className="font-lato font-bold text-sm text-black">{date}</p>
-            <p className="font-lato font-bold text-sm text-gray text-opacity-60">{rol}</p>
+            <p className="font-lato font-bold text-sm text-gray text-opacity-60">
+              {rol}
+            </p>
           </div>
           <div className="grid place-items-center mt-2 justify-end relative">
             {/* <img src={dots} /> */}

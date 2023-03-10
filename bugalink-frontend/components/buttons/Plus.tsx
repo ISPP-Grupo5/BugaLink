@@ -13,7 +13,7 @@ function DropdownButton() {
       aria-haspopup="true"
       onClick={toggleDropdown}
       type="button"
-      className="sticky bottom-5 left-full w-min text-white bg-[#38A3A5] font-lato rounded-full shadow-xl text-5xl px-5 py-2.5 font-bold text-center mr-2 mb-2"
+      className="absolute left-full mr-5 w-min text-white bg-[#38A3A5] font-lato rounded-full shadow-xl text-5xl px-5 py-2.5 font-bold text-center"
     >
       +
       {showDropdown && (

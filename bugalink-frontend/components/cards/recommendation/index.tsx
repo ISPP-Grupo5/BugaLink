@@ -1,4 +1,5 @@
 import AvatarWithRating from '../../avatarWithRating';
+import Entry from '../common/entry';
 import Calendar from '/public/assets/calendar.svg';
 import MapPin from '/public/assets/map-pin.svg';
 import OrigenPin from '/public/assets/origen-pin.svg';
@@ -58,14 +59,3 @@ export default function TripCard({
     </div>
   );
 }
-
-const Entry = ({ children, title }) => {
-  return (
-    <div className="flex flex-col leading-4">
-      <p className="font-thin text-xs text-gray">{title}</p>
-      <div className="flex flex-row space-x-1 items-center font-medium text-xs ">
-        {children}
-      </div>
-    </div>
-  );
-};

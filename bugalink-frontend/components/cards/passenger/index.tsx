@@ -1,8 +1,6 @@
-import origen from '/public/icon/Vista-Principal/origen.svg';
 import Link from 'next/link';
-import Destino from '/public/icon/Vista-Principal/destino.svg';
 
-export default function Card() {
+export default function PassengerCard() {
   return (
     <Link
       href="#"
@@ -10,7 +8,7 @@ export default function Card() {
     >
       <span className="bg-white relative rounded-2xl shadow-lg">
         <div className="absolute right-0 z-10 text-right text-ellipsis">
-          <p className="relative text-sm inline-block align-top bg-turquoise text-white rounded-bl-xl rounded-tr-xl p-1">
+          <p className="relative text-sm inline-block align-top bg-turquoise text-white rounded-bl-xl rounded-tr-xl px-2 py-1">
             {' '}
             COMO PASAJERO
           </p>
@@ -51,10 +49,10 @@ export default function Card() {
             <path
               d="M4 6.38611C4 5.48494 4.73054 4.75439 5.63171 4.75439C6.53289 4.7544 7.26343 5.48494 7.26343 6.38611C7.26343 7.28728 6.53288 8.01782 5.63171 8.01782C4.73054 8.01782 4 7.28728 4 6.38611Z"
               stroke="white"
-              stroke-width="8"
+              strokeWidth="8"
             />
           </svg>
-          <p className="pl-6 pt-2 ">Calle Nuestra Señor...</p>
+          <p className="pl-6 pt-2 text-xs">Calle Nuestra Señor...</p>
         </div>
 
         <div className="relative text-left text-ellipsis text-white text-xs">
@@ -71,7 +69,7 @@ export default function Card() {
             <path
               d="M7.26343 5.63171C7.26343 6.53288 6.53288 7.26343 5.63171 7.26343C4.73054 7.26343 4 6.53288 4 5.63171C4 4.73054 4.73054 4 5.63171 4C6.53288 4 7.26343 4.73054 7.26343 5.63171Z"
               stroke="#7cc3c4"
-              stroke-width="8"
+              strokeWidth="8"
             />
             <path
               d="M11.2634 6.58571C10.7941 10.0578 6.57033 15.0179 5.63171 15.0179C4.69309 15.0179 0.469309 10.0578 0 6.58568C0 3.29841 2.5214 9.56178 5.63171 9.56178C8.74202 9.56178 11.2634 3.29844 11.2634 6.58571Z"
@@ -83,7 +81,7 @@ export default function Card() {
             />
           </svg>
 
-          <p className="pl-4 pt-2 text-sm">Avda. Reina Mercedes, 35</p>
+          <p className="pl-4 pt-2 text-xs">Avda. Reina Mercedes, 35</p>
         </div>
 
         <div className="text-left text-ellipsis text-white text-xs bt-3">

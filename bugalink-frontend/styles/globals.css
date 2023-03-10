@@ -48,7 +48,7 @@ html {
 }
 
 body {
-  overscroll-behavior-y: contain;
+  overscroll-behavior: none;
 }
 
 a {
@@ -67,7 +67,7 @@ a {
 
 @media (min-width: 415px) {
   .mobile-view {
-    max-width: 23.5rem;
+    width: 23.5rem;
     max-height: screen;
     overflow-y: scroll;
   }
@@ -77,7 +77,9 @@ a {
   }
 }
 
-img svg button {
+img,
+svg,
+button {
   user-select: none;
 }
 

@@ -4,7 +4,6 @@ import CTAButton from '../../../buttons/CTA';
 import PlusMinusCounter from '../../../buttons/PlusMinusCounter';
 import TextField from '../../../forms/TextField';
 import TimePicker from '../../../forms/TimePicker';
-import AnimatedLayout from '../../../layouts/animated';
 
 const MIN_FREE_SEATS = 1;
 const MAX_FREE_SEATS = 8;

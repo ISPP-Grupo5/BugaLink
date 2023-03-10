@@ -7,6 +7,7 @@ import AnimatedLayout from '../../../../components/layouts/animated';
 import MapPin from '/public/assets/map-pin.svg';
 import OrigenPin from '/public/assets/origen-pin.svg';
 import ThreeDots from '/public/assets/three-dots.svg';
+import SteeringWheel from '/public/assets/steering-wheel.svg';
 
 const routines = [
   {
@@ -118,13 +119,30 @@ const RoutineCard = ({
         <Entry title={'Hora de salida'}>
           🕓️ {departureHourStart} — {departureHourEnd}
         </Entry>
-        <Entry title="Rol">{isDriver ? '🛞️ Conductor' : '🚗 Pasajero'}</Entry>
+        <Entry title="Rol">
+          {isDriver ? (
+            <p className="flex items-center">
+              <SteeringWheel className="flex-none w-3 h-min mr-1" />
+              Conductor
+            </p>
+          ) : (
+            <p>🚗 Pasajero</p>
+          )}
+        </Entry>
         <Entry title="Origen">
-          <OrigenPin className="flex-none" />
+          <OrigenPin
+            className={`flex-none aspect-square opacity-70 ${
+              isDriver ? 'text-green' : 'text-turquoise'
+            }`}
+          />
           <p className="truncate">{origin}</p>
         </Entry>
         <Entry title="Destino">
-          <MapPin className="flex-none" />
+          <MapPin
+            className={`flex-none aspect-square opacity-70 ${
+              isDriver ? 'text-green' : 'text-turquoise'
+            }`}
+          />
           <p className="truncate">{destination}</p>
         </Entry>
         <ThreeDotsMenu />

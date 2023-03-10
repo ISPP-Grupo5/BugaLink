@@ -32,7 +32,7 @@ export default function AcceptRequest() {
         {/* Details */}
         <div className="py-2 mt-4">
           <hr className="mt-3 mb-3 w-full text-border-color" />
-          <p className="font-lato font-bold text-xl">Detalles del viaje</p>
+          <p className="font-bold text-xl">Detalles del viaje</p>
         </div>
         {/* Map preview */}
         <MapPreview />

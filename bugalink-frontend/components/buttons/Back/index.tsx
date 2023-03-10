@@ -35,7 +35,8 @@ export function BackButtonText({ text, className = '' }: Params) {
   return (
     <div
       className={
-        'sticky flex flex-row bg-white w-full z-50 px-4 py-3 ' + className
+        'sticky top-0 flex flex-row bg-white w-full z-50 px-4 pt-5 pb-4 ' +
+        className
       }
     >
       <button
@@ -56,7 +57,7 @@ export function BackButtonText({ text, className = '' }: Params) {
             d="M10 19l-7-7m0 0l7-7m-7 7h18"
           />
         </svg>
-        <span className="font-semibold text-2xl">{text}</span>
+        <span className="text-2xl">{text}</span>
       </button>
     </div>
   );

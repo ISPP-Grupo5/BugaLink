@@ -67,7 +67,7 @@ a {
 
 @media (min-width: 415px) {
   .mobile-view {
-    max-width: 23.5rem;
+    width: 23.5rem;
     max-height: screen;
     overflow-y: scroll;
   }

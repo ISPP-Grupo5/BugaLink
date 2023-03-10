@@ -19,20 +19,20 @@ class users(APIView):
         except User.DoesNotExist:
             raise Http404
     
-    def get_pending_individual_lifts(self,request):
+    def get_pending_individual_rides(self,request):
         try:
-            return IndividualLift.objects.filter(user = User.objects.get(idUser=request.data['idUser']), status = 'P')
+            return IndividualRide.objects.filter(user = User.objects.get(idUser=request.data['idUser']), status = 'P')
         except User.DoesNotExist:
             raise Http404
     
-    def get_ongoing_individual_lifts(self,request):
+    def get_ongoing_individual_rides(self,request):
         try:
-            return IndividualLift.objects.filter(user = User.objects.get(idUser=request.data['idUser']), status = 'O')
+            return IndividualRide.objects.filter(user = User.objects.get(idUser=request.data['idUser']), status = 'O')
         except User.DoesNotExist:
             raise Http404
         
-    def get_finished_individual_lifts(self,request):
+    def get_finished_individual_rides(self,request):
         try:
-            return IndividualLift.objects.filter(user = User.objects.get(idUser=request.data['idUser']), status = 'F')
+            return IndividualRide.objects.filter(user = User.objects.get(idUser=request.data['idUser']), status = 'F')
         except User.DoesNotExist:
             raise Http404

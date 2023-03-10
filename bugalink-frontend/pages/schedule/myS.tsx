@@ -94,6 +94,7 @@ export default function MySchedule() {
             ))}
           </div>
         </div>
+        {/* */}
         <div className="pt-5">
           <MyDay day="Miércoles" />
           <div className="trip-list divide-y divide-gray">

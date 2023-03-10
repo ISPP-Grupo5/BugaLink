@@ -71,12 +71,13 @@ export default function MyRoutines() {
       <BackButtonText text={'Mi horario'} />
       <div className="flex flex-col px-6 overflow-y-scroll">
         {days.map((day) => (
-          <div className="space-y-2 mb-4">
+          <div key={day} className="space-y-2 mb-4">
             <h1 className="text-2xl">{day}</h1>
             {routines
               .filter((routine) => routine.day === day)
               .map((routine) => (
                 <RoutineCard
+                  key={routine.id}
                   departureHourStart={routine.departureHourStart}
                   departureHourEnd={routine.departureHourEnd}
                   type={routine.type}
@@ -92,7 +93,7 @@ export default function MyRoutines() {
           </div>
         ))}
       </div>
-      <AddRoutineButton />
+      <AddRoutineMenu />
     </AnimatedLayout>
   );
 }
@@ -146,7 +147,6 @@ const ThreeDotsMenu = () => {
       <ThreeDots
         className="absolute top-5 right-1 h-4 cursor-pointer"
         aria-label="more"
-        id="three-dots-button"
         aria-controls={open ? 'long-menu' : undefined}
         aria-expanded={open ? 'true' : undefined}
         aria-haspopup="true"
@@ -154,7 +154,6 @@ const ThreeDotsMenu = () => {
       />
       <Menu
         transformOrigin={{ horizontal: 'left', vertical: 'top' }}
-        id="basic-menu"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
@@ -173,12 +172,36 @@ const ThreeDotsMenu = () => {
   );
 };
 
-const AddRoutineButton = () => {
+const AddRoutineMenu = () => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   return (
     <div className="absolute bottom-0 right-0 mb-8 mr-8">
-      <button className="bg-dark-turquoise rounded-full w-14 aspect-square flex items-center justify-center text-white text-2xl">
+      <button
+        className="bg-dark-turquoise rounded-full w-14 aspect-square flex items-center justify-center text-white text-2xl"
+        onClick={handleClick}
+      >
         +
       </button>
+      <Menu
+        transformOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+        anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        <MenuItem onClick={handleClose}>Como pasajero</MenuItem>
+        <MenuItem onClick={handleClose}>Como conductor</MenuItem>
+      </Menu>
     </div>
   );
 };

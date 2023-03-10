@@ -7,35 +7,33 @@ function DropdownButton() {
     setShowDropdown((prevState) => !prevState);
   }
   return (
-    <div className="items-center justify-end absolute bottom-5 right-5 inline-block">
-      <button
-        id="menu-button"
-        aria-expanded="true"
-        aria-haspopup="true"
-        onClick={toggleDropdown}
-        type="button"
-        className="absolute bottom-0 right-0 text-white bg-[#38A3A5] font-lato rounded-full shadow-xl text-5xl px-5 py-2.5 font-bold text-center mr-2 mb-2"
-      >
-        +
-      </button>
+    <button
+      id="menu-button"
+      aria-expanded="true"
+      aria-haspopup="true"
+      onClick={toggleDropdown}
+      type="button"
+      className="sticky bottom-5 left-full w-min text-white bg-[#38A3A5] font-lato rounded-full shadow-xl text-5xl px-5 py-2.5 font-bold text-center mr-2 mb-2"
+    >
+      +
       {showDropdown && (
         <div
-          className="origin-top-left relative bottom-20 right-0 mb-2 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+          className="origin-top-left absolute bottom-20 right-0 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="menu-button"
         >
-          <div className="py-1" role="none">
+          <div className="" role="none">
             <button
               type="button"
-              className="w-full text-left px-4 py-2 font-lato text-s text-gray"
+              className="w-full text-left px-4  font-lato text-base text-gray"
               role="menuitem"
             >
               Conductor
             </button>
             <button
               type="button"
-              className="w-full text-left px-4 py-1 font-lato text-s text-gray"
+              className="w-full text-left px-4 pb-4 font-lato text-base text-gray"
               role="menuitem"
             >
               Pasajero
@@ -43,7 +41,7 @@ function DropdownButton() {
           </div>
         </div>
       )}
-    </div>
+    </button>
   );
 }
 export default DropdownButton;

@@ -1,5 +1,6 @@
 import { BackButtonText } from '../../components/buttons/Back';
 import DropdownButton from '../../components/buttons/Plus';
+import AnimatedLayout from '../../components/layouts/animated';
 import Schedule from '../../components/schedule';
 import MyDay from '../../components/schedule/days';
 
@@ -62,56 +63,52 @@ const trips3 = [
 
 export default function MySchedule() {
   return (
-    <>
-      <div className="flex flex-col mx-4">
-        <div>
-          <BackButtonText text="Mi horario" />
+    <AnimatedLayout className="bg-white">
+      <BackButtonText text="Mi horario" />
+      <div className="flex flex-col px-4 bg-white">
+        <div className="trip-list divide-y divide-gray">
+          <div className="pt-5">
+            <MyDay day="Lunes" />
+            <div className="trip-list divide-y divide-gray">
+              {trips.map((trip) => (
+                <Schedule
+                  rol={trip.rol}
+                  avatar={trip.avatar}
+                  date={trip.date}
+                  dots={trip.dots}
+                />
+              ))}
+            </div>
+          </div>
         </div>
-        <div className="pt-20">
+        <div className="pt-5">
+          <MyDay day="Martes" />
           <div className="trip-list divide-y divide-gray">
-            <div className="pt-5">
-              <MyDay day="Lunes" />
-              <div className="trip-list divide-y divide-gray">
-                {trips.map((trip) => (
-                  <Schedule
-                    rol={trip.rol}
-                    avatar={trip.avatar}
-                    date={trip.date}
-                    dots={trip.dots}
-                  />
-                ))}
-              </div>
-            </div>
+            {trips2.map((trip) => (
+              <Schedule
+                rol={trip.rol}
+                avatar={trip.avatar}
+                date={trip.date}
+                dots={trip.dots}
+              />
+            ))}
           </div>
-          <div className="pt-5">
-            <MyDay day="Martes" />
-            <div className="trip-list divide-y divide-gray">
-              {trips2.map((trip) => (
-                <Schedule
-                  rol={trip.rol}
-                  avatar={trip.avatar}
-                  date={trip.date}
-                  dots={trip.dots}
-                />
-              ))}
-            </div>
-          </div>
-          <div className="pt-5">
-            <MyDay day="Miércoles" />
-            <div className="trip-list divide-y divide-gray">
-              {trips3.map((trip) => (
-                <Schedule
-                  rol={trip.rol}
-                  avatar={trip.avatar}
-                  date={trip.date}
-                  dots={trip.dots}
-                />
-              ))}
-            </div>
+        </div>
+        <div className="pt-5">
+          <MyDay day="Miércoles" />
+          <div className="trip-list divide-y divide-gray">
+            {trips3.map((trip) => (
+              <Schedule
+                rol={trip.rol}
+                avatar={trip.avatar}
+                date={trip.date}
+                dots={trip.dots}
+              />
+            ))}
           </div>
         </div>
         <DropdownButton />
       </div>
-    </>
+    </AnimatedLayout>
   );
 }

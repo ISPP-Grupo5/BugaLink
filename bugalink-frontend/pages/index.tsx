@@ -55,7 +55,7 @@ export default function Home() {
 
         <span className="flex justify-between mt-5 px-7">
           <p className="text-xl text-left font-semibold">Próximos viajes</p>
-          <a href="#">
+          <a href="/users/qyahXxJc/history">
             <p className="text-xl text-right text-turquoise font-semibold">
               Historial
             </p>

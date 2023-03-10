@@ -6,7 +6,7 @@ export default function PassengerCard() {
   return (
     <Link
       href="#"
-      className="scale-90 -translate-x-2 snap-center shrink-0 block shadow bg-turquoise rounded-2xl hover:bg-gray-100 w-96"
+      className="scale-90 snap-center shrink-0 block shadow bg-turquoise rounded-2xl hover:bg-gray-100 w-96"
     >
       <span className="bg-white relative rounded-2xl shadow-lg">
         <div className="absolute right-0 z-10 text-right text-ellipsis">

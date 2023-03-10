@@ -19,7 +19,7 @@ export default function SquareButton({
       <div className="bg-baseOrigin">{Icon}</div>
       <p className="text-lg text-center">{text}</p>
       {numNotifications > 0 && (
-        <p className="absolute bg-light-red w-7 h-7 rounded-full text-white text-center  -left-2 -top-2">
+        <p className="absolute bg-light-red w-7 h-7 rounded-full text-white text-center -left-2 -top-2">
           {numNotifications}
         </p>
       )}

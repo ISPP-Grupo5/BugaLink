@@ -41,5 +41,5 @@ class users(APIView):
         try:
             individual_lift = IndividualLift.objects.get(idIndividualLift = request.data['idIndividualLift']) 
             return individual_lift.lift.driver_routine.one_lift
-        except:
-            raise Http404
+        except Exception as e:
+            raise e

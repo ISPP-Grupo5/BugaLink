@@ -150,9 +150,21 @@ class PassengerRoutine(models.Model):
     time_diff_after = models.DurationField()
 
 class RoutineRequest(models.Model):
-    passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
-    driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
+    passenger_routine = models.ForeignKey(PassengerRoutine, on_delete=models.CASCADE)
     driver_routine = models.ForeignKey(DriverRoutine, on_delete=models.CASCADE)
+    day = models.CharField(max_length=256)
+    acceptation_status = models.CharField(max_length=256, choices=AcceptationStatus.choices(), default=AcceptationStatus.Pending_Confirmation)
+
+class IndividualLift(models.Model):
+    lift = models.ForeignKey(Lift, on_delete=models.CASCADE)
+    routine_request = models.ForeignKey(RoutineRequest, on_delete=models.CASCADE)
+    passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    start_location = Coord(null=True)
+    end_location = Coord(null=True)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    lift_status = models.CharField(max_length=256, choices=LiftStatus.choices(), default=LiftStatus.Pending_start)
     acceptation_status = models.CharField(max_length=256, choices=AcceptationStatus.choices(), default=AcceptationStatus.Pending_Confirmation)
 
 class CreditCard(models.Model):

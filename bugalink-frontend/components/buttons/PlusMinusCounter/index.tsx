@@ -10,7 +10,7 @@ export default function PlusMinusCounter({
   text,
 }: Props) {
   return (
-    <div className="relative w-full text-center bg-base font-semibold p-1 rounded-xl flex justify-between items-center">
+    <div className="relative w-full text-center bg-baseOrigin font-semibold p-1 rounded-xl flex justify-between items-center">
       <button
         onClickCapture={(e) => {
           e.preventDefault();

@@ -23,7 +23,7 @@ export default function History() {
       <div className="divide-y-2 divide-light-gray ">
         <TripCard
           type={'driver'}
-          avatar={'/assets/avatar.png'}
+          avatar={'/assets/avatar.svg'}
           rating={4.9}
           gender={'F'}
           origin={'Nervion Plaza'}
@@ -35,7 +35,7 @@ export default function History() {
         />
         <TripCard
           type={'passenger'}
-          avatar={'/icons/Vista-Principal/Avatar.png'}
+          avatar={'/assets/avatar.png'}
           rating={4.7}
           gender={'M'}
           origin={'Prado de San Sebastián'}
@@ -47,7 +47,7 @@ export default function History() {
         />
         <TripCard
           type={'driver'}
-          avatar={'/icons/Vista-Principal/Avatar.png'}
+          avatar={'/assets/avatar.png'}
           rating={4.6}
           gender={'M'}
           origin={'Plaza de los Ángeles'}
@@ -59,7 +59,7 @@ export default function History() {
         />
         <TripCard
           type={'passenger'}
-          avatar={'/assets/avatar.png'}
+          avatar={'/assets/avatar.svg'}
           rating={4.9}
           gender={'F'}
           origin={'El porvenir'}
@@ -71,7 +71,7 @@ export default function History() {
         />
         <TripCard
           type={'driver'}
-          avatar={'/assets/avatar.png'}
+          avatar={'/assets/avatar.svg'}
           rating={4.2}
           gender={'F'}
           origin={'Triana'}
@@ -83,7 +83,7 @@ export default function History() {
         />
         <TripCard
           type={'passenger'}
-          avatar={'/icons/Vista-Principal/Avatar.png'}
+          avatar={'/assets/avatar.png'}
           rating={4.6}
           gender={'M'}
           origin={'El Porvenir'}

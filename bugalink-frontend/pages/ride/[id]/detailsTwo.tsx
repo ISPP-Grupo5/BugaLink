@@ -66,7 +66,7 @@ export default function DetailsTwo() {
           <p className="text-md font-normal">Precio total</p>
           <p className="text-3xl font-bold">4,00€</p>
         </div>
-        <CTAButton className="w-2/3" text={'PAGAR'} />
+        <CTAButton className="w-2/3" text={'SOLICITAR'} />
       </div>
     </AnimatedLayout>
   );

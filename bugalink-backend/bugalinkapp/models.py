@@ -16,7 +16,6 @@ class RideStatus(Enum):
     def choices(cls):
         return [(key.value, key.name) for key in cls]
 
-
 class AcceptationStatus(Enum):
     Accepted = 'Accepted'
     Cancelled = 'Cancelled'
@@ -25,7 +24,6 @@ class AcceptationStatus(Enum):
     @classmethod
     def choices(cls):
         return [(key.value, key.name) for key in cls]
-
 
 class Coord(models.Field):
     def __init__(self, *args, **kwargs):
@@ -52,119 +50,98 @@ class Coord(models.Field):
     def db_type(self, connection):
         return 'varchar'
 
-
 class Passenger(models.Model):
     user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
+    biography = models.CharField(max_length=256)
     city = models.CharField(max_length=256)
     province = models.CharField(max_length=256)
-    biography = models.CharField(max_length=256)
     birth_date = models.DateField()
     balance = models.DecimalField(max_digits=8, decimal_places=2)
-    photo = models.FileField(null=True)
+    photo = models.ImageField(null=True)
     verified = models.BooleanField(default=False)
-
-
 
 class Driver(models.Model):
     passenger = models.OneToOneField(Passenger, primary_key=True, on_delete=models.CASCADE)
     preferences = models.CharField(max_length=2048)
     biography = models.CharField(max_length=256)
     has_dni = models.BooleanField(default=False)
-    entry_date = models.DateField(default=timezone.now().date)
+    entry_date = models.DateField()
     has_driver_license = models.BooleanField(default=False)
     has_sworn_declaration = models.BooleanField(default=False)
-    sworn_declaration = models.FileField()
-    driver_license = models.FileField()
-    dni_front = models.FileField()
-    dni_back = models.FileField()
-
-
-class DriverRating(models.Model):
-    IndividualRide = models.OneToOneField(IndividualRide, null=False, on_delete=models.CASCADE) # Validar que sólo se pueda hacer una vez por viaje
-    rating = models.FloatField(default=1, validators=[MinValueValidator(1.0), MaxValueValidator(5.0)])
-    comment = models.CharField(max_length=1024)
-
-class PassengerRating(models.Model):
-    IndividualRide = models.OneToOneField(IndividualRide, null=False, on_delete=models.CASCADE) # Validar que sólo se pueda hacer una vez por viaje
-    rating = models.FloatField(default=1, validators=[MinValueValidator(1.0), MaxValueValidator(5.0)])
-    comment = models.CharField(max_length=1024)
-
+    sworn_declaration = models.FileField(null=True)
+    driver_license = models.FileField(null=True)
+    dni_front = models.FileField(null=True)
+    dni_back = models.FileField(null=True)
 
 class Vehicle(models.Model):
     driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
     model = models.CharField(max_length=256)
     plate = models.CharField(max_length=256)
-    has_insurance = models.BooleanField(max_length=256)
-    insurance = models.FileField()
-
-
-# Posible creacion de entidad Default_Driver_Routine con
-# default_vehicle
-# default_num_seats
-# default_start_location
-# default_end_location
+    has_insurance = models.BooleanField(default=False)
+    insurance = models.FileField(null=True)
 
 class DriverRoutine(models.Model):
     driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
     default_vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, null=True)
-    default_num_seats = models.IntegerField(validators=[MinValueValidator(2)])
+    default_num_seats = models.IntegerField(validators=[MinValueValidator(1)])
     start_date = models.TimeField()
     end_date = models.TimeField()
     start_location = Coord(null=False)
     end_location = Coord(null=False)
-    frecuency = models.CharField(max_length=256)
+    days = models.CharField(max_length=20)
     one_ride = models.BooleanField(default=False)
-
 
 class Ride(models.Model):
     driver_routine = models.ForeignKey(DriverRoutine, on_delete=models.CASCADE)
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
-    default_num_seats = models.IntegerField()  # Relacionarlo con default_num_seats
+    num_seats = models.IntegerField()  # Relacionarlo con default_num_seats
     status = models.CharField(max_length=256, choices=RideStatus.choices(), default=RideStatus.Pending_start)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    start_location = Coord(null=True)
-    end_location = Coord(null=True)
+    start_location = Coord(null=False)
+    end_location = Coord(null=False)
 
+class PassengerRoutine(models.Model):
+    passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
+    start_location = Coord(null=False)
+    end_location = Coord(null=False)
+    days = models.CharField(max_length=256)
+    end_date = models.TimeField()
+    start_time_initial = models.TimeField()
+    start_time_final = models.TimeField()
 
 class IndividualRide(models.Model):
     ride = models.ForeignKey(Ride, on_delete=models.CASCADE)
     passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
+    passenger_routine= models.ForeignKey(PassengerRoutine, on_delete=models.CASCADE, null=True)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    ride_status = models.CharField(max_length=256, choices=RideStatus.choices(), default=RideStatus.Pending_start)
+    acceptation_status = models.CharField(max_length=256, choices=AcceptationStatus.choices(), default=AcceptationStatus.Pending_Confirmation)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    start_location = Coord(null=True)
-    end_location = Coord(null=True)
-    price = models.DecimalField(max_digits=8, decimal_places=2)
-    Ride_status = models.CharField(max_length=256, choices=RideStatus.choices(), default=RideStatus.Pending_start)
-    acceptation_status = models.CharField(max_length=256, choices=AcceptationStatus.choices(), default=AcceptationStatus.Pending_Confirmation)
+    start_location = Coord(null=False)
+    end_location = Coord(null=False)
+    message= models.CharField(max_length=256, null=True)
 
+class DriverRating(models.Model):
+    individual_ride = models.OneToOneField(IndividualRide, null=False, on_delete=models.CASCADE) # Validar que sólo se pueda hacer una vez por viaje
+    rating = models.FloatField(validators=[MinValueValidator(1.0), MaxValueValidator(5.0)])
+    comment = models.CharField(max_length=1024)
 
-class PassengerRoutine(models.Model):
-    passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
-    start_date = models.TimeField()
-    end_date = models.TimeField()
-    start_place = models.CharField(max_length=256)
-    end_place = models.CharField(max_length=256)
-    frequency = models.CharField(max_length=256)
-    time_diff_before = models.DurationField()
-    time_diff_after = models.DurationField()
+class PassengerRating(models.Model):
+    individual_ride = models.OneToOneField(IndividualRide, null=False, on_delete=models.CASCADE) # Validar que sólo se pueda hacer una vez por viaje
+    rating = models.FloatField(validators=[MinValueValidator(1.0), MaxValueValidator(5.0)])
+    comment = models.CharField(max_length=1024)
+
+class Report(models.Model):
+    individual_ride = models.OneToOneField(IndividualRide, null=False, on_delete=models.CASCADE) # Validar que sólo se pueda hacer una vez por viaje
+    message = models.CharField(max_length=1024)
+    is_user_reported_the_driver = models.BooleanField(null=False)
 
 class RoutineRequest(models.Model):
     passenger_routine = models.ForeignKey(PassengerRoutine, on_delete=models.CASCADE)
     driver_routine = models.ForeignKey(DriverRoutine, on_delete=models.CASCADE)
-    day = models.CharField(max_length=256)
-    acceptation_status = models.CharField(max_length=256, choices=AcceptationStatus.choices(), default=AcceptationStatus.Pending_Confirmation)
-
-class IndividualLift(models.Model):
-    lift = models.ForeignKey(Lift, on_delete=models.CASCADE)
-    routine_request = models.ForeignKey(RoutineRequest, on_delete=models.CASCADE)
-    passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
-    start_location = Coord(null=True)
-    end_location = Coord(null=True)
-    price = models.DecimalField(max_digits=8, decimal_places=2)
-    lift_status = models.CharField(max_length=256, choices=LiftStatus.choices(), default=LiftStatus.Pending_start)
+    day = models.CharField(max_length=3)
     acceptation_status = models.CharField(max_length=256, choices=AcceptationStatus.choices(), default=AcceptationStatus.Pending_Confirmation)
 
 class CreditCard(models.Model):
@@ -174,42 +151,39 @@ class CreditCard(models.Model):
     expiration_date = models.DateField()
 
 class Paypal(models.Model):
-    mail = models.CharField(max_length=256)
-    password = models.CharField(max_length=256)
     user = models.ForeignKey(Passenger, on_delete=models.CASCADE)
-
+    email = models.CharField(max_length=256)
+    password = models.CharField(max_length=256)
 
 class FavDirection(models.Model):
     user = models.ForeignKey(Passenger, on_delete=models.CASCADE)
     name = models.CharField(max_length=256)
+    location = Coord(null=False)
     direction = models.CharField(max_length=256)
     city = models.CharField(max_length=256)
-    location = Coord(null=True)
-    cp = models.CharField(max_length=256)
-
+    cp = models.CharField(max_length=10)
 
 class DiscountCode(models.Model):
     code = models.CharField(max_length=256, unique=True)
-    discount_perc = models.FloatField()
-    Rides = models.IntegerField()
+    discount_perc = models.FloatField(validators=[MinValueValidator(0.0),MaxValueValidator(1.0)])
+    rides = models.IntegerField()
     start_date = models.DateField()
     end_date = models.DateField()
     active = models.BooleanField()
-
-
-class IndividualDiscountCode(models.Model):
-    code = models.CharField(max_length=256, unique=True)
-    discount_perc = models.FloatField()
-    start_date = models.DateField()
-    end_date = models.DateField()
-    disabled = models.BooleanField(default=False)
-    initial_Rides = models.IntegerField()
-    Rides_left = models.IntegerField()
-
 
 class PassengerDiscountCode(models.Model):
     discount = models.ForeignKey(DiscountCode, on_delete=models.CASCADE)
     passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
     activation_date = models.DateField()
-    Rides_left = models.IntegerField()
+    rides_left = models.IntegerField()
+    active = models.BooleanField(default=True)
+
+class IndividualDiscountCode(models.Model):
+    user = models.ForeignKey(Passenger, on_delete=models.CASCADE)
+    code = models.CharField(max_length=256, unique=True)
+    discount_perc = models.FloatField(validators=[MinValueValidator(0.0),MaxValueValidator(1.0)])
+    start_date = models.DateField()
+    end_date = models.DateField()
+    initial_rides = models.IntegerField()
+    rides_left = models.IntegerField()
     active = models.BooleanField(default=True)

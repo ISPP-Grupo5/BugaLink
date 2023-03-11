@@ -38,20 +38,20 @@ export default function Rating() {
   };
 
   return (
-    <div className="flex justify-center h-screen bg-base">
-      <BackButton className="absolute left-2 top-2 shadow-xl pr-2 py-3 bg-baseOrigin" />
-      <div className="w-11/12 bg-white pb-44">
+    <div >
+      <BackButton className="absolute left-2 shadow-xl pr-2 py-3 bg-baseOrigin" />
+      <div >
         {/* Profile header */}
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            marginTop: '20px',
+            
           }}
-          className="flex flex-row items-center justify-between px-5 py-2 pt-20">
+          className="flex flex-row items-center justify-between px-5 py-2">
           <div className="font-bold">
-            <p style={{ fontWeight: '600', fontSize: '28px', lineHeight: '28px' }} className="text-xl font-Lato">¿Cómo ha ido el viaje?</p>
+            <p style={{ fontWeight: '600', fontSize: '28px', lineHeight: '28px' }} className="text-xl font-Lato mt-20">¿Cómo ha ido el viaje?</p>
           </div>
           <div style={{ marginTop: '70px' }} className="flex flex-row items-center">
 
@@ -227,7 +227,7 @@ export default function Rating() {
             onClick={handleSubmit}
           >
           </button> */}
-          <CTAButton className="mt-6 w-full" text="ENVIAR" />
+          <CTAButton className="mt-6 max-w-8" text="ENVIAR" />
         </div>
       </div>
     </div >

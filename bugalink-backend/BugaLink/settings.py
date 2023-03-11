@@ -31,24 +31,26 @@ SECRET_KEY = 'django-insecure-br8yvhx^^w#x0e3i03qy($-^q49(xk-9uhf^=vj8igoa-8g#75
 
 DEBUG = env['DEBUG']
 
-#####
-# Provisional para desplegar en APP ENGINE
-APPENGINE_URL = env['APPENGINE_URL']
-if APPENGINE_URL:
-    # Ensure a scheme is present in the URL before it's processed.
-    if not urlparse(APPENGINE_URL).scheme:
-        APPENGINE_URL = f"https://{APPENGINE_URL}"
+if os.environ.get("IS_APP_ENGINE"):
+    print("The app is being run in App Engine")
+    #####
+    # Para despliege en APP ENGINE
+    APPENGINE_URL = env['APPENGINE_URL']
+    if APPENGINE_URL:
+        # Ensure a scheme is present in the URL before it's processed.
+        if not urlparse(APPENGINE_URL).scheme:
+            APPENGINE_URL = f"https://{APPENGINE_URL}"
 
-    ALLOWED_HOSTS = [urlparse(APPENGINE_URL).netloc]
-    CSRF_TRUSTED_ORIGINS = [APPENGINE_URL]
-    SECURE_SSL_REDIRECT = True
+        ALLOWED_HOSTS = [urlparse(APPENGINE_URL).netloc]
+        CSRF_TRUSTED_ORIGINS = [APPENGINE_URL]
+        SECURE_SSL_REDIRECT = True
+    else:
+        ALLOWED_HOSTS = ["*"]
+    #
+    #####
 else:
-    ALLOWED_HOSTS = ["*"]
-#
-#####
-
-
-#ALLOWED_HOSTS = []
+    print("The app is being run locally")
+    ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -98,17 +100,30 @@ WSGI_APPLICATION = 'BugaLink.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+if os.environ.get("IS_APP_ENGINE"):
 
-DATABASES = {
-    'default': {
-        'ENGINE': env['ENGINE'],
-        'NAME': env['NAME'],
-        'USER': env['USER'],
-        'PASSWORD': env['PASSWORD'],
-        'HOST': env['HOST'],
-        'PORT': env['PORT'],
+    DATABASES = {
+        'default': {
+            'ENGINE': env['ENGINE'],
+            'NAME': env['NAME'],
+            'USER': env['USER'],
+            'PASSWORD': env['PASSWORD'],
+            'HOST': env['HOST'],
+            'PORT': env['PORT'],
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': env['ENGINE'],
+            'NAME': env['NAME'],
+            'USER': env['USER'],
+            'PASSWORD': env['PASSWORD'],
+            'HOST': 'localhost',
+            'PORT': env['PORT'],
+        }
+    }
+
 
 
 # Password validation

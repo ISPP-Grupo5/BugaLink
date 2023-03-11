@@ -18,7 +18,7 @@ export default function TagsButton({
       }
       ${className}`}
     >
-      {text} ⏷
+      {text}
     </button>
   );
 }

@@ -2,10 +2,14 @@ import Link from 'next/link';
 import Destino from 'public/icons/Vista-Principal/destino.svg';
 import Origen from 'public/icons/Vista-Principal/origen.svg';
 
-export default function PassengerCard() {
+type Params = {
+  link: string;
+};
+
+export default function PassengerCard({ link }: Params) {
   return (
     <Link
-      href="#"
+      href={link}
       className="scale-90 snap-center shrink-0 block shadow bg-turquoise rounded-2xl hover:bg-gray-100 w-96"
     >
       <span className="bg-white relative rounded-2xl shadow-lg">

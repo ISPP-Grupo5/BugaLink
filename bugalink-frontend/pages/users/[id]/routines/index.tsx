@@ -8,6 +8,7 @@ import MapPin from '/public/assets/map-pin.svg';
 import OrigenPin from '/public/assets/origen-pin.svg';
 import ThreeDots from '/public/assets/three-dots.svg';
 import SteeringWheel from '/public/assets/steering-wheel.svg';
+import Link from 'next/link';
 
 const routines = [
   {
@@ -217,8 +218,12 @@ const AddRoutineMenu = () => {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem onClick={handleClose}>Como pasajero</MenuItem>
-        <MenuItem onClick={handleClose}>Como conductor</MenuItem>
+        <Link href="/users/273932t8437/routines/passenger/new">
+          <MenuItem onClick={handleClose}>Como pasajero</MenuItem>
+        </Link>
+        <Link href="/users/273932t8437/routines/driver/new">
+          <MenuItem onClick={handleClose}>Como conductor</MenuItem>
+        </Link>
       </Menu>
     </div>
   );

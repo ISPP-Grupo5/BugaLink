@@ -39,7 +39,7 @@ export default function Rating() {
 
   return (
     <div className="flex justify-center h-screen bg-base">
-      <BackButton />
+      <BackButton className="absolute left-2 top-2 shadow-xl pr-2 py-3 bg-baseOrigin" />
       <div className="w-11/12 bg-white pb-44">
         {/* Profile header */}
         <div

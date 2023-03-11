@@ -7,6 +7,7 @@ type props = {
   parentClassName?: string;
   inputClassName?: string;
   maxLength?: number;
+  rows?: number;
 };
 
 // Adapted from https://tailwind-elements.com/docs/standard/forms/textarea/
@@ -17,6 +18,7 @@ export default function TextAreaField({
   parentClassName,
   inputClassName,
   maxLength = 2000,
+  rows,
 }: props) {
   const [counter, setCounter] = useState(0);
 
@@ -36,7 +38,7 @@ export default function TextAreaField({
           onChange={onChangeTextarea}
           value={content}
           id={fieldName}
-          rows={12}
+          rows={rows || 12}
           maxLength={maxLength}
         />
         <label

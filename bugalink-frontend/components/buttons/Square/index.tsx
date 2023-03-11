@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { ComponentType } from 'react';
 
 type Params = {
   text: string;

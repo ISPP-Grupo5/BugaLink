@@ -1,18 +1,23 @@
+import { SwipeableDrawer } from '@mui/material';
 import Link from 'next/link';
+import { useState } from 'react';
 import DriverCard from '../components/cards/driver';
 import PassengerCard from '../components/cards/passenger';
+import AnimatedLayout from '../components/layouts/animated';
+import TripList from './recommendations';
 import Calendar from '/public/icons/Vista-Principal/calendar.svg';
 import Chat from '/public/icons/Vista-Principal/chat.svg';
 import Glass from '/public/icons/Vista-Principal/glass.svg';
 import Solicitud from 'public/icons/Vista-Principal/solicitud.svg';
 import Destino from 'public/icons/Vista-Principal/destino.svg';
 import SquareButton from '../components/buttons/Square';
-import AnimatedLayout from '../components/layouts/animated';
 
 export default function Home() {
+  const [open, setOpen] = useState(false);
+
   return (
-    <AnimatedLayout className="bg-baseOrigin">
-      <div className="flex flex-col">
+    <AnimatedLayout className="overflow-y-scroll max-h-full">
+      <div className="flex flex-col pb-20">
         <span className="flex items-center px-7 my-10 space-x-4">
           <form className="flex py-3 px-4 w-full bg-white rounded-full items-center">
             <Destino className="w-5 h-5 stroke-light-turquoise fill-light-turquoise flex-none scale-125 translate-y-0.5" />
@@ -81,7 +86,6 @@ export default function Home() {
             <DriverCard />
           </div>
         </div>
-
         <div className="flex flex-col">
           <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne">
             Detalles viaje (1)
@@ -105,6 +109,30 @@ export default function Home() {
           </Link>
         </div>
       </div>
+      <SwipeableDrawer
+        anchor="bottom"
+        open={open}
+        onClose={() => setOpen(false)}
+        onOpen={() => setOpen(true)}
+        swipeAreaWidth={80}
+        disableSwipeToOpen={false}
+        ModalProps={{
+          keepMounted: true,
+        }}
+        id="SwipeableDrawer"
+        allowSwipeInChildren={true}
+        SlideProps={{
+          style: {
+            minWidth: '320px',
+            maxWidth: '480px',
+            width: '100%',
+            margin: '0 auto',
+            overflow: 'visible'
+          },
+        }}
+      >
+        <TripList open={open} setOpen={setOpen} />
+      </SwipeableDrawer>
     </AnimatedLayout>
   );
 }

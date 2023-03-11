@@ -2,6 +2,7 @@ from django.db import models
 
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.utils import timezone
 from enum import Enum
 
 
@@ -63,13 +64,15 @@ class Passenger(models.Model):
     verified = models.BooleanField(default=False)
 
 
+
 class Driver(models.Model):
     passenger = models.OneToOneField(Passenger, primary_key=True, on_delete=models.CASCADE)
     preferences = models.CharField(max_length=2048)
     biography = models.CharField(max_length=256)
+    has_dni = models.BooleanField(default=False)
+    entry_date = models.DateField(default=timezone.now().date)
     has_driver_license = models.BooleanField(default=False)
     has_sworn_declaration = models.BooleanField(default=False)
-    entry_date = models.DateField(null=True)
     sworn_declaration = models.FileField()
     driver_license = models.FileField()
     dni_front = models.FileField()
@@ -77,22 +80,18 @@ class Driver(models.Model):
 
 
 class DriverRating(models.Model):
-    driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
-    passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
-    IndividualRide = models.ForeignKey('IndividualRide', on_delete=models.CASCADE) # Validar que sólo se pueda hacer una vez por viaje
+    IndividualRide = models.OneToOneField(IndividualRide, null=False, on_delete=models.CASCADE) # Validar que sólo se pueda hacer una vez por viaje
     rating = models.FloatField(default=1, validators=[MinValueValidator(1.0), MaxValueValidator(5.0)])
     comment = models.CharField(max_length=1024)
 
 class PassengerRating(models.Model):
-    driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
-    passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
-    IndividualRide = models.ForeignKey('IndividualRide', on_delete=models.CASCADE) # Validar que sólo se pueda hacer una vez por viaje
+    IndividualRide = models.OneToOneField(IndividualRide, null=False, on_delete=models.CASCADE) # Validar que sólo se pueda hacer una vez por viaje
     rating = models.FloatField(default=1, validators=[MinValueValidator(1.0), MaxValueValidator(5.0)])
     comment = models.CharField(max_length=1024)
 
 
 class Vehicle(models.Model):
-    driver = models.ManyToManyField(Driver)
+    driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
     model = models.CharField(max_length=256)
     plate = models.CharField(max_length=256)
     has_insurance = models.BooleanField(max_length=256)
@@ -107,15 +106,14 @@ class Vehicle(models.Model):
 
 class DriverRoutine(models.Model):
     driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
-    default_vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='default_vehicle')
-    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, related_name='vehicle')
-    default_num_seats = models.IntegerField()
+    default_vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, null=True)
+    default_num_seats = models.IntegerField(validators=[MinValueValidator(2)])
     start_date = models.TimeField()
     end_date = models.TimeField()
-    start_location = Coord(null=True)
-    end_location = Coord(null=True)
+    start_location = Coord(null=False)
+    end_location = Coord(null=False)
     frecuency = models.CharField(max_length=256)
-    one_Ride = models.BooleanField(default=False)
+    one_ride = models.BooleanField(default=False)
 
 
 class Ride(models.Model):
@@ -130,7 +128,7 @@ class Ride(models.Model):
 
 
 class IndividualRide(models.Model):
-    Ride = models.ForeignKey(Ride, on_delete=models.CASCADE)
+    ride = models.ForeignKey(Ride, on_delete=models.CASCADE)
     passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()

@@ -98,6 +98,12 @@ export default function Rating() {
                     fontSize: '50px',
                     margin: '0 5px',
                     color: ratingValue <= rating ? '#ffc107' : 'gray',
+                    textShadow: '1px 1px 0 #999, -1px -1px 0 #fff, -1px 1px 0 #999, 1px -1px 0 #fff, 0px 0px 4px #444',
+                    borderRadius: '32px',
+                    boxShadow: 'inset 0 0 10px #ddd',
+
+                    
+
                   }}
                 >
                   <input
@@ -109,6 +115,8 @@ export default function Rating() {
                       position: 'absolute',
                       opacity: 0,
                       pointerEvents: 'none',
+
+
                     }}
                   />
                   ★
@@ -120,7 +128,7 @@ export default function Rating() {
             No te preocupes, las valoraciones son anónimas
           </h2>
 
-          <div style={{ display: 'flex'}}>
+          <div style={{ display: 'flex' }}>
             <div style={{ display: 'flex', flexDirection: 'row', marginTop: '70px' }}>
               <button
                 style={{
@@ -191,8 +199,8 @@ export default function Rating() {
 
             </div>
           </div>
-          <div style={{ display: 'flex', marginTop:'-6px'}}>
-            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px' , textAlign: 'center'}}>
+          <div style={{ display: 'flex', marginTop: '-6px' }}>
+            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }}>
               Buena conducción
             </h2>
             <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }}>
@@ -202,7 +210,7 @@ export default function Rating() {
             </h2>
 
           </div>
-          <a href="link" style={{ color: '#DA0000', marginTop: '60px',marginBottom: '-13px', fontSize: '14px' }}>¿Has tenido algún problema? <b style={{ fontSize: '14px' }}>Háznoslo saber</b></a>
+          <a href="link" style={{ color: '#DA0000', marginTop: '60px', marginBottom: '-13px', fontSize: '14px' }}>¿Has tenido algún problema? <b style={{ fontSize: '14px' }}>Háznoslo saber</b></a>
 
           {/* <button
             style={{
@@ -219,7 +227,7 @@ export default function Rating() {
             onClick={handleSubmit}
           >
           </button> */}
-          <CTAButton className="mt-6 w-full" text="ENVIAR"/>
+          <CTAButton className="mt-6 w-full" text="ENVIAR" />
         </div>
       </div>
     </div >

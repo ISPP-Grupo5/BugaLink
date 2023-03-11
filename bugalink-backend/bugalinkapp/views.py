@@ -70,14 +70,19 @@ class individualLifts(APIView):
         
             lifts = list(Lift.objects.all())
             for lift in lifts:
-                driver = lift.driver_routine.driver
-                
+                # Filtramos por fecha
+                # Ahora mismo la fecha tiene que ser exactamente la misma, pero podría hacerse más complejo en el futuro
                 date_filter = date == lift.start_date.date
+                
+                # Filtramos por valoración
+                driver = lift.driver_routine.driver # Tenemos que sacar al conductor para averiguar su valoración
                 rating_filter = rating <= Rating.get_driver_rating(driver)
                 
+                # Si se han cumplido estos filtros, revisamos todos los viajes individuales de este viaje
                 if (date_filter and rating_filter):
-                    filteredIndividualLifts = list(IndividualLift.objects.filter(lift = lift))
+                    filteredIndividualLifts = list(IndividualLift.objects.filter(lift_id = lift.id))
                     for individualLift in filteredIndividualLifts:
+                        # Y si el precio del viaje individual supera el filtro, lo añadimos a la lista que devolveremos
                         if low_price <= individualLift.price <= high_price:
                             individualLifts.push(individualLift)
                             

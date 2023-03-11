@@ -82,8 +82,11 @@ class Rating(models.Model):
     value = models.FloatField(default=1, validators=[MinValueValidator(1.0), MaxValueValidator(5.0)])
     comment = models.CharField(max_length=1024)
     
+    # Esta función es imperfecta, porque asume que los conductores sólo son valorados y nunca valoran, pero en la bbdd 
+    # no hay atributos que indiquen la direccionalidad de la relación entre el pasajero y el conductor (es decir, quién
+    # valora a quién)
     def get_driver_rating(driver):
-        ratings = list(Rating.objects.filter(driver = driver))
+        ratings = list(Rating.objects.filter(driver_id = driver.id))
         rating_sum = 0
         for rating in ratings:
             rating_sum += rating.value

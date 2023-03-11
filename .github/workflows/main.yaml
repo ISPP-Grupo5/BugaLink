@@ -27,7 +27,7 @@ jobs:
         node-version: '14.x'
     - run: |
         cd bugalink-frontend
-        npm ci
+        npm i
         npm run build 
 
     - name: Deploy to App Engine

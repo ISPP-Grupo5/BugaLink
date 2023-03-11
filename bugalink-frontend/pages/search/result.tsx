@@ -14,7 +14,6 @@ import TimePicker from '../../components/forms/TimePicker';
 import Slider from '@mui/material/Slider';
 import React from 'react';
 
-
 const filters = [
   {
     name: 'Precio',
@@ -38,7 +37,7 @@ const searchResults = [
     type: 'driver',
     rating: 4.6,
     name: 'Paco Perez',
-    avatar: '/assets/Avatar.png',
+    avatar: '/assets/avatar.png',
     gender: 'M',
     origin: 'Centro Comercial Way',
     destination: 'ETSII',
@@ -60,7 +59,7 @@ const searchResults = [
     type: 'driver',
     rating: 4.7,
     name: 'Alberto Chicote',
-    avatar: '/assets/Avatar.png',
+    avatar: '/assets/avatar.png',
     gender: 'M',
     origin: 'Centro Comercial Lagoh',
     destination: 'Isla Mágica',
@@ -91,7 +90,7 @@ export default function SearchResults() {
   const [pickTimeFrom, setPickTimeFrom] = useState('16:00');
   const [pickTimeTo, setPickTimeTo] = useState('16:15');
   const [values, setValues] = React.useState<number[]>([0, 2]);
-  
+
   const handleChange = (event: Event, newValue: number | number[]) => {
     setValues(newValue as number[]);
   };

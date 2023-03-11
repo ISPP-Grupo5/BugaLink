@@ -1,70 +1,61 @@
-import React from 'react';
-import Avatar from '/public/assets/avatar.svg';
+import AvatarWithRating from '../../avatarWithRating';
+import Entry from '../common/entry';
+import Calendar from '/public/assets/calendar.svg';
 import MapPin from '/public/assets/map-pin.svg';
 import OrigenPin from '/public/assets/origen-pin.svg';
-import Calendar from '/public/assets/calendar.svg';
 
 export default function TripCard({
   type,
   rating,
   name,
   avatar,
+  gender,
   origin,
   destination,
   date,
   price,
+  className = '',
 }) {
+  const isDriver = type === 'driver';
+  const isMale = gender === 'M';
+
+  // Role depending on isDriver and gender
+  const role = isDriver
+    ? isMale
+      ? 'Conductor'
+      : 'Conductora'
+    : isMale
+    ? 'Pasajero'
+    : 'Pasajera';
+
   return (
-    <div className="card border-border-color border-solid border rounded mb-5 pb-2 w-11/12">
-      <div className="grid grid-cols-3 gap-x-10 items-center">
-        <div className="grid place-items-center mt-2 justify-end relative">
-          {/* <img src={avatar} /> */}
-          <Avatar />
-          <button
-            className="flex items-center justify-center border-gray border-solid border rounded-full 
-            shadow-md text-black font-lato font-semibold text-xs bg-white relative -mt-2 w-11 h-4"
-          >
-            ⭐ {rating}
-          </button>
-        </div>
-        <span className="font-lato font-thin text-xs text-gray col-span-2">
-          {type}
-          <p className="font-lato font-bold text-sm text-black">{name}</p>
-        </span>
-      </div>
-      <div className="grid grid-cols-2 gap-x-10 gap-y-0 grid-rows-2 mb-2">
-        <span className="font-lato text-xs text-dark-grey ml-3">Origen</span>
-        <span className="font-lato text-xs text-dark-grey mr-2">Destino</span>
-        <span className=" flex items-center font-lato font-bold text-xs ml-3">
-          <span>
-            <OrigenPin />
-          </span>
-          <span className="truncate ml-1">{origin}</span>
-        </span>
-        <span className="flex items-center font-lato font-bold text-xs mr-2">
-          <span>
-            <MapPin />
-          </span>
-          <span className="truncate ml-1">{destination}</span>
-        </span>
-      </div>
-      <div className="grid grid-cols-2 gap-x-10 gap-y-0 grid-rows-2">
-        <span className="font-lato text-xs text-dark-grey ml-3">
-          Fecha y hora
-        </span>
-        <span className="font-lato text-xs text-dark-grey mr-2">
-          Precio por asiento
-        </span>
-        <span className="flex items-center font-lato font-bold text-xs ml-3 truncate">
-          <span>
-            <Calendar />
-          </span>
-          <span className="truncate ml-1">{date}</span>
-        </span>
-        <span className="font-lato font-bold text-xs mr-2 truncate">
-          {price}
-        </span>
-      </div>
+    <div
+      className={
+        'grid grid-cols-2 grid-rows-4 gap-y-2 gap-x-4 w-full p-4 pt-1 ' +
+        className
+      }
+    >
+      <span className="flex col-span-2 row-span-2 items-center space-x-4">
+        <AvatarWithRating avatar={avatar} rating={rating} />
+        <Entry title={role}>
+          <p className="text-lg font-semibold leading-5">{name}</p>
+        </Entry>
+      </span>
+      <Entry title="Origen">
+        <OrigenPin className="flex-none" />
+        <p className="truncate">{origin}</p>
+      </Entry>
+      <Entry title="Destino">
+        <MapPin />
+        <p className="truncate">{destination}</p>
+      </Entry>
+      <Entry title="Precio por asiento">
+        {price.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}
+      </Entry>
+      <Entry title="Fecha y hora">
+        <Calendar />
+        <p className="truncate">{date}</p>
+      </Entry>
     </div>
   );
 }

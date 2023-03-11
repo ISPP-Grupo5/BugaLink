@@ -15,20 +15,20 @@ export default function AcceptRequest() {
   return (
     <AnimatedLayout className="flex flex-col justify-between">
       <BackButtonText text="Solicitud de viaje" />
-      <div className="flex flex-col px-4 pb-4 pt-2 h-full overflow-y-scroll bg-white">
+      <div className="flex flex-col pb-4 pt-2 px-6 h-full overflow-y-scroll justify-between bg-white">
         {/* Profile header */}
         <ProfileHeader
           name="Jesús Marchena"
           rating="4.8"
           numberOfRatings="14"
         />
-        <div className="flex flex-row mt-4">
+        <div className="flex flex-row">
           <p className="text-sm font-normal text-dark-grey text-justify">
             Nota del pasajero
           </p>
         </div>
         <div className="flex flex-row">
-          <p className="font-bold text-justify">
+          <p className="text-justify leading-5">
             ✏️ Algunos días sueltos no haré el viaje, pero los cancelaré con un
             par de días de antelación para dejar el asiento libre a otros
             usuarios de la aplicación.
@@ -38,7 +38,7 @@ export default function AcceptRequest() {
         {/* Details */}
         <div className="py-2 mt-4">
           <hr className="mt-3 mb-3 w-full text-border-color" />
-          <p className="font-lato font-bold text-xl">Detalles del viaje</p>
+          <p className="font-bold text-xl">Detalles del viaje</p>
         </div>
         {/* Map preview */}
         <MapPreview />
@@ -66,8 +66,9 @@ export default function AcceptRequest() {
             onClose={() => setDrawerDecline(false)}
             SlideProps={{
               style: {
-                minWidth: '376px',
-                maxWidth: '376px',
+                minWidth: '320px',
+                maxWidth: '480px',
+                width: '100%',
                 margin: '0 auto',
               },
             }}

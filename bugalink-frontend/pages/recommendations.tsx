@@ -1,31 +1,35 @@
 import TripCard from '../components/cards/recommendation';
+import AnimatedLayout from '../components/layouts/animated';
 
 const trips = [
   {
-    tipo: 'Conductora',
+    tipo: 'driver',
     valoracion: '4.9',
     name: 'María Teresa Romero',
-    avatar: '../../public/assets/avatar.svg',
+    gender: 'F',
+    avatar: '/assets/avatar.png',
     origin: 'Centro comercial Way',
     destination: 'Centro comercial Lagoh',
     date: 'Todos los Martes, 8:00',
     price: '2,00€',
   },
   {
-    tipo: 'Conductor',
+    tipo: 'driver',
     valoracion: '4.6',
     name: 'Francisco Javier Vázquez',
-    avatar: '../../public/assets/avatar.svg',
+    gender: 'M',
+    avatar: '/assets/avatar.png',
     origin: 'Carrefour Dos Hermanas',
     destination: 'Parking CC. Lagoh',
     date: 'Todos los Martes, 8:05',
     price: '2,00€',
   },
   {
-    tipo: 'Conductor',
+    tipo: 'driver',
     valoracion: '4.8',
     name: 'Jesús Marchena',
-    avatar: '../../public/assets/avatar.svg',
+    gender: 'M',
+    avatar: '/assets/avatar.png',
     origin: 'Escuela Técnica Superior de Ingeniería Informática',
     destination: 'Avda. de Andalucía, 35',
     date: 'Todos los Lunes, 21:00',
@@ -64,11 +68,13 @@ export default function TripList({ open, setOpen }: props) {
             type={trip.tipo}
             rating={trip.valoracion}
             name={trip.name}
+            gender={trip.gender}
             avatar={trip.avatar}
             origin={trip.origin}
             destination={trip.destination}
             date={trip.date}
             price={trip.price}
+            className="bg-white rounded-md outline outline-1 outline-light-gray"
           />
         ))}
       </div>

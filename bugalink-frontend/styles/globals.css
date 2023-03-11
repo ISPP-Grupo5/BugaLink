@@ -65,9 +65,9 @@ a {
   user-select: none;
 }
 
-@media (min-width: 415px) {
+@media (min-width: 480px) {
   .mobile-view {
-    width: 23.5rem;
+    width: 480px;
     max-height: screen;
     overflow-y: scroll;
   }
@@ -90,4 +90,13 @@ input[type='time']::-webkit-calendar-picker-indicator {
   appearance: none;
   background: none;
   display: none;
+}
+
+#SwipeableDrawer > .MuiPaper-root {
+  height: calc(70% - 90px);
+  overflow: visible;
+}
+
+.MuiDrawer-root > .MuiPaper-root {
+  background-color: transparent;
 }

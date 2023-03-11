@@ -149,13 +149,17 @@ class PassengerRoutine(models.Model):
     time_diff_before = models.DurationField()
     time_diff_after = models.DurationField()
 
+class RoutineRequest(models.Model):
+    passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
+    driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
+    driver_routine = models.ForeignKey(DriverRoutine, on_delete=models.CASCADE)
+    acceptation_status = models.CharField(max_length=256, choices=AcceptationStatus.choices(), default=AcceptationStatus.Pending_Confirmation)
 
 class CreditCard(models.Model):
     user = models.ForeignKey(Passenger, on_delete=models.CASCADE)
     card = models.CharField(max_length=32)
     CVC = models.CharField(max_length=16)
     expiration_date = models.DateField()
-
 
 class Paypal(models.Model):
     mail = models.CharField(max_length=256)

@@ -41,21 +41,20 @@ class users(APIView):
 class individualLifts(APIView):
     def get_individual_lift(self, request): 
         try:
-            return IndividualLift.objects.get(id_individualLift = request.data['id_individualLift'])
+            return IndividualLift.objects.get(id = request.data['idIndividualLift'])
         except IndividualLift.DoesNotExist:
             raise Http404
         
-    #Es imposible que funcione porque las PK no están implementadas en el models.py
     def get_individual_lifts_driver(self, request): 
         try:
             individualLifts = []
             
-            driver = Driver.objects.get(dni_driver = request.data['dni_driver'])
-            driverRoutines = DriverRoutine.objects.filter(dni_drivers = driver.dni)
+            driver = Driver.objects.get(passenger_id = request.data['id'])
+            driverRoutines = DriverRoutine.objects.filter(driver_id = driver.passenger)
             for driverRoutine in driverRoutines:
-                lifts = list(Lift.objects.filter(id_driver_routine = driverRoutine.id_driver_routine))
+                lifts = list(Lift.objects.filter(driver_routine_id = driverRoutine.id))
                 for lift in lifts:
-                    individualLifts += list(IndividualLift.objects.filter(id_lift = lift.id_individual_lift))
+                    individualLifts += list(IndividualLift.objects.filter(lift_id = lift.id))
             return individualLifts
         except IndividualLift.DoesNotExist:
             raise Http404
@@ -88,7 +87,7 @@ class individualLifts(APIView):
         
     def put_individual_lift(self, request): 
         try:
-            individual_lift = IndividualLift.objects.get(id_individual_lift = request.data['id_individual_lift'])
+            individual_lift = IndividualLift.objects.get(id = request.data['id_individual_lift'])
             acceptation_status = AcceptationStatus.Pending_Confirmation
             match request.data['acceptation_status']:
                 case 'accept':
@@ -106,7 +105,7 @@ class individualLifts(APIView):
     
     def accept_individual_lift(self, request): 
         try:
-            individual_lift = IndividualLift.objects.get(id_individual_lift = request.data['id_individual_lift'])
+            individual_lift = IndividualLift.objects.get(id = request.data['id_individual_lift'])
             individual_lift.acceptation_status = AcceptationStatus.Accepted
             IndividualLift.objects.put(individual_lift)
         except IndividualLift.DoesNotExist:
@@ -114,7 +113,7 @@ class individualLifts(APIView):
         
     def cancel_individual_lift(self, request): 
         try:
-            individual_lift = IndividualLift.objects.get(id_individual_lift = request.data['id_individual_lift'])
+            individual_lift = IndividualLift.objects.get(id = request.data['id_individual_lift'])
             individual_lift.acceptation_status = AcceptationStatus.Cancelled
             IndividualLift.objects.put(individual_lift)
         except IndividualLift.DoesNotExist:

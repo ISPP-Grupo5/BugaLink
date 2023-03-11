@@ -103,13 +103,15 @@ export default function Home() {
             Crear rutina (conductor)
           </Link>
           <Link href="/recommendations">Recomendaciones</Link>
-        <Link href="/users/qyahXxJc/rating/new/problem">Reportar problema</Link>
+          <Link href="/users/qyahXxJc/rating/new/problem">
+            Reportar problema
+          </Link>
           <Link href="/request/V1StGXR8_Z5jdHi6B-myT/accept">
             Aceptar petición
           </Link>
           <Link href="/users/V1StGXR8_Z5jdHi6B-myT/rating/new">
             Valoración Usurario
-           </Link>
+          </Link>
         </div>
       </div>
       <SwipeableDrawer
@@ -130,7 +132,8 @@ export default function Home() {
             maxWidth: '480px',
             width: '100%',
             margin: '0 auto',
-            overflow: 'visible'
+            overflow: 'visible',
+            height: 'calc(70% - 90px)',
           },
         }}
       >

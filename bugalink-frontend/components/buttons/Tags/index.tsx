@@ -11,7 +11,7 @@ export default function TagsButton({
   text,
   selected = false,
   className = '',
-  ratingOptions = false
+  ratingOptions = false,
 }: Params) {
   return (
     <button

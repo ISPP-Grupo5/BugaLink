@@ -1,17 +1,23 @@
 import Link from 'next/link';
-import { BackButton, BackButtonText } from '../../../../../components/buttons/Back';
+import {
+  BackButton,
+  BackButtonText,
+} from '../../../../../components/buttons/Back';
 // import Chat from '/public/assets/chat.svg';
 // import SourcePin from '/public/assets/source-pin.svg';
 // import TargetPin from '/public/assets/map-mark.svg';
 // import CTAButton from '../../../components/buttons/CTA';
 import React, { useState } from 'react';
 import CTAButton from '../../../../../components/buttons/CTA';
+import ReportProblem from '../new/problem';
+import { Drawer } from '@mui/material';
 
 export default function Rating() {
   const [rating, setRating] = useState(0);
   const [button1Selected, setButton1Selected] = useState(false);
   const [button2Selected, setButton2Selected] = useState(false);
   const [button3Selected, setButton3Selected] = useState(false);
+  const [drawerReport, setDrawerReport] = useState(false);
 
   const handleRating = (selectedRating) => {
     setRating(selectedRating);
@@ -49,12 +55,24 @@ export default function Rating() {
             alignItems: 'center',
             marginTop: '20px',
           }}
-          className="flex flex-row items-center justify-between px-5 py-2 pt-20">
+          className="flex flex-row items-center justify-between px-5 py-2 pt-20"
+        >
           <div className="font-bold">
-            <p style={{ fontWeight: '600', fontSize: '28px', lineHeight: '28px' }} className="text-xl font-Lato">¿Cómo ha ido el viaje?</p>
+            <p
+              style={{
+                fontWeight: '600',
+                fontSize: '28px',
+                lineHeight: '28px',
+              }}
+              className="text-xl font-Lato"
+            >
+              ¿Cómo ha ido el viaje?
+            </p>
           </div>
-          <div style={{ marginTop: '70px' }} className="flex flex-row items-center">
-
+          <div
+            style={{ marginTop: '70px' }}
+            className="flex flex-row items-center"
+          >
             <img
               src="/assets/mocks/avatar1.png"
               className="w-18 h-18 rounded-full "
@@ -72,7 +90,16 @@ export default function Rating() {
           className="grid grid-cols-2 px-5 py-2 gap-2"
         >
           <div style={{ marginTop: '-20px' }} className="font-bold">
-            <p style={{ fontWeight: '700', fontSize: '18px', lineHeight: '16px' }} className="text-xl font-Lato">Pablo Delfín López</p>
+            <p
+              style={{
+                fontWeight: '700',
+                fontSize: '18px',
+                lineHeight: '16px',
+              }}
+              className="text-xl font-Lato"
+            >
+              Pablo Delfín López
+            </p>
           </div>
         </div>
 
@@ -116,12 +143,24 @@ export default function Rating() {
               );
             })}
           </div>
-          <h2 style={{ fontWeight: '400', fontSize: '14px', marginBottom: '10px' }}>
+          <h2
+            style={{
+              fontWeight: '400',
+              fontSize: '14px',
+              marginBottom: '10px',
+            }}
+          >
             No te preocupes, las valoraciones son anónimas
           </h2>
 
-          <div style={{ display: 'flex'}}>
-            <div style={{ display: 'flex', flexDirection: 'row', marginTop: '70px' }}>
+          <div style={{ display: 'flex' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                marginTop: '70px',
+              }}
+            >
               <button
                 style={{
                   borderRadius: '50%',
@@ -188,21 +227,52 @@ export default function Rating() {
                   alt="Button 3"
                 />
               </button>
-
             </div>
           </div>
-          <div style={{ display: 'flex', marginTop:'-6px'}}>
-            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px' , textAlign: 'center'}}>
+          <div style={{ display: 'flex', marginTop: '-6px' }}>
+            <h2
+              style={{
+                fontWeight: '420',
+                fontSize: '14px',
+                marginBottom: '10px',
+                textAlign: 'center',
+              }}
+            >
               Buena conducción
             </h2>
-            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }}>
+            <h2
+              style={{
+                fontWeight: '420',
+                fontSize: '14px',
+                marginBottom: '10px',
+                textAlign: 'center',
+              }}
+            >
               Conductor agradable
-            </h2><h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }}>
+            </h2>
+            <h2
+              style={{
+                fontWeight: '420',
+                fontSize: '14px',
+                marginBottom: '10px',
+                textAlign: 'center',
+              }}
+            >
               Ya nos conocíamos
             </h2>
-
           </div>
-          <a href="link" style={{ color: '#DA0000', marginTop: '60px',marginBottom: '-13px', fontSize: '14px' }}>¿Has tenido algún problema? <b style={{ fontSize: '14px' }}>Háznoslo saber</b></a>
+          <a
+            onClick={() => setDrawerReport(true)}
+            style={{
+              color: '#DA0000',
+              marginTop: '60px',
+              marginBottom: '-13px',
+              fontSize: '14px',
+            }}
+          >
+            ¿Has tenido algún problema?{' '}
+            <b style={{ fontSize: '14px' }}>Háznoslo saber</b>
+          </a>
 
           {/* <button
             style={{
@@ -219,9 +289,25 @@ export default function Rating() {
             onClick={handleSubmit}
           >
           </button> */}
-          <CTAButton className="mt-6 w-full" text="ENVIAR"/>
+          <CTAButton className="mt-6 w-full" text="ENVIAR" />
         </div>
       </div>
-    </div >
+      <Drawer
+        anchor="bottom"
+        open={drawerReport}
+        onClose={() => setDrawerReport(false)}
+        SlideProps={{
+          style: {
+            minWidth: '320px',
+            maxWidth: '480px',
+            width: '100%',
+            margin: '0 auto',
+            backgroundColor: 'transparent',
+          },
+        }}
+      >
+        <ReportProblem />
+      </Drawer>
+    </div>
   );
 }

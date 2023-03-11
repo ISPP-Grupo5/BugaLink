@@ -43,12 +43,8 @@ type props = {
 };
 
 export default function TripList({ open, setOpen }: props) {
-  const toggleDrawer = () => {
-    setOpen(!open);
-  };
-
   return (
-    <div className="bg-white">
+    <div className="overflow-scroll">
       <div
         className={`absolute -top-20 rounded-t-xl bg-white w-full visible right-0 left-0`}
         onClick={() => setOpen(true)}

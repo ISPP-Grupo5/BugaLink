@@ -21,6 +21,9 @@ module.exports = {
       'light-green': '#A6DE5F',
       yellow: '#f9c200',
       'border-color': '#DADADA',
+      'gray-select': '#C8C4C4',
+      'gray-text-select': '#666666',
+      'blue-select': '#1871C9',
     },
     extend: {
       fontFamily: {

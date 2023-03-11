@@ -1,5 +1,5 @@
 import { BackButton } from '../../components/buttons/Back';
-import TriangleDown from '../../public/assets/triangle-down.svg'
+import TriangleDown from '../../public/assets/triangle-down.svg';
 import SourcePin from '/public/assets/source-pin.svg';
 import TargetPin from '/public/assets/map-mark.svg';
 import ThreeDots from '/public/assets/three-dots.svg';

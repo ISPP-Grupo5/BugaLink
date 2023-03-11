@@ -34,7 +34,7 @@ export default function TextAreaField({
         data-te-input-wrapper-init
       >
         <textarea
-          className={`peer block text-lg min-h-[auto] bg-transparent rounded-lg border-none outline outline-1 py-3 px-4 transition-all duration-200 ease-linear outline-light-gray focus:outline-turquoise motion-reduce:transition-none ${inputClassName}`}
+          className={`peer block text-lg min-h-[auto] bg-transparent rounded-sm border-none outline outline-1 py-3 px-4 transition-all duration-200 ease-linear outline-gray-select focus:outline-blue-select focus:outline-2 hover:outline-black cursor-pointer motion-reduce:transition-none ${inputClassName}`}
           onChange={onChangeTextarea}
           value={content}
           id={fieldName}
@@ -44,7 +44,7 @@ export default function TextAreaField({
         <label
           onSelectCapture={(e) => e.preventDefault()} // Prevents context menu from opening when selecting text
           htmlFor={fieldName}
-          className={`pointer-events-none absolute top-0 left-3 mb-0 max-w-[90%] origin-[0_0] truncate pt-3 px-1.5 text-light-gray bg-transparent transition-all duration-200 ease-out peer-focus:-translate-y-5 peer-focus:scale-75 peer-focus:bg-white peer-focus:text-turquoise ${
+          className={`pointer-events-none absolute top-0 left-3 mb-0 max-w-[90%] origin-[0_0] truncate pt-3 px-1.5 text-gray-text-select bg-transparent transition-all duration-200 ease-out peer-focus:-translate-y-5 peer-focus:scale-75 peer-focus:bg-white peer-focus:text-blue-select ${
             content === '' ? '' : '-translate-y-5 scale-75 bg-white'
           }  motion-reduce:transition-none`}
         >

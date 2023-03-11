@@ -86,18 +86,6 @@ export default function Home() {
             <DriverCard />
           </div>
         </div>
-        <div className="flex flex-col">
-          <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne?requested=false">
-            Detalles viaje (1)
-          </Link>
-          <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/map">
-            Detalles viaje (Mapa)
-          </Link>
-          <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsTwo">
-            Detalles viaje (2)
-          </Link>
-          <Link href="/recommendations">Recomendaciones</Link>
-        </div>
       </div>
       <SwipeableDrawer
         anchor="bottom"

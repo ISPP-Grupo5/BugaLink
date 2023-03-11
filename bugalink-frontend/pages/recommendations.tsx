@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import TripCard from '../components/cards/recommendation';
 import AnimatedLayout from '../components/layouts/animated';
 
@@ -63,19 +64,21 @@ export default function TripList({ open, setOpen }: props) {
       </div>
       <div className="trip-list grid justify-items-center mt-6 h-full overflow-auto">
         {trips.map((trip) => (
-          <TripCard
-            key={trip.name}
-            type={trip.tipo}
-            rating={trip.valoracion}
-            name={trip.name}
-            gender={trip.gender}
-            avatar={trip.avatar}
-            origin={trip.origin}
-            destination={trip.destination}
-            date={trip.date}
-            price={trip.price}
-            className="bg-white rounded-md outline outline-1 outline-light-gray"
-          />
+          <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne?requested=false">
+            <TripCard
+              key={trip.name}
+              type={trip.tipo}
+              rating={trip.valoracion}
+              name={trip.name}
+              gender={trip.gender}
+              avatar={trip.avatar}
+              origin={trip.origin}
+              destination={trip.destination}
+              date={trip.date}
+              price={trip.price}
+              className="bg-white rounded-md outline outline-1 outline-light-gray"
+            />
+          </Link>
         ))}
       </div>
     </div>

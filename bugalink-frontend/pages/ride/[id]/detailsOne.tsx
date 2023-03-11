@@ -6,6 +6,7 @@ import MapPreview from '../../../components/MapPreview';
 import ProfileHeader from '../../../components/ProfileHeader';
 import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
+import Link from 'next/link';
 
 export default function DetailsOne() {
    const router = useRouter();
@@ -89,7 +90,9 @@ export default function DetailsOne() {
           </div>
           {requested === 'false' && (
             <div className="flex justify-center">
-              <CTAButton className="my-4 w-11/12" text="CONTINUAR" />
+              <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsTwo" className='w-11/12'>
+                <CTAButton className="my-4 w-11/12" text="CONTINUAR" />
+              </Link>
             </div>
           )}
         </div>

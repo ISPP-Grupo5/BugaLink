@@ -26,7 +26,7 @@ jobs:
       with:
         node-version: '14.x'
     - run: cd bugalink-frontend
-    - run: npm i
+    - run: npm ci
     - run: npm run build
     - run: cd ..
 

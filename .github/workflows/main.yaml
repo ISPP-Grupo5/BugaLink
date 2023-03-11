@@ -25,10 +25,10 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '14.x'
-    - run: cd bugalink-frontend
-    - run: npm ci
-    - run: npm run build
-    - run: cd ..
+    - run: |
+        cd bugalink-frontend
+        npm ci
+        npm run build 
 
     - name: Deploy to App Engine
       id: deploy

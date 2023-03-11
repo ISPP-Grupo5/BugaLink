@@ -1,7 +1,9 @@
 import Head from 'next/head';
 import { AppProps } from 'next/app';
 import '../styles/globals.css';
+import MobileLayout from '../components/layouts/mobile';
 import { AnimatePresence } from 'framer-motion';
+import AnimatedLayout from '../components/layouts/animated';
 
 export default function MyApp({ Component, pageProps, router }: AppProps) {
   return (
@@ -51,9 +53,14 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
         <meta property="og:site_name" content="BugaLink" />
         <meta property="og:locale" content="es_ES" />
       </Head>
+      {/* Base layout for new pages */}
       <AnimatePresence mode="wait" initial={false}>
-        {/* Base layout for new pages */}
-        <Component {...pageProps} key={router.asPath} />
+        <MobileLayout key={router.asPath}>
+          <AnimatedLayout>
+            {/* TODO: AnimatedLayout won't work unless it's re-rendered every time a new page is mounted */}
+            <Component {...pageProps} />
+          </AnimatedLayout>
+        </MobileLayout>
       </AnimatePresence>
     </>
   );

@@ -107,6 +107,9 @@ export default function Home() {
           <Link href="/request/V1StGXR8_Z5jdHi6B-myT/accept">
             Aceptar petición
           </Link>
+          <Link href="/users/V1StGXR8_Z5jdHi6B-myT/rating/new">
+            Valoración Usurario
+           </Link>
         </div>
       </div>
       <SwipeableDrawer

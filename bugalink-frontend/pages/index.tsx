@@ -17,7 +17,7 @@ export default function Home() {
 
   return (
     <AnimatedLayout className="overflow-y-scroll max-h-full">
-      <div className="flex flex-col">
+      <div className="flex flex-col pb-20">
         <span className="flex items-center px-7 my-10 space-x-4">
           <form className="flex py-3 px-4 w-full bg-white rounded-full items-center">
             <Destino className="w-5 h-5 stroke-light-turquoise fill-light-turquoise flex-none scale-125 translate-y-0.5" />
@@ -126,6 +126,7 @@ export default function Home() {
             maxWidth: '480px',
             width: '100%',
             margin: '0 auto',
+            overflow: 'visible',
           },
         }}
       >

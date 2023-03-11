@@ -1,0 +1,153 @@
+[
+  {
+    "Users": [
+      {
+        "Username": "Federico",
+        "Password": "F3d3r1c0",
+        "First_name": "Federico",
+        "Last_name": "de los Palotes",
+        "Email": "federico@bugalink.com",
+        "Date_joined": "01/01/2023 18:00"
+      }
+    ],
+    "Passengers": [
+      {
+        "User": "Federico",
+        "City": "Utrera",
+        "Province": "Sevilla",
+        "Biography": "Soy un chico muy social que estudia Biología!",
+        "Birth_date": "31/12/2022",
+        "Balance": "25.92",
+        "Photo": null,
+        "Verified": true
+      }
+    ],
+    "Drivers": [
+      {
+        "Passenger": 1,
+        "Preferences": "No me gusta transportar animales en mi coche",
+        "Biography": "Llevo conduciendo desde los 14 años y no he tenido ningún accidente",
+        "has_driver_license": true,
+        "has_sworn_declaration": true,
+        "sworn_declaration": null,
+        "driver_license": null,
+        "dni_front": null,
+        "dni_back": null
+      }
+    ],
+    "Vehicle": [
+      {
+        "driver": 1,
+        "model": "Toyota Supra mk4",
+        "plate": "1234 FTC",
+        "comment": "El vehículo dispone de wifi gratis",
+        "insurance": null
+      }
+    ],
+    "DriverRoutine": [
+      {
+        "driver": 1,
+        "default_vehicle": 1,
+        "vehicle": 1,
+        "default_num_seats": 3,
+        "start_time": "8:00",
+        "end_date": "9:00",
+        "start_location": "97.05,98.04",
+        "end_location": "97.05,98.04",
+        "frequency": "Diaria",
+        "one_lift": false
+      }
+    ],
+    "Ride": [
+      {
+        "driver_routine": 1,
+        "vehicle": 1,
+        "default_num_seats": 3,
+        "status": "Pending_start",
+        "start_date": "09/03/2023 8:00",
+        "end_date": "09/03/2023 9:00",
+        "start_location": "97.05,98.04",
+        "end_location": "97.05,98.04"
+      }
+    ],
+    "IndiviualRide": [
+      {
+        "ride": 1,
+        "passenger": 1,
+        "start_date": "09/03/2023 8:00",
+        "end_date": "09/03/2023 9:00",
+        "start_location": "97.05,98.04",
+        "end_location": "97.05,98.04",
+        "price": 3.0,
+        "lift_status": "Pending_start",
+        "acceptation_status": "Accepted"
+      }
+    ],
+    "PassengerRoutine": [
+      {
+        "passenger": 1,
+        "start_date": "8:00",
+        "end_date": "9:00",
+        "start_location": "97.05,98.04",
+        "end_location": "97.05,98.04",
+        "frequency": "Diaria",
+        "time_diff_before": "30 min",
+        "time_diff_after": "30 min"
+      }
+    ],
+    "CreditCard": [
+      {
+        "user": 1,
+        "card": "1234 5678 9012 3456",
+        "cvc": "569",
+        "expiration_date": " 01/12/2025"
+      }
+    ],
+    "Paypal": [
+      {
+        "user": 1,
+        "mail": "federico@gmail.com",
+        "password": "f3d3r1c0"
+      }
+    ],
+    "FavDirection": [
+      {
+        "user": 1,
+        "name": "Casa",
+        "direction": "Calle Real 26",
+        "city": "Utrera",
+        "location": null,
+        "cp": "41560"
+      }
+    ],
+    "DiscountCode": [
+      {
+        "code": "123456789",
+        "discount_perc": 0.1,
+        "start_date": "01/01/2023",
+        "end_date": "31/12/2023",
+        "active": false
+      }
+    ],
+    "IndividualDiscountCode": [
+      {
+        "code": "987654321",
+        "discount_perc": 0.1,
+        "start_date": "01/01/2023",
+        "end_date": "31/12/2023",
+        "disable": false,
+        "initial_lifts": 100,
+        "left_lifts": 100
+      }
+    ],
+    "PassengerDiscountCode": [
+      {
+        "discount": 1,
+        "passenger": 1,
+        "activation_date": "20/04/2023",
+        "lifts_left": 5,
+        "active": false
+      }
+    ]
+  }
+]

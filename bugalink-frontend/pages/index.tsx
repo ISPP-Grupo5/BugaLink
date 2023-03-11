@@ -1,14 +1,19 @@
+import { SwipeableDrawer } from '@mui/material';
 import Link from 'next/link';
+import { useState } from 'react';
 import DriverCard from '../components/cards/driver';
 import PassengerCard from '../components/cards/passenger';
+import AnimatedLayout from '../components/layouts/animated';
+import TripList from './recommendations';
 import Calendar from '/public/icons/Vista-Principal/calendar.svg';
 import Chat from '/public/icons/Vista-Principal/chat.svg';
 import House from '/public/icons/Vista-Principal/house.svg';
 
 export default function Home() {
+  const [open, setOpen] = useState(false);
+
   return (
-    // TODO: use AnimatedLayout everywhere via _app.tsx
-    <div className="h-full w-full bg-baseOrigin">
+    <AnimatedLayout className="overflow-y-scroll max-h-full">
       <div className="flex flex-col">
         <span className="relative grid grid-cols-2 mt-0.5">
           <div className="text-center text-ellipsis mt-12">
@@ -110,6 +115,28 @@ export default function Home() {
           Aceptar petición
         </Link>
       </div>
-    </div>
+      <SwipeableDrawer
+        anchor="bottom"
+        open={open}
+        onClose={() => setOpen(false)}
+        onOpen={() => setOpen(true)}
+        swipeAreaWidth={80}
+        disableSwipeToOpen={false}
+        ModalProps={{
+          keepMounted: true,
+        }}
+        id="SwipeableDrawer"
+        allowSwipeInChildren={true}
+        SlideProps={{
+          style: {
+            minWidth: '376px',
+            maxWidth: '376px',
+            margin: '0 auto',
+          },
+        }}
+      >
+        <TripList open={open} setOpen={setOpen} />
+      </SwipeableDrawer>
+    </AnimatedLayout>
   );
 }

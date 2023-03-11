@@ -89,3 +89,12 @@ input[type='time']::-webkit-calendar-picker-indicator {
   background: none;
   display: none;
 }
+
+#SwipeableDrawer > .MuiPaper-root {
+  height: calc(70% - 90px);
+  overflow: visible;
+}
+
+.MuiDrawer-root > .MuiPaper-root {
+  background-color: transparent;
+}

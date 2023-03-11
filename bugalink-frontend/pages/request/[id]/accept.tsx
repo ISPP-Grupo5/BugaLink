@@ -64,22 +64,36 @@ export default function AcceptRequest() {
             anchor="bottom"
             open={drawerDecline}
             onClose={() => setDrawerDecline(false)}
+            SlideProps={{
+              style: {
+                minWidth: '376px',
+                maxWidth: '376px',
+                margin: '0 auto',
+              },
+            }}
           >
-            <div className="flex m-5">
-              <p className="font-lato font-bold text-xl">Motivo del rechazo</p>
-            </div>
-            <div className="flex flex-col mx-5 mb-2">
-              <TextAreaField
-                fieldName="Resume brevemente el motivo"
-                content={reason}
-                setContent={setReason}
-                inputClassName="w-full items-center"
-                maxLength={1000}
-                rows={5}
-              />
-            </div>
-            <div className="flex flex-col items-center mb-5">
-              <CTAButton className="w-11/12 bg-red-button" text={'RECHAZAR'} />
+            <div className="rounded-t-lg bg-white overflow-visible">
+              <div className="flex m-5">
+                <p className="font-lato font-bold text-xl">
+                  Motivo del rechazo
+                </p>
+              </div>
+              <div className="flex flex-col mx-5 mb-2">
+                <TextAreaField
+                  fieldName="Resume brevemente el motivo"
+                  content={reason}
+                  setContent={setReason}
+                  inputClassName="w-full items-center"
+                  maxLength={1000}
+                  rows={5}
+                />
+              </div>
+              <div className="flex flex-col items-center mb-5">
+                <CTAButton
+                  className="w-11/12 bg-red-button"
+                  text={'RECHAZAR'}
+                />
+              </div>
             </div>
           </Drawer>
         </div>

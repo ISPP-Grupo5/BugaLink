@@ -12,7 +12,7 @@ const trips = [
     origin: 'Centro comercial Way',
     destination: 'Centro comercial Lagoh',
     date: 'Todos los Martes, 8:00',
-    price: '2,00€',
+    price: 2,
   },
   {
     tipo: 'driver',
@@ -23,7 +23,7 @@ const trips = [
     origin: 'Carrefour Dos Hermanas',
     destination: 'Parking CC. Lagoh',
     date: 'Todos los Martes, 8:05',
-    price: '2,00€',
+    price: 2,
   },
   {
     tipo: 'driver',
@@ -34,7 +34,7 @@ const trips = [
     origin: 'Escuela Técnica Superior de Ingeniería Informática',
     destination: 'Avda. de Andalucía, 35',
     date: 'Todos los Lunes, 21:00',
-    price: '1,50€',
+    price: 1,
   },
 ];
 

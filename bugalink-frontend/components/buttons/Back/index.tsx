@@ -1,11 +1,15 @@
 import { useRouter } from 'next/router';
 
-export function BackButton() {
+type BackButtonProps = {
+  className?: string;
+};
+
+export function BackButton({ className = '' }: BackButtonProps) {
   const router = useRouter();
   return (
     <button
       onClick={() => router.back()}
-      className="absolute top-2 left-2 pl-3 pr-2 py-3 rounded-full shadow-xl bg-baseOrigin z-50"
+      className={'pl-3 rounded-full z-50 ' + className}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -25,12 +29,12 @@ export function BackButton() {
   );
 }
 
-type Params = {
+type BackButtonTextProps = {
   text: string;
   className?: string;
 };
 
-export function BackButtonText({ text, className = '' }: Params) {
+export function BackButtonText({ text, className = '' }: BackButtonTextProps) {
   const router = useRouter();
   return (
     <div

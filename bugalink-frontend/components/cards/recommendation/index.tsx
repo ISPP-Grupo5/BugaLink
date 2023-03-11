@@ -13,7 +13,7 @@ export default function TripCard({
   origin,
   destination,
   date,
-  price,
+  price = 0,
   className = '',
 }) {
   const isDriver = type === 'driver';

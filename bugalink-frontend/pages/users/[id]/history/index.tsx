@@ -28,7 +28,7 @@ export default function History() {
           gender={'F'}
           origin={'Nervion Plaza'}
           destination={'Los Bermejales'}
-          price={'2,50€'}
+          price={2.5}
           name={'María Teresa Romero'}
           date={'Lunes 13 de Febrero, 8:45'}
           className="bg-white"
@@ -40,7 +40,7 @@ export default function History() {
           gender={'M'}
           origin={'Prado de San Sebastián'}
           destination={'Dos Hermanas'}
-          price={'4,50€'}
+          price={4.5}
           name={'José Perez Rodríguez'}
           date={'Domingo 12 de Febrero, 14:30'}
           className="bg-white"
@@ -52,7 +52,7 @@ export default function History() {
           gender={'M'}
           origin={'Plaza de los Ángeles'}
           destination={'El porvenir'}
-          price={'7,50€'}
+          price={7.5}
           name={'Paco Sánchez'}
           date={'Viernes 10 de Febrero, 8:45'}
           className="bg-white"
@@ -64,7 +64,7 @@ export default function History() {
           gender={'F'}
           origin={'El porvenir'}
           destination={'Nervion Plaza'}
-          price={'1,50€'}
+          price={1.5}
           name={'Josefina Mayo'}
           date={'Jueves 9 de Febrero, 15:59'}
           className="bg-white"
@@ -76,7 +76,7 @@ export default function History() {
           gender={'F'}
           origin={'Triana'}
           destination={'Plaza de Armas'}
-          price={'2,50€'}
+          price={2.5}
           name={'Laurencia Abril'}
           date={'Miércoles 8 de Febrero, 17:00'}
           className="bg-white"
@@ -88,7 +88,7 @@ export default function History() {
           gender={'M'}
           origin={'El Porvenir'}
           destination={'El Prado de San Sebastián'}
-          price={'1,50€'}
+          price={1.5}
           name={'Juanmi Martínez'}
           date={'Lunes 6 de Febrero, 15:00'}
           className="bg-white"

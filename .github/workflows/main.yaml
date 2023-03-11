@@ -23,8 +23,6 @@ jobs:
 
     - name: Use Node.js
       uses: actions/setup-node@v3
-      with:
-        node-version: '14.x'
     - run: |
         cd bugalink-frontend
         npm i

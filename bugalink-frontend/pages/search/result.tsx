@@ -221,13 +221,13 @@ export default function SearchResults() {
         open={drawerPrice}
         onClose={() => setDrawerPrice(false)}
       >
-        <div className="ml-6 mt-2">
+        <div className="ml-6 mt-2 mr-5">
           <p className="font-lato font-bold text-xl">Precio</p>
           <p className="text-xs">Define tu presupuesto por trayecto</p>
           <p className="font-lato mt-4 font-bold">
             {values[0]}€ - {values[1]}€{' '}
           </p>
-          <div className="mt-2 flex items-center justify-center space-x-2 text-xl mr-5">
+          <div className="mt-2 flex items-center justify-center space-x-2 text-xl">
             <Slider
               getAriaLabel={() => 'Price range range'}
               value={values}
@@ -253,10 +253,10 @@ export default function SearchResults() {
         open={drawerRating}
         onClose={() => setDrawerRating(false)}
       >
-        <div className="ml-6 mt-2">
+        <div className="ml-6 mt-2 mr-5">
           <p className="font-lato font-bold text-xl">Valoraciones</p>
           <p className="text-xs">En base a la opinión de otros usuarios</p>
-          <span className="mt-4 grid grid-cols-2 items-center justify-center gap-y-3 gap-x-3 text-xl mr-5">
+          <span className="mt-4 grid grid-cols-2 items-center justify-center gap-y-3 gap-x-3 text-xl">
             <TagsButton text="Más de 4 ⭐️" selected />
             <TagsButton text="Más de 3 ⭐️" />
             <TagsButton text="Más de 2 ⭐️" />

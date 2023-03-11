@@ -36,6 +36,7 @@ class users(APIView):
             return IndividualLift.objects.filter(user = User.objects.get(idUser=request.data['idUser']), status = 'F')
         except User.DoesNotExist:
             raise Http404
+        
 
 class individualLifts(APIView):
     def get_individual_lift(self, request): 
@@ -55,6 +56,32 @@ class individualLifts(APIView):
                 lifts = list(Lift.objects.filter(id_driver_routine = driverRoutine.id_driver_routine))
                 for lift in lifts:
                     individualLifts += list(IndividualLift.objects.filter(id_lift = lift.id_individual_lift))
+            return individualLifts
+        except IndividualLift.DoesNotExist:
+            raise Http404
+        
+    def get_individual_lifts_filter(self, request): 
+        try:
+            individualLifts = []
+            
+            date = request.data['date']
+            low_price = request.data['low_price']
+            high_price = request.data['high_price']
+            rating = request.data['rating']
+        
+            lifts = list(Lift.objects.all())
+            for lift in lifts:
+                driver = lift.driver_routine.driver
+                
+                date_filter = date == lift.start_date.date
+                rating_filter = rating <= Rating.get_driver_rating(driver)
+                
+                if (date_filter and rating_filter):
+                    filteredIndividualLifts = list(IndividualLift.objects.filter(lift = lift))
+                    for individualLift in filteredIndividualLifts:
+                        if low_price <= individualLift.price <= high_price:
+                            individualLifts.push(individualLift)
+                            
             return individualLifts
         except IndividualLift.DoesNotExist:
             raise Http404

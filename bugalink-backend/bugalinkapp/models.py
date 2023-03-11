@@ -81,6 +81,14 @@ class Rating(models.Model):
     passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
     value = models.FloatField(default=1, validators=[MinValueValidator(1.0), MaxValueValidator(5.0)])
     comment = models.CharField(max_length=1024)
+    
+    def get_driver_rating(driver):
+        ratings = list(Rating.objects.filter(driver = driver))
+        rating_sum = 0
+        for rating in ratings:
+            rating_sum += rating.value
+        return rating_sum/len(ratings)
+        
 
 
 class Vehicle(models.Model):

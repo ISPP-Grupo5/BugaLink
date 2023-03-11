@@ -6,7 +6,7 @@ from enum import Enum
 
 
 # Create your models here.
-class LiftStatus(Enum):
+class RideStatus(Enum):
     Pending_start = 'Pending start'
     Ongoing = 'Ongoing'
     Finished = 'Finished'
@@ -76,10 +76,18 @@ class Driver(models.Model):
     dni_back = models.FileField()
 
 
-class Rating(models.Model):
+class DriverRating(models.Model):
     driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
     passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
-    value = models.FloatField(default=1, validators=[MinValueValidator(1.0), MaxValueValidator(5.0)])
+    IndividualRide = models.ForeignKey('IndividualRide', on_delete=models.CASCADE) # Validar que sólo se pueda hacer una vez por viaje
+    rating = models.FloatField(default=1, validators=[MinValueValidator(1.0), MaxValueValidator(5.0)])
+    comment = models.CharField(max_length=1024)
+
+class PassengerRating(models.Model):
+    driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
+    passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
+    IndividualRide = models.ForeignKey('IndividualRide', on_delete=models.CASCADE) # Validar que sólo se pueda hacer una vez por viaje
+    rating = models.FloatField(default=1, validators=[MinValueValidator(1.0), MaxValueValidator(5.0)])
     comment = models.CharField(max_length=1024)
 
 
@@ -107,29 +115,29 @@ class DriverRoutine(models.Model):
     start_location = Coord(null=True)
     end_location = Coord(null=True)
     frecuency = models.CharField(max_length=256)
-    one_lift = models.BooleanField(default=False)
+    one_Ride = models.BooleanField(default=False)
 
 
-class Lift(models.Model):
+class Ride(models.Model):
     driver_routine = models.ForeignKey(DriverRoutine, on_delete=models.CASCADE)
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
     default_num_seats = models.IntegerField()  # Relacionarlo con default_num_seats
-    status = models.CharField(max_length=256, choices=LiftStatus.choices(), default=LiftStatus.Pending_start)
+    status = models.CharField(max_length=256, choices=RideStatus.choices(), default=RideStatus.Pending_start)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     start_location = Coord(null=True)
     end_location = Coord(null=True)
 
 
-class IndividualLift(models.Model):
-    lift = models.ForeignKey(Lift, on_delete=models.CASCADE)
+class IndividualRide(models.Model):
+    Ride = models.ForeignKey(Ride, on_delete=models.CASCADE)
     passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     start_location = Coord(null=True)
     end_location = Coord(null=True)
     price = models.DecimalField(max_digits=8, decimal_places=2)
-    lift_status = models.CharField(max_length=256, choices=LiftStatus.choices(), default=LiftStatus.Pending_start)
+    Ride_status = models.CharField(max_length=256, choices=RideStatus.choices(), default=RideStatus.Pending_start)
     acceptation_status = models.CharField(max_length=256, choices=AcceptationStatus.choices(), default=AcceptationStatus.Pending_Confirmation)
 
 
@@ -169,7 +177,7 @@ class FavDirection(models.Model):
 class DiscountCode(models.Model):
     code = models.CharField(max_length=256, unique=True)
     discount_perc = models.FloatField()
-    lifts = models.IntegerField()
+    Rides = models.IntegerField()
     start_date = models.DateField()
     end_date = models.DateField()
     active = models.BooleanField()
@@ -181,13 +189,13 @@ class IndividualDiscountCode(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     disabled = models.BooleanField(default=False)
-    initial_lifts = models.IntegerField()
-    lifts_left = models.IntegerField()
+    initial_Rides = models.IntegerField()
+    Rides_left = models.IntegerField()
 
 
 class PassengerDiscountCode(models.Model):
     discount = models.ForeignKey(DiscountCode, on_delete=models.CASCADE)
     passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
     activation_date = models.DateField()
-    lifts_left = models.IntegerField()
+    Rides_left = models.IntegerField()
     active = models.BooleanField(default=True)

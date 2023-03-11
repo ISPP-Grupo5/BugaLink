@@ -1,4 +1,5 @@
 import { BackButton } from '../../components/buttons/Back';
+import TriangleDown from '../../public/assets/triangle-down.svg'
 import SourcePin from '/public/assets/source-pin.svg';
 import TargetPin from '/public/assets/map-mark.svg';
 import ThreeDots from '/public/assets/three-dots.svg';
@@ -137,17 +138,17 @@ export default function SearchResults() {
             (filter) =>
               (filter.name === 'Precio' && (
                 <div onClick={() => setDrawerPrice(true)}>
-                  <TagsButton text={filter.selectedValue + '⏷'} selected />
+                  <TagsButton text={filter.selectedValue} selected />
                 </div>
               )) ||
               (filter.name === 'Hora' && (
                 <div onClick={() => setDrawerHour(true)}>
-                  <TagsButton text={filter.selectedValue + '⏷'} selected />
+                  <TagsButton text={filter.selectedValue} selected />
                 </div>
               )) ||
               (filter.name === 'Valoración' && (
                 <div onClick={() => setDrawerRating(true)}>
-                  <TagsButton text={filter.selectedValue + '⏷'} selected />
+                  <TagsButton text={filter.selectedValue} selected />
                 </div>
               ))
           )}
@@ -156,17 +157,17 @@ export default function SearchResults() {
             (filter) =>
               (filter.name === 'Precio' && (
                 <div onClick={() => setDrawerPrice(true)}>
-                  <TagsButton text={filter.name + '⏷'} />
+                  <TagsButton text={filter.name} />
                 </div>
               )) ||
               (filter.name === 'Hora' && (
                 <div onClick={() => setDrawerHour(true)}>
-                  <TagsButton text={filter.name + '⏷'} />
+                  <TagsButton text={filter.name} />
                 </div>
               )) ||
               (filter.name === 'Valoración' && (
                 <div onClick={() => setDrawerRating(true)}>
-                  <TagsButton text={filter.name + '⏷'} />
+                  <TagsButton text={filter.name} />
                 </div>
               ))
           )}
@@ -198,19 +199,29 @@ export default function SearchResults() {
         anchor="bottom"
         open={drawerHour}
         onClose={() => setDrawerHour(false)}
-        style={{ borderTopLeftRadius: '20px', borderTopRightRadius: '20px' }}
+        SlideProps={{
+          style: {
+            minWidth: '320px',
+            maxWidth: '480px',
+            width: '100%',
+            margin: '0 auto',
+            backgroundColor: 'transparent',
+          },
+        }}
       >
-        <div className="ml-6 mt-2">
-          <p className="font-lato font-bold text-xl">Hora de salida</p>
-          <p className="text-xs">Define el rango de hora de salida</p>
-          <span className="mt-4 flex items-center justify-center space-x-2 text-xl font-bold">
-            <TimePicker time={pickTimeFrom} setTime={setPickTimeFrom} />
-            <p> - </p>
-            <TimePicker time={pickTimeTo} setTime={setPickTimeTo} />
-          </span>
-        </div>
-        <div className="flex flex-col items-center my-5">
-          <CTAButton className="w-11/12" text={'FILTRAR'} />
+        <div className="bg-white rounded-t-lg">
+          <div className="ml-6 mt-2">
+            <p className="font-lato font-bold text-xl">Hora de salida</p>
+            <p className="text-xs">Define el rango de hora de salida</p>
+            <span className="mt-4 flex items-center justify-center space-x-2 text-xl font-bold">
+              <TimePicker time={pickTimeFrom} setTime={setPickTimeFrom} />
+              <p> - </p>
+              <TimePicker time={pickTimeTo} setTime={setPickTimeTo} />
+            </span>
+          </div>
+          <div className="flex flex-col items-center my-5">
+            <CTAButton className="w-11/12" text={'FILTRAR'} />
+          </div>
         </div>
       </Drawer>
 
@@ -219,31 +230,42 @@ export default function SearchResults() {
         anchor="bottom"
         open={drawerPrice}
         onClose={() => setDrawerPrice(false)}
+        SlideProps={{
+          style: {
+            minWidth: '320px',
+            maxWidth: '480px',
+            width: '100%',
+            margin: '0 auto',
+            backgroundColor: 'transparent',
+          },
+        }}
       >
-        <div className="ml-6 mt-2 mr-5">
-          <p className="font-lato font-bold text-xl">Precio</p>
-          <p className="text-xs">Define tu presupuesto por trayecto</p>
-          <p className="font-lato mt-4 font-bold">
-            {values[0]}€ - {values[1]}€{' '}
-          </p>
-          <div className="mt-2 flex items-center justify-center space-x-2 text-xl">
-            <Slider
-              getAriaLabel={() => 'Price range range'}
-              value={values}
-              onChange={handleChange}
-              valueLabelDisplay="auto"
-              getAriaValueText={valuetext}
-              min={0}
-              max={15}
-              sx={{
-                width: 300,
-                color: '#38a3a5',
-              }}
-            />
+        <div className="bg-white rounded-t-lg">
+          <div className="ml-6 mt-2 mr-5">
+            <p className="font-lato font-bold text-xl">Precio</p>
+            <p className="text-xs">Define tu presupuesto por trayecto</p>
+            <p className="font-lato mt-4 font-bold">
+              {values[0]}€ - {values[1]}€{' '}
+            </p>
+            <div className="mt-2 flex items-center justify-center space-x-2 text-xl">
+              <Slider
+                getAriaLabel={() => 'Price range range'}
+                value={values}
+                onChange={handleChange}
+                valueLabelDisplay="auto"
+                getAriaValueText={valuetext}
+                min={0}
+                max={15}
+                sx={{
+                  width: 300,
+                  color: '#38a3a5',
+                }}
+              />
+            </div>
           </div>
-        </div>
-        <div className="flex flex-col items-center my-5">
-          <CTAButton className="w-11/12" text={'FILTRAR'} />
+          <div className="flex flex-col items-center my-5">
+            <CTAButton className="w-11/12" text={'FILTRAR'} />
+          </div>
         </div>
       </Drawer>
 
@@ -251,19 +273,30 @@ export default function SearchResults() {
         anchor="bottom"
         open={drawerRating}
         onClose={() => setDrawerRating(false)}
+        SlideProps={{
+          style: {
+            minWidth: '320px',
+            maxWidth: '480px',
+            width: '100%',
+            margin: '0 auto',
+            backgroundColor: 'transparent',
+          },
+        }}
       >
-        <div className="ml-6 mt-2 mr-5">
-          <p className="font-lato font-bold text-xl">Valoraciones</p>
-          <p className="text-xs">En base a la opinión de otros usuarios</p>
-          <span className="mt-4 grid grid-cols-2 items-center justify-center gap-y-3 gap-x-3 text-xl">
-            <TagsButton text="Más de 4 ⭐️" selected />
-            <TagsButton text="Más de 3 ⭐️" />
-            <TagsButton text="Más de 2 ⭐️" />
-            <TagsButton text="Más de 1 ⭐️" />
-          </span>
-        </div>
-        <div className="flex flex-col items-center my-5">
-          <CTAButton className="w-11/12" text={'FILTRAR'} />
+        <div className="bg-white rounded-t-lg">
+          <div className="ml-6 mt-2 mr-5">
+            <p className="font-lato font-bold text-xl">Valoraciones</p>
+            <p className="text-xs">En base a la opinión de otros usuarios</p>
+            <span className="mt-4 grid grid-cols-2 items-center justify-center gap-y-3 gap-x-3 text-xl">
+              <TagsButton text="Más de 4 ⭐️" selected ratingOptions={true} />
+              <TagsButton text="Más de 3 ⭐️" ratingOptions={true} />
+              <TagsButton text="Más de 2 ⭐️" ratingOptions={true} />
+              <TagsButton text="Más de 1 ⭐️" ratingOptions={true} />
+            </span>
+          </div>
+          <div className="flex flex-col items-center my-5">
+            <CTAButton className="w-11/12" text={'FILTRAR'} />
+          </div>
         </div>
       </Drawer>
     </AnimatedLayout>

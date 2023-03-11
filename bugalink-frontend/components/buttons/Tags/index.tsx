@@ -1,13 +1,17 @@
+import TriangleDown from '../../../public/assets/triangle-down.svg';
+
 type Params = {
   text: string;
   selected?: boolean;
   className?: string;
+  ratingOptions?: boolean;
 };
 
 export default function TagsButton({
   text,
   selected = false,
   className = '',
+  ratingOptions = false
 }: Params) {
   return (
     <button
@@ -18,7 +22,10 @@ export default function TagsButton({
       }
       ${className}`}
     >
-      {text}
+      <div className="flex items-center justify-center">
+        {text}
+        {!ratingOptions && <TriangleDown className="w-2 h-2 ml-1" />}
+      </div>
     </button>
   );
 }

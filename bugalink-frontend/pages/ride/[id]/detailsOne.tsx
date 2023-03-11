@@ -90,7 +90,7 @@ export default function DetailsOne() {
           </div>
           {requested === 'false' && (
             <div className="flex justify-center">
-              <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsTwo" className='w-11/12'>
+              <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsTwo" className='w-11/12 flex justify-center'>
                 <CTAButton className="my-4 w-11/12" text="CONTINUAR" />
               </Link>
             </div>

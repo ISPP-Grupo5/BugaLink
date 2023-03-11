@@ -44,12 +44,9 @@ type props = {
 };
 
 export default function TripList({ open, setOpen }: props) {
-  const toggleDrawer = () => {
-    setOpen(!open);
-  };
 
   return (
-    <div className="bg-white">
+    <div className="overflow-scroll">
       <div
         className={`absolute -top-20 rounded-t-xl bg-white w-full visible right-0 left-0`}
         onClick={() => setOpen(true)}
@@ -64,7 +61,7 @@ export default function TripList({ open, setOpen }: props) {
       </div>
       <div className="trip-list grid justify-items-center mt-6 h-full overflow-auto">
         {trips.map((trip) => (
-          <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne?requested=false">
+          <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne?requested=false" className="w-full">
             <TripCard
               key={trip.name}
               type={trip.tipo}

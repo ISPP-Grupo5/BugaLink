@@ -26,9 +26,11 @@ export default function Home() {
               placeholder="Dónde quieres ir?"
               className="w-full text-sm rounded-full ml-2 pl-2"
             ></input>
-            <button type="submit">
-              <Glass />
-            </button>
+            <Link href="/search/result">
+              <button type="submit">
+                <Glass />
+              </button>
+            </Link>
           </form>
           <img
             src="/icons/Vista-Principal/hombre.png"
@@ -105,7 +107,8 @@ export default function Home() {
             maxWidth: '480px',
             width: '100%',
             margin: '0 auto',
-            overflow: 'visible'
+            overflow: 'visible',
+            height: 'calc(70% - 90px)',
           },
         }}
       >

@@ -126,7 +126,7 @@ export default function Home() {
             maxWidth: '480px',
             width: '100%',
             margin: '0 auto',
-            overflow: 'visible',
+            overflow: 'visible'
           },
         }}
       >

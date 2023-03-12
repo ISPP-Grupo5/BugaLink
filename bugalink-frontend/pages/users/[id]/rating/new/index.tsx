@@ -6,12 +6,30 @@ import { BackButton, BackButtonText } from '../../../../../components/buttons/Ba
 // import CTAButton from '../../../components/buttons/CTA';
 import React, { useState } from 'react';
 import CTAButton from '../../../../../components/buttons/CTA';
+import axios from 'axios';
 
 export default function Rating() {
   const [rating, setRating] = useState(0);
   const [button1Selected, setButton1Selected] = useState(false);
   const [button2Selected, setButton2Selected] = useState(false);
   const [button3Selected, setButton3Selected] = useState(false);
+
+  // const data = {
+  //   rating: rating,
+  //   button1Selected: button1Selected,
+  //   button2Selected: button2Selected,
+  //   button3Selected: button3Selected
+  // };
+
+  const data = {
+    "rating_type": "driver",
+    "driver": 2,
+    "passenger": 2,
+    "IndividualRide": 1,
+    "user_id": 2,
+    "rating": 4,
+    "comment": "Buen conductor"
+};
 
   const handleRating = (selectedRating) => {
     setRating(selectedRating);
@@ -30,12 +48,33 @@ export default function Rating() {
   };
 
   const handleSubmit = () => {
+    const id=1; //TODO: change this to the id of the driver
+
     // send rating data to server
+    axios.post('http://localhost:8000/api/users/' + id + '/reviews/', data)
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.log(error);
+    });
     console.log('Submitting rating:', rating);
     console.log(`Button 1 selected: ${button1Selected}`);
     console.log(`Button 2 selected: ${button2Selected}`);
     console.log(`Button 3 selected: ${button3Selected}`);
   };
+
+
+  
+
+  // const id=1; //TODO: change this to the id of the driver
+  // axios.post(' http://localhost:8000/api/users/${id}/reviews/', data)
+  // .then(response => {
+  //   console.log(response.data);
+  // })
+  // .catch(error => {
+  //   console.log(error);
+  // });
 
   return (
     <div >
@@ -200,13 +239,14 @@ export default function Rating() {
             </div>
           </div>
           <div style={{ display: 'flex', marginTop: '-6px' }}>
-            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }}>
-              Buena conducción
+            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }} className='-ml-10'>
+              Buena <br></br>conducción
             </h2>
-            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }}>
-              Conductor agradable
-            </h2><h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }}>
-              Ya nos conocíamos
+            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }} >
+              Conductor <br></br>agradable
+            </h2>
+            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }} className='ml-10'>
+              Ya nos <br></br>conocíamos
             </h2>
 
           </div>
@@ -227,7 +267,7 @@ export default function Rating() {
             onClick={handleSubmit}
           >
           </button> */}
-          <CTAButton className="mt-6 max-w-8" text="ENVIAR" />
+          <CTAButton onClick={handleSubmit} className="mt-6 max-w-8" text="ENVIAR" />
         </div>
       </div>
     </div >

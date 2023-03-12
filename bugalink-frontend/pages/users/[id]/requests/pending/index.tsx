@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { BackButtonText } from '../../../../../components/buttons/Back';
 import RequestCard from '../../../../../components/cards/request';
 import AnimatedLayout from '../../../../../components/layouts/animated';
@@ -48,23 +49,26 @@ const requests = [
 
 export default function PendingRequests() {
   return (
-    <AnimatedLayout className="bg-white">
+    <AnimatedLayout className="bg-white overflow-y-scroll">
       <BackButtonText text={'Solicitudes pendientes'} />
       <div className="mx-6 space-y-4">
         {requests.map((request) => (
-          <RequestCard
-            key={request.hash}
-            type={request.type}
-            passengerType={request.passengerType}
-            name={request.name}
-            rating={request.rating}
-            gender={request.gender}
-            origin={request.origin}
-            destination={request.destination}
-            price={request.price}
-            date={request.date}
-            avatar={request.avatar}
-          />
+          <Link href="/request/34h5h43b2345T/accept">
+            <RequestCard
+              key={request.hash}
+              type={request.type}
+              passengerType={request.passengerType}
+              name={request.name}
+              rating={request.rating}
+              gender={request.gender}
+              origin={request.origin}
+              destination={request.destination}
+              price={request.price}
+              date={request.date}
+              avatar={request.avatar}
+              className="mb-4"
+            />
+          </Link>
         ))}
       </div>
     </AnimatedLayout>

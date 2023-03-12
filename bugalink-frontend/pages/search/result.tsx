@@ -14,6 +14,7 @@ import CTAButton from '../../components/buttons/CTA';
 import TimePicker from '../../components/forms/TimePicker';
 import Slider from '@mui/material/Slider';
 import React from 'react';
+import Link from 'next/link';
 
 const filters = [
   {
@@ -180,18 +181,24 @@ export default function SearchResults() {
       </div>
       <div className="divide-y-2 divide-light-gray">
         {searchResults.map((trip) => (
-          <TripCard
-            key={trip.name}
-            type={trip.type}
-            rating={trip.rating}
-            name={trip.name}
-            gender={trip.gender}
-            avatar={trip.avatar}
-            origin={trip.origin}
-            destination={trip.destination}
-            date={trip.date}
-            price={trip.price}
-          />
+          <Link
+            href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne?requested=false"
+            className="w-full"
+          >
+            <TripCard
+              key={trip.name}
+              type={trip.type}
+              rating={trip.rating}
+              name={trip.name}
+              gender={trip.gender}
+              avatar={trip.avatar}
+              origin={trip.origin}
+              destination={trip.destination}
+              date={trip.date}
+              price={trip.price}
+              className="bg-white rounded-md outline outline-1 outline-light-gray"
+            />
+          </Link>
         ))}
       </div>
 

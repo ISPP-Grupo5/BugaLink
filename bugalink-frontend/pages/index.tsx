@@ -24,11 +24,13 @@ export default function Home() {
             <input
               type="search"
               placeholder="Dónde quieres ir?"
-              className="w-full text-sm rounded-full ml-2"
+              className="w-full text-sm rounded-full ml-2 pl-2"
             ></input>
-            <button type="submit" className="">
-              <Glass />
-            </button>
+            <Link href="/search/result">
+              <button type="submit">
+                <Glass />
+              </button>
+            </Link>
           </form>
           <img
             src="/icons/Vista-Principal/hombre.png"
@@ -39,7 +41,7 @@ export default function Home() {
         <span className="flex justify-between w-full px-7">
           <SquareButton
             text="Horarios"
-            link="#"
+            link="/users/V1StGXR8_Z5jdHi6B-myT/routines"
             Icon={<Calendar className="bg-white rounded-xl" />}
           />
 
@@ -47,34 +49,34 @@ export default function Home() {
             text="Chats"
             link="#"
             Icon={<Chat className="bg-white rounded-xl " />}
-            numNotifications={3}
+            numNotifications={2}
           />
 
           <SquareButton
             text="Solicitudes"
-            link="#"
+            link="/users/V1StGXR8_Z5jdHi6B-myT/requests/pending"
             Icon={<Solicitud className="bg-white rounded-xl" />}
-            numNotifications={1}
+            numNotifications={3}
           />
         </span>
 
         <span className="flex justify-between mt-5 px-7">
           <p className="text-xl text-left font-semibold">Próximos viajes</p>
-          <a href="/users/qyahXxJc/history">
+          <Link href="/users/qyahXxJc/history">
             <p className="text-xl text-right text-turquoise font-semibold">
               Historial
             </p>
-          </a>
+          </Link>
         </span>
 
         <div data-carousel="static">
           <div className="relative w-full flex -space-x-7 snap-x snap-mandatory overflow-x-auto">
-            <PassengerCard />
-            <PassengerCard />
-            <PassengerCard />
-            <PassengerCard />
-            <PassengerCard />
-            <PassengerCard />
+            <PassengerCard link="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne/?requested=true" />
+            <PassengerCard link="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne/?requested=true" />
+            <PassengerCard link="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne/?requested=true" />
+            <PassengerCard link="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne/?requested=true" />
+            <PassengerCard link="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne/?requested=true" />
+            <PassengerCard link="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne/?requested=true" />
           </div>
 
           <div className="relative w-full flex -space-x-7 snap-x snap-mandatory overflow-x-auto mt-2">
@@ -85,27 +87,6 @@ export default function Home() {
             <DriverCard />
             <DriverCard />
           </div>
-        </div>
-        <div className="flex flex-col">
-          <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne">
-            Detalles viaje (1)
-          </Link>
-          <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/map">
-            Detalles viaje (Mapa)
-          </Link>
-          <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsTwo">
-            Detalles viaje (2)
-          </Link>
-          <Link href="/users/qyahXxJc/routines/passenger/new">
-            Crear rutina (pasajero)
-          </Link>
-          <Link href="/users/qyahXxJc/routines/driver/new">
-            Crear rutina (conductor)
-          </Link>
-          <Link href="/recommendations">Recomendaciones</Link>
-          <Link href="/request/V1StGXR8_Z5jdHi6B-myT/accept">
-            Aceptar petición
-          </Link>
         </div>
       </div>
       <SwipeableDrawer
@@ -126,7 +107,8 @@ export default function Home() {
             maxWidth: '480px',
             width: '100%',
             margin: '0 auto',
-            overflow: 'visible'
+            overflow: 'visible',
+            height: 'calc(70% - 90px)',
           },
         }}
       >

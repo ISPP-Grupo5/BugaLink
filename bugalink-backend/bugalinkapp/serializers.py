@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class IndividualRideSerializer(serializers.ModelSerializer):
-
+    
     class Meta:
     
         model = IndividualRide
@@ -16,13 +16,7 @@ class IndividualRideSerializer(serializers.ModelSerializer):
 
 class ListaIndividualRideSerializer(serializers.Serializer):
     rides = IndividualRideSerializer(many=True)
-
-class individual_ride_acceptance_serializer(serializers.ModelSerializer):
-
-    class Meta:
-    
-        model = IndividualRide
-        fields = ['individual_lift', 'driver', 'acceptation_status']
+        
 class DriverRatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = DriverRating

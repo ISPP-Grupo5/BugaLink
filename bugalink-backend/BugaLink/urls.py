@@ -24,5 +24,6 @@ urlpatterns = [
     path('api/users/', users.as_view()),
     path('api/pendingindividualrides/', pendingIndividualRide.as_view()),
     path('api/cancelledindividualrides/', cancelledIndividualRide.as_view()),
-    path('api/acceptedindividualrides/', acceptedIndividualRide.as_view())
+    path('api/acceptedindividualrides/', acceptedIndividualRide.as_view()),
+    path('api/individualRides', individualRides.as_view()),
 ]

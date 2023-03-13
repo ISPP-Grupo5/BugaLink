@@ -21,6 +21,8 @@ from bugalinkapp.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('newsletter/', newsletter_post.as_view()),
-    path('api/users', users.as_view()),
-    path('api/individualRides', individualRides.as_view())
+    path('api/users/', users.as_view()),
+    path('api/pendingindividualrides/', pendingIndividualRide.as_view()),
+    path('api/cancelledindividualrides/', cancelledIndividualRide.as_view()),
+    path('api/acceptedindividualrides/', acceptedIndividualRide.as_view())
 ]

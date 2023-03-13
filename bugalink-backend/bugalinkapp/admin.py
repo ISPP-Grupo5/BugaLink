@@ -4,11 +4,11 @@ from .models import *
 # Register your models here.
 
 admin.site.register(Passenger)
-admin.site.register(Lift)
+admin.site.register(Ride)
 admin.site.register(Driver)
 admin.site.register(Rating)
 admin.site.register(Vehicle)
-admin.site.register(IndividualLift)
+admin.site.register(IndividualRide)
 admin.site.register(PassengerRoutine)
 admin.site.register(DriverRoutine)
 admin.site.register(CreditCard)

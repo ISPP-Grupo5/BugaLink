@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('code', models.CharField(max_length=256, unique=True)),
                 ('discount_perc', models.FloatField()),
-                ('lifts', models.IntegerField()),
+                ('rides', models.IntegerField()),
                 ('start_date', models.DateField()),
                 ('end_date', models.DateField()),
                 ('active', models.BooleanField()),
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('start_location', bugalinkapp.models.Coord(max_length=50, null=True)),
                 ('end_location', bugalinkapp.models.Coord(max_length=50, null=True)),
                 ('frecuency', models.CharField(max_length=256)),
-                ('one_lift', models.BooleanField(default=False)),
+                ('one_ride', models.BooleanField(default=False)),
             ],
         ),
         migrations.CreateModel(
@@ -50,8 +50,8 @@ class Migration(migrations.Migration):
                 ('start_date', models.DateField()),
                 ('end_date', models.DateField()),
                 ('disabled', models.BooleanField(default=False)),
-                ('initial_lifts', models.IntegerField()),
-                ('lifts_left', models.IntegerField()),
+                ('initial_rides', models.IntegerField()),
+                ('rides_left', models.IntegerField()),
             ],
         ),
         migrations.CreateModel(
@@ -111,7 +111,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('activation_date', models.DateField()),
-                ('lifts_left', models.IntegerField()),
+                ('rides_left', models.IntegerField()),
                 ('active', models.BooleanField(default=True)),
                 ('discount', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bugalinkapp.discountcode')),
                 ('passenger', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bugalinkapp.passenger')),
@@ -127,11 +127,11 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='Lift',
+            name='Ride',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('default_num_seats', models.IntegerField()),
-                ('status', models.CharField(choices=[('Pending start', 'Pending_start'), ('Ongoing', 'Ongoing'), ('Finished', 'Finished')], default=bugalinkapp.models.LiftStatus['Pending_start'], max_length=256)),
+                ('status', models.CharField(choices=[('Pending start', 'Pending_start'), ('Ongoing', 'Ongoing'), ('Finished', 'Finished')], default=bugalinkapp.models.RideStatus['Pending_start'], max_length=256)),
                 ('start_date', models.DateTimeField()),
                 ('end_date', models.DateTimeField()),
                 ('start_location', bugalinkapp.models.Coord(max_length=50, null=True)),
@@ -141,7 +141,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='IndividualLift',
+            name='IndividualRide',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('start_date', models.DateTimeField()),
@@ -150,7 +150,7 @@ class Migration(migrations.Migration):
                 ('end_location', bugalinkapp.models.Coord(max_length=50, null=True)),
                 ('price', models.DecimalField(decimal_places=2, max_digits=8)),
                 ('status', models.CharField(choices=[('Accepted', 'Accepted'), ('Cancelled', 'Cancelled'), ('Pending Confirmation', 'Pending_Confirmation')], default=bugalinkapp.models.AcceptationStatus['Pending_Confirmation'], max_length=256)),
-                ('lift', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bugalinkapp.lift')),
+                ('ride', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bugalinkapp.ride')),
                 ('passenger', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bugalinkapp.passenger')),
             ],
         ),

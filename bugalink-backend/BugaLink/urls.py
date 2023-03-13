@@ -22,5 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('newsletter/', newsletter_post.as_view()),
     path('api/users', users.as_view()),
-    path('api/individualLifts', individualLifts.as_view())
+    path('api/individualRides', individualRides.as_view())
 ]

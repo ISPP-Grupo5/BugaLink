@@ -12,17 +12,17 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RemoveField(
-            model_name='individuallift',
+            model_name='individualride',
             name='status',
         ),
         migrations.AddField(
-            model_name='individuallift',
+            model_name='individualride',
             name='acceptation_status',
             field=models.CharField(choices=[('Accepted', 'Accepted'), ('Cancelled', 'Cancelled'), ('Pending Confirmation', 'Pending_Confirmation')], default=bugalinkapp.models.AcceptationStatus['Pending_Confirmation'], max_length=256),
         ),
         migrations.AddField(
-            model_name='individuallift',
-            name='lift_status',
-            field=models.CharField(choices=[('Pending start', 'Pending_start'), ('Ongoing', 'Ongoing'), ('Finished', 'Finished')], default=bugalinkapp.models.LiftStatus['Pending_start'], max_length=256),
+            model_name='individualride',
+            name='ride_status',
+            field=models.CharField(choices=[('Pending start', 'Pending_start'), ('Ongoing', 'Ongoing'), ('Finished', 'Finished')], default=bugalinkapp.models.RideStatus['Pending_start'], max_length=256),
         ),
     ]

@@ -2,6 +2,7 @@ from django.db import models
 
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 from enum import Enum
 
@@ -31,24 +32,28 @@ class Coord(models.Field):
         super().__init__(*args, **kwargs)
 
     def from_db_value(self, value, expression, connection):
-        if value is None:
-            return None
-        return list(map(float, value.split(',')))
+        try:
+            if not value:
+                return value
+            values = value.split(',')
+            return (v for v in values)
+        except Exception:
+            raise ValidationError
 
     def to_python(self, value):
-        if isinstance(value, list):
-            return value
-        if value is None:
-            return None
-        return list(map(float, value.split(',')))
+        return self.from_db_value(value, None, None)
 
     def get_prep_value(self, value):
-        if not value:
-            return value
-        return ','.join(str(coord) for coord in value)
+        try:
+            if not value:
+                return value
+            return ','.join(str(coord) for coord in value)
+        except Exception:
+            raise ValidationError
 
     def db_type(self, connection):
         return 'varchar'
+
 
 class Passenger(models.Model):
     user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)

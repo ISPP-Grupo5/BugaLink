@@ -87,10 +87,10 @@ class Rating(models.Model):
     # valora a quién)
     def get_driver_rating(driver):
         ratings = list(Rating.objects.filter(driver_id = driver.id))
-        rating_sum = 0
+        ratingSum = 0
         for rating in ratings:
-            rating_sum += rating.value
-        return rating_sum/len(ratings)
+            ratingSum += rating.value
+        return ratingSum/len(ratings)
         
 
 

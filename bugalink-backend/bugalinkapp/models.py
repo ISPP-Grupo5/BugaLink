@@ -36,7 +36,7 @@ class Coord(models.Field):
             if not value:
                 return value
             values = value.split(',')
-            return (v for v in values)
+            return (float(v) for v in values)
         except Exception:
             raise ValidationError
 

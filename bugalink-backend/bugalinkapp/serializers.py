@@ -1,13 +1,13 @@
 from rest_framework import serializers
 from .models import *
 
-class main_page_serializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
     
         model = User
-        fields = ['idUser']
-
+        fields = '__all__'
+        
 class RideSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -17,3 +17,23 @@ class RideSerializer(serializers.ModelSerializer):
 
 class ListRideSerializer(serializers.Serializer):
     rides = RideSerializer(many=True)
+
+class IndividualRideSerializer(serializers.ModelSerializer):
+
+    class Meta:
+    
+        model = IndividualRide
+        fields = '__all__'
+
+class ListaIndividualRideSerializer(serializers.Serializer):
+    rides = IndividualRideSerializer(many=True)
+
+class DriverRatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DriverRating
+        fields = '__all__'
+
+class PassengerRatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PassengerRating
+        fields = '__all__'

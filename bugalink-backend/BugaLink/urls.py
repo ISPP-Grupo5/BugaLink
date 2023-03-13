@@ -16,11 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from newsletter.views import newsletter_post
-from bugalinkapp.views import users
+from bugalinkapp.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('newsletter/', newsletter_post.as_view()),
-    path('api/users', users.as_view()),
-    path('api/', include('bugalinkapp.urls'))
+    path('api/users/', users.as_view()),
+    path('api/pendingindividualrides/', pendingIndividualRide.as_view()),
+    path('api/cancelledindividualrides/', cancelledIndividualRide.as_view()),
+    path('api/acceptedindividualrides/', acceptedIndividualRide.as_view()),
+    path('api/individualRides', individualRides.as_view()),
 ]

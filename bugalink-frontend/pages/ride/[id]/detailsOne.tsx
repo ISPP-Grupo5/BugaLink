@@ -1,12 +1,16 @@
 import { BackButtonText } from '../../../components/buttons/Back';
+import { useRouter } from 'next/router';
 import CTAButton from '../../../components/buttons/CTA';
 import AnimatedLayout from '../../../components/layouts/animated';
 import MapPreview from '../../../components/MapPreview';
 import ProfileHeader from '../../../components/ProfileHeader';
 import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
+import Link from 'next/link';
 
 export default function DetailsOne() {
+   const router = useRouter();
+   const { requested } = router.query;
   return (
     <AnimatedLayout>
       <div className="flex flex-col items-center justify-center h-screen">
@@ -69,7 +73,7 @@ export default function DetailsOne() {
           </div>
         </div>
         {/* Trip request */}
-        <div className="w-full absolute bottom-0 bg-white rounded-t-xl shadow-t-md pt-5 px-5">
+        <div className="w-full absolute bottom-0 bg-white rounded-t-xl shadow-t-md pt-5 px-5 my-3">
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-col">
               <p className="text-xs font-normal">Tipo de viaje</p>
@@ -84,9 +88,13 @@ export default function DetailsOne() {
               <p className="text-xl font-bold">2</p>
             </div>
           </div>
-          <div className="flex justify-center">
-            <CTAButton className="my-4 w-11/12" text="SOLICITAR" />
-          </div>
+          {requested === 'false' && (
+            <div className="flex justify-center">
+              <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsTwo" className='w-11/12 flex justify-center'>
+                <CTAButton className="my-4 w-11/12" text="CONTINUAR" />
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </AnimatedLayout>

@@ -17,3 +17,13 @@ class IndividualRideSerializer(serializers.ModelSerializer):
 
 class ListaIndividualRideSerializer(serializers.Serializer):
     rides = IndividualRideSerializer(many=True)
+
+class DriverRatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DriverRating
+        fields = '__all__'
+
+class PassengerRatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PassengerRating
+        fields = '__all__'

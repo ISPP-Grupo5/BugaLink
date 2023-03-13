@@ -1,12 +1,11 @@
-import Link from 'next/link';
+import { useState } from 'react';
 import { BackButtonText } from '../../../components/buttons/Back';
 import CTAButton from '../../../components/buttons/CTA';
-import AnimatedLayout from '../../../components/layouts/animated';
 import PlusMinusCounter from '../../../components/buttons/PlusMinusCounter';
-import { useState } from 'react';
+import AnimatedLayout from '../../../components/layouts/animated';
+import MapPreview from '../../../components/MapPreview';
 import ProfileHeader from '../../../components/ProfileHeader';
 import TripDetails from '../../../components/TripDetails';
-import MapPreview from '../../../components/MapPreview';
 
 const MIN_RESERVED_SEATS = 1;
 const MAX_RESERVED_SEATS = 8; // TODO: Get max free seats the driver offers from the backend
@@ -67,7 +66,7 @@ export default function DetailsTwo() {
           <p className="text-md font-normal">Precio total</p>
           <p className="text-3xl font-bold">4,00€</p>
         </div>
-        <CTAButton className="w-2/3" text={'PAGAR'} />
+        <CTAButton className="w-2/3" text={'SOLICITAR'} />
       </div>
     </AnimatedLayout>
   );

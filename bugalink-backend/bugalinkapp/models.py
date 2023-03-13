@@ -132,6 +132,14 @@ class DriverRating(models.Model):
     individual_ride = models.OneToOneField(IndividualRide, null=False, on_delete=models.CASCADE) # Validar que sólo se pueda hacer una vez por viaje
     rating = models.FloatField(validators=[MinValueValidator(1.0), MaxValueValidator(5.0)])
     comment = models.CharField(max_length=1024)
+    
+    def get_driver_rating(driver):
+        ratings = list(DriverRating.objects.all())
+        ratingSum = 0
+        for rating in ratings:
+            if driver.passenger.id == rating.individual_ride.ride.driver_routine.driver.passenger.id:
+                ratingSum += rating.rating
+        return ratingSum/len(ratings)
 
 class PassengerRating(models.Model):
     individual_ride = models.OneToOneField(IndividualRide, null=False, on_delete=models.CASCADE) # Validar que sólo se pueda hacer una vez por viaje

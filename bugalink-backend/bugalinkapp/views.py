@@ -90,6 +90,37 @@ class individualRides(APIView):
         except IndividualRide.DoesNotExist:
             raise Http404
         
+    def get_individual_rides_filter(self, request): 
+        try:
+            individualRides = []
+            
+            date = request.data['date']
+            lowPrice = request.data['lowPrice']
+            highPrice = request.data['highPrice']
+            rating = request.data['rating']
+        
+            rides = list(Ride.objects.all())
+            for ride in rides:
+                # Filtramos por fecha
+                # Hacemos que la fecha sea la misma. El criterio de filtrado puede cambiar en el futuro
+                dateFilter = date == ride.start_date.date
+                
+                # Filtramos por valoración
+                driver = ride.driver_routine.driver # Tenemos que sacar al conductor para averiguar su valoración
+                ratingFilter = rating <= DriverRating.get_driver_rating(driver)
+                
+                # Si se han cumplido estos filtros, revisamos todos los viajes individuales de este viaje
+                if (dateFilter and ratingFilter):
+                    filteredIndividualRides = list(IndividualRide.objects.filter(ride_id = ride.id))
+                    for individualRide in filteredIndividualRides:
+                        # Y si el precio del viaje individual supera el filtro, lo añadimos a la lista que devolveremos
+                        if lowPrice <= individualRide.price <= highPrice:
+                            individualRides.push(individualRide)
+                            
+            return individualRides
+        except IndividualRide.DoesNotExist:
+            raise Http404
+        
     def put_individual_ride(self, request): 
         try:
             individualRide = IndividualRide.objects.get(id = request.data['idIndividualRide'])

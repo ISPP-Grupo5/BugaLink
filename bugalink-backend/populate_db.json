@@ -7,6 +7,38 @@
       "last_name": "de los Palotes",
       "email": "federico@bugalink.com",
       "date_joined": "2023-01-01 00:00"
+    },
+    {
+      "username": "Ramon",
+      "password": "R4m0n",
+      "first_name": "Ramón Antonio",
+      "last_name": "Pérez González",
+      "email": "ramonantonio@bugalink.com",
+      "date_joined": "2023-02-01 12:27"
+    },
+    {
+      "username": "Maria",
+      "password": "M4r14",
+      "first_name": "María Lucía",
+      "last_name": "Hernández de la Roña",
+      "email": "marialucia@bugalink.com",
+      "date_joined": "2023-03-01 17:54"
+    },
+    {
+      "username": "Concha",
+      "password": "C0nch4",
+      "first_name": "Concha Manuela",
+      "last_name": "Sánchez del Río",
+      "email": "conchamanuela@bugalink.com",
+      "date_joined": "2023-04-01 11:29"
+    },
+    {
+      "username": "Prada",
+      "password": "Pr4d4",
+      "first_name": "Ágata",
+      "last_name": "Ruíz de la Prada",
+      "email": "prada@bugalink.com",
+      "date_joined": "2023-05-01 23:09"
     }
   ],
   "Passenger": [
@@ -18,13 +50,49 @@
       "birth_date": "2022-12-31",
       "balance": 25.92,
       "verified": true
+    },
+    {
+      "user_id": 2,
+      "city": "Jerez de la Frontera",
+      "province": "Cádiz",
+      "biography": "Me gustan las motos",
+      "birth_date": "2004-09-04",
+      "balance": 12.50,
+      "verified": true
+    },
+    {
+      "user_id": 3,
+      "city": "Castilblanco de los Arroyos",
+      "province": "Sevilla",
+      "biography": "Me gustan las hamburguesas, la mecánica y los coches.",
+      "birth_date": "2020-01-01",
+      "balance": 50.00,
+      "verified": true
+    },
+    {
+      "user_id": 4,
+      "city": "Sevilla",
+      "province": "Sevilla",
+      "biography": "Trabajo en la Cartuja.",
+      "birth_date": "2019-02-28",
+      "balance": 5.12,
+      "verified": false
+    },
+    {
+      "user_id": 5,
+      "city": "Cantillana",
+      "province": "Sevilla",
+      "biography": "Tengo mucho estilo.",
+      "birth_date": "1999-01-31",
+      "balance": 99999.99,
+      "verified": false
     }
   ],
   "Driver": [
     {
       "passenger_id": 1,
-      "preferences": "No me gusta transportar animales en mi coche",
-      "biography": "Llevo conduciendo desde los 14 años y no he tenido ningún accidente",
+      "preferences": "No me gusta transportar animales en mi coche.",
+      "biography": "Llevo conduciendo desde los 14 años y no he tenido ningún accidente.",
       "has_driver_license": true,
       "has_sworn_declaration": true,
       "sworn_declaration": null,
@@ -32,6 +100,54 @@
       "dni_front": null,
       "dni_back": null,
       "entry_date": "2023-01-01"
+    },
+    {
+      "passenger_id": 2,
+      "preferences": "Me gusta ir despacio pero con buena letra.",
+      "biography": "Conmigo no te aburres porque me gusta rajar mucho.",
+      "has_driver_license": true,
+      "has_sworn_declaration": true,
+      "sworn_declaration": null,
+      "driver_license": null,
+      "dni_front": null,
+      "dni_back": null,
+      "entry_date": "2022-01-01"
+    },
+    {
+      "passenger_id": 3,
+      "preferences": "Corro mucho con el coche asi que llego antes que los demás.",
+      "biography": "Soy silencioso, dame conversación o te aburrirás.",
+      "has_driver_license": true,
+      "has_sworn_declaration": true,
+      "sworn_declaration": null,
+      "driver_license": null,
+      "dni_front": null,
+      "dni_back": null,
+      "entry_date": "2022-09-09"
+    },
+    {
+      "passenger_id": 4,
+      "preferences": "Me gusta ir con la música a todo trapo. Tengo instalado un subwoofer de 15 pulgadas.",
+      "biography": "Me gusta mucho cantar.",
+      "has_driver_license": true,
+      "has_sworn_declaration": true,
+      "sworn_declaration": null,
+      "driver_license": null,
+      "dni_front": null,
+      "dni_back": null,
+      "entry_date": "2022-06-30"
+    },
+    {
+      "passenger_id": 5,
+      "preferences": "Me gusta salir quemando rueda aunque luego voy despacio. Lo siento.",
+      "biography": "Me incomoda la gente que no habla durante el viaje.",
+      "has_driver_license": true,
+      "has_sworn_declaration": true,
+      "sworn_declaration": null,
+      "driver_license": null,
+      "dni_front": null,
+      "dni_back": null,
+      "entry_date": "2019-01-10"
     }
   ],
   "Vehicle": [
@@ -41,57 +157,372 @@
       "plate": "1234 FTC",
       "has_insurance": false,
       "insurance": null
+    },
+    {
+      "driver_id": 2,
+      "model": "Mazda Miata",
+      "plate": "5678 BSB FTC",
+      "has_insurance": false,
+      "insurance": null
+    },
+    {
+      "driver_id": 3,
+      "model": "Kawasaki Ninja",
+      "plate": "3000 HPP",
+      "has_insurance": false,
+      "insurance": null
+    },
+    {
+      "driver_id": 4,
+      "model": "Lamborghini Gallardo",
+      "plate": "2345 AAA",
+      "has_insurance": false,
+      "insurance": null
+    },
+    {
+      "driver_id": 5,
+      "model": "Nissan 350z",
+      "plate": "5643 ACB",
+      "has_insurance": false,
+      "insurance": null
     }
   ],
   "DriverRoutine": [
     {
       "driver_id": 1,
       "default_vehicle_id": 1,
-      "vehicle_id": 1,
       "default_num_seats": 3,
       "start_date": "8:00",
       "end_date": "9:00",
-      "start_location": "97.05,98.04",
-      "end_location": "97.05,98.04",
-      "frecuency": "Diaria",
-      "one_Ride": false
+      "start_location": [
+        97.05,
+        98.04
+      ],
+      "end_location": [
+        97.05,
+        98.04
+      ],
+      "days": "Mon",
+      "one_ride": false
+    },
+    {
+      "driver_id": 2,
+      "default_vehicle_id": 2,
+      "default_num_seats": 1,
+      "start_date": "8:00",
+      "end_date": "9:00",
+      "start_location": [
+        0.20,
+        8.04
+      ],
+      "end_location": [
+        7.05,
+        12.04
+      ],
+      "days": "Tue",
+      "one_ride": false
+    },
+    {
+      "driver_id": 3,
+      "default_vehicle_id": 2,
+      "default_num_seats": 1,
+      "start_date": "8:00",
+      "end_date": "9:00",
+      "start_location": [
+        10.20,
+        8.24
+      ],
+      "end_location": [
+        17.25,
+        1.04
+      ],
+      "days": "Wed",
+      "one_ride": false
+    },
+    {
+      "driver_id": 4,
+      "default_vehicle_id": 2,
+      "default_num_seats": 1,
+      "start_date": "8:00",
+      "end_date": "9:00",
+      "start_location": [
+        45.20,
+        27.24
+      ],
+      "end_location": [
+        41.25,
+        3.14
+      ],
+      "days": "Thu",
+      "one_ride": false
+    },
+    {
+      "driver_id": 5,
+      "default_vehicle_id": 2,
+      "default_num_seats": 1,
+      "start_date": "8:00",
+      "end_date": "9:00",
+      "start_location": [
+        5.20,
+        7.24
+      ],
+      "end_location": [
+        1.25,
+        0.14
+      ],
+      "days": "Fri",
+      "one_ride": false
     }
   ],
   "Ride": [
     {
       "driver_routine_id": 1,
       "vehicle_id": 1,
-      "default_num_seats": 3,
+      "num_seats": 3,
       "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
       "end_date": "2023-03-03 9:00",
-      "start_location": "97.05,98.04",
-      "end_location": "97.05,98.04"
-    }
-  ],
-  "IndividualRide": [
+      "start_location": [
+        97.05,
+        98.04
+      ],
+      "end_location": [
+        97.05,
+        98.04
+      ]
+    },
     {
-      "Ride_id": 1,
-      "passenger_id": 1,
+      "driver_routine_id": 2,
+      "vehicle_id": 2,
+      "num_seats": 1,
+      "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
-      "end_date": "2023-03-09 9:00",
-      "start_location": "97.05,98.04",
-      "end_location": "97.05,98.04",
-      "price": 3.0,
-      "Ride_status": "Pending_start",
-      "acceptation_status": "Accepted"
+      "end_date": "2023-03-03 9:00",
+      "start_location": [
+        9.05,
+        8.04
+      ],
+      "end_location": [
+        7.05,
+        9.04
+      ]
+    },
+    {
+      "driver_routine_id": 3,
+      "vehicle_id": 3,
+      "num_seats": 1,
+      "status": "Pending_start",
+      "start_date": "2023-03-09 8:00",
+      "end_date": "2023-03-03 9:00",
+      "start_location": [
+        9.5,
+        8.4
+      ],
+      "end_location": [
+        7.5,
+        9.4
+      ]
+    },
+    {
+      "driver_routine_id": 4,
+      "vehicle_id": 4,
+      "num_seats": 1,
+      "status": "Pending_start",
+      "start_date": "2023-03-09 8:00",
+      "end_date": "2023-03-03 9:00",
+      "start_location": [
+        1.5,
+        5.4
+      ],
+      "end_location": [
+        1.5,
+        8.4
+      ]
+    },
+    {
+      "driver_routine_id": 5,
+      "vehicle_id": 5,
+      "num_seats": 1,
+      "status": "Pending_start",
+      "start_date": "2023-03-09 8:00",
+      "end_date": "2023-03-03 9:00",
+      "start_location": [
+        1.25,
+        15.4
+      ],
+      "end_location": [
+        31.5,
+        18.4
+      ]
     }
   ],
   "PassengerRoutine": [
     {
       "passenger_id": 1,
-      "start_date": "8:00",
+      "start_time_initial": "8:00",
+      "start_time_final": "8:30",
       "end_date": "9:00",
-      "start_place": "97.05,98.04",
-      "end_place": "97.05,98.04",
-      "frequency": "Diaria",
-      "time_diff_before": "30 min",
-      "time_diff_after": "30 min"
+      "start_location": [
+        97.05,
+        98.04
+      ],
+      "end_location": [
+        97.05,
+        98.04
+      ],
+      "days": "Mon"
+    },
+    {
+      "passenger_id": 2,
+      "start_time_initial": "8:00",
+      "start_time_final": "8:30",
+      "end_date": "9:00",
+      "start_location": [
+        97.5,
+        98.4
+      ],
+      "end_location": [
+        9.05,
+        9.04
+      ],
+      "days": "Tue"
+    },
+    {
+      "passenger_id": 3,
+      "start_time_initial": "8:00",
+      "start_time_final": "8:30",
+      "end_date": "9:00",
+      "start_location": [
+        7.5,
+        8.4
+      ],
+      "end_location": [
+        9.205,
+        9.204
+      ],
+      "days": "Wed"
+    },
+    {
+      "passenger_id": 4,
+      "start_time_initial": "8:00",
+      "start_time_final": "8:30",
+      "end_date": "9:00",
+      "start_location": [
+        57.5,
+        28.4
+      ],
+      "end_location": [
+        19.205,
+        69.204
+      ],
+      "days": "Thu"
+    },
+    {
+      "passenger_id": 5,
+      "start_time_initial": "8:00",
+      "start_time_final": "8:30",
+      "end_date": "9:00",
+      "start_location": [
+        5.5,
+        2.4
+      ],
+      "end_location": [
+        1.205,
+        6.204
+      ],
+      "days": "Fri"
+    }
+  ],
+  "IndividualRide": [
+    {
+      "ride_id": 1,
+      "passenger_id": 1,
+      "passenger_routine_id": 1,
+      "start_date": "2023-03-09 8:00",
+      "end_date": "2023-03-09 9:00",
+      "start_location": [
+        97.05,
+        98.04
+      ],
+      "end_location": [
+        97.05,
+        98.04
+      ],
+      "price": 3.0,
+      "ride_status": "Pending_start",
+      "acceptation_status": "Accepted"
+    },
+    {
+      "ride_id": 2,
+      "passenger_id": 2,
+      "passenger_routine_id": 2,
+      "start_date": "2023-03-09 8:00",
+      "end_date": "2023-03-09 9:00",
+      "start_location": [
+        47.05,
+        18.04
+      ],
+      "end_location": [
+        47.05,
+        68.04
+      ],
+      "price": 7.0,
+      "ride_status": "Pending_start",
+      "acceptation_status": "Accepted"
+    },
+    {
+      "ride_id": 3,
+      "passenger_id": 3,
+      "passenger_routine_id": 3,
+      "start_date": "2023-03-09 8:00",
+      "end_date": "2023-03-09 9:00",
+      "start_location": [
+        4.05,
+        1.04
+      ],
+      "end_location": [
+        7.05,
+        8.04
+      ],
+      "price": 2.5,
+      "ride_status": "Pending_start",
+      "acceptation_status": "Accepted"
+    },
+    {
+      "ride_id": 4,
+      "passenger_id": 4,
+      "passenger_routine_id": 4,
+      "start_date": "2023-03-09 8:00",
+      "end_date": "2023-03-09 9:00",
+      "start_location": [
+        4.5,
+        1.4
+      ],
+      "end_location": [
+        0.05,
+        0.04
+      ],
+      "price": 20.5,
+      "ride_status": "Pending_start",
+      "acceptation_status": "Accepted"
+    },
+    {
+      "ride_id": 5,
+      "passenger_id": 5,
+      "passenger_routine_id": 5,
+      "start_date": "2023-03-09 8:00",
+      "end_date": "2023-03-09 9:00",
+      "start_location": [
+        4.52,
+        1.34
+      ],
+      "end_location": [
+        0.045,
+        0.054
+      ],
+      "price": 1.5,
+      "ride_status": "Pending_start",
+      "acceptation_status": "Accepted"
     }
   ],
   "CreditCard": [
@@ -100,13 +531,57 @@
       "card": "1234 5678 9012 3456",
       "CVC": "569",
       "expiration_date": "2025-12-01"
+    },
+    {
+      "user_id": 2,
+      "card": "1324 5678 9012 3456",
+      "CVC": "564",
+      "expiration_date": "2024-12-01"
+    },
+    {
+      "user_id": 3,
+      "card": "1324 5678 0912 3456",
+      "CVC": "164",
+      "expiration_date": "2023-12-01"
+    },
+    {
+      "user_id": 4,
+      "card": "1324 5678 0912 4356",
+      "CVC": "124",
+      "expiration_date": "2026-12-01"
+    },
+    {
+      "user_id": 5,
+      "card": "1342 5678 0912 4356",
+      "CVC": "126",
+      "expiration_date": "2027-12-01"
     }
   ],
   "Paypal": [
     {
       "user_id": 1,
-      "mail": "federico@gmail.com",
+      "email": "federico@gmail.com",
       "password": "f3d3r1c0"
+    },
+    {
+      "user_id": 2,
+      "email": "ramonantonio@gmail.com",
+      "password": "r4m0n"
+    },
+    {
+      "user_id": 3,
+      "email": "marialucia@gmail.com",
+      "password": "m4r14"
+    },
+    {
+      "user_id": 4,
+      "email": "conchamanuela@gmail.com",
+      "password": "c0nch4"
+    },
+    {
+      "user_id": 5,
+      "email": "prada@gmail.com",
+      "password": "pr4d4"
     }
   ],
   "FavDirection": [
@@ -115,7 +590,54 @@
       "name": "Casa",
       "direction": "Calle Real 26",
       "city": "Utrera",
-      "location": null,
+      "location": [
+        97.05,
+        98.04
+      ],
+      "cp": "41560"
+    },
+    {
+      "user_id": 2,
+      "name": "Casa",
+      "direction": "Calle Árbol 19",
+      "city": "Jerez de la Frontera",
+      "location": [
+        9.05,
+        8.04
+      ],
+      "cp": "41560"
+    },
+    {
+      "user_id": 3,
+      "name": "Casa",
+      "direction": "Calle Maceta 23",
+      "city": "Castilblanco de los Arroyos",
+      "location": [
+        19.05,
+        28.04
+      ],
+      "cp": "41560"
+    },
+    {
+      "user_id": 4,
+      "name": "Casa",
+      "direction": "Calle Móstoles 8",
+      "city": "Sevilla",
+      "location": [
+        39.05,
+        85.04
+      ],
+      "cp": "41560"
+    },
+    {
+      "user_id": 5,
+      "name": "Casa",
+      "direction": "Calle Árbol 96",
+      "city": "Cantillana",
+      "location": [
+        0.05,
+        84.04
+      ],
       "cp": "41560"
     }
   ],
@@ -123,21 +645,94 @@
     {
       "code": "123456789",
       "discount_perc": 0.1,
-      "Rides": 100,
+      "rides": 100,
       "start_date": "2023-01-01",
       "end_date": "2023-12-31",
       "active": false
+    },
+    {
+      "code": "bugalink",
+      "discount_perc": 0.1,
+      "rides": 100,
+      "start_date": "2023-01-01",
+      "end_date": "2023-12-31",
+      "active": false
+    },
+    {
+      "code": "dontusekaros",
+      "discount_perc": 0.1,
+      "rides": 100,
+      "start_date": "2022-01-01",
+      "end_date": "2028-12-31",
+      "active": true
+    },
+    {
+      "code": "ispp_is_great",
+      "discount_perc": 0.1,
+      "rides": 100,
+      "start_date": "2022-01-01",
+      "end_date": "2022-06-30",
+      "active": true
+    },
+    {
+      "code": "32146752",
+      "discount_perc": 0.1,
+      "rides": 100,
+      "start_date": "2023-12-31",
+      "end_date": "2024-02-02",
+      "active": true
     }
   ],
   "IndividualDiscountCode": [
     {
+      "user_id": 1,
       "code": "987654321",
       "discount_perc": 0.1,
       "start_date": "2023-01-01",
       "end_date": "2023-12-31",
-      "disabled": false,
-      "initial_Rides": 100,
-      "Rides_left": 100
+      "active": true,
+      "initial_rides": 100,
+      "rides_left": 100
+    },
+    {
+      "user_id": 2,
+      "code": "ramon",
+      "discount_perc": 0.1,
+      "start_date": "2024-01-01",
+      "end_date": "2024-12-31",
+      "active": true,
+      "initial_rides": 100,
+      "rides_left": 100
+    },
+    {
+      "user_id": 3,
+      "code": "maria",
+      "discount_perc": 0.1,
+      "start_date": "2023-01-01",
+      "end_date": "2023-02-01",
+      "active": true,
+      "initial_rides": 100,
+      "rides_left": 100
+    },
+    {
+      "user_id": 4,
+      "code": "concha",
+      "discount_perc": 0.1,
+      "start_date": "2022-01-01",
+      "end_date": "2022-06-30",
+      "active": true,
+      "initial_rides": 100,
+      "rides_left": 100
+    },
+    {
+      "user_id": 5,
+      "code": "prada",
+      "discount_perc": 0.1,
+      "start_date": "2023-02-14",
+      "end_date": "2023-03-08",
+      "active": true,
+      "initial_rides": 100,
+      "rides_left": 100
     }
   ],
   "PassengerDiscountCode": [
@@ -145,7 +740,35 @@
       "discount_id": 1,
       "passenger_id": 1,
       "activation_date": "2023-04-20",
-      "Rides_left": 5,
+      "rides_left": 5,
+      "active": false
+    },
+    {
+      "discount_id": 2,
+      "passenger_id": 2,
+      "activation_date": "2024-01-01",
+      "rides_left": 5,
+      "active": false
+    },
+    {
+      "discount_id": 3,
+      "passenger_id": 3,
+      "activation_date": "2023-01-01",
+      "rides_left": 5,
+      "active": false
+    },
+    {
+      "discount_id": 4,
+      "passenger_id": 4,
+      "activation_date": "2022-01-01",
+      "rides_left": 5,
+      "active": false
+    },
+    {
+      "discount_id": 5,
+      "passenger_id": 5,
+      "activation_date": "2023-02-14",
+      "rides_left": 5,
       "active": false
     }
   ]

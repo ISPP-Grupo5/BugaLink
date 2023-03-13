@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bugalinkapp', '0002_remove_individuallift_status_and_more'),
+        ('bugalinkapp', '0002_remove_individualride_status_and_more'),
     ]
 
     operations = [

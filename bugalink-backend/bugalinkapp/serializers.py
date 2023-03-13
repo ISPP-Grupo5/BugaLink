@@ -6,11 +6,11 @@ class main_page_serializer(serializers.ModelSerializer):
     class Meta:
     
         model = User
-        fields = ['idUser']
+        fields = '__all__'
 
-class individual_lift_acceptance_serializer(serializers.ModelSerializer):
+class individual_ride_acceptance_serializer(serializers.ModelSerializer):
 
     class Meta:
     
-        model = IndividualLift
-        fields = ['id_individual_lift', 'dni_driver', 'acceptation_status']
+        model = IndividualRide
+        fields = '__all__'

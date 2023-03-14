@@ -26,5 +26,11 @@ urlpatterns = [
     path('api/pendingindividualrides/', pendingIndividualRide.as_view()),
     path('api/cancelledindividualrides/', cancelledIndividualRide.as_view()),
     path('api/acceptedindividualrides/', acceptedIndividualRide.as_view()),
-    path('api/routineFilter', routineRecommendation.as_view())
+    path('api/routineFilter', routineRecommendation.as_view()),
+    path('api/individualRides', individualRides.as_view()),
+    path('api/rides/<int:pk>', Rides.as_view()),
+    path('api/users/<int:pk>/passenger-routines', PassengerRoutineList.as_view()),
+    path('api/users/<int:pk>/driver-routines', DriverRoutineList.as_view()),
+    path('api/users/<int:user_id>/passenger-routines/<int:routine_id>', PassengerRoutineDelete.as_view()),
+    path('api/users/<int:user_id>/driver-routines/<int:routine_id>', PassengerRoutineDelete.as_view())
 ]

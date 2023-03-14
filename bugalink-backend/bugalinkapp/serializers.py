@@ -4,7 +4,6 @@ from .models import *
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
-    
         model = User
         fields = '__all__'
         
@@ -19,7 +18,7 @@ class ListRideSerializer(serializers.Serializer):
     rides = RideSerializer(many=True)
 
 class IndividualRideSerializer(serializers.ModelSerializer):
-
+    
     class Meta:
     
         model = IndividualRide
@@ -27,7 +26,7 @@ class IndividualRideSerializer(serializers.ModelSerializer):
 
 class ListaIndividualRideSerializer(serializers.Serializer):
     rides = IndividualRideSerializer(many=True)
-
+        
 class DriverRatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = DriverRating

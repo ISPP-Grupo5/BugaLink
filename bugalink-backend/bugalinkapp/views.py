@@ -222,15 +222,23 @@ class Rides(APIView):
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class PassegerRoutineList(APIView):
+class PassengerRoutineList(APIView):
     def get(self, request, pk, format=None):
         try:
-            queryset = PassegerRoutine.objects.filter(passennger_id=pk)
+            queryset = PassengerRoutine.objects.filter(passennger_id=pk)
         except:
             return Response({'error': 'Passenger does not exist with id {}'.format(pk)},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         serializer = PassengerRoutineSerializer(queryset, many=True)
         return Response(serializer.data)
+
+    def post(self, request, pk, format=None):  # POST de creacion de la routina
+        request.data['passenger_id'] = pk
+        try:
+            serializer = PassengerRoutineSerializer(request.data, many=False)
+            serializer.save()
+        except:
+            return Response({'error': ''})
 
 
 class DriverRoutineList(APIView):
@@ -243,6 +251,14 @@ class DriverRoutineList(APIView):
         serializer = DriverRoutineSerializer(queryset, many=True)
         return Response(serializer.data)
 
+    def post(self, request, pk, format=None):  # POST de creacion de la routina
+        request.data['driver_id'] = pk
+        try:
+            serializer = DriverRoutineSerializer(request.data, many=False)
+            serializer.save()
+        except:
+            return Response({'error': ''})
+
 
 class PassengerRoutineDelete(APIView):
     def delete(self, request, user_id, routine_id, format=None):
@@ -254,6 +270,16 @@ class PassengerRoutineDelete(APIView):
         serializer = PassengerRoutineSerializer(routine, many=False)
         return Response(serializer.data)
 
+    def put(self, request, user_id, routine_id, format=None):
+        try:
+            routine = PassengerRoutine.objects.get(pk=routine_id)
+        except:
+            return Response({'error': 'PassengerRoutine does not exist with id {}'.format(routine_id)})
+        try:
+            routine.update(**request.data)
+        except:
+            return Response({'error': 'Invalid arguments'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class DriverRoutineDelete(APIView):
     def delete(self, request, user_id, routine_id, format=None):
@@ -264,3 +290,13 @@ class DriverRoutineDelete(APIView):
 
         serializer = DriverRoutineSerializer(routine, many=False)
         return Response(serializer.data)
+
+    def put(self, request, user_id, routine_id, format=None):
+        try:
+            routine = DriverRoutine.objects.get(pk=routine_id)
+        except:
+            return Response({'error': 'DriverRoutine does not exist with id {}'.format(routine_id)})
+        try:
+            routine.update(**request.data)
+        except:
+            return Response({'error': 'Invalid arguments'}, status=status.HTTP_400_BAD_REQUEST)

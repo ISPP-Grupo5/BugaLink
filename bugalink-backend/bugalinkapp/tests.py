@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from .models import Passenger, Driver, Rating, Vehicle
+from .models import Passenger, Driver, Vehicle
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 class Test(TestCase):
@@ -65,13 +65,13 @@ class Test(TestCase):
             dni_back=self.dni_back
         )
 
-        #RATING
-        self.rating = Rating.objects.create(
-            driver= Driver.objects.first(),
-            passenger=Passenger.objects.first(),
-            value=4.5,
-            comment='Test Comment',
-        )
+        #RATING  HA CAMBIADO CON EL V3
+        #self.rating = Rating.objects.create(
+        #    driver= Driver.objects.first(),
+        #    passenger=Passenger.objects.first(),
+        #    value=4.5,
+        #    comment='Test Comment',
+        #)
 
         self.insurance_file = SimpleUploadedFile(
             name='test_insurance.pdf',
@@ -81,6 +81,7 @@ class Test(TestCase):
 
         #VEHICLE
         self.vehicle = Vehicle.objects.create(
+            driver = self.driver,
             model='Test Model',
             plate='Test Plate',
             has_insurance=True,
@@ -120,12 +121,12 @@ class Test(TestCase):
         self.assertIsNotNone(self.driver.driver_license.name)
         self.assertIsNotNone(self.driver.dni_front)
     
-    def test_rating_creation(self):
-        self.assertIsInstance(self.rating, Rating)
-        self.assertEqual(self.rating.driver, self.rating.driver)
-        self.assertEqual(self.rating.passenger, self.rating.passenger)
-        self.assertAlmostEqual(self.rating.value, 4.5, places=2)
-        self.assertEqual(self.rating.comment, 'Test Comment')
+    #def test_rating_creation(self):
+    #    self.assertIsInstance(self.rating, Rating)
+    #    self.assertEqual(self.rating.driver, self.rating.driver)
+    #    self.assertEqual(self.rating.passenger, self.rating.passenger)
+    #    self.assertAlmostEqual(self.rating.value, 4.5, places=2)
+    #    self.assertEqual(self.rating.comment, 'Test Comment')
 
     def test_vehicle_creation(self):
         self.assertEqual(self.vehicle.model, 'Test Model')

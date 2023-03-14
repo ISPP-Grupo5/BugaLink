@@ -23,27 +23,11 @@ from rest_framework import serializers
 
 class users(APIView):
 
-    def get_user(self, request):
+    def get(self, request): 
         try:
-            return User.objects.get(idUser=request.data['idUser'])
-        except User.DoesNotExist:
-            raise Http404
-
-    def get_pending_individual_rides(self, request):
-        try:
-            return IndividualRide.objects.filter(user=User.objects.get(idUser=request.data['idUser']), status='P')
-        except User.DoesNotExist:
-            raise Http404
-
-    def get_ongoing_individual_rides(self, request):
-        try:
-            return IndividualRide.objects.filter(user=User.objects.get(idUser=request.data['idUser']), status='O')
-        except User.DoesNotExist:
-            raise Http404
-
-    def get_finished_individual_rides(self, request):
-        try:
-            return IndividualRide.objects.filter(user=User.objects.get(idUser=request.data['idUser']), status='F')
+            user =  User.objects.get(id = request.data['id'])
+            serializer = UserSerializer(user, context = {'request':request})
+            return Response(serializer.data)
         except User.DoesNotExist:
             raise Http404
 
@@ -57,33 +41,17 @@ class routineRecommendation(APIView):
             passenger = Passenger.objects.get(user=user)
             passenger_routine = PassengerRoutine.objects.get(
                 passenger=passenger)
-            beginning_of_ride = passenger_routine.start_date
-            end_of_ride = passenger_routine.end_date
-            source_location = passenger_routine.start_place
-            destination_location = passenger_routine.end_place
-            time_diff_before = timedelta(
-                seconds=passenger_routine.time_diff_before.total_seconds())
-            time_diff_after = timedelta(
-                seconds=passenger_routine.time_diff_after.total_seconds())
-            passenger_days = passenger_routine.frequency
-
-            #Tramo real de salida, abajo y arriba de la hora introducida
-            real_begining_ride_up = (datetime.combine(
-                datetime.min, beginning_of_ride) + time_diff_after).time()
-            real_begining_ride_down = (datetime.combine(
-                datetime.min, beginning_of_ride) - time_diff_before).time()
-            
-            #Tramo real de llegada, abajo y arriba de la hora introducida
-            real_ending_ride_up = (datetime.combine(
-                datetime.min, end_of_ride) + time_diff_after).time()
-            real_ending_ride_down = (datetime.combine(
-                datetime.min, end_of_ride) - time_diff_before).time()
+            source_location = passenger_routine.start_location
+            destination_location = passenger_routine.end_location
+            min_time = passenger_routine.start_time_initial
+            max_time = passenger_routine.start_time_final
+            passenger_days = passenger_routine.days
 
             valid_routines = []
+            similar_days = []
 
             for routine in driver_routines:
-                driver_days = routine.frecuency
-                similar_days = []
+                driver_days = routine.days
 
                 #Comprobacion de cuantos dias coinciden en cada rutina
                 for day in driver_days:
@@ -118,7 +86,7 @@ class routineRecommendation(APIView):
 
                 #Uso de todos los datos obtenidos para crear un filtro que compruebe si la rutina es valida 
                 #Si es valida se guarda en una lista
-                if len(similar_days) > 0 and real_begining_ride_down <= drivers_beggining_of_ride and real_begining_ride_up >= drivers_beggining_of_ride and real_ending_ride_down <= drivers_ending_of_ride and real_ending_ride_up >= drivers_ending_of_ride and destination_distance <= 1 and source_distance <= 1:
+                if len(similar_days) > 0 and min_time <= drivers_beggining_of_ride and max_time >= drivers_beggining_of_ride and destination_distance <= 1 and source_distance <= 1:
                     valid_routines.append(routine)
             
             #Se obtienen los viajes asociados a las rutinas marcadas como validas y se guardan a una lista que las devolvera como respuesta
@@ -126,22 +94,15 @@ class routineRecommendation(APIView):
             for routine in valid_routines:
                 ride = Ride.objects.filter(driver_routine=routine).first()
                 if ride:
-                    rides.append(ride)
+                    if ride.num_seats > 0:
+                        rides.append(ride)
             
             #Llamada al serializer para devolver todos los viajes que han sido seleccionados
             serializer = ListRideSerializer(rides, many=True)
             return Response(serializer.data)
             
         except:
-            raise Http404 #Ahora mismo con que exista error me vale.
-            
-    def get(self, request): 
-        try:
-            user =  User.objects.get(id = request.data['id'])
-            serializer = UserSerializer(user, context = {'request':request})
-            return Response(serializer.data)
-        except User.DoesNotExist:
-            raise Http404
+            raise Http404 #Mejorar errores
         
 class pendingIndividualRide(APIView):
     def get(self,request):

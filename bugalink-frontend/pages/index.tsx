@@ -48,7 +48,7 @@ export default function Home() {
   return (
     <AnimatedLayout className="max-h-full overflow-y-scroll">
       <div className="flex flex-col pb-20">
-        <span className="my-10 flex items-center space-x-4 px-7">
+        <span className="my-10 flex items-center space-x-4 px-4 md:px-5">
           <form className="flex w-full items-center rounded-full bg-white px-4 py-3">
             <Destino className="h-5 w-5 flex-none translate-y-0.5 scale-125 fill-light-turquoise stroke-light-turquoise" />
             <input
@@ -70,29 +70,28 @@ export default function Home() {
           </Link>
         </span>
 
-        <span className="flex w-full justify-between px-7">
+        <span className="flex w-full justify-between space-x-4 px-4 md:px-5">
           <SquareButton
             text="Horarios"
             link={NEXT_ROUTES.MY_ROUTINES(userId)}
-            Icon={<Calendar className="rounded-xl bg-white" />}
+            Icon={<Calendar />}
           />
 
           <SquareButton
             text="Chats"
             link="#"
-            Icon={<Chat className="rounded-xl bg-white " />}
+            Icon={<Chat className="translate-x-0.5 translate-y-0.5" />}
             numNotifications={pendingChats}
           />
-
           <SquareButton
             text="Solicitudes"
             link={NEXT_ROUTES.PENDING_REQUESTS(userId)}
-            Icon={<Solicitud className="rounded-xl bg-white" />}
+            Icon={<Solicitud className="translate-x-0.5 translate-y-0.5" />}
             numNotifications={pendingRequests}
           />
         </span>
 
-        <span className="mt-5 flex justify-between px-7">
+        <span className="mt-5 flex justify-between px-4 md:px-5">
           <p className="text-left text-xl font-semibold">Próximos viajes</p>
           <Link href="/users/qyahXxJc/history">
             <p className="text-right text-xl text-turquoise">Historial</p>

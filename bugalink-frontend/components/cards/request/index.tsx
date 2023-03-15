@@ -1,19 +1,13 @@
+import TripRequestI from '../../../interfaces/tripRequest';
 import TripCard from '../recommendation';
 
-export default function RequestCard({
-  type,
-  passengerType,
-  rating,
-  name,
-  avatar,
-  gender,
-  origin,
-  destination,
-  price,
-  date,
-  className = '',
-}) {
-  const isRecurring = passengerType === 'recurring';
+type Props = {
+  request: TripRequestI;
+  className?: string;
+};
+
+export default function RequestCard({ request, className = '' }: Props) {
+  const isRecurring = request.type === 'recurring';
 
   return (
     <div
@@ -24,24 +18,22 @@ export default function RequestCard({
     >
       <p
         className={`w-full px-4 text-xl py-2 mb-2 rounded-t-lg ${
-          isRecurring
-            ? 'bg-light-turquoise text-white'
-            : 'bg-lightGray text-black'
+          isRecurring ? 'bg-turquoise text-white' : 'bg-light-gray text-black'
         }`}
       >
         Viaje {isRecurring ? 'recurrente' : 'único'}
       </p>
       <TripCard
         className="-my-2"
-        type={type}
-        rating={rating}
-        name={name}
-        avatar={avatar}
-        gender={gender}
-        origin={origin}
-        destination={destination}
-        date={date}
-        price={price}
+        type="passenger"
+        name={request.requestedBy.name} // TODO: Change this to the incoming passenger's name
+        rating={request.requestedBy.rating}
+        gender={request.requestedBy.gender}
+        origin={request.origin}
+        destination={request.destination}
+        price={request.price}
+        date={request.date}
+        avatar={request.requestedBy.avatar}
       />
     </div>
   );

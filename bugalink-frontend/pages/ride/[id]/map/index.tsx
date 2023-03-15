@@ -7,7 +7,7 @@ import Progress from '/public/assets/progress.svg';
 export default function RideMap() {
   return (
     <AnimatedLayout>
-      <BackButton className="absolute left-2 top-2 shadow-xl pr-2 py-3 bg-baseOrigin" />
+      <BackButton className="absolute left-2 top-2 shadow-xl pr-2 py-3 bg-base-origin" />
       <img src="/assets/mocks/map.png" className="w-full object-cover h-full" />
       <div className="sticky w-full -mt-6 bottom-0 bg-white rounded-t-3xl drop-shadow-md grid grid-rows-2 px-5 py-6 z-10">
         <span className="grid grid-cols-2 mb-4">

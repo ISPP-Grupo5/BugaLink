@@ -23,7 +23,7 @@ export default function AcceptRequest() {
           numberOfRatings="14"
         />
         <div className="flex flex-row">
-          <p className="text-sm font-normal text-dark-grey text-justify">
+          <p className="text-sm font-normal text-dark-gray text-justify">
             Nota del pasajero
           </p>
         </div>
@@ -70,7 +70,7 @@ export default function AcceptRequest() {
                 maxWidth: '480px',
                 width: '100%',
                 margin: '0 auto',
-                backgroundColor: 'transparent'
+                backgroundColor: 'transparent',
               },
             }}
           >

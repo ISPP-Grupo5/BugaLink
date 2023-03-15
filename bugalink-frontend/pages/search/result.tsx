@@ -1,5 +1,5 @@
 import { BackButton } from '../../components/buttons/Back';
-import TriangleDown from '../../public/assets/triangle-down.svg'
+import TriangleDown from '../../public/assets/triangle-down.svg';
 import SourcePin from '/public/assets/source-pin.svg';
 import TargetPin from '/public/assets/map-mark.svg';
 import ThreeDots from '/public/assets/three-dots.svg';
@@ -115,7 +115,7 @@ export default function SearchResults() {
               type="search"
               placeholder="Desde dónde quieres ir?"
               value="Casa"
-              className="w-full text-sm rounded-full ml-2 bg-baseOrigin p-4 mr-2"
+              className="w-full text-sm rounded-full ml-2 bg-base-origin p-4 mr-2"
             ></input>
           </div>
           <div></div>
@@ -125,7 +125,7 @@ export default function SearchResults() {
               type="search"
               placeholder="Hasta dónde quieres ir?"
               value="Avenida Reina Mercedes"
-              className="w-full text-sm rounded-full ml-2 bg-baseOrigin p-4 mr-2"
+              className="w-full text-sm rounded-full ml-2 bg-base-origin p-4 mr-2"
             ></input>
           </div>
           <Arrows />
@@ -174,7 +174,7 @@ export default function SearchResults() {
           )}
         </div>
         <div className="flex justify-center py-2">
-          <p className="text-xs text-grey font-thin">
+          <p className="text-xs text-gray font-thin">
             Hay 4 resultados que coinciden con tu búsqueda
           </p>
         </div>
@@ -182,6 +182,7 @@ export default function SearchResults() {
       <div className="divide-y-2 divide-light-gray">
         {searchResults.map((trip) => (
           <Link
+            key={trip.name}
             href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne?requested=false"
             className="w-full"
           >

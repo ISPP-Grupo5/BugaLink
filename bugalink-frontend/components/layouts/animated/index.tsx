@@ -5,7 +5,7 @@ export default function AnimatedLayout({ children, className = '' }) {
     // Transition animation between pages
 
     <motion.div
-      className={'w-full h-screen font-lato bg-baseOrigin ' + className}
+      className={'w-full h-screen font-lato bg-base-origin ' + className}
       initial={{ x: 25, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: -25, opacity: 0 }}

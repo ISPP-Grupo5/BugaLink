@@ -1,47 +1,79 @@
-import { SwipeableDrawer } from '@mui/material';
 import Link from 'next/link';
-import { useState } from 'react';
+import Destino from 'public/icons/Vista-Principal/destino.svg';
+import Solicitud from 'public/icons/Vista-Principal/solicitud.svg';
+import { useEffect, useState } from 'react';
+import SquareButton from '../components/buttons/Square';
 import DriverCard from '../components/cards/driver';
 import PassengerCard from '../components/cards/passenger';
+import RecommendationsDrawer from '../components/drawers/Recommendations';
 import AnimatedLayout from '../components/layouts/animated';
-import TripList from './recommendations';
+import NEXT_ROUTES from '../constants/nextRoutes';
+import UserI from '../interfaces/user';
+import axios from '../utils/axios';
 import Calendar from '/public/icons/Vista-Principal/calendar.svg';
 import Chat from '/public/icons/Vista-Principal/chat.svg';
 import Glass from '/public/icons/Vista-Principal/glass.svg';
-import Solicitud from 'public/icons/Vista-Principal/solicitud.svg';
-import Destino from 'public/icons/Vista-Principal/destino.svg';
-import SquareButton from '../components/buttons/Square';
 
 export default function Home() {
-  const [open, setOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  // userId has to be hardcoded until we have sessions in the app. This info would be stored in the user's browser
+  const userId = 1;
+  const [user, setUser] = useState<UserI | undefined>(undefined);
+  const [pendingChats, setPendingChats] = useState<number>(0);
+  const [pendingRequests, setPendingRequests] = useState<number>(0);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await axios.get('/users/' + userId);
+      setUser(data);
+    };
+
+    const getPendingChats = async () => {
+      const { data } = await axios.get(`/users/${userId}/chats/pending/count`);
+      setPendingChats(data);
+    };
+
+    const getPendingRequests = async () => {
+      const { data } = await axios.get(
+        `/users/${userId}/requests/pending/count`
+      );
+      setPendingRequests(data);
+    };
+
+    getUser();
+    getPendingChats();
+    getPendingRequests();
+  }, []); // Empty array => only run this code once (when component is first mounted).
 
   return (
     <AnimatedLayout className="overflow-y-scroll max-h-full">
       <div className="flex flex-col pb-20">
         <span className="flex items-center px-7 my-10 space-x-4">
-          <form className="flex py-3 px-4 w-full bg-white rounded-full items-center">
+          <form className="flex px-4 py-3 w-full bg-white rounded-full items-center">
             <Destino className="w-5 h-5 stroke-light-turquoise fill-light-turquoise flex-none scale-125 translate-y-0.5" />
             <input
               type="search"
               placeholder="Dónde quieres ir?"
-              className="w-full text-sm rounded-full ml-2 pl-2"
+              className="w-full h-full rounded-full ml-2 pl-2 outline-none"
             ></input>
-            <Link href="/search/result">
+            <Link href={NEXT_ROUTES.SEARCH_RESULTS}>
               <button type="submit">
                 <Glass />
               </button>
             </Link>
           </form>
-          <img
-            src="/icons/Vista-Principal/hombre.png"
-            className="h-14 aspect-square rounded-full"
-          />
+          <Link
+            className="h-14 aspect-square"
+            href={NEXT_ROUTES.PROFILE(userId)}
+          >
+            <img className="rounded-full" src={user?.photo} />
+          </Link>
         </span>
 
         <span className="flex justify-between w-full px-7">
           <SquareButton
             text="Horarios"
-            link="/users/V1StGXR8_Z5jdHi6B-myT/routines"
+            link={NEXT_ROUTES.MY_ROUTINES(userId)}
             Icon={<Calendar className="bg-white rounded-xl" />}
           />
 
@@ -49,14 +81,14 @@ export default function Home() {
             text="Chats"
             link="#"
             Icon={<Chat className="bg-white rounded-xl " />}
-            numNotifications={2}
+            numNotifications={pendingChats}
           />
 
           <SquareButton
             text="Solicitudes"
-            link="/users/V1StGXR8_Z5jdHi6B-myT/requests/pending"
+            link={NEXT_ROUTES.PENDING_REQUESTS(userId)}
             Icon={<Solicitud className="bg-white rounded-xl" />}
-            numNotifications={3}
+            numNotifications={pendingRequests}
           />
         </span>
 
@@ -89,31 +121,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <SwipeableDrawer
-        anchor="bottom"
-        open={open}
-        onClose={() => setOpen(false)}
-        onOpen={() => setOpen(true)}
-        swipeAreaWidth={80}
-        disableSwipeToOpen={false}
-        ModalProps={{
-          keepMounted: true,
-        }}
-        id="SwipeableDrawer"
-        allowSwipeInChildren={true}
-        SlideProps={{
-          style: {
-            minWidth: '320px',
-            maxWidth: '480px',
-            width: '100%',
-            margin: '0 auto',
-            overflow: 'visible',
-            height: 'calc(70% - 90px)',
-          },
-        }}
-      >
-        <TripList open={open} setOpen={setOpen} />
-      </SwipeableDrawer>
+      <RecommendationsDrawer open={drawerOpen} setOpen={setDrawerOpen} />
     </AnimatedLayout>
   );
 }

@@ -23,11 +23,11 @@ export default function TripDetails({
       <div className="py-2">
         <p className="text-xs">{date}</p>
       </div>
-      <div className="grid justify-items-center items-center grid-cols-8 grid-rows-5 mt-2 text-sm">
-        <span className="font-bold self-start justify-self-end row-span-2">
+      <div className="mt-2 grid grid-cols-8 grid-rows-5 items-center justify-items-center text-sm">
+        <span className="row-span-2 self-start justify-self-end font-bold">
           {originHour}
         </span>
-        <div className=" h-full w-full flex flex-col items-center justify-between pt-1 pb-6 row-span-5">
+        <div className=" row-span-5 flex h-full w-full flex-col items-center justify-between pt-1 pb-6">
           <SourcePin />
           <Dots className="h-10" />
           <TargetPin />
@@ -36,7 +36,7 @@ export default function TripDetails({
 
         <hr className="col-span-6 w-full text-border-color" />
 
-        <span className="font-bold self-start justify-self-end row-span-2">
+        <span className="row-span-2 self-start justify-self-end font-bold">
           {destinationHour}
         </span>
 

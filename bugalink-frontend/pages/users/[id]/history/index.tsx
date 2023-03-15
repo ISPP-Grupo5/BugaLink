@@ -6,9 +6,9 @@ import { BackButtonText } from '../../../../components/buttons/Back';
 export default function History() {
   return (
     <AnimatedLayout className=" flex flex-col overflow-y-scroll bg-white">
-      <div className="sticky top-0 px-4 py-5 bg-white z-10">
+      <div className="sticky top-0 z-10 bg-white px-4 py-5">
         <BackButtonText text={'Historial'} />
-        <form className="flex py-3 px-4 w-full bg-white rounded-full items-center border border-gray mt-3">
+        <form className="mt-3 flex w-full items-center rounded-full border border-gray bg-white py-3 px-4">
           <input
             type="search"
             placeholder="Nombre, Origen, Destino..."

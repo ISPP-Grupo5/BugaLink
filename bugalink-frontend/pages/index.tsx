@@ -46,15 +46,15 @@ export default function Home() {
   }, []); // Empty array => only run this code once (when component is first mounted).
 
   return (
-    <AnimatedLayout className="overflow-y-scroll max-h-full">
+    <AnimatedLayout className="max-h-full overflow-y-scroll">
       <div className="flex flex-col pb-20">
-        <span className="flex items-center px-7 my-10 space-x-4">
-          <form className="flex px-4 py-3 w-full bg-white rounded-full items-center">
-            <Destino className="w-5 h-5 stroke-light-turquoise fill-light-turquoise flex-none scale-125 translate-y-0.5" />
+        <span className="my-10 flex items-center space-x-4 px-7">
+          <form className="flex w-full items-center rounded-full bg-white px-4 py-3">
+            <Destino className="h-5 w-5 flex-none translate-y-0.5 scale-125 fill-light-turquoise stroke-light-turquoise" />
             <input
               type="search"
               placeholder="Dónde quieres ir?"
-              className="w-full h-full rounded-full ml-2 pl-2 outline-none"
+              className="ml-2 h-full w-full rounded-full pl-2 outline-none"
             ></input>
             <Link href={NEXT_ROUTES.SEARCH_RESULTS}>
               <button type="submit">
@@ -63,46 +63,44 @@ export default function Home() {
             </Link>
           </form>
           <Link
-            className="h-14 aspect-square"
+            className="aspect-square h-14"
             href={NEXT_ROUTES.PROFILE(userId)}
           >
             <img className="rounded-full" src={user?.photo} />
           </Link>
         </span>
 
-        <span className="flex justify-between w-full px-7">
+        <span className="flex w-full justify-between px-7">
           <SquareButton
             text="Horarios"
             link={NEXT_ROUTES.MY_ROUTINES(userId)}
-            Icon={<Calendar className="bg-white rounded-xl" />}
+            Icon={<Calendar className="rounded-xl bg-white" />}
           />
 
           <SquareButton
             text="Chats"
             link="#"
-            Icon={<Chat className="bg-white rounded-xl " />}
+            Icon={<Chat className="rounded-xl bg-white " />}
             numNotifications={pendingChats}
           />
 
           <SquareButton
             text="Solicitudes"
             link={NEXT_ROUTES.PENDING_REQUESTS(userId)}
-            Icon={<Solicitud className="bg-white rounded-xl" />}
+            Icon={<Solicitud className="rounded-xl bg-white" />}
             numNotifications={pendingRequests}
           />
         </span>
 
-        <span className="flex justify-between mt-5 px-7">
-          <p className="text-xl text-left font-semibold">Próximos viajes</p>
+        <span className="mt-5 flex justify-between px-7">
+          <p className="text-left text-xl font-semibold">Próximos viajes</p>
           <Link href="/users/qyahXxJc/history">
-            <p className="text-xl text-right text-turquoise font-semibold">
-              Historial
-            </p>
+            <p className="text-right text-xl text-turquoise">Historial</p>
           </Link>
         </span>
 
         <div data-carousel="static">
-          <div className="relative w-full flex -space-x-7 snap-x snap-mandatory overflow-x-auto">
+          <div className="relative flex w-full snap-x snap-mandatory -space-x-7 overflow-x-auto">
             <PassengerCard link="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne/?requested=true" />
             <PassengerCard link="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne/?requested=true" />
             <PassengerCard link="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne/?requested=true" />
@@ -111,7 +109,7 @@ export default function Home() {
             <PassengerCard link="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne/?requested=true" />
           </div>
 
-          <div className="relative w-full flex -space-x-7 snap-x snap-mandatory overflow-x-auto mt-2">
+          <div className="relative mt-2 flex w-full snap-x snap-mandatory -space-x-7 overflow-x-auto">
             <DriverCard />
             <DriverCard />
             <DriverCard />

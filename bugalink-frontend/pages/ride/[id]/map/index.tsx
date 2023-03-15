@@ -7,19 +7,19 @@ import Progress from '/public/assets/progress.svg';
 export default function RideMap() {
   return (
     <AnimatedLayout>
-      <BackButton className="absolute left-2 top-2 shadow-xl pr-2 py-3 bg-base-origin" />
-      <img src="/assets/mocks/map.png" className="w-full object-cover h-full" />
-      <div className="sticky w-full -mt-6 bottom-0 bg-white rounded-t-3xl drop-shadow-md grid grid-rows-2 px-5 py-6 z-10">
-        <span className="grid grid-cols-2 mb-4">
-          <div className="text-left text-ellipsis">
-            <p className="font-light text-gray text-xs">Origen</p>
+      <BackButton className="absolute left-2 top-2 bg-base-origin py-3 pr-2 shadow-xl" />
+      <img src="/assets/mocks/map.png" className="h-full w-full object-cover" />
+      <div className="sticky bottom-0 z-10 -mt-6 grid w-full grid-rows-2 rounded-t-3xl bg-white px-5 py-6 drop-shadow-md">
+        <span className="mb-4 grid grid-cols-2">
+          <div className="text-ellipsis text-left">
+            <p className="text-xs font-light text-gray">Origen</p>
             <p className="text-sm">
               Escuela Técnica Superior de Ingeniería Informática (ETSII), 41002
               Sevilla
             </p>
           </div>
           <div className="text-right">
-            <p className="font-light text-gray text-xs">Destino</p>
+            <p className="text-xs font-light text-gray">Destino</p>
             <p className="text-sm">
               Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla
             </p>
@@ -27,11 +27,11 @@ export default function RideMap() {
         </span>
         <div className="flex flex-col">
           <CarProgress />
-          <span className="grid grid-cols-3 text-center items-center">
+          <span className="grid grid-cols-3 items-center text-center">
             <p className="text-3xl font-bold">21:00</p>
             <div>
               <p className="text-lg leading-none">15 minutos</p>
-              <p className="font-extralight text-gray text-xs tracking-tighter leading-none">
+              <p className="text-xs font-extralight leading-none tracking-tighter text-gray">
                 aproximadamente
               </p>
             </div>

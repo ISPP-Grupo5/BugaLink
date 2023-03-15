@@ -15,7 +15,7 @@ export default function AcceptRequest() {
   return (
     <AnimatedLayout className="flex flex-col justify-between">
       <BackButtonText text="Solicitud de viaje" />
-      <div className="flex flex-col pb-4 pt-2 px-6 h-full overflow-y-scroll justify-between bg-white">
+      <div className="flex h-full flex-col justify-between overflow-y-scroll bg-white px-6 pb-4 pt-2">
         {/* Profile header */}
         <ProfileHeader
           name="Jesús Marchena"
@@ -23,7 +23,7 @@ export default function AcceptRequest() {
           numberOfRatings="14"
         />
         <div className="flex flex-row">
-          <p className="text-sm font-normal text-dark-gray text-justify">
+          <p className="text-justify text-sm font-normal text-dark-gray">
             Nota del pasajero
           </p>
         </div>
@@ -36,9 +36,9 @@ export default function AcceptRequest() {
         </div>
 
         {/* Details */}
-        <div className="py-2 mt-4">
+        <div className="mt-4 py-2">
           <hr className="mt-3 mb-3 w-full text-border-color" />
-          <p className="font-bold text-xl">Detalles del viaje</p>
+          <p className="text-xl font-bold">Detalles del viaje</p>
         </div>
         {/* Map preview */}
         <MapPreview />
@@ -52,10 +52,10 @@ export default function AcceptRequest() {
         />
       </div>
       {/* Trip request */}
-      <div className="flex flex-col w-full items-center justify-between py-6 bg-white rounded-t-lg shadossw-t-md px-4 z-50">
+      <div className="shadossw-t-md z-50 flex w-full flex-col items-center justify-between rounded-t-lg bg-white py-6 px-4">
         <div className="flex flex-row pb-3">
           <p
-            className="text-md font-medium text-red-dark cursor-pointer"
+            className="text-md cursor-pointer font-medium text-red-dark"
             onClick={() => setDrawerDecline(true)}
           >
             No puedo llevar a este pasajero
@@ -74,13 +74,13 @@ export default function AcceptRequest() {
               },
             }}
           >
-            <div className="rounded-t-lg bg-white overflow-visible">
-              <div className="flex m-5">
-                <p className="font-lato font-bold text-xl">
+            <div className="overflow-visible rounded-t-lg bg-white">
+              <div className="m-5 flex">
+                <p className="font-lato text-xl font-bold">
                   Motivo del rechazo
                 </p>
               </div>
-              <div className="flex flex-col mx-5 mb-2">
+              <div className="mx-5 mb-2 flex flex-col">
                 <TextAreaField
                   fieldName="Resume brevemente el motivo"
                   content={reason}
@@ -90,7 +90,7 @@ export default function AcceptRequest() {
                   rows={5}
                 />
               </div>
-              <div className="flex flex-col items-center mb-5">
+              <div className="mb-5 flex flex-col items-center">
                 <CTAButton
                   className="w-11/12 bg-red-button"
                   text={'RECHAZAR'}

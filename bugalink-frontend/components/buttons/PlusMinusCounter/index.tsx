@@ -10,12 +10,12 @@ export default function PlusMinusCounter({
   text,
 }: Props) {
   return (
-    <div className="relative w-full text-center bg-base-origin font-semibold p-1 rounded-xl flex justify-between items-center">
+    <div className="relative flex w-full items-center justify-between rounded-xl bg-base-origin p-1 text-center font-semibold">
       <button
         onClickCapture={(e) => {
           e.preventDefault();
         }}
-        className="w-10 h-10 bg-white rounded-lg text-xl flex items-center justify-center"
+        className="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-xl"
         onClick={onMinusClick}
       >
         —
@@ -25,7 +25,7 @@ export default function PlusMinusCounter({
         onClickCapture={(e) => {
           e.preventDefault();
         }}
-        className="w-10 h-10 bg-white rounded-lg text-2xl flex items-center justify-center"
+        className="flex h-10 w-10 items-center justify-center rounded-lg bg-white text-2xl"
         onClick={onPlusClick}
       >
         +

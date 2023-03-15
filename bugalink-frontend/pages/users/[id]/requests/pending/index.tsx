@@ -21,7 +21,7 @@ export default function PendingRequests() {
   }, []);
 
   return (
-    <AnimatedLayout className="bg-white overflow-y-scroll">
+    <AnimatedLayout className="overflow-y-scroll bg-white">
       <BackButtonText text={'Solicitudes pendientes'} />
       <div className="mx-6 space-y-4">
         {pendingRequests.map((request: TripRequestI) => (

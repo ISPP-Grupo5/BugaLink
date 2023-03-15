@@ -12,12 +12,12 @@ export default function RequestCard({ request, className = '' }: Props) {
   return (
     <div
       className={
-        'flex flex-col w-full bg-white outline outline-1 outline-light-gray rounded-lg ' +
+        'flex w-full flex-col rounded-lg bg-white outline outline-1 outline-light-gray ' +
         className
       }
     >
       <p
-        className={`w-full px-4 text-xl py-2 mb-2 rounded-t-lg ${
+        className={`mb-2 w-full rounded-t-lg px-4 py-2 text-xl ${
           isRecurring ? 'bg-turquoise text-white' : 'bg-light-gray text-black'
         }`}
       >

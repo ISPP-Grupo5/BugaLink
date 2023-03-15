@@ -16,9 +16,9 @@ export default function SquareButton({
   return (
     <Link href={link} className="relative">
       <div className="bg-base-origin">{Icon}</div>
-      <p className="text-lg text-center">{text}</p>
+      <p className="text-center text-lg">{text}</p>
       {numNotifications > 0 && (
-        <p className="absolute bg-light-red w-7 h-7 rounded-full text-white text-center -left-2 -top-2">
+        <p className="absolute -left-4 -top-3 flex h-9 w-9 items-center justify-center rounded-full bg-light-red text-center text-xl font-semibold   text-white">
           {numNotifications}
         </p>
       )}

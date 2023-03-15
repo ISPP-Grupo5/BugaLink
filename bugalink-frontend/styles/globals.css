@@ -72,8 +72,8 @@ body {
 
 /* MUI changes our <a/> in the Drawers so we have to override their styles once again */
 .unstyle-link {
-  color: inherit;
-  text-decoration: none;
+  color: inherit !important;
+  text-decoration: none !important;
 }
 
 * {

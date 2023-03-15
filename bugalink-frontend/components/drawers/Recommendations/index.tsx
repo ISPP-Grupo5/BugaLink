@@ -49,23 +49,23 @@ export default function RecommendationsDrawer({ open, setOpen }: Props) {
     >
       <div className="overflow-scroll">
         <div
-          className={`absolute -top-20 rounded-t-2xl bg-white w-full visible right-0 left-0 cursor-pointer`}
+          className={`visible absolute -top-20 right-0 left-0 w-full cursor-pointer rounded-t-2xl bg-white`}
           onClick={() => setOpen(true)}
         >
           <div className="ml-4 mt-4">
-            <div className="w-7 h-1.5 bg-light-gray rounded-lg absolute top-2 left-1/2 transform -translate-x-1/2"></div>
-            <p className="font-lato font-semibold text-3xl">Recomendaciones</p>
-            <p className="font-lato font-thin text-base text-gray mb-5 leading-3">
+            <div className="absolute top-2 left-1/2 h-1.5 w-7 -translate-x-1/2 transform rounded-lg bg-light-gray"></div>
+            <p className="font-lato text-3xl font-semibold">Recomendaciones</p>
+            <p className="mb-5 font-lato text-base font-thin leading-3 text-gray">
               En base a tu horario sin cubrir
             </p>
           </div>
         </div>
-        <div className="trip-list grid justify-items-center mt-1 h-full overflow-auto">
+        <div className="trip-list mt-1 grid h-full justify-items-center overflow-auto">
           {trips.map((trip: TripI) => (
             <Link
               key={trip.id}
               href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne?requested=false"
-              className="w-full unstyle-link"
+              className="unstyle-link w-full"
             >
               <TripCard
                 key={trip.id}
@@ -78,7 +78,7 @@ export default function RecommendationsDrawer({ open, setOpen }: Props) {
                 destination={trip.destination}
                 date={trip.date}
                 price={trip.price}
-                className="bg-white rounded-md outline outline-1 outline-light-gray"
+                className="rounded-md bg-white outline outline-1 outline-light-gray"
               />
             </Link>
           ))}

@@ -23,9 +23,9 @@ export default function ProfileHeader({
       <div className="flex flex-row">
         <img
           src="/assets/mocks/profile1.png"
-          className="w-11 h-11 rounded-full"
+          className="h-11 w-11 rounded-full"
         />
-        <div className="flex flex-col ml-3">
+        <div className="ml-3 flex flex-col">
           <p className="text-lg font-bold leading-normal">{name}</p>
           <p className="text-xs font-normal">
             ⭐ {rating} - {numberOfRatings} valoraciones
@@ -33,10 +33,10 @@ export default function ProfileHeader({
         </div>
       </div>
       <div className="flex space-x-2">
-        <button className="rounded-full w-7 h-7 flex items-center justify-center border border-turquoise">
-          <Chat className="w-3 h-3" />
+        <button className="flex h-7 w-7 items-center justify-center rounded-full border border-turquoise">
+          <Chat className="h-3 w-3" />
         </button>
-        <button className="rounded-full w-20 h-7 flex items-center justify-center border border-turquoise">
+        <button className="flex h-7 w-20 items-center justify-center rounded-full border border-turquoise">
           <p className="text-xs font-bold text-turquoise">Ver perfil</p>
         </button>
       </div>

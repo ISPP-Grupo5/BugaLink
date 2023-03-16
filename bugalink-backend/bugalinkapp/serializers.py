@@ -1,11 +1,21 @@
 from rest_framework import serializers
-from bugalinkapp.models import *
+from .models import *
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+        
+class RideSerializer(serializers.ModelSerializer):
+
+    class Meta:
+
+        model = Ride
+        fields = '__all__'
+
+class ListRideSerializer(serializers.Serializer):
+    rides = RideSerializer(many=True)
 
 
 class IndividualRideSerializer(serializers.ModelSerializer):

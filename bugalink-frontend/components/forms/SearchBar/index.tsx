@@ -3,12 +3,12 @@ import Destino from 'public/icons/Vista-Principal/destino.svg';
 
 export default function SearchBar() {
   return (
-    <form className="flex py-3 px-4 w-full bg-white rounded-full items-center">
-      <Destino className="w-5 h-5 stroke-light-turquoise fill-light-turquoise flex-none scale-125 translate-y-0.5" />
+    <form className="flex w-full items-center rounded-full bg-white py-3 px-4">
+      <Destino className="h-5 w-5 flex-none translate-y-0.5 scale-125 fill-light-turquoise stroke-light-turquoise" />
       <input
         type="search"
         placeholder="Dónde quieres ir?"
-        className="w-full text-sm rounded-full ml-2"
+        className="ml-2 w-full rounded-full text-sm"
       ></input>
       <button type="submit" className="">
         <Glass />

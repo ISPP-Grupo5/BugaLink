@@ -14,11 +14,13 @@ export default function SquareButton({
   numNotifications = 0,
 }: Params) {
   return (
-    <Link href={link} className="relative">
-      <div className="bg-baseOrigin">{Icon}</div>
-      <p className="text-lg text-center">{text}</p>
+    <Link href={link} className="relative w-full">
+      <div className="flex justify-end overflow-hidden rounded-lg bg-white">
+        {Icon}
+      </div>
+      <p className="text-center text-lg">{text}</p>
       {numNotifications > 0 && (
-        <p className="absolute bg-light-red w-7 h-7 rounded-full text-white text-center -left-2 -top-2">
+        <p className="absolute -left-3 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-light-red text-center text-lg font-semibold text-white">
           {numNotifications}
         </p>
       )}

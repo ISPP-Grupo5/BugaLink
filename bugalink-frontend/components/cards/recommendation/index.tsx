@@ -31,11 +31,11 @@ export default function TripCard({
   return (
     <div
       className={
-        'grid grid-cols-2 grid-rows-4 gap-y-2 gap-x-4 w-full p-4 pt-1 ' +
+        'grid w-full grid-cols-2 grid-rows-4 gap-y-2 gap-x-4 p-4 pt-1 ' +
         className
       }
     >
-      <span className="flex col-span-2 row-span-2 items-center space-x-4">
+      <span className="col-span-2 row-span-2 flex items-center space-x-4">
         <AvatarWithRating avatar={avatar} rating={rating} />
         <Entry title={role}>
           <p className="text-lg font-semibold leading-5">{name}</p>

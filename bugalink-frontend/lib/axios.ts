@@ -1,10 +1,8 @@
-// create custom axios instance
-
 import axios from 'axios';
 
 export default axios.create({
   baseURL:
     process.env.NODE_ENV === 'production' // TODO: untested. THIS IS NOT THE CORRECT API URL YET!!
-      ? 'https://bugalink.es/api'
-      : 'http://localhost:3001/api',
+      ? process.env.PRODUCTION_API_URL || 'https://app.bugalink.es/api'
+      : `http://localhost:${process.env.PORT || 3030}/api`,
 });

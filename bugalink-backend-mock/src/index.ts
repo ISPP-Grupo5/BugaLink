@@ -12,7 +12,7 @@ const app = express();
 app.use(cors());
 
 // Set port for the server to listen on
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3030;
 
 // Use body-parser middleware to parse incoming requests
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -75,9 +75,13 @@ router.get('/users/:userId/trips', (req, res) => {
   const userId = req.params.userId;
   const status = req.query.status;
 
-  // (...) do some filtering with userId and status
-
-  res.json(sampleTripRequests);
+  res.json(
+    sampleTripRequests.filter(
+      (tripRequest) =>
+        tripRequest.requestedBy.id === Number.parseInt(userId) && // show only pending trips for the current user
+        tripRequest.requestStatus === status // status could be "pending"
+    )
+  );
 });
 
 // Register API routes

@@ -62,12 +62,14 @@ export const sampleTripRequests = [
     id: 1,
     type: 'recurring',
     driver: {
+      id: 2,
       name: 'Paco Perez',
       rating: 4.6,
       avatar: '/assets/avatar.png',
       gender: 'M',
     },
     requestedBy: {
+      id: 1,
       name: 'Pedro Sánchez',
       rating: 3.5,
       avatar: '/assets/avatar.png',
@@ -83,11 +85,13 @@ export const sampleTripRequests = [
     id: 2,
     type: 'onetime',
     driver: {
+      id: 3,
       name: 'Josefina Mayo',
       rating: 4.7,
       avatar: '/assets/avatar.svg',
     },
     requestedBy: {
+      id: 4,
       name: 'Luisa Fernanda Rodríguez',
       rating: 5.0,
       avatar: '/assets/avatar.png',

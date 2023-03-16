@@ -4,6 +4,8 @@ import Glass from '/public/icons/Vista-Principal/glass.svg';
 import { BackButtonText } from '../../../../components/buttons/Back';
 
 export default function History() {
+  // TODO: Get history from API
+  // Create a hook "useTripHistory" following the same pattern as others like "useTripRecommendations"
   return (
     <AnimatedLayout className=" flex flex-col overflow-y-scroll bg-white">
       <div className="sticky top-0 z-10 bg-white px-4 py-5">

@@ -1,8 +1,8 @@
+import TripCard from '@/components/cards/recommendation';
+import useRecommendedTrips from '@/hooks/useRecommendedTrips';
+import TripI from '@/interfaces/trip';
 import { Link, SwipeableDrawer } from '@mui/material';
 import { useEffect, useState } from 'react';
-import TripI from '../../../interfaces/trip';
-import axios from '../../../utils/axios';
-import TripCard from '../../cards/recommendation';
 
 type Props = {
   open: boolean;
@@ -10,17 +10,14 @@ type Props = {
 };
 
 export default function RecommendationsDrawer({ open, setOpen }: Props) {
-  const [trips, setTrips] = useState<TripI[]>([]);
+  const [firstOpened, setFirstOpened] = useState(false);
 
+  // We will use firstOpened to handle the first time the drawer is opened
+  // This is because we want don't want to fetch the recommendations
+  // until the user actually opens the drawer for the first time.
+  // This is to avoid unnecessary requests to the backend
   useEffect(() => {
-    if (!open) return; // Only fetch recommendations when the user opens the drawer
-
-    const getRecommendedTrips = async () => {
-      const { data } = await axios.get('/trips/recommendations');
-      setTrips(data);
-    };
-
-    getRecommendedTrips();
+    open && setFirstOpened(true);
   }, [open]);
 
   return (
@@ -60,34 +57,45 @@ export default function RecommendationsDrawer({ open, setOpen }: Props) {
             </p>
           </div>
         </div>
-        <div className="trip-list mt-1 grid h-full justify-items-center overflow-auto">
-          {trips.map((trip: TripI) => (
-            <Link
-              key={trip.id}
-              href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne?requested=false"
-              className="unstyle-link w-full"
-            >
-              <TripCard
-                key={trip.id}
-                type={trip.type}
-                rating={trip.rating}
-                name={trip.driver.name}
-                gender={trip.gender}
-                avatar={trip.avatar}
-                origin={trip.origin}
-                destination={trip.destination}
-                date={trip.date}
-                price={trip.price}
-                className="rounded-md bg-white outline outline-1 outline-light-gray"
-              />
-            </Link>
-          ))}
-        </div>
+        {firstOpened && <RecommendationsList />}
       </div>
     </SwipeableDrawer>
   );
 }
 
+// Inner component that fetches and renders the list of recommendations only when the drawer is open
+const RecommendationsList = () => {
+  const { trips, isLoading, isError } = useRecommendedTrips();
+
+  if (isLoading) return <p>Loading...</p>; // TODO: make skeleton
+  if (isError) return <p>Error</p>; // TODO: make error message
+
+  return (
+    <div className="trip-list mt-1 grid h-full justify-items-center overflow-auto">
+      {trips.map((trip: TripI) => (
+        <Link
+          key={trip.id}
+          href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne?requested=false"
+          className="unstyle-link w-full"
+        >
+          <TripCard
+            key={trip.id}
+            type={trip.type}
+            rating={trip.rating}
+            name={trip.driver.name}
+            gender={trip.gender}
+            avatar={trip.avatar}
+            origin={trip.origin}
+            destination={trip.destination}
+            date={trip.date}
+            price={trip.price}
+            className="rounded-md bg-white outline outline-1 outline-light-gray"
+          />
+        </Link>
+      ))}
+    </div>
+  );
+};
 RecommendationsDrawer.defaultProps = {
   open: false,
   setOpen: () => {

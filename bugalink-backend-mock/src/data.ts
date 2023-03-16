@@ -1,5 +1,6 @@
 export const sampleTrips = [
   {
+    id: 1,
     type: 'driver',
     rating: 4.6,
     driver: {
@@ -13,6 +14,7 @@ export const sampleTrips = [
     price: 2,
   },
   {
+    id: 2,
     type: 'driver',
     rating: 4.7,
     driver: {
@@ -26,6 +28,7 @@ export const sampleTrips = [
     price: 1.5,
   },
   {
+    id: 3,
     type: 'driver',
     rating: 4.7,
     driver: {
@@ -39,6 +42,7 @@ export const sampleTrips = [
     price: 1.75,
   },
   {
+    id: 4,
     type: 'driver',
     rating: 4.7,
     driver: {

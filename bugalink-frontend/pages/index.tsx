@@ -1,49 +1,24 @@
+import SquareChatsButton from '@/components/buttons/Square/Chats';
+import SquareRequestsButton from '@/components/buttons/Square/Requests';
+import SquareRoutinesButton from '@/components/buttons/Square/Routines';
+import useUser from '@/hooks/useUser';
 import Link from 'next/link';
 import Destino from 'public/icons/Vista-Principal/destino.svg';
-import Solicitud from 'public/icons/Vista-Principal/solicitud.svg';
-import { useEffect, useState } from 'react';
-import SquareButton from '../components/buttons/Square';
+
+import { useState } from 'react';
 import DriverCard from '../components/cards/driver';
 import PassengerCard from '../components/cards/passenger';
 import RecommendationsDrawer from '../components/drawers/Recommendations';
 import AnimatedLayout from '../components/layouts/animated';
 import NEXT_ROUTES from '../constants/nextRoutes';
-import UserI from '../interfaces/user';
-import axios from '../utils/axios';
-import Calendar from '/public/icons/Vista-Principal/calendar.svg';
-import Chat from '/public/icons/Vista-Principal/chat.svg';
+
 import Glass from '/public/icons/Vista-Principal/glass.svg';
 
 export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   // userId has to be hardcoded until we have sessions in the app. This info would be stored in the user's browser
-  const userId = 1;
-  const [user, setUser] = useState<UserI | undefined>(undefined);
-  const [pendingChats, setPendingChats] = useState<number>(0);
-  const [pendingRequests, setPendingRequests] = useState<number>(0);
-
-  useEffect(() => {
-    const getUser = async () => {
-      const { data } = await axios.get('/users/' + userId);
-      setUser(data);
-    };
-
-    const getPendingChats = async () => {
-      const { data } = await axios.get(`/users/${userId}/chats/pending/count`);
-      setPendingChats(data);
-    };
-
-    const getPendingRequests = async () => {
-      const { data } = await axios.get(
-        `/users/${userId}/requests/pending/count`
-      );
-      setPendingRequests(data);
-    };
-
-    getUser();
-    getPendingChats();
-    getPendingRequests();
-  }, []); // Empty array => only run this code once (when component is first mounted).
+  const USER_ID = 1;
+  const { user, isLoading, isError } = useUser(USER_ID);
 
   return (
     <AnimatedLayout className="max-h-full overflow-y-scroll">
@@ -64,31 +39,16 @@ export default function Home() {
           </form>
           <Link
             className="aspect-square h-14"
-            href={NEXT_ROUTES.PROFILE(userId)}
+            href={NEXT_ROUTES.PROFILE(USER_ID)}
           >
             <img className="rounded-full" src={user?.photo} />
           </Link>
         </span>
 
         <span className="flex w-full justify-between space-x-4 px-4 md:px-5">
-          <SquareButton
-            text="Horarios"
-            link={NEXT_ROUTES.MY_ROUTINES(userId)}
-            Icon={<Calendar />}
-          />
-
-          <SquareButton
-            text="Chats"
-            link="#"
-            Icon={<Chat className="translate-x-0.5 translate-y-0.5" />}
-            numNotifications={pendingChats}
-          />
-          <SquareButton
-            text="Solicitudes"
-            link={NEXT_ROUTES.PENDING_REQUESTS(userId)}
-            Icon={<Solicitud className="translate-x-0.5 translate-y-0.5" />}
-            numNotifications={pendingRequests}
-          />
+          <SquareRoutinesButton />
+          <SquareChatsButton />
+          <SquareRequestsButton />
         </span>
 
         <span className="mt-5 flex justify-between px-4 md:px-5">

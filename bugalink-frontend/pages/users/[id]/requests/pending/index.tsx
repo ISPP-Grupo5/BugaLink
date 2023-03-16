@@ -1,25 +1,16 @@
+import { BackButtonText } from '@/components/buttons/Back';
+import RequestCard from '@/components/cards/request';
+import AnimatedLayout from '@/components/layouts/animated';
+import NEXT_ROUTES from '@/constants/nextRoutes';
+import usePendingRequests from '@/hooks/usePendingRequests';
+import TripRequestI from '@/interfaces/tripRequest';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { BackButtonText } from '../../../../../components/buttons/Back';
-import RequestCard from '../../../../../components/cards/request';
-import AnimatedLayout from '../../../../../components/layouts/animated';
-import NEXT_ROUTES from '../../../../../constants/nextRoutes';
-import TripRequestI from '../../../../../interfaces/tripRequest';
-import axios from '../../../../../utils/axios';
 
 export default function PendingRequests() {
-  const [pendingRequests, setPendingRequests] = useState<TripRequestI[]>([]);
-  const userId = 1; // Hardcoded until we have sessions
+  const { pendingRequests, isLoading, isError } = usePendingRequests();
 
-  useEffect(() => {
-    const getPendingRequests = async () => {
-      const { data } = await axios.get(`/users/${userId}/trips?status=pending`);
-      setPendingRequests(data);
-    };
-
-    getPendingRequests();
-  }, []);
-
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error</div>;
   return (
     <AnimatedLayout className="overflow-y-scroll bg-white">
       <BackButtonText text={'Solicitudes pendientes'} />

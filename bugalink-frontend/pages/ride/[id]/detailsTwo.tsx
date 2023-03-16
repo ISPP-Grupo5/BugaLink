@@ -56,6 +56,7 @@ export default function DetailsTwo() {
         />
         <div className="flex flex-row">
           <p className="font-normal text-dark-turquoise">
+            {/* TODO: make this button work */}
             Añade una nota al conductor
           </p>
         </div>

@@ -1,36 +1,29 @@
-import copy
-
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
-from .models import *
-from django.http import HttpResponse
-from django.http import Http404
-from datetime import timedelta
-import datetime
+
+from django.http import JsonResponse
 from math import radians, sin, cos, atan2, sqrt
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+
+from .models import *
 from .serializers import *
 
+#Imports que deberian desaparecer despues de la refactorización
 from rest_framework import viewsets
-from rest_framework.decorators import action
-
-from rest_framework import serializers
-
+from django.http import Http404
+from rest_framework.response import Response
 
 class users(APIView):
 
-    def get(self, request): 
+    def get(self, request,id): 
         try:
-            user = User.objects.get(id=request.data['id'])
+            user = User.objects.get(id=id)
             serializer = UserSerializer(user, context={'request': request})
-            return Response(serializer.data)
+            return JsonResponse(serializer.data)
         except User.DoesNotExist:
-            raise Http404
+            return JsonResponse({"message":"Not found"},status=404)
 
 class routineRecommendation(APIView):
     def get(self, request):

@@ -3,7 +3,7 @@ import '@/styles/globals.css';
 import { AnimatePresence } from 'framer-motion';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import MobileLayout from '../components/layouts/mobile';
+import MobileLayout from '@/components/layouts/mobile';
 
 export default function MyApp({ Component, pageProps, router }: AppProps) {
   return (

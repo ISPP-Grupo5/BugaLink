@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import clowns from '/public/assets/clowns.png';
-import AnimatedLayout from '../components/layouts/animated';
+import AnimatedLayout from '@/components/layouts/animated';
 
 export default function FourOhFour() {
   return (

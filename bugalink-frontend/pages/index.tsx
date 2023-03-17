@@ -6,9 +6,9 @@ import useUser from '@/hooks/useUser';
 import Link from 'next/link';
 import Destino from 'public/icons/Vista-Principal/destino.svg';
 import { useState } from 'react';
-import RecommendationsDrawer from '../components/drawers/Recommendations';
-import AnimatedLayout from '../components/layouts/animated';
-import NEXT_ROUTES from '../constants/nextRoutes';
+import RecommendationsDrawer from '@/components/drawers/Recommendations';
+import AnimatedLayout from '@/components/layouts/animated';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 import Glass from '/public/icons/Vista-Principal/glass.svg';
 
 export default function Home() {

@@ -2,7 +2,6 @@ import TripCard from '@/components/cards/recommendation';
 import useRecommendedTrips from '@/hooks/useRecommendedTrips';
 import TripI from '@/interfaces/trip';
 import { Link, SwipeableDrawer } from '@mui/material';
-import { useEffect, useState } from 'react';
 
 type Props = {
   open: boolean;
@@ -10,16 +9,6 @@ type Props = {
 };
 
 export default function RecommendationsDrawer({ open, setOpen }: Props) {
-  const [firstOpened, setFirstOpened] = useState(false);
-
-  // We will use firstOpened to handle the first time the drawer is opened
-  // This is because we want don't want to fetch the recommendations
-  // until the user actually opens the drawer for the first time.
-  // This is to avoid unnecessary requests to the backend
-  useEffect(() => {
-    open && setFirstOpened(true);
-  }, [open]);
-
   return (
     <SwipeableDrawer
       anchor="bottom"
@@ -40,7 +29,7 @@ export default function RecommendationsDrawer({ open, setOpen }: Props) {
           width: '100%',
           margin: '0 auto',
           overflow: 'visible',
-          height: 'calc(70% - 90px)',
+          height: 'calc(80%)',
         },
       }}
     >
@@ -57,7 +46,7 @@ export default function RecommendationsDrawer({ open, setOpen }: Props) {
             </p>
           </div>
         </div>
-        {firstOpened && <RecommendationsList />}
+        <RecommendationsList />
       </div>
     </SwipeableDrawer>
   );
@@ -80,11 +69,11 @@ const RecommendationsList = () => {
         >
           <TripCard
             key={trip.id}
-            type={trip.type}
-            rating={trip.rating}
+            type={'recurring'}
+            rating={0}
             name={trip.driver.name}
-            gender={trip.gender}
-            avatar={trip.avatar}
+            gender={'M'}
+            avatar={trip.driver.photo}
             origin={trip.origin}
             destination={trip.destination}
             date={trip.date}

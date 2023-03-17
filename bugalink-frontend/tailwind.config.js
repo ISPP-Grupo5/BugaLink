@@ -19,8 +19,10 @@ module.exports = {
       'light-turquoise': '#7cc3c4',
       green: '#75a538',
       'light-green': '#A6DE5F',
+      'pale-green': '#E7FBAF',
       yellow: '#f9c200',
       'border-color': '#DADADA',
+      orange: '#F99746',
     },
     extend: {
       fontFamily: {

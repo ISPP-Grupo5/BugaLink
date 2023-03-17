@@ -1,9 +1,9 @@
-import Head from 'next/head';
-import { AppProps } from 'next/app';
-import '../styles/globals.css';
-import MobileLayout from '../components/layouts/mobile';
+import '@/styles/carousel.css';
+import '@/styles/globals.css';
 import { AnimatePresence } from 'framer-motion';
-import AnimatedLayout from '../components/layouts/animated';
+import { AppProps } from 'next/app';
+import Head from 'next/head';
+import MobileLayout from '../components/layouts/mobile';
 
 export default function MyApp({ Component, pageProps, router }: AppProps) {
   return (

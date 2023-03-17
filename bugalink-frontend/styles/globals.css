@@ -40,6 +40,8 @@ html {
 * {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -74,10 +76,6 @@ body {
 .unstyle-link {
   color: inherit !important;
   text-decoration: none !important;
-}
-
-* {
-  box-sizing: border-box;
 }
 
 /* Add this CSS class to buttons, etc. to prevent selecting */

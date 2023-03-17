@@ -84,6 +84,11 @@ router.get('/users/:userId/trips', (req, res) => {
   );
 });
 
+// get(`/users/${userId}/trips/upcoming`);
+router.get('/users/:userId/trips/upcoming', (req, res) => {
+  res.json(sampleTrips);
+});
+
 // Register API routes
 app.use('/api', router);
 

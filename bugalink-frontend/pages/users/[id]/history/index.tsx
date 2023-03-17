@@ -7,17 +7,17 @@ export default function History() {
   // TODO: Get history from API
   // Create a hook "useTripHistory" following the same pattern as others like "useTripRecommendations"
   return (
-    <AnimatedLayout className=" flex flex-col overflow-y-scroll bg-white">
-      <div className="sticky top-0 z-10 bg-white px-4 py-5">
+    <AnimatedLayout className=" flex flex-col overflow-y-scroll bg-white px-4">
+      <div className="sticky top-0 z-10 bg-white">
         <BackButtonText text={'Historial'} />
-        <form className="mt-3 flex w-full items-center rounded-full border border-gray bg-white py-3 px-4">
+        <form className="flex w-full items-center rounded-full border border-gray bg-white py-2.5 px-4">
           <input
             type="search"
-            placeholder="Nombre, Origen, Destino..."
+            placeholder="Nombre, origen, destino..."
             className="w-full text-lg"
           ></input>
           <button type="submit" className="">
-            <Glass />
+            <Glass className="text-gray" />
           </button>
         </form>
       </div>

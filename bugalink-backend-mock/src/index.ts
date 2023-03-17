@@ -89,6 +89,12 @@ router.get('/users/:userId/trips/upcoming', (req, res) => {
   res.json(sampleTrips);
 });
 
+// get(`/users/${userId}/trips/history?type=driver`);
+router.get('/users/:userId/trips/history', (req, res) => {
+  // return trips in random order
+  res.json(sampleTrips.sort(() => Math.random() - 0.5));
+});
+
 // Register API routes
 app.use('/api', router);
 

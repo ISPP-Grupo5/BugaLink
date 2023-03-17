@@ -2,6 +2,7 @@ import TripCard from '@/components/cards/recommendation';
 import useRecommendedTrips from '@/hooks/useRecommendedTrips';
 import TripI from '@/interfaces/trip';
 import { Link, SwipeableDrawer } from '@mui/material';
+import { useState, useEffect } from 'react';
 
 type Props = {
   open: boolean;
@@ -9,6 +10,12 @@ type Props = {
 };
 
 export default function RecommendationsDrawer({ open, setOpen }: Props) {
+  const [isFirstLoaded, setIsFirstLoaded] = useState(false);
+
+  useEffect(() => {
+    if (open) setIsFirstLoaded(true);
+  }, [open]);
+
   return (
     <SwipeableDrawer
       anchor="bottom"
@@ -46,7 +53,7 @@ export default function RecommendationsDrawer({ open, setOpen }: Props) {
             </p>
           </div>
         </div>
-        <RecommendationsList />
+        {isFirstLoaded && <RecommendationsList />}
       </div>
     </SwipeableDrawer>
   );

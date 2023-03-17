@@ -1,101 +1,55 @@
-import TripCard from '../../../../components/cards/recommendation';
-import AnimatedLayout from '../../../../components/layouts/animated';
-import Glass from '/public/icons/Vista-Principal/glass.svg';
-import { BackButtonText } from '../../../../components/buttons/Back';
+import useHistoryTrips from '@/hooks/useHistoryTrips';
+import TripI from '@/interfaces/trip';
+import { Tabs } from 'flowbite-react';
+import { BackButtonText } from '@/components/buttons/Back';
+import TripCard from '@/components/cards/recommendation';
+import AnimatedLayout from '@/components/layouts/animated';
 
 export default function History() {
-  // TODO: Get history from API
-  // Create a hook "useTripHistory" following the same pattern as others like "useTripRecommendations"
   return (
     <AnimatedLayout className=" flex flex-col overflow-y-scroll bg-white px-4">
       <div className="sticky top-0 z-10 bg-white">
         <BackButtonText text={'Historial'} />
-        <form className="flex w-full items-center rounded-full border border-gray bg-white py-2.5 px-4">
-          <input
-            type="search"
-            placeholder="Nombre, origen, destino..."
-            className="w-full text-lg"
-          ></input>
-          <button type="submit" className="">
-            <Glass className="text-gray" />
-          </button>
-        </form>
       </div>
-
-      <div className="divide-y-2 divide-light-gray ">
-        <TripCard
-          type={'driver'}
-          avatar={'/assets/avatar.svg'}
-          rating={4.9}
-          gender={'F'}
-          origin={'Nervion Plaza'}
-          destination={'Los Bermejales'}
-          price={2.5}
-          name={'María Teresa Romero'}
-          date={'Lunes 13 de Febrero, 8:45'}
-          className="bg-white"
-        />
-        <TripCard
-          type={'passenger'}
-          avatar={'/assets/avatar.png'}
-          rating={4.7}
-          gender={'M'}
-          origin={'Prado de San Sebastián'}
-          destination={'Dos Hermanas'}
-          price={4.5}
-          name={'José Perez Rodríguez'}
-          date={'Domingo 12 de Febrero, 14:30'}
-          className="bg-white"
-        />
-        <TripCard
-          type={'driver'}
-          avatar={'/assets/avatar.png'}
-          rating={4.6}
-          gender={'M'}
-          origin={'Plaza de los Ángeles'}
-          destination={'El porvenir'}
-          price={7.5}
-          name={'Paco Sánchez'}
-          date={'Viernes 10 de Febrero, 8:45'}
-          className="bg-white"
-        />
-        <TripCard
-          type={'passenger'}
-          avatar={'/assets/avatar.svg'}
-          rating={4.9}
-          gender={'F'}
-          origin={'El porvenir'}
-          destination={'Nervion Plaza'}
-          price={1.5}
-          name={'Josefina Mayo'}
-          date={'Jueves 9 de Febrero, 15:59'}
-          className="bg-white"
-        />
-        <TripCard
-          type={'driver'}
-          avatar={'/assets/avatar.svg'}
-          rating={4.2}
-          gender={'F'}
-          origin={'Triana'}
-          destination={'Plaza de Armas'}
-          price={2.5}
-          name={'Laurencia Abril'}
-          date={'Miércoles 8 de Febrero, 17:00'}
-          className="bg-white"
-        />
-        <TripCard
-          type={'passenger'}
-          avatar={'/assets/avatar.png'}
-          rating={4.6}
-          gender={'M'}
-          origin={'El Porvenir'}
-          destination={'El Prado de San Sebastián'}
-          price={1.5}
-          name={'Juanmi Martínez'}
-          date={'Lunes 6 de Febrero, 15:00'}
-          className="bg-white"
-        />
-      </div>
+      <Tabs.Group
+        className="justify-around"
+        aria-label="Tabs with underline"
+        style="underline"
+      >
+        <Tabs.Item title="Como conductor">
+          <HistoryList type="driver" />
+        </Tabs.Item>
+        <Tabs.Item title="Como pasajero">
+          <HistoryList type="passenger" />
+        </Tabs.Item>
+      </Tabs.Group>
     </AnimatedLayout>
   );
 }
+
+const HistoryList = (type) => {
+  const { historyTrips, isLoading, isError } = useHistoryTrips(type);
+  const USER_ID = 1; // TODO: Get user id from context
+
+  if (isLoading) return <p>Loading...</p>; // TODO: make skeleton
+  if (isError) return <p>Error</p>; // TODO: make error message
+
+  return (
+    <div className="divide-y-2 divide-light-gray ">
+      {historyTrips.map((trip: TripI) => (
+        <TripCard
+          key={trip.id}
+          type={trip.driver.id === USER_ID ? 'driver' : 'passenger'}
+          rating={0.0}
+          name={trip.driver.name}
+          avatar={trip.driver.photo}
+          gender={'M'}
+          origin={trip.origin}
+          destination={trip.destination}
+          date={trip.date}
+          price={trip.price}
+        />
+      ))}
+    </div>
+  );
+};

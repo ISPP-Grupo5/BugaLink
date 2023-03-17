@@ -92,7 +92,7 @@ const DriverCardHeader = ({ trip }: { trip: TripI }) => (
 );
 
 const PassengerCardHeader = ({ trip }: { trip: TripI }) => (
-  <div className="static flex h-28 flex-none flex-col overflow-clip rounded-2xl rounded-br-3xl bg-white shadow-xl">
+  <div className="relative flex h-28 flex-none flex-col overflow-clip rounded-2xl rounded-br-3xl bg-white shadow-xl">
     <span className="flex justify-end -space-x-7">
       {trip.requestStatus === 'pending' && (
         <Flag

@@ -1,8 +1,8 @@
 export default function Entry({ children, title }) {
   return (
     <div className="flex flex-col leading-4">
-      <p className="font-thin text-xs text-gray">{title}</p>
-      <div className="flex flex-row space-x-1 items-center font-medium text-xs ">
+      <p className="text-xs font-thin text-gray">{title}</p>
+      <div className="flex flex-row items-center space-x-1 text-xs font-medium ">
         {children}
       </div>
     </div>

@@ -9,11 +9,11 @@ export function BackButton({ className = '' }: BackButtonProps) {
   return (
     <button
       onClick={() => router.back()}
-      className={'pl-3 rounded-full z-50 ' + className}
+      className={'z-50 rounded-full pl-3 ' + className}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="w-6 h-6 mr-2"
+        className="mr-2 h-6 w-6"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -39,17 +39,17 @@ export function BackButtonText({ text, className = '' }: BackButtonTextProps) {
   return (
     <div
       className={
-        'sticky top-0 flex flex-row bg-white w-full z-50 px-4 pt-5 pb-4 ' +
+        'sticky top-0 z-50 flex w-full flex-row bg-white px-4 pt-5 pb-4 ' +
         className
       }
     >
       <button
         onClick={() => router.back()}
-        className="top-0 left-0 text-left w-full bg-white"
+        className="top-0 left-0 w-full bg-white text-left"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="w-8 h-8 mr-2 inline"
+          className="mr-2 inline h-8 w-8"
           fill="none"
           viewBox="0 0 32 32"
           stroke="currentColor"

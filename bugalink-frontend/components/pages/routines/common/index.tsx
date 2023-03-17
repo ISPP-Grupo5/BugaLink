@@ -31,7 +31,7 @@ export default function NewRoutine({
     <div>
       <BackButton />
       <img src="/assets/mocks/map.png" className="w-full" />
-      <form className="absolute w-full bottom-0 bg-white rounded-t-3xl flex flex-col pb-4 pt-8 px-10 z-10">
+      <form className="absolute bottom-0 z-10 flex w-full flex-col rounded-t-3xl bg-white px-10 pb-4 pt-8">
         <TextField
           type={'text'}
           fieldName={'Desde'}
@@ -48,7 +48,7 @@ export default function NewRoutine({
           parentClassName="mb-8"
           inputClassName="w-full"
         />
-        <div className="flex flex-col mb-4">
+        <div className="mb-4 flex flex-col">
           <label className="text-xl font-bold">
             {userType === 'passenger' ? 'Hora de recogida' : 'Hora de salida'}
           </label>
@@ -61,11 +61,11 @@ export default function NewRoutine({
         </div>
 
         <label className="text-xl font-bold">Días de la semana</label>
-        <span className="mt-2 grid grid-cols-7 items-center text-center bg-white border border-light-gray rounded-xl text-xl divide-x divide-light-gray overflow-hidden">
+        <span className="mt-2 grid grid-cols-7 items-center divide-x divide-light-gray overflow-hidden rounded-xl border border-light-gray bg-white text-center text-xl">
           {days.map((day) => (
             <p
               key={day}
-              className={`w-full h-full py-2 transition-colors duration-300 ${
+              className={`h-full w-full py-2 transition-colors duration-300 ${
                 selectedDays.includes(day) ? 'bg-turquoise text-white' : ''
               }`}
               onClick={() => {
@@ -81,8 +81,8 @@ export default function NewRoutine({
           ))}
         </span>
         {userType === 'driver' && (
-          <div className="mt-4 flex flex-col justify-center w-full">
-            <p className="text-xl font-bold mb-2">¿Cuántos asientos ofreces?</p>
+          <div className="mt-4 flex w-full flex-col justify-center">
+            <p className="mb-2 text-xl font-bold">¿Cuántos asientos ofreces?</p>
             <PlusMinusCounter
               text={freeSeatsNumber.toString()}
               onMinusClick={() =>

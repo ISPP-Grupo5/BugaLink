@@ -71,9 +71,9 @@ export default function MyRoutines() {
   return (
     <AnimatedLayout className="flex flex-col bg-white">
       <BackButtonText text={'Mi horario'} />
-      <div className="flex flex-col px-6 overflow-y-scroll">
+      <div className="flex flex-col overflow-y-scroll px-6">
         {days.map((day) => (
-          <div key={day} className="space-y-2 mb-4">
+          <div key={day} className="mb-4 space-y-2">
             <h1 className="text-2xl">{day}</h1>
             {routines
               .filter((routine) => routine.day === day)
@@ -88,7 +88,7 @@ export default function MyRoutines() {
                 />
               ))}
             {routines.filter((routine) => routine.day === day).length === 0 && (
-              <div className="w-full py-2 border border-border-color rounded-md text-center font-light text-gray">
+              <div className="w-full rounded-md border border-border-color py-2 text-center font-light text-gray">
                 No tienes horario para este día
               </div>
             )}
@@ -110,20 +110,20 @@ const RoutineCard = ({
   const isDriver = type === 'driver';
 
   return (
-    <span className="w-full flex border border-border-color rounded-lg">
+    <span className="flex w-full rounded-lg border border-border-color">
       <div
-        className={`min-h-full w-2.5 rounded-l-lg ' + ${
+        className={`' + min-h-full w-2.5 rounded-l-lg ${
           isDriver ? 'bg-green' : 'bg-turquoise'
         }`}
       />
-      <div className="relative w-full grid grid-cols-2 grid-rows-2 gap-2.5 p-1.5 pb-0">
+      <div className="relative grid w-full grid-cols-2 grid-rows-2 gap-2.5 p-1.5 pb-0">
         <Entry title={'Hora de salida'}>
           🕓️ {departureHourStart} — {departureHourEnd}
         </Entry>
         <Entry title="Rol">
           {isDriver ? (
             <p className="flex items-center">
-              <SteeringWheel className="flex-none w-3 h-min mr-1" />
+              <SteeringWheel className="mr-1 h-min w-3 flex-none" />
               Conductor
             </p>
           ) : (
@@ -132,7 +132,7 @@ const RoutineCard = ({
         </Entry>
         <Entry title="Origen">
           <OrigenPin
-            className={`flex-none aspect-square opacity-70 ${
+            className={`aspect-square flex-none opacity-70 ${
               isDriver ? 'text-green' : 'text-turquoise'
             }`}
           />
@@ -140,7 +140,7 @@ const RoutineCard = ({
         </Entry>
         <Entry title="Destino">
           <MapPin
-            className={`flex-none aspect-square opacity-70 ${
+            className={`aspect-square flex-none opacity-70 ${
               isDriver ? 'text-green' : 'text-turquoise'
             }`}
           />
@@ -203,7 +203,7 @@ const AddRoutineMenu = () => {
   return (
     <div className="absolute bottom-0 right-0 mb-8 mr-8">
       <button
-        className="bg-dark-turquoise rounded-full w-14 aspect-square flex items-center justify-center text-white text-2xl"
+        className="flex aspect-square w-14 items-center justify-center rounded-full bg-dark-turquoise text-2xl text-white"
         onClick={handleClick}
       >
         +

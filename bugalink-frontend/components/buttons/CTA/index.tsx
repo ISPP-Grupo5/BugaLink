@@ -7,7 +7,7 @@ type Params = {
 export default function CTAButton({ text, disabled, className }: Params) {
   return (
     <button
-      className={`bg-turquoise text-center tracking-wider text-white rounded-3xl py-4 px-8 text-xl ${className}`}
+      className={`rounded-3xl bg-turquoise py-4 px-8 text-center text-xl tracking-wider text-white ${className}`}
       disabled={disabled}
     >
       {text}

@@ -10,7 +10,7 @@ export default function MapPreview({ className = '' }) {
       >
         <img
           src="/assets/mocks/map.png"
-          className="w-full h-48 object-cover rounded-lg"
+          className="h-48 w-full rounded-lg object-cover"
         />
       </div>
     </Link>

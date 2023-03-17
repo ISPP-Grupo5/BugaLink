@@ -202,13 +202,7 @@ class individualRides(APIView):
     def put_individual_ride(self, request):
         try:
             individualRide = IndividualRide.objects.get(id=request.data['idIndividualRide'])
-            acceptationStatus = AcceptationStatus.Pending_Confirmation
-            match request.data['acceptationStatus']:
-                case 'accept':
-                    acceptationStatus = AcceptationStatus.Accepted
-                case 'cancel':
-                    acceptationStatus = AcceptationStatus.Cancelled
-            individualRide.acceptation_status = acceptationStatus
+            
             IndividualRide.objects.put(individualRide)
         except IndividualRide.DoesNotExist:
             raise Http404

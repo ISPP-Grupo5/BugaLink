@@ -114,7 +114,7 @@ if os.environ.get("IS_APP_ENGINE"):
     }
 else:
     DATABASES = {
-        'default': {
+        'default': { 
             'ENGINE': env['ENGINE'],
             'NAME': env['NAME'],
             'USER': env['USER'],

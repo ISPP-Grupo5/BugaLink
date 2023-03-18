@@ -327,7 +327,7 @@ class DriverRoutineList(APIView):
             return JsonResponse({'error': 'Driver does not exist with id {}'.format(pk)},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         serializer = DriverRoutineSerializer(queryset, many=True)
-        return Response(serializer.data)
+        return JsonResponse(serializer.data)
 
     def post(self, request, pk, format=None):  # POST de creacion de la routina
         request.data['driver_id'] = pk

@@ -10,6 +10,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from .models import *
 from .serializers import *
 
+from django.contrib.auth.decorators import login_required
+
+
 #Imports que deberian desaparecer despues de la refactorización
 from rest_framework import viewsets
 from django.http import Http404
@@ -18,6 +21,7 @@ from rest_framework.response import Response
 ############## ENDPOINTS ASOCIADOS A USUARIOS
 
 class Users(APIView):
+    #Obtener un usuario dado el id
     def get(self, request,id): 
         try:
             user = User.objects.get(id=id)
@@ -25,10 +29,72 @@ class Users(APIView):
             return JsonResponse(serializer.data)
         except User.DoesNotExist:
             return JsonResponse({"message":"Not found"},status=404)
+    
+    #Creacion inicial de usuario
+    def post(self, request):
+        try:
+            email = request.data['email']
+            nickname = request.data['nickname']
+            password = request.data['password']
+            newUser = User.objects.create(email=email, username=nickname, password=password)
+            newUser.save()
+            newPassenger = Passenger.objects.create(user=newUser)
+            newPassenger.save()    
+            return JsonResponse({"message":"User Created Succesfully"})
+        except:
+            return JsonResponse({"message":"User Could Not Be Registered"})
+        
+    #Editar usuario desde el perfil
+    @login_required
+    def patch(self,request):
+        user = User.objects.get(id=request.data['id'])
+        passenger = Passenger.objects.get(user=user)
+        if "email" in request.data:
+            try:
+                user.email = request.data['email']
+            except:
+                return JsonResponse({"message":"Incorrect email"}, status = 400)        
+        if "name" in request.data:
+            try:
+                user.first_name = request.data['first_name']
+            except:
+                return JsonResponse({"message":"Incorrect first name"}, status = 400)        
+        if "last_name" in request.data:
+            try:
+                user.last_name = request.data['last_name']
+            except:
+                return JsonResponse({"message":"Incorrect last name"}, status = 400)        
+        user.save()
+        if "biography" in request.data:
+            try:
+                passenger.biography = request.data['biography']
+            except:
+                return JsonResponse({"message":"Incorrect biography"}, status = 400)        
+        if "city" in request.data:
+            try:
+                passenger.city = request.data['city']
+            except:
+                return JsonResponse({"message":"Incorrect city"}, status = 400)
+        if "province" in request.data:
+            try:
+                passenger.province = request.data['province']
+            except:
+                return JsonResponse({"message":"Incorrect province"}, status = 400)
+        if "birth_date" in request.data:
+            try:
+                passenger.birth_date = request.data['birth_date']
+            except:
+                return JsonResponse({"message":"Incorrect birth date"}, status = 400)
+        if "balance" in request.data:
+            try:
+                passenger.balance = request.data['balance']
+            except:
+                return JsonResponse({"message":"Incorrect balance"}, status = 400)
+        passenger.save()
+        return JsonResponse({"message":"User updated succesfully"}, status = 200)
 
 ############## ENDPOINTS ASOCIADOS A INDIVIDUAL_RIDE
 
-# IMPORTANTE : Estos 3 clases deben ser refactorizadas segun la documentacion de la API
 class pendingIndividualRide(APIView):
     def get(self, request):
         try:
@@ -36,9 +102,9 @@ class pendingIndividualRide(APIView):
             passenger = Passenger.objects.get(user=user)
             rides = IndividualRide.objects.filter(passenger=passenger, acceptation_status='Pending Confirmation')
             serializer = ListaIndividualRideSerializer({'rides': rides})
-            return Response(serializer.data)
+            return JsonResponse(serializer.data, status = 200)
         except IndividualRide.DoesNotExist:
-            raise Http404
+            return JsonResponse({"message":"NotFound"}, status = 404)
 
 class cancelledIndividualRide(APIView):
     def get(self, request):
@@ -47,9 +113,9 @@ class cancelledIndividualRide(APIView):
             passenger = Passenger.objects.get(user=user)
             rides = IndividualRide.objects.filter(passenger=passenger, acceptation_status='Cancelled')
             serializer = ListaIndividualRideSerializer(rides, many=True)
-            return Response(serializer.data)
+            return JsonResponse(serializer.data, status = 200)
         except IndividualRide.DoesNotExist:
-            raise Http404
+            return JsonResponse({"message":"NotFound"}, status = 404)
 
 class acceptedIndividualRide(APIView):
     def get(self, request):
@@ -58,9 +124,9 @@ class acceptedIndividualRide(APIView):
             passenger = Passenger.objects.get(user=user)
             rides = IndividualRide.objects.filter(passenger=passenger, acceptation_status='Accepted')
             serializer = ListaIndividualRideSerializer(rides, many=True)
-            return Response(serializer.data)
+            return JsonResponse(serializer.data, status = 200)
         except IndividualRide.DoesNotExist:
-            raise Http404
+            return JsonResponse({"message":"NotFound"}, status = 404)
 
 class IndividualRides(APIView): 
     def get_individual_ride(self, request):

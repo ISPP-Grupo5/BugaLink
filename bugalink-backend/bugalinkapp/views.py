@@ -68,6 +68,8 @@ class IndividualRides(APIView):
             return IndividualRide.objects.get(id=request.data['idIndividualRide'])
         except IndividualRide.DoesNotExist:
             raise Http404
+    
+    # Estos endpoints no estan en urls.py
 
     def get_individual_rides_driver(self, request):
         try:

@@ -13,6 +13,7 @@ export default function Rating() {
   const [button1Selected, setButton1Selected] = useState(false);
   const [button2Selected, setButton2Selected] = useState(false);
   const [button3Selected, setButton3Selected] = useState(false);
+  const [selectedButtonsText, setSelectedButtonsText] = useState('');
 
   // const data = {
   //   rating: rating,
@@ -21,15 +22,7 @@ export default function Rating() {
   //   button3Selected: button3Selected
   // };
 
-  const data = {
-    "rating_type": "driver",
-    "driver": 2,
-    "passenger": 2,
-    "IndividualRide": 1,
-    "user_id": 2,
-    "rating": 4,
-    "comment": "Buen conductor"
-};
+
 
   const handleRating = (selectedRating) => {
     setRating(selectedRating);
@@ -37,44 +30,56 @@ export default function Rating() {
 
   const handleButton1Click = () => {
     setButton1Selected(!button1Selected);
+    setSelectedButtonsText(selectedButtonsText ? `${selectedButtonsText}, Buena conducción` : 'Buena conducción');
+
   };
 
   const handleButton2Click = () => {
     setButton2Selected(!button2Selected);
+    setSelectedButtonsText(selectedButtonsText ? `${selectedButtonsText}, Conductor agradable` : 'Conductor agradable');
+
   };
 
   const handleButton3Click = () => {
     setButton3Selected(!button3Selected);
+    setSelectedButtonsText(selectedButtonsText ? `${selectedButtonsText}, Ya nos conocíamos` : 'Ya nos conocíamos');
+
   };
 
+
   const handleSubmit = () => {
-    const id=1; //TODO: change this to the id of the driver
+    const driver_id=1; //TODO: change this to the id of the driver
+    const passenger_id = 2; //TODO change this to the passenger's id
+    const individual_ride_id = 1; //TODO change this to the individual ride id
+    const user_id= 2; //TODO change this to the user id
+
+    const data = {
+      "rating_type": "driver",
+      "driver": driver_id,
+      "passenger": passenger_id,
+      "IndividualRide": individual_ride_id,
+      "user_id": user_id,
+      "rating": rating,
+      "comment": selectedButtonsText
+  };
+  setSelectedButtonsText(''); // reset the value of the comments to an empty string MAYBE IT WONT BE NEEDED WHEN IT REDIRECTS TO HOME PAGE OR OTHER PAGE
 
     // send rating data to server
-    axios.post('http://localhost:8000/api/users/' + id + '/reviews/', data)
+    axios.post('http://localhost:8000/api/users/' + driver_id + '/reviews/', data)
     .then(response => {
       console.log(response.data);
     })
     .catch(error => {
       console.log(error);
     });
-    console.log('Submitting rating:', rating);
-    console.log(`Button 1 selected: ${button1Selected}`);
-    console.log(`Button 2 selected: ${button2Selected}`);
-    console.log(`Button 3 selected: ${button3Selected}`);
+
+
   };
 
 
   
 
-  // const id=1; //TODO: change this to the id of the driver
-  // axios.post(' http://localhost:8000/api/users/${id}/reviews/', data)
-  // .then(response => {
-  //   console.log(response.data);
-  // })
-  // .catch(error => {
-  //   console.log(error);
-  // });
+
 
   return (
     <div >
@@ -139,7 +144,6 @@ export default function Rating() {
                     color: ratingValue <= rating ? '#ffc107' : 'gray',
                     textShadow: '1px 1px 0 #999, -1px -1px 0 #fff, -1px 1px 0 #999, 1px -1px 0 #fff, 0px 0px 4px #444',
                     borderRadius: '32px',
-                    boxShadow: 'inset 0 0 10px #ddd',
 
                     
 
@@ -239,13 +243,13 @@ export default function Rating() {
             </div>
           </div>
           <div style={{ display: 'flex', marginTop: '-6px' }}>
-            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }} className='-ml-10'>
+            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }} >
               Buena <br></br>conducción
             </h2>
-            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }} >
+            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' , marginLeft:'50px',marginRight:'50px'}} >
               Conductor <br></br>agradable
             </h2>
-            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }} className='ml-10'>
+            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }} >
               Ya nos <br></br>conocíamos
             </h2>
 

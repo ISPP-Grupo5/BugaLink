@@ -18,4 +18,6 @@ admin.site.register(FavDirection)
 admin.site.register(DiscountCode)
 admin.site.register(IndividualDiscountCode)
 admin.site.register(PassengerDiscountCode)
+admin.site.register(RoutineRequest)
+admin.site.register(Report)
 

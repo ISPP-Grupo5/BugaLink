@@ -16,7 +16,7 @@ export default function DetailsTwo() {
   return (
     <AnimatedLayout className="flex flex-col justify-between">
       <BackButtonText text="Detalles del viaje" />
-      <div className="flex flex-col px-4 pb-4 pt-2 h-full overflow-y-scroll bg-white">
+      <div className="flex h-full flex-col overflow-y-scroll bg-white px-4 pb-4 pt-2">
         {/* Map preview */}
         <MapPreview />
         {/* Details */}
@@ -30,7 +30,7 @@ export default function DetailsTwo() {
         />
 
         {/* Seats selector */}
-        <div className="grid grid-rows-2 justify-items-center items-center mb-3">
+        <div className="mb-3 grid grid-rows-2 items-center justify-items-center">
           <span className="font-semibold">
             ¿Cuántas plazas quieres reservar?
           </span>
@@ -55,13 +55,14 @@ export default function DetailsTwo() {
           numberOfRatings="14"
         />
         <div className="flex flex-row">
-          <p className="text-dark-turquoise font-normal">
+          <p className="font-normal text-dark-turquoise">
+            {/* TODO: make this button work */}
             Añade una nota al conductor
           </p>
         </div>
       </div>
       {/* Trip request */}
-      <div className="flex flex-row w-full items-center justify-between py-6 bg-white rounded-t-lg shadow-t-md px-4 z-50">
+      <div className="z-50 flex w-full flex-row items-center justify-between rounded-t-lg bg-white py-6 px-4 shadow-t-md">
         <div className="flex flex-col">
           <p className="text-md font-normal">Precio total</p>
           <p className="text-3xl font-bold">4,00€</p>

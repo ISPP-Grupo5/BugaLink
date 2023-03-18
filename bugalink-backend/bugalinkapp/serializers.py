@@ -1,19 +1,58 @@
 from rest_framework import serializers
-from bugalinkapp.models import User, DriverRating, PassengerRating
+from .models import *
 
-class main_page_serializer(serializers.ModelSerializer):
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+        
+class RideSerializer(serializers.ModelSerializer):
 
     class Meta:
-    
-        model = User
-        fields = ['idUser']
+
+        model = Ride
+        fields = '__all__'
+
+class ListRideSerializer(serializers.Serializer):
+    rides = RideSerializer(many=True)
+
+
+class IndividualRideSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IndividualRide
+        fields = '__all__'
+
+
+class ListaIndividualRideSerializer(serializers.Serializer):
+    rides = IndividualRideSerializer(many=True)
+
 
 class DriverRatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = DriverRating
         fields = '__all__'
 
+
 class PassengerRatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = PassengerRating
+        fields = '__all__'
+
+
+class RideSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ride
+        fields = '__all__'
+
+
+class PassengerRoutineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PassengerRoutine
+        fields = '__all__'
+
+
+class DriverRoutineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DriverRoutine
         fields = '__all__'

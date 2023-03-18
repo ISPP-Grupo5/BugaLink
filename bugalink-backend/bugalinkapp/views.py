@@ -96,7 +96,7 @@ class routineRecommendation(APIView):
 
             # Llamada al serializer para devolver todos los viajes que han sido seleccionados
             serializer = ListRideSerializer(rides, many=True)
-            return Response(serializer.data)
+            return JsonResponse(serializer.data)
 
         except:
             raise Http404  # Mejorar errores

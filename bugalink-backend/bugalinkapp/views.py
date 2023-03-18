@@ -132,7 +132,7 @@ class IndividualRides(APIView):
         except IndividualRide.DoesNotExist:
             raise Http404
 
-    def accept_individual_ride(self, request):
+    def accept_individual_ride(self, request):  # MIRAR API PARA SU URL.PY
         try:
             individualRide = IndividualRide.objects.get(id=request.data['idIndividualRide'])
             individualRide.acceptation_status = AcceptationStatus.Accepted
@@ -140,7 +140,7 @@ class IndividualRides(APIView):
         except IndividualRide.DoesNotExist:
             raise Http404
 
-    def cancel_individual_ride(self, request):
+    def cancel_individual_ride(self, request):  # MIRAR API PARA SU URL.PY
         try:
             individualRide = IndividualRide.objects.get(id=request.data['idIndividualRide'])
             individualRide.acceptation_status = AcceptationStatus.Cancelled

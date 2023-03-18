@@ -324,7 +324,7 @@ class DriverRoutineList(APIView):
         try:
             queryset = DriverRoutine.objects.filter(driver_id=pk)
         except:
-            return Response({'error': 'Driver does not exist with id {}'.format(pk)},
+            return JsonResponse({'error': 'Driver does not exist with id {}'.format(pk)},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         serializer = DriverRoutineSerializer(queryset, many=True)
         return Response(serializer.data)

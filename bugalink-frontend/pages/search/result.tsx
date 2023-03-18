@@ -1,19 +1,18 @@
-import { BackButton } from '../../components/buttons/Back';
-import TriangleDown from '../../public/assets/triangle-down.svg';
-import SourcePin from '/public/assets/source-pin.svg';
-import TargetPin from '/public/assets/map-mark.svg';
-import ThreeDots from '/public/assets/three-dots.svg';
-import Arrows from '/public/assets/arrows.svg';
+import { Drawer } from '@mui/material';
+import Slider from '@mui/material/Slider';
+import Link from 'next/link';
 import FilterIcon from 'public/assets/filter-icon.svg';
-import AnimatedLayout from '../../components/layouts/animated';
+import React, { useState } from 'react';
+import { BackButton } from '../../components/buttons/Back';
+import CTAButton from '../../components/buttons/CTA';
 import TagsButton from '../../components/buttons/Tags';
 import TripCard from '../../components/cards/recommendation';
-import { useState } from 'react';
-import { Drawer } from '@mui/material';
-import CTAButton from '../../components/buttons/CTA';
 import TimePicker from '../../components/forms/TimePicker';
-import Slider from '@mui/material/Slider';
-import React from 'react';
+import AnimatedLayout from '../../components/layouts/animated';
+import Arrows from '/public/assets/arrows.svg';
+import TargetPin from '/public/assets/map-mark.svg';
+import SourcePin from '/public/assets/source-pin.svg';
+import ThreeDots from '/public/assets/three-dots.svg';
 
 const filters = [
   {
@@ -33,6 +32,7 @@ const filters = [
   },
 ];
 
+// TODO: Replace with data from the mock backend
 const searchResults = [
   {
     type: 'driver',
@@ -84,6 +84,7 @@ function valuetext(value: number) {
   return `${value}°C`;
 }
 
+// TODO: reduce this view's complexity
 export default function SearchResults() {
   const [drawerHour, setDrawerHour] = useState(false);
   const [drawerRating, setDrawerRating] = useState(false);
@@ -91,6 +92,10 @@ export default function SearchResults() {
   const [pickTimeFrom, setPickTimeFrom] = useState('16:00');
   const [pickTimeTo, setPickTimeTo] = useState('16:15');
   const [values, setValues] = React.useState<number[]>([0, 2]);
+  // TODO: use more meaningful variable names. I suppose "values" is about the price range.
+  // Better to define 2 states for that (minPrice, maxPrice) and use them in the slider.
+  // Ideally we would have each filter contained in its own file, and this page would
+  // only contain the logic to render the filters and the results
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     setValues(newValue as number[]);
@@ -100,39 +105,39 @@ export default function SearchResults() {
   const unselectedFilters = filters.filter((filter) => !filter.selected);
 
   return (
-    <AnimatedLayout className="flex flex-col bg-white overflow-y-scroll">
-      <div className="pt-4 bg-white z-50">
-        <div className="grid grid-cols-9 grid-rows-2 place-items-center place-content-center gap-y-2 px-2">
+    <AnimatedLayout className="flex flex-col overflow-y-scroll bg-white">
+      <div className="z-50 bg-white pt-4">
+        <div className="grid grid-cols-9 grid-rows-2 place-content-center place-items-center gap-y-2 px-2">
           <BackButton className="bg-white" />
-          <div className="h-full w-full flex flex-col items-center justify-between py-4 row-span-2 text-turquoise">
-            <SourcePin className="flex-none w-5 h-5" />
-            <ThreeDots className="flex-none w-5" />
-            <TargetPin className="flex-none w-5 h-5" />
+          <div className="row-span-2 flex h-full w-full flex-col items-center justify-between py-4 text-turquoise">
+            <SourcePin className="h-5 w-5 flex-none" />
+            <ThreeDots className="w-5 flex-none" />
+            <TargetPin className="h-5 w-5 flex-none" />
           </div>
-          <div className="col-span-6 pr-4 w-full">
+          <div className="col-span-6 w-full pr-4">
             <input
               type="search"
               placeholder="Desde dónde quieres ir?"
               value="Casa"
-              className="w-full text-sm rounded-full ml-2 bg-baseOrigin p-4 mr-2"
+              className="ml-2 mr-2 w-full rounded-full bg-base-origin p-4 text-sm"
             ></input>
           </div>
           <div></div>
           <div></div>
-          <div className="col-span-6 pr-4 w-full">
+          <div className="col-span-6 w-full pr-4">
             <input
               type="search"
               placeholder="Hasta dónde quieres ir?"
               value="Avenida Reina Mercedes"
-              className="w-full text-sm rounded-full ml-2 bg-baseOrigin p-4 mr-2"
+              className="ml-2 mr-2 w-full rounded-full bg-base-origin p-4 text-sm"
             ></input>
           </div>
           <Arrows />
         </div>
         <hr className="mt-4 w-full text-border-color" />
       </div>
-      <div className="rounded-b-3xl sticky top-0 shadow-md pl-2 pt-4 pb-2 bg-white z-50">
-        <div className="items-center flex space-x-2 overflow-x-scroll pr-2">
+      <div className="sticky top-0 z-50 rounded-b-3xl bg-white pl-2 pt-4 pb-2 shadow-md">
+        <div className="flex items-center space-x-2 overflow-x-scroll pr-2">
           <FilterIcon className="flex-none" />
           {selectedFilters.map(
             (filter) =>
@@ -152,7 +157,7 @@ export default function SearchResults() {
                 </div>
               ))
           )}
-          <div className="flex-none h-8 w-[0.05rem] bg-border-color" />
+          <div className="h-8 w-[0.05rem] flex-none bg-border-color" />
           {unselectedFilters.map(
             (filter) =>
               (filter.name === 'Precio' && (
@@ -173,25 +178,32 @@ export default function SearchResults() {
           )}
         </div>
         <div className="flex justify-center py-2">
-          <p className="text-xs text-grey font-thin">
+          <p className="text-xs font-thin text-gray">
             Hay 4 resultados que coinciden con tu búsqueda
           </p>
         </div>
       </div>
       <div className="divide-y-2 divide-light-gray">
         {searchResults.map((trip) => (
-          <TripCard
+          <Link
             key={trip.name}
-            type={trip.type}
-            rating={trip.rating}
-            name={trip.name}
-            gender={trip.gender}
-            avatar={trip.avatar}
-            origin={trip.origin}
-            destination={trip.destination}
-            date={trip.date}
-            price={trip.price}
-          />
+            href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne?requested=false"
+            className="w-full"
+          >
+            <TripCard
+              key={trip.name}
+              type={trip.type}
+              rating={trip.rating}
+              name={trip.name}
+              gender={trip.gender}
+              avatar={trip.avatar}
+              origin={trip.origin}
+              destination={trip.destination}
+              date={trip.date}
+              price={trip.price}
+              className="rounded-md bg-white outline outline-1 outline-light-gray"
+            />
+          </Link>
         ))}
       </div>
 
@@ -209,9 +221,9 @@ export default function SearchResults() {
           },
         }}
       >
-        <div className="bg-white rounded-t-lg">
+        <div className="rounded-t-lg bg-white">
           <div className="ml-6 mt-2">
-            <p className="font-lato font-bold text-xl">Hora de salida</p>
+            <p className="font-lato text-xl font-bold">Hora de salida</p>
             <p className="text-xs">Define el rango de hora de salida</p>
             <span className="mt-4 flex items-center justify-center space-x-2 text-xl font-bold">
               <TimePicker time={pickTimeFrom} setTime={setPickTimeFrom} />
@@ -219,7 +231,7 @@ export default function SearchResults() {
               <TimePicker time={pickTimeTo} setTime={setPickTimeTo} />
             </span>
           </div>
-          <div className="flex flex-col items-center my-5">
+          <div className="my-5 flex flex-col items-center">
             <CTAButton className="w-11/12" text={'FILTRAR'} />
           </div>
         </div>
@@ -240,11 +252,11 @@ export default function SearchResults() {
           },
         }}
       >
-        <div className="bg-white rounded-t-lg">
+        <div className="rounded-t-lg bg-white">
           <div className="ml-6 mt-2 mr-5">
-            <p className="font-lato font-bold text-xl">Precio</p>
+            <p className="font-lato text-xl font-bold">Precio</p>
             <p className="text-xs">Define tu presupuesto por trayecto</p>
-            <p className="font-lato mt-4 font-bold">
+            <p className="mt-4 font-lato font-bold">
               {values[0]}€ - {values[1]}€{' '}
             </p>
             <div className="mt-2 flex items-center justify-center space-x-2 text-xl">
@@ -263,7 +275,7 @@ export default function SearchResults() {
               />
             </div>
           </div>
-          <div className="flex flex-col items-center my-5">
+          <div className="my-5 flex flex-col items-center">
             <CTAButton className="w-11/12" text={'FILTRAR'} />
           </div>
         </div>
@@ -283,9 +295,9 @@ export default function SearchResults() {
           },
         }}
       >
-        <div className="bg-white rounded-t-lg">
+        <div className="rounded-t-lg bg-white">
           <div className="ml-6 mt-2 mr-5">
-            <p className="font-lato font-bold text-xl">Valoraciones</p>
+            <p className="font-lato text-xl font-bold">Valoraciones</p>
             <p className="text-xs">En base a la opinión de otros usuarios</p>
             <span className="mt-4 grid grid-cols-2 items-center justify-center gap-y-3 gap-x-3 text-xl">
               <TagsButton text="Más de 4 ⭐️" selected ratingOptions={true} />
@@ -294,7 +306,7 @@ export default function SearchResults() {
               <TagsButton text="Más de 1 ⭐️" ratingOptions={true} />
             </span>
           </div>
-          <div className="flex flex-col items-center my-5">
+          <div className="my-5 flex flex-col items-center">
             <CTAButton className="w-11/12" text={'FILTRAR'} />
           </div>
         </div>

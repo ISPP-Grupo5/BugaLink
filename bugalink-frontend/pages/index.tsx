@@ -1,83 +1,74 @@
-import { SwipeableDrawer } from '@mui/material';
+import SquareChatsButton from '@/components/buttons/Square/Chats';
+import SquareRequestsButton from '@/components/buttons/Square/Requests';
+import SquareRoutinesButton from '@/components/buttons/Square/Routines';
+import useUser from '@/hooks/useUser';
 import Link from 'next/link';
+import Destino from 'public/icons/Vista-Principal/destino.svg';
+
 import { useState } from 'react';
 import DriverCard from '../components/cards/driver';
 import PassengerCard from '../components/cards/passenger';
+import RecommendationsDrawer from '../components/drawers/Recommendations';
 import AnimatedLayout from '../components/layouts/animated';
-import TripList from './recommendations';
-import Calendar from '/public/icons/Vista-Principal/calendar.svg';
-import Chat from '/public/icons/Vista-Principal/chat.svg';
+import NEXT_ROUTES from '../constants/nextRoutes';
+
 import Glass from '/public/icons/Vista-Principal/glass.svg';
-import Solicitud from 'public/icons/Vista-Principal/solicitud.svg';
-import Destino from 'public/icons/Vista-Principal/destino.svg';
-import SquareButton from '../components/buttons/Square';
 
 export default function Home() {
-  const [open, setOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  // userId has to be hardcoded until we have sessions in the app. This info would be stored in the user's browser
+  const USER_ID = 1;
+  const { user, isLoading, isError } = useUser(USER_ID);
 
   return (
-    <AnimatedLayout className="overflow-y-scroll max-h-full">
+    <AnimatedLayout className="max-h-full overflow-y-scroll">
       <div className="flex flex-col pb-20">
-        <span className="flex items-center px-7 my-10 space-x-4">
-          <form className="flex py-3 px-4 w-full bg-white rounded-full items-center">
-            <Destino className="w-5 h-5 stroke-light-turquoise fill-light-turquoise flex-none scale-125 translate-y-0.5" />
+        <span className="my-10 flex items-center space-x-4 px-4 md:px-5">
+          <form className="flex w-full items-center rounded-full bg-white px-4 py-3">
+            <Destino className="h-5 w-5 flex-none translate-y-0.5 scale-125 fill-light-turquoise stroke-light-turquoise" />
             <input
               type="search"
               placeholder="Dónde quieres ir?"
-              className="w-full text-sm rounded-full ml-2"
+              className="ml-2 h-full w-full rounded-full pl-2 outline-none"
             ></input>
-            <button type="submit" className="">
-              <Glass />
-            </button>
+            <Link href={NEXT_ROUTES.SEARCH_RESULTS}>
+              <button type="submit">
+                <Glass />
+              </button>
+            </Link>
           </form>
-          <img
-            src="/icons/Vista-Principal/hombre.png"
-            className="h-14 aspect-square rounded-full"
-          />
+          <Link
+            className="aspect-square h-14"
+            href={NEXT_ROUTES.PROFILE(USER_ID)}
+          >
+            <img className="rounded-full" src={user?.photo} />
+          </Link>
         </span>
 
-        <span className="flex justify-between w-full px-7">
-          <SquareButton
-            text="Horarios"
-            link="#"
-            Icon={<Calendar className="bg-white rounded-xl" />}
-          />
-
-          <SquareButton
-            text="Chats"
-            link="#"
-            Icon={<Chat className="bg-white rounded-xl " />}
-            numNotifications={3}
-          />
-
-          <SquareButton
-            text="Solicitudes"
-            link="#"
-            Icon={<Solicitud className="bg-white rounded-xl" />}
-            numNotifications={1}
-          />
+        <span className="flex w-full justify-between space-x-4 px-4 md:px-5">
+          <SquareRoutinesButton />
+          <SquareChatsButton />
+          <SquareRequestsButton />
         </span>
 
-        <span className="flex justify-between mt-5 px-7">
-          <p className="text-xl text-left font-semibold">Próximos viajes</p>
-          <a href="/users/qyahXxJc/history">
-            <p className="text-xl text-right text-turquoise font-semibold">
-              Historial
-            </p>
-          </a>
+        <span className="mt-5 flex justify-between px-4 md:px-5">
+          <p className="text-left text-xl font-semibold">Próximos viajes</p>
+          <Link href="/users/qyahXxJc/history">
+            <p className="text-right text-xl text-turquoise">Historial</p>
+          </Link>
         </span>
 
         <div data-carousel="static">
-          <div className="relative w-full flex -space-x-7 snap-x snap-mandatory overflow-x-auto">
-            <PassengerCard />
-            <PassengerCard />
-            <PassengerCard />
-            <PassengerCard />
-            <PassengerCard />
-            <PassengerCard />
+          <div className="relative flex w-full snap-x snap-mandatory -space-x-7 overflow-x-auto">
+            <PassengerCard link="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne/?requested=true" />
+            <PassengerCard link="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne/?requested=true" />
+            <PassengerCard link="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne/?requested=true" />
+            <PassengerCard link="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne/?requested=true" />
+            <PassengerCard link="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne/?requested=true" />
+            <PassengerCard link="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne/?requested=true" />
           </div>
 
-          <div className="relative w-full flex -space-x-7 snap-x snap-mandatory overflow-x-auto mt-2">
+          <div className="relative mt-2 flex w-full snap-x snap-mandatory -space-x-7 overflow-x-auto">
             <DriverCard />
             <DriverCard />
             <DriverCard />
@@ -86,59 +77,8 @@ export default function Home() {
             <DriverCard />
           </div>
         </div>
-        <div className="flex flex-col">
-          <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne">
-            Detalles viaje (1)
-          </Link>
-          <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/map">
-            Detalles viaje (Mapa)
-          </Link>
-          <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsTwo">
-            Detalles viaje (2)
-          </Link>
-          <Link href="/users/qyahXxJc/routines/passenger/new">
-            Crear rutina (pasajero)
-          </Link>
-          <Link href="/users/qyahXxJc/routines/driver/new">
-            Crear rutina (conductor)
-          </Link>
-          <Link href="/recommendations">Recomendaciones</Link>
-          <Link href="/users/qyahXxJc/rating/new/problem">
-            Reportar problema
-          </Link>
-          <Link href="/request/V1StGXR8_Z5jdHi6B-myT/accept">
-            Aceptar petición
-          </Link>
-          <Link href="/users/V1StGXR8_Z5jdHi6B-myT/rating/new">
-            Valoración Usurario
-          </Link>
-        </div>
       </div>
-      <SwipeableDrawer
-        anchor="bottom"
-        open={open}
-        onClose={() => setOpen(false)}
-        onOpen={() => setOpen(true)}
-        swipeAreaWidth={80}
-        disableSwipeToOpen={false}
-        ModalProps={{
-          keepMounted: true,
-        }}
-        id="SwipeableDrawer"
-        allowSwipeInChildren={true}
-        SlideProps={{
-          style: {
-            minWidth: '320px',
-            maxWidth: '480px',
-            width: '100%',
-            margin: '0 auto',
-            overflow: 'visible',
-            height: 'calc(70% - 90px)',
-          },
-        }}
-      >
-        <TripList open={open} setOpen={setOpen} />
-      </SwipeableDrawer>
+      <RecommendationsDrawer open={drawerOpen} setOpen={setDrawerOpen} />
     </AnimatedLayout>
   );
 }

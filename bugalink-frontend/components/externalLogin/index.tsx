@@ -3,10 +3,10 @@ import Facebook from '../../public/icons/Login/facebook.svg';
 import Twitter from '../../public/icons/Login/twitter.svg';
 import Google from '../../public/icons/Login/google.svg';
 
-export default function AlternativeLogin() {
+export default function ExternalLogin() {
   return (
-    <span>
-      <div className="flex flex-row items-center justify-center space-x-5">
+    <div>
+      <div className="flex flex-row items-center justify-center space-x-8">
         <RoundedButton
           link="#"
           Icon={<Facebook className="ml-1 h-8 w-8 scale-125" />}
@@ -18,6 +18,6 @@ export default function AlternativeLogin() {
         />
       </div>
       <p className="font-bold text-light-gray">o usa tu cuenta de correo</p>
-    </span>
+    </div>
   );
 }

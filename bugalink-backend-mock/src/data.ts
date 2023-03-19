@@ -111,3 +111,55 @@ export const sampleUser = {
   lastName: 'Perez',
   photo: '/assets/avatar.png',
 };
+
+export const IndividualRides = [
+  {
+    IndividualRideId:1,
+    passenger : {
+      user : {
+        username :'Jesús Marchena',
+      }
+    },
+    passenger_routine : {
+      start_location : '88.2231, 88.2324',
+      end_location : '88.2431, 88.2124',
+      days : 'martes y jueves',
+      end_date : '14 de Marzo de 2023',
+      start_time_initial : '8:00',
+      start_time_final : '8:15',
+    },
+    price : 3,
+    ride_status : 'Pending start',
+    acceptation_status : 'Pending Confirmation',
+    start_date : '14 de Marzo de 2023',
+    end_date : '14 de Marzo de 2023',
+    start_location : '9.33,19.23',
+    end_location : '9.33,19.28',
+    message : 'Algunos días no haré el viaje, avisaré con antelación.',
+  },
+  {
+    IndividualRideId:2,
+    passenger : {
+      user : {
+        username :'Pedro Sánchez',
+      }
+    },
+    passenger_routine : {
+      start_location : '88.2231, 88.2324',
+      end_location : '88.2431, 88.2124',
+      days : 'martes y jueves',
+      end_date : '14 de Marzo de 2023: 8:00',
+      start_time_initial : '8:00',
+      start_time_final : '8:15',
+    },
+    price : 3,
+    ride_status : 'Pending start',
+    acceptation_status : 'Pending Confirmation',
+    start_date : '14 de Marzo de 2023: 7:30',
+    end_date : '14 de Marzo de 2023: 8:00',
+    start_location : '9.33,19.23',
+    end_location : '9.33,19.28',
+    message : 'Algunos días no haré el viaje, avisaré con antelación',
+  },
+]
+  

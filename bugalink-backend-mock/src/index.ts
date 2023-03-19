@@ -1,5 +1,5 @@
 export {};
-import { sampleTripRequests, sampleTrips } from './data';
+import { sampleTripRequests, sampleTrips, IndividualRides} from './data';
 
 // Import required modules
 const express = require('express');
@@ -39,6 +39,19 @@ router.get('/users/:userId', (req, res) => {
   res.json(user);
 });
 
+router.get('/api/users/:driverId/reviews', (req, res) => {
+  const numberReviews = chance.integer({ min: 1, max: 20 });
+  let reviews = []
+  for(let i = 0; i < numberReviews; i++){
+    const review = {
+      rating : chance.integer({min:1,max:5}),
+      comment : "example comment"
+    };
+    reviews[i]=review;
+  }
+  res.json(reviews);
+});
+
 router.get('/users/:userId/chats/pending/count', (req, res) => {
   const number = chance.integer({ min: 1, max: 4 });
   res.json(number);
@@ -52,6 +65,18 @@ router.get('/users/:userId/requests/pending/count', (req, res) => {
 // GET /rides/recommendations
 router.get('/trips/recommendations', (req, res) => {
   res.json(sampleTrips);
+});
+
+// GET /individualRides/<individualRideId>
+router.get('/individualRides/:IndividualRideId', (req, res) => {
+  const IndividualRideId = req.params.IndividualRideId;
+
+  // Ugly filter, should work for now until we have a proper backend
+  res.json(
+    IndividualRides.filter((IndividualRide) => {
+      return (!IndividualRideId || IndividualRide.IndividualRideId == IndividualRideId);
+    })
+  );
 });
 
 // GET /rides/search?origin=...&destination=...&date=...&time=...&price=...&seats=...

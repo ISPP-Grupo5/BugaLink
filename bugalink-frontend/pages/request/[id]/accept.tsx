@@ -1,3 +1,5 @@
+import useIndividualRides from '@/hooks/useIndividualRides';
+import useReviews from '@/hooks/useReviews';
 import { Drawer } from '@mui/material';
 import { useState } from 'react';
 import { BackButtonText } from '../../../components/buttons/Back';
@@ -11,16 +13,27 @@ import TripDetails from '../../../components/TripDetails';
 export default function AcceptRequest() {
   const [drawerDecline, setDrawerDecline] = useState(false);
   const [reason, setReason] = useState('');
+  const { individualRide, isLoading, isError } = useIndividualRides(1);
+  const { reviews } = useReviews(1);
+  var ride = individualRide[0];
+  var dateText=`Cada ${ride.passenger_routine.days} a partir del ${ride.start_date}`
+  console.log(reviews)
+  var sum = 0;
+  for(let i= 0; i<reviews.length ; i++){
+    sum+= reviews[i].rating;
+  }
 
+  const meanReviews = (sum / reviews.length).toFixed(2);
+  console.log(ride)
   return (
     <AnimatedLayout className="flex flex-col justify-between">
       <BackButtonText text="Solicitud de viaje" />
       <div className="flex h-full flex-col justify-between overflow-y-scroll bg-white px-6 pb-4 pt-2">
         {/* Profile header */}
         <ProfileHeader
-          name="Jesús Marchena"
-          rating="4.8"
-          numberOfRatings="14"
+          name={ride.passenger.user.username}
+          rating={meanReviews.toString()}
+          numberOfRatings={reviews.length}
         />
         <div className="flex flex-row">
           <p className="text-justify text-sm font-normal text-dark-gray">
@@ -29,9 +42,7 @@ export default function AcceptRequest() {
         </div>
         <div className="flex flex-row">
           <p className="text-justify leading-5">
-            ✏️ Algunos días sueltos no haré el viaje, pero los cancelaré con un
-            par de días de antelación para dejar el asiento libre a otros
-            usuarios de la aplicación.
+            ✏️ {ride.message}
           </p>
         </div>
 
@@ -43,9 +54,9 @@ export default function AcceptRequest() {
         {/* Map preview */}
         <MapPreview />
         <TripDetails
-          date="Cada viernes a partir del 16 de febrero de 2023"
-          originHour="21:00"
-          destinationHour="21:15"
+          date={dateText}
+          originHour={ride.passenger_routine.start_time_initial}
+          destinationHour={ride.passenger_routine.start_time_final}
           origin="Escuela Técnica Superior de Ingeniería Informática (ETSII), 41002
           Sevilla"
           destination="Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla"

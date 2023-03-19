@@ -25,17 +25,17 @@ export default function RideMap() {
   endTime.setMinutes(endTime.getMinutes() + time);
 
   return (
-    <AnimatedLayout>
+    <AnimatedLayout className="flex flex-col justify-between">
       <BackButton className="absolute left-2 top-2 bg-base-origin py-3 pr-2 shadow-xl" />
-      <div className="h-4/6 w-full object-cover">
+      <div className="-mb-8 h-full w-full">
         <LeafletMap
           originCoords={originCoords?.coordinates}
           destinationCoords={destinationCoords?.coordinates}
           setTime={setTime}
         />
       </div>
-      <div className="grid h-2/6 w-full grid-rows-2 rounded-t-3xl bg-white px-5 py-6 drop-shadow-md">
-        <span className="mb-4 grid grid-cols-2">
+      <div className="grid w-full grid-rows-2 rounded-t-3xl bg-white px-5 py-6 drop-shadow-md">
+        <span className="grid grid-cols-2">
           <div className="text-ellipsis text-left">
             <p className="text-xs font-light text-gray">Origen</p>
             <p className="text-sm">{origin}</p>

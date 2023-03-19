@@ -1,5 +1,3 @@
-import useMapCoordinates from '@/hooks/useMapCoordinates';
-import { useState } from 'react';
 import { BackButtonText } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import PlusMinusCounter from '@/components/buttons/PlusMinusCounter';
@@ -7,6 +5,8 @@ import AnimatedLayout from '@/components/layouts/animated';
 import MapPreview from '@/components/maps/mapPreview';
 import ProfileHeader from '@/components/ProfileHeader';
 import TripDetails from '@/components/TripDetails';
+import useMapCoordinates from '@/hooks/useMapCoordinates';
+import { useState } from 'react';
 
 const MIN_RESERVED_SEATS = 1;
 const MAX_RESERVED_SEATS = 8; // TODO: Get max free seats the driver offers from the backend

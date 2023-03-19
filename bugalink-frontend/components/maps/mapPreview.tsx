@@ -10,7 +10,7 @@ type Props = {
   destination: string;
   resultDestination: [number, number];
   setResultDestination: (result: [number, number]) => void;
-  setTime: (time: number) => void;
+  setTime?: (time: number) => void;
 };
 
 export const LeafletMap = dynamic(() => import('./map'), {

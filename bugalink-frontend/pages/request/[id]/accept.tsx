@@ -4,7 +4,7 @@ import { BackButtonText } from '../../../components/buttons/Back';
 import CTAButton from '../../../components/buttons/CTA';
 import TextAreaField from '../../../components/forms/TextAreaField';
 import AnimatedLayout from '../../../components/layouts/animated';
-import MapPreview from '../../../components/maps';
+import MapPreview from '../../../components/maps/mapPreview';
 import ProfileHeader from '../../../components/ProfileHeader';
 import TripDetails from '../../../components/TripDetails';
 

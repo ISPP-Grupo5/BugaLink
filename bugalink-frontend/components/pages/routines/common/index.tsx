@@ -1,4 +1,9 @@
-import { useState } from 'react';
+import MapPreview from '@/components/maps/mapPreview';
+import PlacesAutocomplete from '@/components/maps/placesAutocomplete';
+import { useLoadScript } from '@react-google-maps/api';
+import dynamic from 'next/dynamic';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { getGeocode, getLatLng } from 'use-places-autocomplete';
 import { BackButton } from '../../../buttons/Back';
 import CTAButton from '../../../buttons/CTA';
 import PlusMinusCounter from '../../../buttons/PlusMinusCounter';
@@ -16,6 +21,16 @@ type Props = {
   setFreeSeatsNumber?: (freeSeats: number) => void;
 };
 
+export const LeafletMap = dynamic(
+  () => import('../../../../components/maps/map'),
+  { ssr: false }
+);
+
+export const EmptyLeafletMap = dynamic(
+  () => import('../../../../components/maps/emptyMap'),
+  { ssr: false }
+);
+
 export default function NewRoutine({
   userType,
   freeSeatsNumber,
@@ -27,11 +42,92 @@ export default function NewRoutine({
   const [pickTimeTo, setPickTimeTo] = useState('12:10');
   const [selectedDays, setSeletedDays] = useState([]);
 
+  const [resultSource, setResultSource] = useState<[number, number] | null>(
+    null
+  );
+  const [resultDestination, setResultDestination] = useState<
+    [number, number] | null
+  >(null);
+
+  const generateMap = () => {
+    fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${originAddress}&key=AIzaSyD9tGiM0f6M9NDjoLCG853316Iv8UrdeAs`
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((jsonData) => {
+        setResultSource([
+          jsonData.results[0].geometry.location.lat,
+          jsonData.results[0].geometry.location.lng,
+        ]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${destinationAddress}&key=AIzaSyD9tGiM0f6M9NDjoLCG853316Iv8UrdeAs`
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((jsonData) => {
+        setResultDestination([
+          jsonData.results[0].geometry.location.lat,
+          jsonData.results[0].geometry.location.lng,
+        ]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const libraries = useMemo(() => ['places'], []);
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: 'AIzaSyD9tGiM0f6M9NDjoLCG853316Iv8UrdeAs',
+    libraries: libraries as any,
+  });
+
+  if (!isLoaded) {
+    return <p>Loading...</p>;
+  }
+
   return (
-    <div>
+    <div className="h-screen">
       <BackButton />
-      <img src="/assets/mocks/map.png" className="w-full" />
+      {resultDestination && resultSource && (
+        <div className="h-2/6 w-full">
+          <LeafletMap source={resultSource} destination={resultDestination} />
+        </div>
+      )}
+      {(!resultDestination || !resultSource) && (
+        <div className="h-2/6 w-full">
+          <EmptyLeafletMap />
+        </div>
+      )}
       <form className="absolute bottom-0 z-10 flex w-full flex-col rounded-t-3xl bg-white px-10 pb-4 pt-8">
+        <PlacesAutocomplete
+          onAddressSelect={(address) => {
+            getGeocode({ address: address }).then((results) => {
+              const { lat, lng } = getLatLng(results[0]);
+              setResultSource([lat, lng]);
+            });
+          }}
+          placeholder="Desde"
+        />
+
+        <PlacesAutocomplete
+          onAddressSelect={(address) => {
+            getGeocode({ address: address }).then((results) => {
+              const { lat, lng } = getLatLng(results[0]);
+              setResultDestination([lat, lng]);
+            });
+          }}
+          placeholder="Hasta"
+        />
+
         <TextField
           type={'text'}
           fieldName={'Desde'}
@@ -48,6 +144,7 @@ export default function NewRoutine({
           parentClassName="mb-8"
           inputClassName="w-full"
         />
+        <div onClick={generateMap}>Ver en mapa</div>
         <div className="mb-4 flex flex-col">
           <label className="text-xl font-bold">
             {userType === 'passenger' ? 'Hora de recogida' : 'Hora de salida'}

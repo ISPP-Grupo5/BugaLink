@@ -42,11 +42,13 @@ const createRoutineMachineLayer = (props) => {
     ),
   });
 
-  instance.on('routesfound', (e) => {
-    const routes = e.routes;
-    const summary = routes[0].summary;
-    setTime(Math.round((summary.totalTime % 3600) / 60));
-  });
+  if (setTime) {
+    instance.on('routesfound', (e) => {
+      const routes = e.routes;
+      const summary = routes[0].summary;
+      setTime(Math.round((summary.totalTime % 3600) / 60));
+    });
+  }
 
   return instance;
 };

@@ -34,10 +34,10 @@ export default function Rating() {
 
 
   const handleSubmit = () => {
-    const driver_id=1; //TODO: change this to the id of the driver
+    const driver_id = 1; //TODO: change this to the id of the driver
     const passenger_id = 2; //TODO change this to the passenger's id
     const individual_ride_id = 1; //TODO change this to the individual ride id
-    const user_id= 2; //TODO change this to the user id
+    const user_id = 2; //TODO change this to the user id
 
     const data = {
       "rating_type": "driver",
@@ -47,41 +47,41 @@ export default function Rating() {
       "user_id": user_id,
       "rating": rating,
       "comment": selectedButtonsText
-  };
-  setSelectedButtonsText(''); // reset the value of the comments to an empty string MAYBE IT WONT BE NEEDED WHEN IT REDIRECTS TO HOME PAGE OR OTHER PAGE
+    };
+    setSelectedButtonsText(''); // reset the value of the comments to an empty string MAYBE IT WONT BE NEEDED WHEN IT REDIRECTS TO HOME PAGE OR OTHER PAGE
 
     // send rating data to server
     axios.post('http://localhost:8000/api/users/' + driver_id + '/reviews/', data)
-    .then(response => {
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.log(error);
-    });
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
 
 
   };
 
 
-  
+
 
 
 
   return (
-    <div className=''>
+    <div className="h-screen">
       <BackButton className="absolute left-2 shadow-xl pr-2 py-3 bg-baseOrigin" />
-      <div className='bottom-0 z-10 flex w-full flex-col rounded-t-3xl bg-white px-10 pb-4 pt-8'>
+      <div className='bottom-0 z-10 flex w-full flex-col rounded-t-3xl bg-white px-10 pb-4 '>
         {/* Profile header */}
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            
+
           }}
           className="flex flex-row items-center justify-between px-5 py-2">
           <div className="font-bold">
-            <p style={{ fontWeight: '600', fontSize: '28px', lineHeight: '28px' }} className="text-xl font-Lato mt-20">¿Cómo ha ido el viaje?</p>
+            <p style={{ fontWeight: '600', fontSize: '26px', lineHeight: '28px' }} className="text-xl font-Lato pt-20">¿Cómo ha ido el viaje?</p>
           </div>
           <div style={{ marginTop: '70px' }} className="flex flex-row items-center">
 
@@ -131,7 +131,7 @@ export default function Rating() {
                     textShadow: '1px 1px 0 #999, -1px -1px 0 #fff, -1px 1px 0 #999, 1px -1px 0 #fff, 0px 0px 4px #444',
                     borderRadius: '32px',
 
-                    
+
 
                   }}
                 >
@@ -228,11 +228,11 @@ export default function Rating() {
 
             </div>
           </div>
-          <div style={{ display: 'flex', marginTop: '-6px' }}>
+          <div style={{ display: 'flex', marginTop: '5px' }}>
             <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }} >
               Buena <br></br>conducción
             </h2>
-            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' , marginLeft:'50px',marginRight:'50px'}} >
+            <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center', marginLeft: '50px', marginRight: '50px' }} >
               Conductor <br></br>agradable
             </h2>
             <h2 style={{ fontWeight: '420', fontSize: '14px', marginBottom: '10px', textAlign: 'center' }} >
@@ -240,24 +240,11 @@ export default function Rating() {
             </h2>
 
           </div>
-          <a href="link" style={{ color: '#DA0000', marginTop: '60px', marginBottom: '-13px', fontSize: '14px' }}>¿Has tenido algún problema? <b style={{ fontSize: '14px' }}>Háznoslo saber</b></a>
+          <div className="flex flex-col justify-end">
+            <a href="link" style={{ color: '#DA0000', marginTop: '60px', marginBottom: '-13px', fontSize: '14px' }}>¿Has tenido algún problema? <b style={{ fontSize: '14px' }}>Háznoslo saber</b></a>
 
-          {/* <button
-            style={{
-              marginTop: '15px',
-              padding: '10px',
-              borderRadius: '20px',
-              backgroundColor: '#38A3A5',
-              color: 'white',
-              fontSize: '18px',
-              cursor: 'pointer',
-              width: '314px',
-              height: '62px',
-            }}
-            onClick={handleSubmit}
-          >
-          </button> */}
-          <CTAButton onClick={handleSubmit} className="mt-6 max-w-8" text="ENVIAR" />
+            <CTAButton onClick={handleSubmit} className="mt-6 max-w-8" text="ENVIAR" />
+          </div>
         </div>
       </div>
     </div >

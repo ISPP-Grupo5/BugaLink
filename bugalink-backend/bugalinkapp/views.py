@@ -140,20 +140,14 @@ class IndividualRides(APIView):
         except IndividualRide.DoesNotExist:
             raise Http404
 
-    def cancel_individual_ride(self, request):  # MIRAR API PARA SU URL.PY
-        try:
-            individualRide = IndividualRide.objects.get(id=request.data['idIndividualRide'])
-            individualRide.acceptation_status = AcceptationStatus.Cancelled
-            IndividualRide.objects.put(individualRide)
-        except IndividualRide.DoesNotExist:
-            raise Http404
-
     def get_sporadic_individual_rides(self, request):
             try:
                 individual_ride = IndividualRide.objects.get(idIndividualRide=request.data['idIndividualRide'])
                 return individual_ride.ride.driver_routine.one_ride
             except Exception as e:
                 raise e
+            
+            
 
 ############## ENDPOINTS ASOCIADOS A RIDE
 
@@ -373,7 +367,63 @@ class RoutineRecommendation(APIView):
         except:
             raise Http404 #Mejorar errores
        
-    
+############## ENDPOINTS ASOCIADOS A ROUTINE_REQUEST
 
+class RoutineRequest(APIView):
+    def post(self,request):
+        if request.method == 'POST':
+            user = User.objects.get(id=request.data["userId"])
+            passenger = Passenger.objects.get(user = user) 
+            passenger_routine_qs = PassengerRoutine.objects.filter(passenger = passenger, days = request.data["day"]) 
+            list_passenger_routine = list(passenger_routine_qs) # L-8 , L-10, L-19
+            
+            not_satisfied_passenger_routines = []
+            for p_routine in list_passenger_routine:    # Se obtienen todos passenger routines no satisfechos por una routine_request
+                routine_request = RoutineRequest.objects.get(passenger_routine = p_routine, acceptation_status = AcceptationStatus.Accepted)
+                if routine_request == None:
+                    not_satisfied_passenger_routines.append(p_routine)
+            
+            ride = Ride.objects.get(id = request.data["rideId"])
+            driver_routine = ride.driver_routine
+            day = driver_routine.days
 
+            for passenger_routine in not_satisfied_passenger_routines:
+                p_r = PassengerRoutine.objects.get(passenger_routine.start_time_initial <= ride.start_date <= passenger_routine.start_time_final)
+                if p_r != None:
+                    satisfied = True
+                    break
 
+            if satisfied == True:
+                pass
+            else:
+                p_r = PassengerRoutine(
+                    passenger = passenger,
+                    start_location = driver_routine.start_location,
+                    end_location = driver_routine.end_location,
+                    days = day,
+                    end_date = driver_routine.end_date,
+                    start_time_initial = driver_routine.start_date,
+                    start_time_final = driver_routine.start_date)
+                p_r.save()
+
+            rq = RoutineRequest(passenger_routine = p_r, driver_routine = driver_routine, day = day , acceptation_status = AcceptationStatus.Pending_Confirmation)
+            rq.save()
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+############## ENDPOINTS ASOCIADOS A DRIVER
+
+class Driver(APIView):
+    def cancel_routine_request(self,request, id):
+        try:
+            routine_request = RoutineRequest.objects.get(id=id)
+        except RoutineRequest.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'La instancia con el ID dado no existe'}, status=404)
+
+        if request.method == 'PUT':
+            routine_request.acceptation_status = AcceptationStatus.Cancelled
+            routine_request.save()
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': 'El método de solicitud no está permitido'}, status=405)

@@ -8,6 +8,8 @@ router.register(r'users/(?P<user_id>\d+)/reviews', views.RatingViewSet, basename
 urlpatterns = [
     # path('', include(router.urls)),
     path('users/<int:id>', views.Users.as_view()),
+    path('users/create', views.Users.as_view()),
+    path('users/edit', views.Users.as_view()),
     path('pendingindividualrides/', views.pendingIndividualRide.as_view()),
     path('cancelledindividualrides/', views.cancelledIndividualRide.as_view()),
     path('acceptedindividualrides/', views.acceptedIndividualRide.as_view()),

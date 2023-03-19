@@ -11,6 +11,7 @@ from .models import *
 from .serializers import *
 
 from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
 
 
 #Imports que deberian desaparecer despues de la refactorización
@@ -33,19 +34,27 @@ class Users(APIView):
     #Creacion inicial de usuario
     def post(self, request):
         try:
+            print(request.data)
             email = request.data['email']
             nickname = request.data['nickname']
             password = request.data['password']
-            newUser = User.objects.create(email=email, username=nickname, password=password)
+            birth_date = request.data['birth_date']
+            balance = request.data['balance']
+            newUser = User.objects.create(email=email, username=nickname)
+            print("usuario creado")
+            newUser.set_password(password)
+            print("contraseña cambiada")
             newUser.save()
-            newPassenger = Passenger.objects.create(user=newUser)
+            newPassenger = Passenger.objects.create(user=newUser, birth_date=birth_date, balance=balance)
             newPassenger.save()    
-            return JsonResponse({"message":"User Created Succesfully"})
-        except:
-            return JsonResponse({"message":"User Could Not Be Registered"})
-        
+            return JsonResponse({"message":"User Created Succesfully"}, status = 200)
+        except IntegrityError as e:
+            print("Error de integridad al crear el usuario:", e)
+            return JsonResponse({"message":"No se pudo registrar el usuario."}, status = 400)
+        except Exception as e:
+            print("Error al crear el usuario:", e)
+            return JsonResponse({"message":"No se pudo registrar el usuario."}, status = 400)
     #Editar usuario desde el perfil
-    @login_required
     def patch(self,request):
         user = User.objects.get(id=request.data['id'])
         passenger = Passenger.objects.get(user=user)

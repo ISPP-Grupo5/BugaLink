@@ -40,9 +40,12 @@ if os.environ.get("IS_APP_ENGINE"):
         # Ensure a scheme is present in the URL before it's processed.
         if not urlparse(APPENGINE_URL).scheme:
             APPENGINE_URL = f"https://{APPENGINE_URL}"
+        APP_URL="https://app.bugalink.es"
+        WWW_APP_URL="https://www.app.bugalink.es"
+        
 
-        ALLOWED_HOSTS = [urlparse(APPENGINE_URL).netloc]
-        CSRF_TRUSTED_ORIGINS = [APPENGINE_URL]
+        ALLOWED_HOSTS = [urlparse(APPENGINE_URL).netloc,urlparse(APP_URL).netloc,urlparse(WWW_APP_URL).netloc]
+        CSRF_TRUSTED_ORIGINS = [APPENGINE_URL,APP_URL,WWW_APP_URL]
         SECURE_SSL_REDIRECT = True
     else:
         ALLOWED_HOSTS = ["*"]

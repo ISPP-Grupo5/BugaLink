@@ -17,6 +17,7 @@ module.exports = {
       turquoise: '#38a3a5',
       'dark-turquoise': '#287F81',
       'light-turquoise': '#7cc3c4',
+      'background-turquoise': '#C0E2E2',
       green: '#75a538',
       'light-green': '#A6DE5F',
       yellow: '#f9c200',

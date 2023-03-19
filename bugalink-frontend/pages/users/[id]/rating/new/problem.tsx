@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { BackButtonText } from '../../../../../components/buttons/Back';
 import CTAButton from '../../../../../components/buttons/CTA';
 import SelectField from '../../../../../components/forms/SelectField';
 import TextAreaField from '../../../../../components/forms/TextAreaField';
@@ -16,8 +15,8 @@ export default function ReportProblem() {
   ];
 
   return (
-    <div className="flex flex-col px-4 pb-4 pt-3 h-full overflow-y-scroll bg-white rounded-t-lg">
-      <div className="flex flex-col my-3">
+    <div className="flex h-full flex-col overflow-y-scroll rounded-t-lg bg-white px-4 pb-4 pt-3">
+      <div className="my-3 flex flex-col">
         <SelectField
           label="He tenido un problema con..."
           id="people"
@@ -27,7 +26,7 @@ export default function ReportProblem() {
           inputClassName="w-full"
         />
       </div>
-      <div className="flex flex-col my-3">
+      <div className="my-3 flex flex-col">
         <TextAreaField
           fieldName="Resume brevemente el problema"
           content={problem}

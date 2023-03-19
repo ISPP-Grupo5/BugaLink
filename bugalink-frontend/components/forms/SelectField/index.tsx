@@ -26,6 +26,10 @@ export default function SelectField({
         id="demo-simple-select-label"
         sx={{
           fontFamily: 'Lato, sans-serif',
+          color: '#000',
+          '&.Mui-focused': {
+            color: '#38a3a5',
+          },
         }}
       >
         {label}
@@ -38,6 +42,9 @@ export default function SelectField({
         onChange={(e) => setSelectedOption(e.target.value)}
         sx={{
           fontFamily: 'Lato, sans-serif',
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#7cc3c4',
+          },
         }}
       >
         {options.map((option) => (

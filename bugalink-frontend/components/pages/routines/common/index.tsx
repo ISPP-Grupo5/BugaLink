@@ -1,14 +1,11 @@
-import MapPreview from '@/components/maps/mapPreview';
 import PlacesAutocomplete from '@/components/maps/placesAutocomplete';
 import { useLoadScript } from '@react-google-maps/api';
-import { useForceUpdate } from 'framer-motion';
 import dynamic from 'next/dynamic';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { getGeocode, getLatLng } from 'use-places-autocomplete';
 import { BackButton } from '../../../buttons/Back';
 import CTAButton from '../../../buttons/CTA';
 import PlusMinusCounter from '../../../buttons/PlusMinusCounter';
-import TextField from '../../../forms/TextField';
 import TimePicker from '../../../forms/TimePicker';
 
 const MIN_FREE_SEATS = 1;
@@ -41,16 +38,16 @@ export default function NewRoutine({
   const [pickTimeTo, setPickTimeTo] = useState('12:10');
   const [selectedDays, setSeletedDays] = useState([]);
 
-  const [resultSource, setResultSource] = useState<number[]>(null);
+  const [resultOrigin, setResultOrigin] = useState<number[]>(null);
   const [resultDestination, setResultDestination] = useState<number[]>(null);
 
-  const [source, setSource] = useState('');
+  const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
 
   const libraries = useMemo(() => ['places'], []);
 
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: 'AIzaSyD9tGiM0f6M9NDjoLCG853316Iv8UrdeAs',
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     libraries: libraries as any,
   });
 
@@ -60,25 +57,25 @@ export default function NewRoutine({
 
   return (
     <div className="h-screen">
-      <BackButton />
-      {resultDestination && resultSource && (
+      <BackButton className="absolute left-2 top-2 bg-base-origin py-3 pr-2 shadow-xl" />
+      {resultDestination && resultOrigin && (
         <div className="h-2/6 w-full">
           <LeafletMap
-          key={`${source},${destination}`} source={resultSource} destination={resultDestination} />
+          key={`${origin},${destination}`} origin={resultOrigin} destination={resultDestination} />
         </div>
       )}
-      {(!resultDestination || !resultSource) && (
+      {(!resultDestination || !resultOrigin) && (
         <div className="h-2/6 w-full">
           <EmptyLeafletMap />
         </div>
       )}
-      <form className="absolute bottom-0 z-10 flex w-full flex-col rounded-t-3xl bg-white px-10 pb-4 pt-8">
+      <form className="h-4/6 flex w-full flex-col rounded-t-3xl bg-white px-10 pb-4 pt-8">
         <PlacesAutocomplete
           onAddressSelect={(address) => {
             getGeocode({ address: address }).then((results) => {
-              setSource(results[0].formatted_address)
+              setOrigin(results[0].formatted_address)
               const { lat, lng } = getLatLng(results[0]);
-              setResultSource([lat, lng]);
+              setResultOrigin([lat, lng]);
             });
           }}
           placeholder="Desde"

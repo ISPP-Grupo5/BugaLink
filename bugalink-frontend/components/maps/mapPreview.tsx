@@ -4,9 +4,9 @@ import { useEffect } from 'react';
 
 type Props = {
   className?: string;
-  source: string;
-  resultSource: number[];
-  setResultSource: (result: number[]) => void;
+  origin: string;
+  resultOrigin: number[];
+  setResultOrigin: (result: number[]) => void;
   destination: string;
   resultDestination: number[];
   setResultDestination: (result: number[]) => void;
@@ -19,9 +19,9 @@ export const LeafletMap = dynamic(() => import('./map'), {
 
 export default function MapPreview({
   className = '',
-  source,
-  resultSource,
-  setResultSource,
+  origin,
+  resultOrigin,
+  setResultOrigin,
   destination,
   resultDestination,
   setResultDestination,
@@ -29,13 +29,13 @@ export default function MapPreview({
 }: Props) {
   useEffect(() => {
     fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${source}&key=AIzaSyD9tGiM0f6M9NDjoLCG853316Iv8UrdeAs`
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${origin}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
     )
       .then((response) => {
         return response.json();
       })
       .then((jsonData) => {
-        setResultSource([
+        setResultOrigin([
           jsonData.results[0].geometry.location.lat,
           jsonData.results[0].geometry.location.lng,
         ]);
@@ -45,7 +45,7 @@ export default function MapPreview({
       });
 
     fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${destination}&key=AIzaSyD9tGiM0f6M9NDjoLCG853316Iv8UrdeAs`
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${destination}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
     )
       .then((response) => {
         return response.json();
@@ -68,9 +68,9 @@ export default function MapPreview({
           'flex w-full flex-row items-center justify-between py-2 ' + className
         }
       >
-        {resultSource && resultDestination && (
+        {resultOrigin && resultDestination && (
           <LeafletMap
-            source={resultSource}
+            origin={resultOrigin}
             destination={resultDestination}
             setTime={setTime}
           />

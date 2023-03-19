@@ -1,26 +1,26 @@
 import { MapContainer, TileLayer } from 'react-leaflet';
-import RoutingMachine from './RoutingMachine';
+import RoutingMachine from './routingMachine';
 
 type props = {
-  source: number[];
+  origin: number[];
   destination: number[];
   setTime?: (time: number) => void;
 };
 
-export default function LeafletMap({ source, destination, setTime }: props) {
+export default function LeafletMap({ origin, destination, setTime }: props) {
   return (
     <MapContainer
-      center={[Math.floor(source[0]), Math.floor(source[1])]}
+      center={[Math.floor(origin[0]), Math.floor(origin[1])]}
       scrollWheelZoom={true}
-      zoomControl={true}
-      style={{ height: '100%', width: '100%' }}
+      zoomControl={false}
+      style={{ height: '100%', width: '100%', zIndex: 0 }}
     >
       <TileLayer
         url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
         // attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
       <RoutingMachine
-        source={source}
+        origin={origin}
         destination={destination}
         setTime={setTime ? setTime : null}
       />

@@ -12,7 +12,7 @@ const MAX_RESERVED_SEATS = 8; // TODO: Get max free seats the driver offers from
 
 export default function DetailsTwo() {
   const [reservedSeats, setReservedSeats] = useState(1);
-  const [resultSource, setResultSource] = useState<number[] | null>(
+  const [resultOrigin, setResultOrigin] = useState<number[] | null>(
     null
   );
   const [resultDestination, setResultDestination] = useState<
@@ -20,7 +20,7 @@ export default function DetailsTwo() {
   >(null);
   const [time, setTime] = useState<number>(0);
 
-  const source =
+  const origin =
     'Escuela Técnica Superior de Ingeniería Informática, 41002 Sevilla';
   const destination = 'Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla';
 
@@ -34,11 +34,11 @@ export default function DetailsTwo() {
       <BackButtonText text="Detalles del viaje" />
       <div className="flex h-full flex-col overflow-y-scroll bg-white px-4 pb-4 pt-2">
         {/* Map preview */}
-        {source && destination && (
+        {origin && destination && (
           <MapPreview
-            source={source}
-            resultSource={resultSource}
-            setResultSource={setResultSource}
+            origin={origin}
+            resultOrigin={resultOrigin}
+            setResultOrigin={setResultOrigin}
             destination={destination}
             resultDestination={resultDestination}
             setResultDestination={setResultDestination}
@@ -57,7 +57,7 @@ export default function DetailsTwo() {
             hour: '2-digit',
             minute: '2-digit',
           })}
-          origin={source}
+          origin={origin}
           destination={destination}
         />
 

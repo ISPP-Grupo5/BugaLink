@@ -12,7 +12,7 @@ export const LeafletMap = dynamic(
 );
 
 export default function RideMap() {
-  const [resultSource, setResultSource] = useState<number[] | null>(
+  const [resultOrigin, setResultOrigin] = useState<number[] | null>(
     null
   );
   const [resultDestination, setResultDestination] = useState<
@@ -20,7 +20,7 @@ export default function RideMap() {
   >(null);
   const [time, setTime] = useState<number>(0);
 
-  const source =
+  const origin =
     'Escuela Técnica Superior de Ingeniería Informática, 41002 Sevilla';
   const destination = 'Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla';
 
@@ -31,13 +31,13 @@ export default function RideMap() {
 
   useEffect(() => {
     fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${source}&key=AIzaSyD9tGiM0f6M9NDjoLCG853316Iv8UrdeAs`
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${origin}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
     )
       .then((response) => {
         return response.json();
       })
       .then((jsonData) => {
-        setResultSource([
+        setResultOrigin([
           jsonData.results[0].geometry.location.lat,
           jsonData.results[0].geometry.location.lng,
         ]);
@@ -47,7 +47,7 @@ export default function RideMap() {
       });
 
     fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${destination}&key=AIzaSyD9tGiM0f6M9NDjoLCG853316Iv8UrdeAs`
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${destination}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
     )
       .then((response) => {
         return response.json();
@@ -65,22 +65,21 @@ export default function RideMap() {
 
   return (
     <AnimatedLayout>
-      <BackButton className="sticky left-2 top-2 bg-base-origin py-3 pr-2 shadow-xl" />
+      <BackButton className="absolute left-2 top-2 bg-base-origin py-3 pr-2 shadow-xl" />
       <div className="h-4/6 w-full object-cover">
-        {resultDestination && resultSource && (
+        {resultDestination && resultOrigin && (
           <LeafletMap
-            source={resultSource}
+            origin={resultOrigin}
             destination={resultDestination}
             setTime={setTime}
           />
         )}
       </div>
-      {/* <img src="/assets/mocks/map.png" className="h-full w-full object-cover" /> */}
-      <div className="absolute bottom-0 z-10 -mt-6 grid w-full grid-rows-2 rounded-t-3xl bg-white px-5 py-6 drop-shadow-md">
+      <div className="h-2/6 w-full grid grid-rows-2 rounded-t-3xl bg-white px-5 py-6 drop-shadow-md">
         <span className="mb-4 grid grid-cols-2">
           <div className="text-ellipsis text-left">
             <p className="text-xs font-light text-gray">Origen</p>
-            <p className="text-sm">{source}</p>
+            <p className="text-sm">{origin}</p>
           </div>
           <div className="text-right">
             <p className="text-xs font-light text-gray">Destino</p>

@@ -13,7 +13,7 @@ export default function DetailsOne() {
   const router = useRouter();
   const { requested } = router.query;
 
-  const [resultSource, setResultSource] = useState<number[] | null>(
+  const [resultOrigin, setResultOrigin] = useState<number[] | null>(
     null
   );
   const [resultDestination, setResultDestination] = useState<
@@ -21,7 +21,7 @@ export default function DetailsOne() {
   >(null);
   const [time, setTime] = useState<number>(0);
 
-  const source =
+  const origin =
     'Escuela Técnica Superior de Ingeniería Informática, 41002 Sevilla';
   const destination = 'Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla';
 
@@ -41,13 +41,13 @@ export default function DetailsOne() {
             rating="4.8"
             numberOfRatings="14"
           />
-          {/* Source and target destinations */}
+          {/* Origin and target destinations */}
           <div className="grid grid-cols-2 gap-2 py-2">
             <div>
               <p className="text-xs font-normal">Origen</p>
               <p className="text-xs font-bold">
                 <SourcePin className="mr-2 inline" />
-                {source}
+                {origin}
               </p>
             </div>
             <div>
@@ -59,11 +59,11 @@ export default function DetailsOne() {
             </div>
           </div>
           {/* Map preview */}
-          {source && destination && (
+          {origin && destination && (
             <MapPreview
-              source={source}
-              resultSource={resultSource}
-              setResultSource={setResultSource}
+              origin={origin}
+              resultOrigin={resultOrigin}
+              setResultOrigin={setResultOrigin}
               destination={destination}
               resultDestination={resultDestination}
               setResultDestination={setResultDestination}

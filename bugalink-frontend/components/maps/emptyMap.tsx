@@ -1,5 +1,4 @@
 import { MapContainer, TileLayer } from 'react-leaflet';
-import RoutingMachine from './RoutingMachine';
 
 export default function LeafletMap() {
   return (
@@ -7,8 +6,8 @@ export default function LeafletMap() {
       center={[40.46, -3.74]}
       zoom={5}
       scrollWheelZoom={true}
-      zoomControl={true}
-      style={{ height: '100%', width: '100%' }}
+      zoomControl={false}
+      style={{ height: '100%', width: '100%', zIndex: 0 }}
     >
       <TileLayer
         url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"

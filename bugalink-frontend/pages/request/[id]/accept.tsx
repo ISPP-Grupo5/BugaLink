@@ -15,6 +15,8 @@ export default function AcceptRequest() {
   const [reason, setReason] = useState('');
   const { individualRide, isLoading, isError } = useIndividualRides(1);
   const { reviews } = useReviews(1);
+  if (isLoading) return <p>Loading...</p>; // TODO: make skeleton
+  if (isError) return <p>Error</p>; // TODO: make error message
   var ride = individualRide[0];
   var dateText=`Cada ${ride.passenger_routine.days} a partir del ${ride.start_date}`
   console.log(reviews)

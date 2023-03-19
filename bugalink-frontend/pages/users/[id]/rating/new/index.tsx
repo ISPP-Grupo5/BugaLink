@@ -1,9 +1,4 @@
-import Link from 'next/link';
 import { BackButton, BackButtonText } from '../../../../../components/buttons/Back';
-// import Chat from '/public/assets/chat.svg';
-// import SourcePin from '/public/assets/source-pin.svg';
-// import TargetPin from '/public/assets/map-mark.svg';
-// import CTAButton from '../../../components/buttons/CTA';
 import React, { useState } from 'react';
 import CTAButton from '../../../../../components/buttons/CTA';
 import axios from 'axios';
@@ -14,15 +9,6 @@ export default function Rating() {
   const [button2Selected, setButton2Selected] = useState(false);
   const [button3Selected, setButton3Selected] = useState(false);
   const [selectedButtonsText, setSelectedButtonsText] = useState('');
-
-  // const data = {
-  //   rating: rating,
-  //   button1Selected: button1Selected,
-  //   button2Selected: button2Selected,
-  //   button3Selected: button3Selected
-  // };
-
-
 
   const handleRating = (selectedRating) => {
     setRating(selectedRating);
@@ -82,9 +68,9 @@ export default function Rating() {
 
 
   return (
-    <div >
+    <div className=''>
       <BackButton className="absolute left-2 shadow-xl pr-2 py-3 bg-baseOrigin" />
-      <div >
+      <div className='bottom-0 z-10 flex w-full flex-col rounded-t-3xl bg-white px-10 pb-4 pt-8'>
         {/* Profile header */}
         <div
           style={{

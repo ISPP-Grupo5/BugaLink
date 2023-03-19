@@ -14,23 +14,28 @@ export default function Login() {
   const [password, setPassword] = useState('');
 
   return (
-    <AnimatedLayout>
+    <AnimatedLayout className="bg-white">
       <BackButton className="absolute left-2 top-2 bg-base-origin py-3 pr-2 shadow-xl" />
-      <div className="flex flex-col -space-y-8 bg-background-turquoise">
-        <CityDriver className="scale-110 place-self-center " />
+      <div className="flex flex-col -space-y-10 ">
+        <span className="flex w-full justify-center bg-background-turquoise">
+          <CityDriver />
+        </span>
 
         <div className="z-10 rounded-t-3xl bg-base-origin text-center">
           <p className=" py-5 text-3xl text-gray ">Iniciar sesión</p>
-          <div className=" h-max rounded-t-xl bg-white py-5">
+          <div className="rounded-t-xl bg-white py-5">
             <ExternalLogin />
+            <p className="font-bold text-light-gray">
+              o usa tu cuenta de correo
+            </p>
             <form className="mt-5">
-              <div className="mr-8 ml-8 flex flex-col ">
+              <div className="mr-8 ml-8 flex flex-col space-y-5">
                 <TextField
                   type={'text'}
                   content={email}
                   fieldName={'Correo electrónico'}
                   inputClassName="w-full"
-                  parentClassName="mb-6"
+                  parentClassName=""
                   setContent={setEmail}
                 />
                 <TextField
@@ -38,7 +43,7 @@ export default function Login() {
                   content={password}
                   fieldName={'Contraseña'}
                   inputClassName="w-full"
-                  parentClassName="mb-3"
+                  parentClassName=""
                   setContent={setPassword}
                 />
               </div>
@@ -59,13 +64,13 @@ export default function Login() {
                 </Link>
               </div>
 
-              <CTAButton text="Iniciar Sesión" className="mt-8 w-5/6" />
+              <CTAButton text="INICIAR SESIÓN" className="mt-4 w-5/6" />
 
-              <span className="flex flex-row justify-center -justify-between py-8">
+              <span className="flex translate-y-7 -translate-x-2 flex-row justify-center -justify-between">
                 <p className="font-bold text-light-gray">
                   ¿No tienes una cuenta?
                 </p>
-                <Link href="#" className="translate-x-2">
+                <Link href="/session/register" className="translate-x-2">
                   <p className="text-dark-turquoise"> Regístrate </p>
                 </Link>
               </span>

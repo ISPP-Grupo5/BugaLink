@@ -17,10 +17,9 @@ export default function AcceptRequest() {
   const { reviews } = useReviews(1);
   if (isLoading) return <p>Loading...</p>; // TODO: make skeleton
   if (isError) return <p>Error</p>; // TODO: make error message
-  var ride = individualRide[0];
-  var dateText=`Cada ${ride.passenger_routine.days} a partir del ${ride.start_date}`
-  console.log(reviews)
-  var sum = 0;
+  let ride = individualRide[0];
+  let dateText=`Cada ${ride.passenger_routine.days} a partir del ${ride.start_date}`;
+  let sum = 0;
   for(let i= 0; i<reviews.length ; i++){
     sum+= reviews[i].rating;
   }

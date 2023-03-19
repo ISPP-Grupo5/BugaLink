@@ -61,7 +61,13 @@ export default function NewRoutine({
       {resultDestination && resultOrigin && (
         <div className="h-2/6 w-full">
           <LeafletMap
-          key={`${origin},${destination}`} origin={resultOrigin} destination={resultDestination} />
+          key={`${origin},${destination}`}
+          origin={origin}
+          destination={destination}
+          resultOrigin={resultOrigin}
+          resultDestination={resultDestination}
+          setResultOrigin={setResultOrigin}
+          setResultDestination={setResultDestination} />
         </div>
       )}
       {(!resultDestination || !resultOrigin) && (

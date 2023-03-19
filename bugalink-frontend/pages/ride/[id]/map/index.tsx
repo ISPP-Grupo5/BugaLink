@@ -4,7 +4,7 @@ import AnimatedLayout from '../../../../components/layouts/animated';
 import Car from '/public/assets/car.svg';
 import Progress from '/public/assets/progress.svg';
 import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export const LeafletMap = dynamic(
   () => import('../../../../components/maps/map'),
@@ -29,48 +29,18 @@ export default function RideMap() {
   const endTime = new Date('2021-05-01T21:00:00');
   endTime.setMinutes(endTime.getMinutes() + time);
 
-  useEffect(() => {
-    fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${origin}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((jsonData) => {
-        setResultOrigin([
-          jsonData.results[0].geometry.location.lat,
-          jsonData.results[0].geometry.location.lng,
-        ]);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${destination}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((jsonData) => {
-        setResultDestination([
-          jsonData.results[0].geometry.location.lat,
-          jsonData.results[0].geometry.location.lng,
-        ]);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
   return (
     <AnimatedLayout>
       <BackButton className="absolute left-2 top-2 bg-base-origin py-3 pr-2 shadow-xl" />
       <div className="h-4/6 w-full object-cover">
-        {resultDestination && resultOrigin && (
+        {origin && destination && (
           <LeafletMap
-            origin={resultOrigin}
-            destination={resultDestination}
+            origin={origin}
+            destination={destination}
+            resultOrigin={resultOrigin}
+            resultDestination={resultDestination}
+            setResultOrigin={setResultOrigin}
+            setResultDestination={setResultDestination}
             setTime={setTime}
           />
         )}

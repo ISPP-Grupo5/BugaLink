@@ -1,5 +1,5 @@
 import { MapContainer, TileLayer } from 'react-leaflet';
-import RoutingMachine from './routingMachine';
+import RoutingMachine from './RoutingMachine';
 
 export default function LeafletMap({
   originCoords,

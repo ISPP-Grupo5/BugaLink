@@ -5,11 +5,11 @@ import { useEffect } from 'react';
 type Props = {
   className?: string;
   source: string;
-  resultSource: [number, number];
-  setResultSource: (result: [number, number]) => void;
+  resultSource: number[];
+  setResultSource: (result: number[]) => void;
   destination: string;
-  resultDestination: [number, number];
-  setResultDestination: (result: [number, number]) => void;
+  resultDestination: number[];
+  setResultDestination: (result: number[]) => void;
   setTime?: (time: number) => void;
 };
 

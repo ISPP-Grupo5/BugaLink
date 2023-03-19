@@ -13,11 +13,11 @@ export default function DetailsOne() {
   const router = useRouter();
   const { requested } = router.query;
 
-  const [resultSource, setResultSource] = useState<[number, number] | null>(
+  const [resultSource, setResultSource] = useState<number[] | null>(
     null
   );
   const [resultDestination, setResultDestination] = useState<
-    [number, number] | null
+    number[] | null
   >(null);
   const [time, setTime] = useState<number>(0);
 

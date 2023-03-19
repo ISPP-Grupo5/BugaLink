@@ -12,11 +12,11 @@ const MAX_RESERVED_SEATS = 8; // TODO: Get max free seats the driver offers from
 
 export default function DetailsTwo() {
   const [reservedSeats, setReservedSeats] = useState(1);
-  const [resultSource, setResultSource] = useState<[number, number] | null>(
+  const [resultSource, setResultSource] = useState<number[] | null>(
     null
   );
   const [resultDestination, setResultDestination] = useState<
-    [number, number] | null
+    number[] | null
   >(null);
   const [time, setTime] = useState<number>(0);
 

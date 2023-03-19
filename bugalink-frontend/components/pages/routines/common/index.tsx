@@ -1,6 +1,7 @@
 import MapPreview from '@/components/maps/mapPreview';
 import PlacesAutocomplete from '@/components/maps/placesAutocomplete';
 import { useLoadScript } from '@react-google-maps/api';
+import { useForceUpdate } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { getGeocode, getLatLng } from 'use-places-autocomplete';
@@ -36,52 +37,15 @@ export default function NewRoutine({
   freeSeatsNumber,
   setFreeSeatsNumber,
 }: Props) {
-  const [originAddress, setOriginAddress] = useState('');
-  const [destinationAddress, setDestinationAddress] = useState('');
   const [pickTimeFrom, setPickTimeFrom] = useState('12:00');
   const [pickTimeTo, setPickTimeTo] = useState('12:10');
   const [selectedDays, setSeletedDays] = useState([]);
 
-  const [resultSource, setResultSource] = useState<[number, number] | null>(
-    null
-  );
-  const [resultDestination, setResultDestination] = useState<
-    [number, number] | null
-  >(null);
+  const [resultSource, setResultSource] = useState<number[]>(null);
+  const [resultDestination, setResultDestination] = useState<number[]>(null);
 
-  const generateMap = () => {
-    fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${originAddress}&key=AIzaSyD9tGiM0f6M9NDjoLCG853316Iv8UrdeAs`
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((jsonData) => {
-        setResultSource([
-          jsonData.results[0].geometry.location.lat,
-          jsonData.results[0].geometry.location.lng,
-        ]);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${destinationAddress}&key=AIzaSyD9tGiM0f6M9NDjoLCG853316Iv8UrdeAs`
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((jsonData) => {
-        setResultDestination([
-          jsonData.results[0].geometry.location.lat,
-          jsonData.results[0].geometry.location.lng,
-        ]);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  const [source, setSource] = useState('');
+  const [destination, setDestination] = useState('');
 
   const libraries = useMemo(() => ['places'], []);
 
@@ -99,7 +63,8 @@ export default function NewRoutine({
       <BackButton />
       {resultDestination && resultSource && (
         <div className="h-2/6 w-full">
-          <LeafletMap source={resultSource} destination={resultDestination} />
+          <LeafletMap
+          key={`${source},${destination}`} source={resultSource} destination={resultDestination} />
         </div>
       )}
       {(!resultDestination || !resultSource) && (
@@ -111,6 +76,7 @@ export default function NewRoutine({
         <PlacesAutocomplete
           onAddressSelect={(address) => {
             getGeocode({ address: address }).then((results) => {
+              setSource(results[0].formatted_address)
               const { lat, lng } = getLatLng(results[0]);
               setResultSource([lat, lng]);
             });
@@ -121,30 +87,13 @@ export default function NewRoutine({
         <PlacesAutocomplete
           onAddressSelect={(address) => {
             getGeocode({ address: address }).then((results) => {
+              setDestination(results[0].formatted_address)
               const { lat, lng } = getLatLng(results[0]);
               setResultDestination([lat, lng]);
             });
           }}
           placeholder="Hasta"
         />
-
-        <TextField
-          type={'text'}
-          fieldName={'Desde'}
-          content={originAddress}
-          setContent={setOriginAddress}
-          parentClassName="mb-6"
-          inputClassName="w-full"
-        />
-        <TextField
-          type={'text'}
-          fieldName={'Hasta'}
-          content={destinationAddress}
-          setContent={setDestinationAddress}
-          parentClassName="mb-8"
-          inputClassName="w-full"
-        />
-        <div onClick={generateMap}>Ver en mapa</div>
         <div className="mb-4 flex flex-col">
           <label className="text-xl font-bold">
             {userType === 'passenger' ? 'Hora de recogida' : 'Hora de salida'}

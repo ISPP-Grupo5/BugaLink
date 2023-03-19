@@ -1,14 +1,13 @@
+import { BackButton } from '@/components/buttons/Back';
+import CTAButton from '@/components/buttons/CTA';
+import PlusMinusCounter from '@/components/buttons/PlusMinusCounter';
+import TimePicker from '@/components/forms/TimePicker';
 import AnimatedLayout from '@/components/layouts/animated';
 import PlacesAutocomplete from '@/components/maps/placesAutocomplete';
-import useMapCoordinates from '@/hooks/useMapCoordinates';
 import { useLoadScript } from '@react-google-maps/api';
 import dynamic from 'next/dynamic';
 import { useMemo, useState } from 'react';
 import { getGeocode, getLatLng } from 'use-places-autocomplete';
-import { BackButton } from '../../../buttons/Back';
-import CTAButton from '../../../buttons/CTA';
-import PlusMinusCounter from '../../../buttons/PlusMinusCounter';
-import TimePicker from '../../../forms/TimePicker';
 
 const MIN_FREE_SEATS = 1;
 const MAX_FREE_SEATS = 8;
@@ -21,13 +20,12 @@ type Props = {
   setFreeSeatsNumber?: (freeSeats: number) => void;
 };
 
-export const LeafletMap = dynamic(
-  () => import('../../../../components/maps/map'),
-  { ssr: false }
-);
+export const LeafletMap = dynamic(() => import('@/components/maps/map'), {
+  ssr: false,
+});
 
 export const EmptyLeafletMap = dynamic(
-  () => import('../../../../components/maps/emptyMap'),
+  () => import('@/components/maps/emptyMap'),
   { ssr: false }
 );
 

@@ -2,11 +2,11 @@ import useMapCoordinates from '@/hooks/useMapCoordinates';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { BackButtonText } from '../../../components/buttons/Back';
-import CTAButton from '../../../components/buttons/CTA';
-import AnimatedLayout from '../../../components/layouts/animated';
-import MapPreview from '../../../components/maps/mapPreview';
-import ProfileHeader from '../../../components/ProfileHeader';
+import { BackButtonText } from '@/components/buttons/Back';
+import CTAButton from '@/components/buttons/CTA';
+import AnimatedLayout from '@/components/layouts/animated';
+import MapPreview from '@/components/maps/mapPreview';
+import ProfileHeader from '@/components/ProfileHeader';
 import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
 
@@ -32,7 +32,7 @@ export default function DetailsOne() {
     <AnimatedLayout>
       <div className="flex h-screen flex-col items-center justify-center">
         <BackButtonText text="Detalles del viaje" />
-        <div className="h-full overflow-y-scroll bg-white px-5 pt-2 pb-44">
+        <div className="h-full overflow-y-scroll bg-white px-5 py-2">
           {/* Profile header */}
           <ProfileHeader
             name="Jesús Marchena"
@@ -62,7 +62,7 @@ export default function DetailsOne() {
               originCoords={originCoords.coordinates}
               destinationCoords={destinationCoords.coordinates}
               setTime={setTime}
-              className="h-3/6"
+              className="h-1/2"
             />
           )}
           {/* Details */}
@@ -100,8 +100,8 @@ export default function DetailsOne() {
           </div>
         </div>
         {/* Trip request */}
-        <div className="absolute bottom-0 my-3 w-full rounded-t-xl bg-white px-5 pt-5 shadow-t-md">
-          <div className="flex flex-row items-center justify-between">
+        <div className="w-full rounded-t-xl bg-white py-3 px-5 pt-5 shadow-t-md">
+          <div className="justify-between flex flex-row items-center">
             <div className="flex flex-col">
               <p className="text-xs font-normal">Tipo de viaje</p>
               <p className="text-xl font-bold">Recurrente</p>

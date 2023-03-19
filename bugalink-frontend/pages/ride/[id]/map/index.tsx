@@ -1,16 +1,15 @@
 import { motion } from 'framer-motion';
-import { BackButton } from '../../../../components/buttons/Back';
-import AnimatedLayout from '../../../../components/layouts/animated';
+import { BackButton } from '@/components/buttons/Back';
+import AnimatedLayout from '@/components/layouts/animated';
 import Car from '/public/assets/car.svg';
 import Progress from '/public/assets/progress.svg';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import useMapCoordinates from '@/hooks/useMapCoordinates';
 
-export const LeafletMap = dynamic(
-  () => import('../../../../components/maps/map'),
-  { ssr: false }
-);
+export const LeafletMap = dynamic(() => import('@/components/maps/map'), {
+  ssr: false,
+});
 
 export default function RideMap() {
   const origin =

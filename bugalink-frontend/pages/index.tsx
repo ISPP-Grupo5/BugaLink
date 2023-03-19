@@ -6,11 +6,11 @@ import Link from 'next/link';
 import Destino from 'public/icons/Vista-Principal/destino.svg';
 
 import { useState } from 'react';
-import DriverCard from '../components/cards/driver';
-import PassengerCard from '../components/cards/passenger';
-import RecommendationsDrawer from '../components/drawers/Recommendations';
-import AnimatedLayout from '../components/layouts/animated';
-import NEXT_ROUTES from '../constants/nextRoutes';
+import DriverCard from '@/components/cards/driver';
+import PassengerCard from '@/components/cards/passenger';
+import RecommendationsDrawer from '@/components/drawers/Recommendations';
+import AnimatedLayout from '@/components/layouts/animated';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 
 import Glass from '/public/icons/Vista-Principal/glass.svg';
 
@@ -18,7 +18,7 @@ export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   // userId has to be hardcoded until we have sessions in the app. This info would be stored in the user's browser
   const USER_ID = 1;
-  const { user, isLoading, isError } = useUser(USER_ID);
+  const { user } = useUser(USER_ID);
 
   return (
     <AnimatedLayout className="max-h-full overflow-y-scroll">
@@ -45,13 +45,13 @@ export default function Home() {
           </Link>
         </span>
 
-        <span className="flex w-full justify-between space-x-4 px-4 md:px-5">
+        <span className="justify-between flex w-full space-x-4 px-4 md:px-5">
           <SquareRoutinesButton />
           <SquareChatsButton />
           <SquareRequestsButton />
         </span>
 
-        <span className="mt-5 flex justify-between px-4 md:px-5">
+        <span className="justify-between mt-5 flex px-4 md:px-5">
           <p className="text-left text-xl font-semibold">Próximos viajes</p>
           <Link href="/users/qyahXxJc/history">
             <p className="text-right text-xl text-turquoise">Historial</p>

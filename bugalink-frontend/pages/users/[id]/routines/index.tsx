@@ -1,9 +1,9 @@
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
-import { BackButtonText } from '../../../../components/buttons/Back';
-import Entry from '../../../../components/cards/common/entry';
-import AnimatedLayout from '../../../../components/layouts/animated';
+import { BackButtonText } from '@/components/buttons/Back';
+import Entry from '@/components/cards/common/entry';
+import AnimatedLayout from '@/components/layouts/animated';
 import MapPin from '/public/assets/map-pin.svg';
 import OrigenPin from '/public/assets/origen-pin.svg';
 import ThreeDots from '/public/assets/three-dots.svg';

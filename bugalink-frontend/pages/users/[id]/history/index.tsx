@@ -1,7 +1,7 @@
-import TripCard from '../../../../components/cards/recommendation';
-import AnimatedLayout from '../../../../components/layouts/animated';
+import TripCard from '@/components/cards/recommendation';
+import AnimatedLayout from '@/components/layouts/animated';
 import Glass from '/public/icons/Vista-Principal/glass.svg';
-import { BackButtonText } from '../../../../components/buttons/Back';
+import { BackButtonText } from '@/components/buttons/Back';
 
 export default function History() {
   // TODO: Get history from API

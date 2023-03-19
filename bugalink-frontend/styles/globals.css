@@ -78,11 +78,6 @@ body {
   text-decoration: none !important;
 }
 
-/* Add this CSS class to buttons, etc. to prevent selecting */
-.unselectable {
-  user-select: none;
-}
-
 @media (min-width: 480px) {
   .mobile-view {
     width: 480px;

@@ -14,15 +14,15 @@ export default function HistoryTabs() {
 
   return (
     <div className="h-full w-full space-y-2">
-      <div className="relative mx-4 flex h-10 items-center rounded-full p-1 px-4 shadow-lg">
-        <div className="flex w-full justify-center">
-          <button onClick={() => handleTabClick(0)}>Pasajero</button>
-        </div>
-        <div className="flex w-full justify-center text-center">
-          <button onClick={() => handleTabClick(1)}>Conductor</button>
-        </div>
+      <div className="relative mx-4 mt-1 flex h-10 select-none items-center justify-around rounded-full p-1 px-4 shadow-lg">
+        <button className="grow" onClick={() => handleTabClick(0)}>
+          Pasajero
+        </button>
+        <button className="grow" onClick={() => handleTabClick(1)}>
+          Conductor
+        </button>
         <span
-          className={`absolute flex h-8 w-1/2 items-center justify-center rounded-full text-white shadow transition-all duration-500 ${
+          className={`absolute flex h-8 w-1/2 items-center justify-center rounded-full text-white shadow transition-all duration-300 ${
             tabIndex === 0
               ? 'left-1 translate-x-0 bg-green'
               : '-left-1 translate-x-full bg-turquoise'
@@ -68,7 +68,7 @@ const HistoryList = ({ trips }) => {
   if (isError) return <p>Error</p>; // TODO: make error message
 
   return (
-    <div className="absolute divide-y-2 divide-light-gray ">
+    <div className="absolute w-full divide-y-2 divide-light-gray px-4">
       {historyTrips.map((trip: TripI) => (
         <TripCard
           key={trip.id}

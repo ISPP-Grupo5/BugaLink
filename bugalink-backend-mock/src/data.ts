@@ -1,59 +1,49 @@
+import { sampleUsers } from './data/users';
+
 export const sampleTrips = [
   {
     id: 1,
-    type: 'driver',
-    rating: 4.6,
-    driver: {
-      name: 'Paco Perez',
-    },
-    avatar: '/assets/avatar.png',
-    gender: 'M',
+    driver: sampleUsers['pedro'],
+    passengers: [sampleUsers['marta']],
     origin: 'Centro Comercial Way',
     destination: 'ETSII',
     date: '14 de Marzo de 2023, 12:00',
     price: 2,
+    requestStatus: 'pending',
   },
   {
     id: 2,
-    type: 'driver',
-    rating: 4.7,
-    driver: {
-      name: 'Josefina Mayo',
-    },
-    avatar: '/assets/avatar.svg',
-    gender: 'F',
+    driver: sampleUsers['marta'],
+    passengers: [sampleUsers['paco']],
     origin: 'Avenida Andalucía, Dos Hermanas',
     destination: 'La Motilla',
     date: '11 de Marzo de 2023, 17:30',
     price: 1.5,
+    requestStatus: 'pending',
   },
   {
     id: 3,
-    type: 'driver',
-    rating: 4.7,
-    driver: {
-      name: 'Alberto Chicote',
-    },
-    avatar: '/assets/avatar.png',
-    gender: 'M',
-    origin: 'Centro Comercial Lagoh',
-    destination: 'Isla Mágica',
-    date: '17 de Marzo de 2023, 11:40',
-    price: 1.75,
+    driver: sampleUsers['paco'],
+    passengers: [sampleUsers['pedro']],
+    origin: 'Centro Comercial Way',
+    destination: 'ETSII',
+    date: '14 de Marzo de 2023, 12:00',
+    price: 2,
+    requestStatus: 'pending',
   },
   {
     id: 4,
-    type: 'driver',
-    rating: 4.7,
-    driver: {
-      name: 'Laura Laureada',
-    },
-    avatar: '/assets/avatar.svg',
-    gender: 'F',
-    origin: 'La Cartuja',
-    destination: 'Facultad de Psicología',
-    date: '14 de Marzo de 2023: 7:30',
-    price: 2.0,
+    driver: sampleUsers['pedro'],
+    passengers: [
+      sampleUsers['marta'],
+      sampleUsers['paco'],
+      sampleUsers['luis'],
+    ],
+    origin: 'Avenida Andalucía, Dos Hermanas',
+    destination: 'La Motilla',
+    date: '11 de Marzo de 2023, 17:30',
+    price: 1.5,
+    requestStatus: 'accepted',
   },
 ];
 
@@ -104,10 +94,3 @@ export const sampleTripRequests = [
     price: 1.5,
   },
 ];
-
-export const sampleUser = {
-  id: 1,
-  name: 'Paco',
-  lastName: 'Perez',
-  photo: '/assets/avatar.png',
-};

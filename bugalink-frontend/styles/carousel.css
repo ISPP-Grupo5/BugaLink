@@ -1,0 +1,25 @@
+.embla {
+  --slide-spacing: 0rem;
+  --slide-size: 86%;
+  --slide-height: 14rem;
+}
+.embla__viewport {
+  overflow: hidden;
+}
+.embla__container {
+  display: flex;
+  flex-direction: row;
+  height: auto;
+  margin-left: calc(var(--slide-spacing) * -1);
+}
+.embla__slide {
+  flex: 0 0 var(--slide-size);
+  min-width: 0;
+  padding-left: var(--slide-spacing);
+  position: relative;
+}
+.embla__slide__img {
+  display: flex;
+  height: var(--slide-height);
+  width: 100%;
+}

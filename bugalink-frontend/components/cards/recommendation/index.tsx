@@ -1,5 +1,5 @@
-import AvatarWithRating from '../../avatarWithRating';
-import Entry from '../common/entry';
+import AvatarWithRating from '@/components/avatarWithRating';
+import Entry from '@/components/cards/common/entry';
 import Calendar from '/public/assets/calendar.svg';
 import MapPin from '/public/assets/map-pin.svg';
 import OrigenPin from '/public/assets/origen-pin.svg';

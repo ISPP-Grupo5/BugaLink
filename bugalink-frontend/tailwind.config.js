@@ -1,6 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./pages/**/*.tsx', './components/**/*.tsx'],
+  content: [
+    './pages/**/*.tsx',
+    './components/**/*.tsx',
+    'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}',
+  ],
   theme: {
     colors: {
       transparent: 'transparent',
@@ -20,8 +24,10 @@ module.exports = {
       'background-turquoise': '#C0E2E2',
       green: '#75a538',
       'light-green': '#A6DE5F',
+      'pale-green': '#E7FBAF',
       yellow: '#f9c200',
       'border-color': '#DADADA',
+      orange: '#F99746',
     },
     extend: {
       fontFamily: {
@@ -36,5 +42,4 @@ module.exports = {
       },
     },
   },
-  plugins: [],
 };

@@ -291,7 +291,7 @@ class Rides(APIView):
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class PassengerRoutineListPost(APIView):
+class PassengerRoutineList(APIView):
     def get(self, request, pk, format=None):
         try:
             queryset = PassengerRoutine.objects.filter(passennger_id=pk)
@@ -310,7 +310,7 @@ class PassengerRoutineListPost(APIView):
             return JsonResponse({'error': ''})
 
 
-class DriverRoutineListPost(APIView):
+class DriverRoutineList(APIView):
     def get(self, request, pk, format=None):
         try:
             queryset = DriverRoutine.objects.filter(driver_id=pk)
@@ -329,7 +329,7 @@ class DriverRoutineListPost(APIView):
             return JsonResponse({'error': ''})
 
 
-class PassengerRoutineDeletePut(APIView):
+class PassengerRoutine(APIView):
     def delete(self, request, user_id, routine_id, format=None):
         try:
             routine = PassengerRoutine.objects.get(pk=routine_id)
@@ -350,7 +350,7 @@ class PassengerRoutineDeletePut(APIView):
             return JsonResponse({'error': 'Invalid arguments'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class DriverRoutineDeletePut(APIView):
+class DriverRoutine(APIView):
     def delete(self, request, user_id, routine_id, format=None):
         try:
             routine = DriverRoutine.objects.get(pk=routine_id)

@@ -14,8 +14,8 @@ urlpatterns = [
     path('routineFilter', views.RoutineRecommendation.as_view()),
     path('individualRides', views.IndividualRides.as_view()),
     path('rides/<int:pk>', views.Rides.as_view()),
-    path('users/<int:pk>/passenger-routines', views.PassengerRoutineListPost.as_view()),
-    path('users/<int:pk>/driver-routines', views.DriverRoutineListPost.as_view()),
-    path('users/<int:user_id>/passenger-routines/<int:routine_id>', views.PassengerRoutineDeletePut.as_view()),
-    path('users/<int:user_id>/driver-routines/<int:routine_id>', views.DriverRoutineDeletePut.as_view())
+    path('users/<int:pk>/passenger-routines', views.PassengerRoutineList.as_view()),
+    path('users/<int:pk>/driver-routines', views.DriverRoutineList.as_view()),
+    path('users/<int:user_id>/passenger-routines/<int:routine_id>', views.PassengerRoutine.as_view()),
+    path('users/<int:user_id>/driver-routines/<int:routine_id>', views.DriverRoutine.as_view())
 ]

@@ -11,7 +11,7 @@ export default function Switch() {
 
       <div
         className={
-          'flex h-6 w-12 cursor-pointer items-center rounded-full bg-light-gray p-1 md:h-7 md:w-14' +
+          'flex h-6 w-12 cursor-pointer items-center rounded-full bg-light-gray p-1' +
           (toggle ? null : toggleBgClass)
         }
         onClick={() => {
@@ -21,7 +21,7 @@ export default function Switch() {
         {/* Switch */}
         <div
           className={
-            'h-5 w-5 transform rounded-full bg-dark-turquoise  shadow-md duration-300 ease-in-out md:h-6 md:w-6' +
+            'h-5 w-5 transform rounded-full bg-dark-turquoise  shadow-md duration-300 ease-in-out' +
             (toggle ? null : toggleClass)
           }
         ></div>

@@ -2,15 +2,34 @@ import { BackButtonText } from '../../../components/buttons/Back';
 import { useRouter } from 'next/router';
 import CTAButton from '../../../components/buttons/CTA';
 import AnimatedLayout from '../../../components/layouts/animated';
-import MapPreview from '../../../components/MapPreview';
+import MapPreview from '../../../components/maps';
 import ProfileHeader from '../../../components/ProfileHeader';
 import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
 import Link from 'next/link';
+import { useState } from 'react';
 
 export default function DetailsOne() {
   const router = useRouter();
   const { requested } = router.query;
+
+  const [resultSource, setResultSource] = useState<[number, number] | null>(
+    null
+  );
+  const [resultDestination, setResultDestination] = useState<
+    [number, number] | null
+  >(null);
+  const [time, setTime] = useState<number>(0);
+
+  const source =
+    'Escuela Técnica Superior de Ingeniería Informática, 41002 Sevilla';
+  const destination = 'Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla';
+
+  // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
+  const startTime = new Date('2021-05-01T21:00:00');
+  const endTime = new Date('2021-05-01T21:00:00');
+  endTime.setMinutes(endTime.getMinutes() + time);
+
   return (
     <AnimatedLayout>
       <div className="flex h-screen flex-col items-center justify-center">
@@ -28,25 +47,39 @@ export default function DetailsOne() {
               <p className="text-xs font-normal">Origen</p>
               <p className="text-xs font-bold">
                 <SourcePin className="mr-2 inline" />
-                Escuela Técnica Superior de Ingeniería Informática (ETSII),
-                41002 Sevilla
+                {source}
               </p>
             </div>
             <div>
               <p className="text-xs font-normal">Destino</p>
               <p className="text-xs font-bold">
                 <TargetPin className="mr-2 inline" />
-                Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla
+                {destination}
               </p>
             </div>
           </div>
           {/* Map preview */}
-          <MapPreview />
+          {source && destination && (
+            <MapPreview
+              source={source}
+              resultSource={resultSource}
+              setResultSource={setResultSource}
+              destination={destination}
+              resultDestination={resultDestination}
+              setResultDestination={setResultDestination}
+              setTime={setTime}
+              className="h-3/6"
+            />
+          )}
           {/* Details */}
           <div className="py-2">
             <p className="text-xs font-normal">Fecha y hora</p>
             <p className="text-justify text-xs font-medium">
-              📅 Todos los viernes a las 21:00
+              📅 Todos los viernes a las{' '}
+              {startTime.toLocaleString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
             </p>
           </div>
           <div className="py-2">

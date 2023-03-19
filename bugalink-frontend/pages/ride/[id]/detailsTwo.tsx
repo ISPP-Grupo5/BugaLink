@@ -3,7 +3,7 @@ import { BackButtonText } from '../../../components/buttons/Back';
 import CTAButton from '../../../components/buttons/CTA';
 import PlusMinusCounter from '../../../components/buttons/PlusMinusCounter';
 import AnimatedLayout from '../../../components/layouts/animated';
-import MapPreview from '../../../components/MapPreview';
+import MapPreview from '../../../components/maps';
 import ProfileHeader from '../../../components/ProfileHeader';
 import TripDetails from '../../../components/TripDetails';
 
@@ -12,21 +12,53 @@ const MAX_RESERVED_SEATS = 8; // TODO: Get max free seats the driver offers from
 
 export default function DetailsTwo() {
   const [reservedSeats, setReservedSeats] = useState(1);
+  const [resultSource, setResultSource] = useState<[number, number] | null>(
+    null
+  );
+  const [resultDestination, setResultDestination] = useState<
+    [number, number] | null
+  >(null);
+  const [time, setTime] = useState<number>(0);
+
+  const source =
+    'Escuela Técnica Superior de Ingeniería Informática, 41002 Sevilla';
+  const destination = 'Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla';
+
+  // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
+  const startTime = new Date('2021-05-01T21:00:00');
+  const endTime = new Date('2021-05-01T21:00:00');
+  endTime.setMinutes(endTime.getMinutes() + time);
 
   return (
     <AnimatedLayout className="flex flex-col justify-between">
       <BackButtonText text="Detalles del viaje" />
       <div className="flex h-full flex-col overflow-y-scroll bg-white px-4 pb-4 pt-2">
         {/* Map preview */}
-        <MapPreview />
+        {source && destination && (
+          <MapPreview
+            source={source}
+            resultSource={resultSource}
+            setResultSource={setResultSource}
+            destination={destination}
+            resultDestination={resultDestination}
+            setResultDestination={setResultDestination}
+            setTime={setTime}
+            className="h-full"
+          />
+        )}
         {/* Details */}
         <TripDetails
           date="Viernes 16 de febrero de 2023"
-          originHour="21:00"
-          destinationHour="21:15"
-          origin="Escuela Técnica Superior de Ingeniería Informática (ETSII), 41002
-          Sevilla"
-          destination="Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla"
+          originHour={startTime.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+          destinationHour={endTime.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+          origin={source}
+          destination={destination}
         />
 
         {/* Seats selector */}

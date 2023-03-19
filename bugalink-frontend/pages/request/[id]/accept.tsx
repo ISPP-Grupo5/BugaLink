@@ -4,13 +4,30 @@ import { BackButtonText } from '../../../components/buttons/Back';
 import CTAButton from '../../../components/buttons/CTA';
 import TextAreaField from '../../../components/forms/TextAreaField';
 import AnimatedLayout from '../../../components/layouts/animated';
-import MapPreview from '../../../components/MapPreview';
+import MapPreview from '../../../components/maps';
 import ProfileHeader from '../../../components/ProfileHeader';
 import TripDetails from '../../../components/TripDetails';
 
 export default function AcceptRequest() {
   const [drawerDecline, setDrawerDecline] = useState(false);
   const [reason, setReason] = useState('');
+
+  const [resultSource, setResultSource] = useState<[number, number] | null>(
+    null
+  );
+  const [resultDestination, setResultDestination] = useState<
+    [number, number] | null
+  >(null);
+  const [time, setTime] = useState<number>(0);
+
+  const source =
+    'Escuela Técnica Superior de Ingeniería Informática, 41002 Sevilla';
+  const destination = 'Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla';
+
+  // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
+  const startTime = new Date('2021-05-01T21:00:00');
+  const endTime = new Date('2021-05-01T21:00:00');
+  endTime.setMinutes(endTime.getMinutes() + time);
 
   return (
     <AnimatedLayout className="flex flex-col justify-between">
@@ -41,14 +58,30 @@ export default function AcceptRequest() {
           <p className="text-xl font-bold">Detalles del viaje</p>
         </div>
         {/* Map preview */}
-        <MapPreview />
+        {source && destination && (
+          <MapPreview
+            source={source}
+            resultSource={resultSource}
+            setResultSource={setResultSource}
+            destination={destination}
+            resultDestination={resultDestination}
+            setResultDestination={setResultDestination}
+            setTime={setTime}
+            className="h-full"
+          />
+        )}
         <TripDetails
           date="Cada viernes a partir del 16 de febrero de 2023"
-          originHour="21:00"
-          destinationHour="21:15"
-          origin="Escuela Técnica Superior de Ingeniería Informática (ETSII), 41002
-          Sevilla"
-          destination="Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla"
+          originHour={startTime.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+          destinationHour={endTime.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+          origin={source}
+          destination={destination}
         />
       </div>
       {/* Trip request */}

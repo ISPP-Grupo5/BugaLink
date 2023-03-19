@@ -1,4 +1,4 @@
-import TripRequestI from '../../../interfaces/tripRequest';
+import TripRequestI from '@/interfaces/tripRequest';
 import TripCard from '../recommendation';
 
 type Props = {

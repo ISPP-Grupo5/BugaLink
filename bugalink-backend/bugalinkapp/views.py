@@ -155,6 +155,60 @@ class IndividualRides(APIView):
             except Exception as e:
                 raise e
 
+class CreateIndividualRide(APIView):
+    def post(self, request):
+        if request.method == 'POST':
+            user = User.objects.get(id=request.data["userId"])
+            passenger = Passenger.objects.get(user = user)
+            ride = Ride.objects.get(id=request.data["rideId"])
+            driver_routine = ride.driver_routine
+            day = driver_routine.days
+
+            passenger_routine_qs = PassengerRoutine.objects.filter(passenger = passenger, days = request.data["day"]) 
+            list_passenger_routine = list(passenger_routine_qs) # L-8 , L-10, L-19
+
+            not_satisfied_passenger_routines = []
+            for p_routine in list_passenger_routine:    # Se obtienen todos passenger routines no satisfechos por una routine_request
+                routine_request = RoutineRequest.objects.get(passenger_routine = p_routine, acceptation_status = AcceptationStatus.Accepted)
+                if routine_request == None:
+                    not_satisfied_passenger_routines.append(p_routine)
+
+            for passenger_routine in not_satisfied_passenger_routines:
+                p_r = PassengerRoutine.objects.get(passenger_routine.start_time_initial <= ride.start_date <= passenger_routine.start_time_final)
+                if p_r != None:
+                    satisfied = True
+                    break
+
+            if satisfied == True:
+                passenger_routine = p_r
+            else:
+                passenger_routine = PassengerRoutine(
+                    passenger = passenger,
+                    start_location = driver_routine.start_location,
+                    end_location = driver_routine.end_location,
+                    days = day,
+                    end_date = driver_routine.end_date,
+                    start_time_initial = driver_routine.start_date,
+                    start_time_final = driver_routine.start_date)
+                passenger_routine.save()
+
+            i_r = IndividualRide(ride = ride,
+            passenger = passenger,
+            passenger_routine= passenger_routine,
+            price = 0,      # TODO Pendiente de revisión
+            ride_status = RideStatus.Pending_start,
+            acceptation_status = AcceptationStatus.Pending_Confirmation,
+            start_date = ride.start_date,
+            end_date = ride.end_date,
+            start_location = ride.start_location,
+            end_location = ride.end_location,
+            message= request.data["message"]
+            )
+            i_r.save()
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
 ############## ENDPOINTS ASOCIADOS A RIDE
 
 class Rides(APIView):

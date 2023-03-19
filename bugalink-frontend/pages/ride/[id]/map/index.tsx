@@ -5,6 +5,7 @@ import Car from '/public/assets/car.svg';
 import Progress from '/public/assets/progress.svg';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
+import useMapCoordinates from '@/hooks/useMapCoordinates';
 
 export const LeafletMap = dynamic(
   () => import('../../../../components/maps/map'),
@@ -12,17 +13,12 @@ export const LeafletMap = dynamic(
 );
 
 export default function RideMap() {
-  const [resultOrigin, setResultOrigin] = useState<number[] | null>(
-    null
-  );
-  const [resultDestination, setResultDestination] = useState<
-    number[] | null
-  >(null);
-  const [time, setTime] = useState<number>(0);
-
   const origin =
     'Escuela Técnica Superior de Ingeniería Informática, 41002 Sevilla';
   const destination = 'Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla';
+  const [time, setTime] = useState<number>(0);
+  const originCoords = useMapCoordinates(origin);
+  const destinationCoords = useMapCoordinates(destination);
 
   // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
   const startTime = new Date('2021-05-01T21:00:00');
@@ -33,19 +29,13 @@ export default function RideMap() {
     <AnimatedLayout>
       <BackButton className="absolute left-2 top-2 bg-base-origin py-3 pr-2 shadow-xl" />
       <div className="h-4/6 w-full object-cover">
-        {origin && destination && (
-          <LeafletMap
-            origin={origin}
-            destination={destination}
-            resultOrigin={resultOrigin}
-            resultDestination={resultDestination}
-            setResultOrigin={setResultOrigin}
-            setResultDestination={setResultDestination}
-            setTime={setTime}
-          />
-        )}
+        <LeafletMap
+          originCoords={originCoords?.coordinates}
+          destinationCoords={destinationCoords?.coordinates}
+          setTime={setTime}
+        />
       </div>
-      <div className="h-2/6 w-full grid grid-rows-2 rounded-t-3xl bg-white px-5 py-6 drop-shadow-md">
+      <div className="grid h-2/6 w-full grid-rows-2 rounded-t-3xl bg-white px-5 py-6 drop-shadow-md">
         <span className="mb-4 grid grid-cols-2">
           <div className="text-ellipsis text-left">
             <p className="text-xs font-light text-gray">Origen</p>

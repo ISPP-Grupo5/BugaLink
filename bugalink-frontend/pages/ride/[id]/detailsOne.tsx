@@ -1,29 +1,27 @@
-import { BackButtonText } from '../../../components/buttons/Back';
+import useMapCoordinates from '@/hooks/useMapCoordinates';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { BackButtonText } from '../../../components/buttons/Back';
 import CTAButton from '../../../components/buttons/CTA';
 import AnimatedLayout from '../../../components/layouts/animated';
 import MapPreview from '../../../components/maps/mapPreview';
 import ProfileHeader from '../../../components/ProfileHeader';
 import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
-import Link from 'next/link';
-import { useState } from 'react';
 
 export default function DetailsOne() {
-  const router = useRouter();
-  const { requested } = router.query;
-
-  const [resultOrigin, setResultOrigin] = useState<number[] | null>(
-    null
-  );
-  const [resultDestination, setResultDestination] = useState<
-    number[] | null
-  >(null);
-  const [time, setTime] = useState<number>(0);
-
   const origin =
     'Escuela Técnica Superior de Ingeniería Informática, 41002 Sevilla';
   const destination = 'Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla';
+
+  const router = useRouter();
+  const { requested } = router.query;
+
+  const originCoords = useMapCoordinates(origin);
+  const destinationCoords = useMapCoordinates(destination);
+
+  const [time, setTime] = useState<number>(0);
 
   // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
   const startTime = new Date('2021-05-01T21:00:00');
@@ -59,14 +57,10 @@ export default function DetailsOne() {
             </div>
           </div>
           {/* Map preview */}
-          {origin && destination && (
+          {!originCoords.isLoading && !destinationCoords.isLoading && (
             <MapPreview
-              origin={origin}
-              resultOrigin={resultOrigin}
-              setResultOrigin={setResultOrigin}
-              destination={destination}
-              resultDestination={resultDestination}
-              setResultDestination={setResultDestination}
+              originCoords={originCoords.coordinates}
+              destinationCoords={destinationCoords.coordinates}
               setTime={setTime}
               className="h-3/6"
             />

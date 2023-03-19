@@ -10,25 +10,27 @@ from django.core.exceptions import ObjectDoesNotExist
 from .models import *
 from .serializers import *
 
-#Imports que deberian desaparecer despues de la refactorización
+# Imports que deberian desaparecer despues de la refactorización
 from rest_framework import viewsets
 from django.http import Http404
 from rest_framework.response import Response
 
+
 class Users(APIView):
 
-    def get(self, request,id):
+    def get(self, request, id):
         try:
             user = User.objects.get(id=id)
             serializer = UserSerializer(user, context={'request': request})
             return JsonResponse(serializer.data)
         except User.DoesNotExist:
-            return JsonResponse({"message":"Not found"},status=404)
+            return JsonResponse({"message": "Not found"}, status=404)
+
 
 class RoutineRecommendation(APIView):
     def get(self, request):
         try:
-            #Definicion de parametros del passenger asociado al user que efectua el filtro
+            # Definicion de parametros del passenger asociado al user que efectua el filtro
             driver_routines = DriverRoutine.objects.all()
             user = User.objects.get(id=request.data['id'])
             passenger = Passenger.objects.get(user=user)
@@ -46,43 +48,45 @@ class RoutineRecommendation(APIView):
             for routine in driver_routines:
                 driver_days = routine.days
 
-                #Comprobacion de cuantos dias coinciden en cada rutina
+                # Comprobacion de cuantos dias coinciden en cada rutina
                 for day in driver_days:
                     if day in passenger_days:
                         similar_days.append(day)
 
-                #Definir las horas de inicio y fin de la rutina del pasajero
+                # Definir las horas de inicio y fin de la rutina del pasajero
                 drivers_beggining_of_ride = routine.start_date
                 drivers_ending_of_ride = routine.end_date
 
-                #Definir lugares de inicio y fin de la rutina del conductor
+                # Definir lugares de inicio y fin de la rutina del conductor
                 driver_source_location = routine.start_location
                 driver_ending_location = routine.end_location
 
-                #Obtenner en kilometros la distancia en kilometros entre los lugares de origen
+                # Obtenner en kilometros la distancia en kilometros entre los lugares de origen
                 lat_source_passenger, lon_source_passenger = map(radians, source_location)
                 lat_source_driver, lon_source_driver = map(radians, driver_source_location)
                 d_lat_source = lat_source_driver - lat_source_passenger
                 d_lon_source = lon_source_driver - lon_source_passenger
-                a = sin(d_lat_source/2)**2 + cos(lat_source_passenger) * cos(lat_source_driver) * sin(d_lon_source/2)**2
-                c = 2 * atan2(sqrt(a), sqrt(1-a))
+                a = sin(d_lat_source / 2) ** 2 + cos(lat_source_passenger) * cos(lat_source_driver) * sin(
+                    d_lon_source / 2) ** 2
+                c = 2 * atan2(sqrt(a), sqrt(1 - a))
                 source_distance = 6371 * c
 
-                #Obtener en kilometros la diferencia de distancia entre los lugares destino
+                # Obtener en kilometros la diferencia de distancia entre los lugares destino
                 lat_end_passenger, lon_end_passenger = map(radians, destination_location)
                 lat_end_driver, lon_end_driver = map(radians, driver_ending_location)
                 d_lat_destination = lat_end_driver - lat_end_passenger
                 d_lon_destination = lon_end_driver - lon_end_passenger
-                a = sin(d_lat_destination/2)**2 + cos(lat_end_passenger) * cos(lat_end_driver) * sin(d_lon_destination/2)**2
-                c = 2 * atan2(sqrt(a), sqrt(1-a))
+                a = sin(d_lat_destination / 2) ** 2 + cos(lat_end_passenger) * cos(lat_end_driver) * sin(
+                    d_lon_destination / 2) ** 2
+                c = 2 * atan2(sqrt(a), sqrt(1 - a))
                 destination_distance = 6371 * c
 
-                #Uso de todos los datos obtenidos para crear un filtro que compruebe si la rutina es valida
-                #Si es valida se guarda en una lista
+                # Uso de todos los datos obtenidos para crear un filtro que compruebe si la rutina es valida
+                # Si es valida se guarda en una lista
                 if len(similar_days) > 0 and min_time <= drivers_beggining_of_ride and max_time >= drivers_beggining_of_ride and destination_distance <= 1 and source_distance <= 1:
                     valid_routines.append(routine)
 
-            #Se obtienen los viajes asociados a las rutinas marcadas como validas y se guardan a una lista que las devolvera como respuesta
+            # Se obtienen los viajes asociados a las rutinas marcadas como validas y se guardan a una lista que las devolvera como respuesta
             rides = []
             for routine in valid_routines:
                 ride = Ride.objects.filter(driver_routine=routine).first()
@@ -90,12 +94,13 @@ class RoutineRecommendation(APIView):
                     if ride.num_seats > 0:
                         rides.append(ride)
 
-            #Llamada al serializer para devolver todos los viajes que han sido seleccionados
+            # Llamada al serializer para devolver todos los viajes que han sido seleccionados
             serializer = ListRideSerializer(rides, many=True)
             return JsonResponse(serializer.data)
 
-        except:
-            raise Http404 #Mejorar errores
+        except Exception:
+            raise Http404  # Mejorar errores
+
 
 class PendingIndividualRide(APIView):
     def get(self, request):
@@ -286,18 +291,18 @@ class Rides(APIView):
             serializer = RideSerializer(request.data, many=False)
             serializer.save()
             return JsonResponse(serializer.data)
-        except:
+        except Exception:
             return JsonResponse({'error': 'Ride already exists with id {}'.format(pk)},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class PassengerRoutineList(APIView):
     def get(self, request, pk, format=None):
         try:
             queryset = PassengerRoutine.objects.filter(passennger_id=pk)
-        except:
+        except ObjectDoesNotExist:
             return JsonResponse({'error': 'Passenger does not exist with id {}'.format(pk)},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                                status=status.HTTP_400_BAD_REQUEST)
         serializer = PassengerRoutineSerializer(queryset, many=True)
         return JsonResponse(serializer.data)
 
@@ -306,7 +311,7 @@ class PassengerRoutineList(APIView):
         try:
             serializer = PassengerRoutineSerializer(request.data, many=False)
             serializer.save()
-        except:
+        except Exception:
             return JsonResponse({'error': ''})
 
 
@@ -314,9 +319,9 @@ class DriverRoutineList(APIView):
     def get(self, request, pk, format=None):
         try:
             queryset = DriverRoutine.objects.filter(driver_id=pk)
-        except:
+        except ObjectDoesNotExist:
             return JsonResponse({'error': 'Passenger does not exist with id {}'.format(pk)},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                                status=status.HTTP_400_BAD_REQUEST)
         serializer = DriverRoutineSerializer(queryset, many=True)
         return JsonResponse(serializer.data)
 
@@ -325,7 +330,7 @@ class DriverRoutineList(APIView):
         try:
             serializer = DriverRoutineSerializer(request.data, many=False)
             serializer.save()
-        except:
+        except Exception:
             return JsonResponse({'error': ''})
 
 
@@ -333,8 +338,9 @@ class PassengerRoutine(APIView):
     def delete(self, request, user_id, routine_id, format=None):
         try:
             routine = PassengerRoutine.objects.get(pk=routine_id)
-        except:
-            return JsonResponse({'error': 'PassengerRoutine does not exist with id {}'.format(routine_id)})
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'PassengerRoutine does not exist with id {}'.format(routine_id)},
+                                status=status.HTTP_400_BAD_REQUEST)
 
         serializer = PassengerRoutineSerializer(routine, many=False)
         return JsonResponse(serializer.data)
@@ -342,11 +348,12 @@ class PassengerRoutine(APIView):
     def put(self, request, user_id, routine_id, format=None):
         try:
             routine = PassengerRoutine.objects.get(pk=routine_id)
-        except:
-            return JsonResponse({'error': 'PassengerRoutine does not exist with id {}'.format(routine_id)})
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'PassengerRoutine does not exist with id {}'.format(routine_id)},
+                                status=status.HTTP_400_BAD_REQUEST)
         try:
             routine.update(**request.data)
-        except:
+        except Exception:
             return JsonResponse({'error': 'Invalid arguments'}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -354,7 +361,7 @@ class DriverRoutine(APIView):
     def delete(self, request, user_id, routine_id, format=None):
         try:
             routine = DriverRoutine.objects.get(pk=routine_id)
-        except:
+        except ObjectDoesNotExist:
             return JsonResponse({'error': 'DriverRoutine does not exist with id {}'.format(routine_id)})
 
         serializer = DriverRoutineSerializer(routine, many=False)
@@ -363,9 +370,9 @@ class DriverRoutine(APIView):
     def put(self, request, user_id, routine_id, format=None):
         try:
             routine = DriverRoutine.objects.get(pk=routine_id)
-        except:
+        except ObjectDoesNotExist:
             return JsonResponse({'error': 'DriverRoutine does not exist with id {}'.format(routine_id)})
         try:
             routine.update(**request.data)
-        except:
+        except Exception:
             return JsonResponse({'error': 'Invalid arguments'}, status=status.HTTP_400_BAD_REQUEST)

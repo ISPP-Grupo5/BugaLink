@@ -12,7 +12,9 @@ export default function LeafletMap({
       zoomControl={false}
       style={{ height: '100%', width: '100%', zIndex: 0 }}
     >
-      <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      <TileLayer
+        url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' />
       {originCoords && destinationCoords && (
         <RoutingMachine
           origin={originCoords}

@@ -5,39 +5,76 @@ import Wallet from 'public/assets/wallet.svg';
 import Logout from 'public/assets/log-out.svg';
 import React, { useState } from 'react';
 import { Drawer } from '@mui/material';
+import ArrowHead from 'public/assets/arrow-head.svg';
+
+const preferences = {
+  smoke: {
+    checked: {
+      icon: '🚬',
+      text: 'Puedes fumar en mi coche',
+    },
+    unchecked: {
+      icon: '🚭',
+      text: 'Mi coche es libre de humos',
+    },
+  },
+  music: {
+    checked: {
+      icon: '🔉',
+      text: 'Conduzco con música',
+    },
+    unchecked: {
+      icon: '🔇',
+      text: 'Prefiero ir sin música',
+    },
+  },
+  pets: {
+    checked: {
+      icon: '🐾',
+      text: 'Puedes traer a tu mascota',
+    },
+    unchecked: {
+      icon: '😿',
+      text: 'No acepto mascotas',
+    },
+  },
+  talk: {
+    checked: {
+      icon: '🗣️',
+      text: 'Prefiero hablar durante el camino',
+    },
+    unchecked: {
+      icon: '🤐',
+      text: 'Prefiero no hablar durante el camino',
+    },
+  },
+};
 
 export default function ProfileItems() {
   const [drawerPreferences, setDrawerPreferences] = useState(false);
+  const [allowSmoke, setAllowSmoke] = useState(false);
+  const [allowPets, setAllowPets] = useState(false);
+  const [preferMusic, setPreferMusic] = useState(false);
+  const [preferTalk, setPreferTalk] = useState(false);
+
   return (
-    <div className="mx-auto flex w-11/12 flex-col items-center py-4 text-start">
-      <div className="flex items-center gap-x-2 py-4">
-        <Address className="text-white" />
-        <span className="w-52 font-lato">Direcciones</span>
-      </div>
-      <div className="flex items-center gap-x-2 py-4">
-        <Wallet className="text-white" />
-        <span className="w-52 font-lato">Mi cartera</span>
-      </div>
-      <div
-        className="flex items-center gap-x-2 py-4"
-        onClick={() => setDrawerPreferences(true)}
-      >
-        <Preferences />
-        <span className="w-52 font-lato">Preferencias</span>
-      </div>
-      <div className="w-11/12 py-4 text-light-gray">
-        <hr></hr>
-      </div>
-      <div className="flex items-center gap-x-2 py-4">
-        <Help />
-        <a href="mailto:soporte@bugalink.es" className=" w-52 font-lato">
-          <span>Ayuda</span>
-        </a>
-      </div>
-      <div className="flex items-center gap-x-2 py-4">
-        <Logout />
-        <span className="w-52 font-lato">Cerrar sesión</span>
-      </div>
+    <div className="flex h-full w-full flex-col items-start justify-between gap-y-4 rounded-t-3xl bg-white px-6 py-8 text-start text-xl">
+      <Entry Icon={<Address />}>
+        <span>Direcciones</span>
+      </Entry>
+      <Entry Icon={<Wallet />}>
+        <span>Mi cartera</span>
+      </Entry>
+      <Entry onClick={() => setDrawerPreferences(true)} Icon={<Preferences />}>
+        <span>Preferencias</span>
+      </Entry>
+      <hr className="w-full text-light-gray" />
+      <Entry Icon={<Help />}>
+        <a href="mailto:soporte@bugalink.es">Ayuda</a>
+      </Entry>
+      <Entry Icon={<Logout />}>
+        <span>Cerrar sesión</span>
+      </Entry>
 
       <Drawer
         anchor="bottom"
@@ -54,38 +91,70 @@ export default function ProfileItems() {
         }}
       >
         <div className="rounded-t-lg bg-white">
-          <div className="ml-6 mt-2">
-            <p className="font-lato text-2xl font-bold">Mis preferencias</p>
-            <div className="my-6 grid grid-cols-2 grid-rows-2 gap-y-3">
-              <div className="flex h-20 w-40 flex-col items-center rounded-lg border border-light-gray bg-white">
-                <p className="text-xl font-bold">🗣️</p>
-                <p className="text-center font-bold">
-                  Prefiero hablar durante el camino
-                </p>
-              </div>
-              <div className="flex h-20 w-40 flex-col items-center rounded-lg border border-light-gray bg-white">
-                <p className="text-xl font-bold">🔉</p>
-                <p className="text-center font-bold">
-                  Prefiero ir escuchando música
-                </p>
-              </div>
-              <div className="flex h-20 w-40 flex-col items-center rounded-lg border border-light-gray bg-light-gray">
-                <p className="text-xl font-bold">🚭</p>
-                <p className="text-center font-bold">
-                  Mi coche es libre de humos
-                </p>
-              </div>
-              <div className="flex h-20 w-40 flex-col items-center rounded-lg border border-light-gray bg-light-gray">
-                <p className="text-xl font-bold">😿</p>
-                <p className="text-center font-bold">
-                  No acepto pasajeros con mascotas
-                </p>
-              </div>
+          <div className="mt-2 px-4">
+            <p className="pt-2 text-3xl font-semibold">Mis preferencias</p>
+            <div className="my-4 grid grid-cols-2 grid-rows-2 place-items-center gap-3">
+              <PreferenceBox
+                checked={allowSmoke}
+                setChecked={setAllowSmoke}
+                item={preferences.smoke}
+              />
+              <PreferenceBox
+                checked={preferMusic}
+                setChecked={setPreferMusic}
+                item={preferences.music}
+              />
+              <PreferenceBox
+                checked={allowPets}
+                setChecked={setAllowPets}
+                item={preferences.pets}
+              />
+              <PreferenceBox
+                checked={preferTalk}
+                setChecked={setPreferTalk}
+                item={preferences.talk}
+              />
             </div>
           </div>
-          <div className="my-5 flex flex-col items-center"></div>
         </div>
       </Drawer>
+    </div>
+  );
+}
+
+function Entry({
+  children,
+  Icon,
+  onClick = () => {
+    return;
+  },
+}) {
+  return (
+    <div className="flex w-full items-center justify-between" onClick={onClick}>
+      <span className="flex items-center gap-x-2">
+        <span className="text-white">{Icon}</span>
+        {children}
+      </span>
+      <ArrowHead className="text-gray" />
+    </div>
+  );
+}
+
+function PreferenceBox({ checked, setChecked, item }) {
+  return (
+    <div
+      className={
+        'grid min-h-full grid-rows-2 flex-col place-items-center rounded-lg border border-light-gray p-1 transition-colors duration-200 ' +
+        (checked ? 'bg-white' : 'bg-light-gray')
+      }
+      onClick={() => {
+        setChecked(!checked);
+      }}
+    >
+      <p className="text-3xl">{item[checked ? 'checked' : 'unchecked'].icon}</p>
+      <p className="text-center leading-5">
+        {item[checked ? 'checked' : 'unchecked'].text}
+      </p>
     </div>
   );
 }

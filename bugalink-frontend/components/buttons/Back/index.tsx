@@ -34,18 +34,20 @@ type BackButtonTextProps = {
   className?: string;
 };
 
-export function BackButtonText({ text, className = '' }: BackButtonTextProps) {
+export function BackButtonText({
+  text,
+  className = 'bg-white', // White background if nothing else is specified
+}: BackButtonTextProps) {
   const router = useRouter();
   return (
     <div
       className={
-        'sticky top-0 z-50 flex w-full flex-row bg-white px-4 pt-5 pb-4 ' +
-        className
+        'sticky top-0 z-50 flex w-full flex-row px-4 pt-5 pb-4 ' + className
       }
     >
       <button
         onClick={() => router.back()}
-        className="top-0 left-0 w-full bg-white text-left"
+        className={'top-0 left-0 w-full text-left ' + className}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

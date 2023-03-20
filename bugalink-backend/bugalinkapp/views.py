@@ -31,7 +31,6 @@ class Users(APIView):
 class RoutineRecommendation(APIView):
     def get(self, request):
         try:
-            print("ENTRA EN routine REcomendation")
             # Definicion de parametros del passenger asociado al user que efectua el filtro
             driver_routines = m.DriverRoutine.objects.all()
             user = m.User.objects.get(id=request.data['id'])
@@ -53,7 +52,6 @@ class RoutineRecommendation(APIView):
                 # Comprobacion de cuantos dias coinciden en cada rutina
                 if driver_day in passenger_days:
                     similar_days.append(driver_day)
-                    print(driver_day)
 
                 # Definir las horas de inicio y fin de la rutina del pasajero
                 drivers_beggining_of_ride = routine.start_date
@@ -101,7 +99,6 @@ class RoutineRecommendation(APIView):
             return JsonResponse(serializer.data)
 
         except Exception:
-            print("Captura")
             raise Http404  # Mejorar errores
 
 
@@ -135,7 +132,6 @@ class AcceptedIndividualRide(APIView):
             user = m.User.objects.get(id=request.data['id'])
             passenger = m.Passenger.objects.get(user=user)
             rides = m.IndividualRide.objects.filter(passenger=passenger, acceptation_status='Accepted')
-            print(rides)
             serializer = ListIndividualRideSerializer({'rides': rides})
             return JsonResponse(serializer.data)
         except m.IndividualRide.DoesNotExist:

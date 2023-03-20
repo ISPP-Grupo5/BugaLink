@@ -6,6 +6,15 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from enum import Enum
 
+EMAIL_STR = ", email="
+DRIVER_STR = ": driver="
+DATE_STR  = ", date="
+PASSENGER_STR = ", passenger="
+USER_STR = ": user="
+DISCOUNT_STR = ", discunt="
+CODE_STR = ": code="
+ACTIVE_STR = ", active="
+
 def get_file_path(instance, filename):
     return 'passenger{0}/{1}'.format(instance.get_passenger().pk, filename)
 
@@ -86,7 +95,7 @@ class Passenger(models.Model):
     def get_passenger(self):
         return self
     def __str__(self):
-        return "Passenger " + str(self.pk) + ": username=" + self.user.get_username() + ", email=" + self.user.email
+        return "Passenger " + str(self.pk) + ": username=" + self.user.get_username() + EMAIL_STR + self.user.email
     class Meta:
         verbose_name = "Passenger"
         verbose_name_plural = "Passengers"
@@ -107,7 +116,7 @@ class Driver(models.Model):
         return self.passenger
 
     def __str__(self):
-        return "Driver " + str(self.pk) + ": username=" + self.passenger.user.get_username() + ", email=" + self.passenger.user.email
+        return "Driver " + str(self.pk) + ": username=" + self.passenger.user.get_username() + EMAIL_STR + self.passenger.user.email
     class Meta:
         verbose_name = "Driver"
         verbose_name_plural = "Drivers"
@@ -121,7 +130,7 @@ class Vehicle(models.Model):
     def get_passenger(self):
         return self.driver.passenger
     def __str__(self):
-        return "Vehicle " + str(self.pk) + ": driver=" + str(self.driver.pk) + ", plate=" + self.plate
+        return "Vehicle " + str(self.pk) + DRIVER_STR + str(self.driver.pk) + ", plate=" + self.plate
     class Meta:
         verbose_name = "Vehicle"
         verbose_name_plural = "Vehicles"
@@ -138,7 +147,7 @@ class DriverRoutine(models.Model):
     day = models.CharField(max_length=6, choices=Days.choices(), default= Days.Mon)
     one_ride = models.BooleanField(default=False)
     def __str__(self):
-        return "Driver routine " + str(self.pk) + ": driver=" + str(self.driver.pk) + ", day=" + self.day
+        return "Driver routine " + str(self.pk) + DRIVER_STR + str(self.driver.pk) + ", day=" + self.day
     class Meta:
         verbose_name = "Driver routine"
         verbose_name_plural = "Driver routines"
@@ -153,7 +162,7 @@ class Ride(models.Model):
     start_location = Coord(null=False)
     end_location = Coord(null=False)
     def __str__(self):
-        return "Ride " + str(self.pk) + ": driverRoutine=" + str(self.driver_routine.pk) + ", date=" + str(self.start_date.date())
+        return "Ride " + str(self.pk) + ": driverRoutine=" + str(self.driver_routine.pk) + DATE_STR + str(self.start_date.date())
     class Meta:
         verbose_name = "Ride"
         verbose_name_plural = "Rides"
@@ -167,7 +176,7 @@ class PassengerRoutine(models.Model):
     start_time_initial = models.TimeField()
     start_time_final = models.TimeField()
     def __str__(self):
-        return "Passenger routine " + str(self.pk) + ": passenger=" + str(self.passenger.pk) + ", day=" + self.day
+        return "Passenger routine " + str(self.pk) + ":" + " passenger=" + str(self.passenger.pk) + ", day=" + self.day
     class Meta:
         verbose_name = "Passenger routine"
         verbose_name_plural = "Passenger routines"
@@ -179,7 +188,7 @@ class IndividualRide(models.Model):
     acceptation_status = models.CharField(max_length=256, choices=AcceptationStatus.choices(), default=AcceptationStatus.Pending_Confirmation)
     message= models.CharField(max_length=256, null=True, blank=True)
     def __str__(self):
-        return "Individual Ride " + str(self.pk) + ": driver=" + str(self.ride.driver_routine.driver.pk) + ", passenger=" + str(self.passenger.pk) + ", date=" + str(self.ride.start_date.date()) + " " + str(self.ride.start_date.time())
+        return "Individual Ride " + str(self.pk) + DRIVER_STR + str(self.ride.driver_routine.driver.pk) + PASSENGER_STR + str(self.passenger.pk) + DATE_STR + str(self.ride.start_date.date()) + " " + str(self.ride.start_date.time())
     class Meta:
         verbose_name = "Individual ride"
         verbose_name_plural = "Individual rides"
@@ -190,7 +199,7 @@ class DriverRating(models.Model):
     comment = models.CharField(max_length=1024)
 
     def __str__(self):
-        return "Driver rating " + str(self.pk) + ": driver=" + str(self.individual_ride.ride.driver_routine.driver.pk) + ", passenger=" + str(self.individual_ride.passenger.pk) + ", rating=" + str(self.rating) + ", date=" + str(self.individual_ride.start_date.date())
+        return "Driver rating " + str(self.pk) + DRIVER_STR + str(self.individual_ride.ride.driver_routine.driver.pk) + PASSENGER_STR + str(self.individual_ride.passenger.pk) + ", rating=" + str(self.rating) + DATE_STR + str(self.individual_ride.start_date.date())
     class Meta:
         verbose_name = "Driver rating"
         verbose_name_plural = "Driver ratings"
@@ -208,7 +217,7 @@ class PassengerRating(models.Model):
     rating = models.FloatField(validators=[MinValueValidator(1.0), MaxValueValidator(5.0)])
     comment = models.CharField(max_length=1024)
     def __str__(self):
-        return "Passenger rating " + str(self.pk) + ": driver=" + str(self.individual_ride.ride.driver_routine.driver.pk) + ", passenger=" + str(self.individual_ride.passenger.pk) + ", rating=" + str(self.rating) + ", date=" + str(self.individual_ride.start_date.date())
+        return "Passenger rating " + str(self.pk) + DRIVER_STR + str(self.individual_ride.ride.driver_routine.driver.pk) + PASSENGER_STR + str(self.individual_ride.passenger.pk) + ", rating=" + str(self.rating) + DATE_STR + str(self.individual_ride.start_date.date())
     class Meta:
         verbose_name = "Passenger rating"
         verbose_name_plural = "Passenger ratings"
@@ -223,11 +232,11 @@ class Report(models.Model):
             result += str(self.individual_ride.ride.driver_routine.driver.passenger.user.pk)
         else:
             result += str(self.individual_ride.passenger.user.pk)
-        result += ", date=" + str(self.individual_ride.start_date.date())
+        result += DATE_STR + str(self.individual_ride.start_date.date())
         return result
     class Meta:
         verbose_name = "Report"
-        verbose_name_plural = "Report"
+        verbose_name_plural = "Reports"
 
 class RoutineRequest(models.Model):
     passenger_routine = models.ForeignKey(PassengerRoutine, on_delete=models.CASCADE)
@@ -245,7 +254,7 @@ class CreditCard(models.Model):
     CVC = models.CharField(max_length=16)
     expiration_date = models.DateField()
     def __str__(self):
-        return "Credit card " + str(self.pk) + ": user=" + str(self.user.user.pk) + ", card=" + str(self.card)
+        return "Credit card " + str(self.pk) + USER_STR + str(self.user.user.pk) + ", card=" + str(self.card)
     class Meta:
         verbose_name = "Credit card"
         verbose_name_plural = "Credit cards"
@@ -255,7 +264,7 @@ class Paypal(models.Model):
     email = models.CharField(max_length=256)
     password = models.CharField(max_length=256)
     def __str__(self):
-        return "Paypal " + str(self.pk) + ": user=" + str(self.user.user.pk) + ", email=" + str(self.email)
+        return "Paypal " + str(self.pk) + USER_STR + str(self.user.user.pk) + EMAIL_STR + str(self.email)
     class Meta:
         verbose_name = "Paypal"
         verbose_name_plural = "Paypals"
@@ -268,7 +277,7 @@ class FavDirection(models.Model):
     city = models.CharField(max_length=256)
     cp = models.CharField(max_length=10)
     def __str__(self):
-        return "Direction " + str(self.pk) + ": user=" + str(self.user.user.pk) + ", name=" + str(self.name) + ", location=" + str(self.location)
+        return "Direction " + str(self.pk) + USER_STR + str(self.user.user.pk) + ", name=" + str(self.name) + ", location=" + str(self.location)
     class Meta:
         verbose_name = "FavDirection"
         verbose_name_plural = "FavDirections"
@@ -281,7 +290,7 @@ class DiscountCode(models.Model):
     end_date = models.DateField()
     active = models.BooleanField()
     def __str__(self):
-        return "Discount code " + str(self.pk) +": code=" + self.code + ", discount=" + str(self.discount_perc) + ", start=" + str(self.start_date) + ", end=" + str(self.end_date) + ", active=" + str(self.active)
+        return "Discount code " + str(self.pk) + CODE_STR + self.code + DISCOUNT_STR + str(self.discount_perc) + ", start=" + str(self.start_date) + ", end=" + str(self.end_date) + ACTIVE_STR + str(self.active)
     class Meta:
         verbose_name = "Discount code"
         verbose_name_plural = "Discount codes"
@@ -293,7 +302,7 @@ class PassengerDiscountCode(models.Model):
     rides_left = models.IntegerField()
     active = models.BooleanField(default=True)
     def __str__(self):
-        return "Passenger Discount code " + str(self.pk) +": code=" + self.discount.code + ", user=" + str(self.passenger.pk) +  ", discount=" + str(self.discount.discount_perc) + ", active=" + str(self.active)
+        return "Passenger Discount code " + str(self.pk) + CODE_STR + self.discount.code + ", user=" + str(self.passenger.pk) +  DISCOUNT_STR + str(self.discount.discount_perc) + ACTIVE_STR + str(self.active)
     class Meta:
         verbose_name = "Passenger Discount code"
         verbose_name_plural = "Passenger Discount codes"
@@ -309,7 +318,7 @@ class IndividualDiscountCode(models.Model):
     rides_left = models.IntegerField()
     active = models.BooleanField(default=True)
     def __str__(self):
-        return "Individual Discount code " + str(self.pk) +": code=" + self.code + ", user=" + str(self.user.pk) +  ", discount=" + str(self.discount_perc) + ", ridesLeft=" + str(self.rides_left) + "/" + str(self.initial_rides) + ", active=" + str(self.active)
+        return "Individual Discount code " + str(self.pk) + CODE_STR + self.code + ", user=" + str(self.user.pk) +  DISCOUNT_STR + str(self.discount_perc) + ", ridesLeft=" + str(self.rides_left) + "/" + str(self.initial_rides) + ACTIVE_STR + str(self.active)
     class Meta: 
         verbose_name = "Individual Discount code"
         verbose_name_plural = "Individual Discount codes"

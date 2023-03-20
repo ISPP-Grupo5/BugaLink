@@ -12,36 +12,37 @@ import { Drawer } from '@mui/material';
 import { useState } from 'react';
 
 export default function AcceptRequest() {
-  const origin =
-    'Escuela Técnica Superior de Ingeniería Informática, 41002 Sevilla';
-  const destination = 'Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla';
-
+  
+  const [time, setTime] = useState<number>(0);
   const [drawerDecline, setDrawerDecline] = useState(false);
   const [reason, setReason] = useState('');
   const { individualRide, isLoading, isError } = useIndividualRides(2);
   const { reviews , isLoadingReviews, isErrorReviews} = useReviews(1);
-  
+
+  const origin = individualRide[0].start_location;
+  const destination = individualRide[0].end_location;
+  const originCoords = useMapCoordinates(origin);
+  const destinationCoords = useMapCoordinates(destination);
+
   if (isLoadingReviews) return <p>Loading...</p>; // TODO: make skeleton
   if (isErrorReviews) return <p>Error</p>; // TODO: make error message
   if (isLoading) return <p>Loading...</p>; // TODO: make skeleton
   if (isError) return <p>Error</p>; // TODO: make error message
+  
+
   const ride = individualRide[0];
   const dateText=`Cada ${ride.passenger_routine.days} a partir del ${ride.start_date}`;
+
   let sum = 0;
   for(let i= 0; i<reviews.length ; i++){
     sum+= reviews[i].rating;
   }
-  const [time, setTime] = useState<number>(0);
-  const originCoords = useMapCoordinates(origin);
-  const destinationCoords = useMapCoordinates(destination);
-
+  const meanReviews = (sum / reviews.length).toFixed(2);
   // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
-  const startTime = new Date('2021-05-01T21:00:00');
-  const endTime = new Date('2021-05-01T21:00:00');
+  const startTime = new Date(ride.passenger_routine.start_time_initial);
+  const endTime = new Date(ride.passenger_routine.start_time_initial);
   endTime.setMinutes(endTime.getMinutes() + time);
 
-  const meanReviews = (sum / reviews.length).toFixed(2);
-  console.log(ride)
   return (
     <AnimatedLayout className="flex flex-col justify-between">
       <BackButtonText text="Solicitud de viaje" />

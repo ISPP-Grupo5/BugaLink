@@ -53,6 +53,7 @@ export default function DetailsTwo() {
           name="Jesús Marchena"
           rating="4.8"
           numberOfRatings="14"
+          photo='/assets/avatar.png'
         />
         <div className="flex flex-row">
           <p className="font-normal text-dark-turquoise">

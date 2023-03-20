@@ -40,11 +40,11 @@ export default function DetailsTwo() {
         {/* Details */}
         <TripDetails
           date="Viernes 16 de febrero de 2023"
-          originHour={startTime.toLocaleTimeString([], {
+          originHour={startTime.toLocaleTimeString('es-ES', {
             hour: '2-digit',
             minute: '2-digit',
           })}
-          destinationHour={endTime.toLocaleTimeString([], {
+          destinationHour={endTime.toLocaleTimeString('es-ES', {
             hour: '2-digit',
             minute: '2-digit',
           })}

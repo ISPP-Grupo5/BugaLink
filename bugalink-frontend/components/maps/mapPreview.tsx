@@ -22,8 +22,7 @@ export default function MapPreview({
     <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/map" className="h-3/6 w-full">
       <div
         className={
-          'flex h-full w-full flex-row items-center justify-between py-2 ' +
-          className
+          'flex w-full flex-row items-center justify-between py-2 ' + className
         }
       >
         <LeafletMap

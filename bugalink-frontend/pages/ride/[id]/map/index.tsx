@@ -49,7 +49,7 @@ export default function RideMap() {
           <CarProgress />
           <span className="grid grid-cols-3 items-center text-center">
             <p className="text-3xl font-bold">
-              {startTime.toLocaleTimeString([], {
+              {startTime.toLocaleTimeString('es-ES', {
                 hour: '2-digit',
                 minute: '2-digit',
               })}
@@ -61,7 +61,7 @@ export default function RideMap() {
               </p>
             </div>
             <p className="text-3xl font-bold">
-              {endTime.toLocaleTimeString([], {
+              {endTime.toLocaleTimeString('es-ES', {
                 hour: '2-digit',
                 minute: '2-digit',
               })}

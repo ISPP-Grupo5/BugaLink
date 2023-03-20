@@ -70,7 +70,7 @@ export default function DetailsOne() {
             <p className="text-sm text-gray">Fecha y hora</p>
             <p className="text-md text-justify font-medium">
               📅 Todos los viernes a las{' '}
-              {startTime.toLocaleString([], {
+              {startTime.toLocaleString('es-ES', {
                 hour: '2-digit',
                 minute: '2-digit',
               })}

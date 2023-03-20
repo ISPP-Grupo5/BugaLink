@@ -62,11 +62,11 @@ export default function AcceptRequest() {
         )}
         <TripDetails
           date="Cada viernes a partir del 16 de febrero de 2023"
-          originHour={startTime.toLocaleTimeString([], {
+          originHour={startTime.toLocaleTimeString('es-ES', {
             hour: '2-digit',
             minute: '2-digit',
           })}
-          destinationHour={endTime.toLocaleTimeString([], {
+          destinationHour={endTime.toLocaleTimeString('es-ES', {
             hour: '2-digit',
             minute: '2-digit',
           })}

@@ -10,6 +10,7 @@ import ThreeDots from '/public/assets/three-dots.svg';
 import SteeringWheel from '/public/assets/steering-wheel.svg';
 import Link from 'next/link';
 import useRoutines from '@/hooks/useRoutines';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 
 export default function MyRoutines() {
   const days = [
@@ -136,7 +137,7 @@ const ThreeDotsMenu = () => {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={() => (NEXT_ROUTES.EDIT_ROUTINE_DRIVER(1,1))}>
           <p>Editar</p>
         </MenuItem>
         <MenuItem onClick={handleClose}>

@@ -26,7 +26,7 @@ export default function NewRoutine({
   const [pickTimeFrom, setPickTimeFrom] = useState('12:00');
   const [pickTimeTo, setPickTimeTo] = useState('12:10');
   const [selectedDays, setSeletedDays] = useState([]);
-
+  //console.log(originAddress, destinationAddress, pickTimeFrom,selectedDays);
   return (
     <div>
       <BackButton />

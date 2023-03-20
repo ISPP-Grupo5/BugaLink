@@ -106,3 +106,37 @@ console.log(`Server listening on port ${port}`);
 router.get('/users/:userId/routines', (req, res)=>{
   res.json(sampleRoutines)
 })
+
+//PASSENGER ROUTINES
+
+//GET /users/${userId}/routines/passenger/${routineId}
+router.get('/users/:userId/routines/passenger/:routineId', (req, res)=> {
+  res.json((sampleRoutines) => {
+    sampleRoutines.filter((r) => r.id == req.params.routineId )
+  })
+})
+//GET /users/${userId}/routines/driver/${routineId}
+
+//POST /users/${userId}/routines/passenger/new
+router.post('/users/:userId/routines/new', (req, res)=>{
+  const userId = req.params.userId;
+  res.redirect('/users/' + userId + '/routines')
+})
+
+//PUT /users/${userId}/routines/passenger/${routineId}
+router.put('/users/:userId/routines/:routineId', (req, res)=>{
+  const userId = req.params.userId;
+  res.redirect('/users/' + userId + '/routines')
+})
+
+//POST /users/${userId}/routines/driver/new
+router.post('/users/:userId/routines/driver/new', (req, res)=>{
+  const userId = req.params.userId;
+  res.redirect('/users/' + userId + '/routines')
+})
+
+//PUT /users/${userId}/routines/driver/${routineId}
+router.put('/users/:userId/routines/driver/:routineId', (req, res)=>{
+  const userId = req.params.userId;
+  res.redirect('/users/' + userId + '/routines')
+})

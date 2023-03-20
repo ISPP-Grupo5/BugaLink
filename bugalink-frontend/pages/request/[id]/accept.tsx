@@ -13,7 +13,7 @@ import TripDetails from '../../../components/TripDetails';
 export default function AcceptRequest() {
   const [drawerDecline, setDrawerDecline] = useState(false);
   const [reason, setReason] = useState('');
-  const { individualRide, isLoading, isError } = useIndividualRides(1);
+  const { individualRide, isLoading, isError } = useIndividualRides(2);
   const { reviews , isLoadingReviews, isErrorReviews} = useReviews(1);
   
   if (isLoadingReviews) return <p>Loading...</p>; // TODO: make skeleton
@@ -38,6 +38,7 @@ export default function AcceptRequest() {
           name={ride.passenger.user.username}
           rating={meanReviews.toString()}
           numberOfRatings={reviews.length}
+          photo={ride.passenger.user.photo}
         />
         <div className="flex flex-row">
           <p className="text-justify text-sm font-normal text-dark-gray">

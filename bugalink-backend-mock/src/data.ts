@@ -118,6 +118,7 @@ export const IndividualRides = [
     passenger : {
       user : {
         username :'Jesús Marchena',
+        photo: '/assets/avatar.png',
       }
     },
     passenger_routine : {
@@ -142,6 +143,7 @@ export const IndividualRides = [
     passenger : {
       user : {
         username :'Pedro Sánchez',
+        photo: '/assets/avatar.png',
       }
     },
     passenger_routine : {

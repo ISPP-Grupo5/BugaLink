@@ -11,7 +11,7 @@ export default function useReviews(driverId) {
 
   return {
     reviews: data,
-    isLoading,
-    isError: error,
+    isLoadingReviews: isLoading,
+    isErrorReviews: error,
   };
 }

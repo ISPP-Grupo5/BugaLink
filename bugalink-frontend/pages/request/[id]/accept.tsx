@@ -14,7 +14,10 @@ export default function AcceptRequest() {
   const [drawerDecline, setDrawerDecline] = useState(false);
   const [reason, setReason] = useState('');
   const { individualRide, isLoading, isError } = useIndividualRides(1);
-  const { reviews } = useReviews(1);
+  const { reviews , isLoadingReviews, isErrorReviews} = useReviews(1);
+  
+  if (isLoadingReviews) return <p>Loading...</p>; // TODO: make skeleton
+  if (isErrorReviews) return <p>Error</p>; // TODO: make error message
   if (isLoading) return <p>Loading...</p>; // TODO: make skeleton
   if (isError) return <p>Error</p>; // TODO: make error message
   const ride = individualRide[0];

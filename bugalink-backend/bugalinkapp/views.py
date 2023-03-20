@@ -235,20 +235,24 @@ class IndividualRides(APIView):
         except m.IndividualRide.DoesNotExist:
             raise Http404
 
-class RoutineRequest(APIView):
+class AcceptRoutineRequest(APIView):
         
-    def put_routine_request(self, request): 
+    def put(self, request):
         try:
-            routineRequest = RoutineRequest.objects.get(id = request.data['idRoutineRequest'])
-            acceptationStatus = AcceptationStatus.Pending_Confirmation
-            match request.data['acceptationStatus']:
-                case 'accept':
-                    acceptationStatus = AcceptationStatus.Accepted
-                case 'cancel':
-                    acceptationStatus = AcceptationStatus.Cancelled
-            routineRequest.acceptation_status = acceptationStatus
-            RoutineRequest.objects.put(routineRequest)
-        except RoutineRequest.DoesNotExist:
+            routineRequest = m.RoutineRequest.objects.get(id=request.data['idRoutineRequest'])
+            routineRequest.acceptation_status = m.AcceptationStatus.Accepted
+            m.RoutineRequest.objects.put(routineRequest)
+        except m.IndividualRide.DoesNotExist:
+            raise Http404
+
+class CancelRoutineRequest(APIView):
+        
+    def put(self, request):
+        try:
+            routineRequest = m.RoutineRequest.objects.get(id=request.data['idRoutineRequest'])
+            routineRequest.acceptation_status = m.AcceptationStatus.Cancelled
+            m.RoutineRequest.objects.put(routineRequest)
+        except m.IndividualRide.DoesNotExist:
             raise Http404
 
 class RatingViewSet(viewsets.ModelViewSet):

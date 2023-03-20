@@ -21,8 +21,8 @@ class Users(APIView):
 
     def get(self, request, id):
         try:
-            user = m.User.objects.get(id=id)
-            serializer = UserSerializer(user, context={'request': request})
+            user = m.Passenger.objects.get(user_id=id)
+            serializer = PassengerSerializer(user, context={'request': request})
             return JsonResponse(serializer.data)
         except m.User.DoesNotExist:
             return JsonResponse({"message": "Not found"}, status=404)
@@ -111,7 +111,7 @@ class PendingIndividualRide(APIView):
             user = m.User.objects.get(id=request.data['id'])
             passenger = m.Passenger.objects.get(user=user)
             rides = m.IndividualRide.objects.filter(passenger=passenger, acceptation_status='Pending Confirmation')
-            serializer = ListaIndividualRideSerializer({'rides': rides})
+            serializer = ListIndividualRideSerializer({'rides': rides})
             return JsonResponse(serializer.data)
         except m.IndividualRide.DoesNotExist:
             raise Http404
@@ -123,7 +123,7 @@ class CancelledIndividualRide(APIView):
             user = m.User.objects.get(id=request.data['id'])
             passenger = m.Passenger.objects.get(user=user)
             rides = m.IndividualRide.objects.filter(passenger=passenger, acceptation_status='Cancelled')
-            serializer = ListaIndividualRideSerializer({'rides': rides})
+            serializer = ListIndividualRideSerializer({'rides': rides})
             return JsonResponse(serializer.data)
         except m.IndividualRide.DoesNotExist:
             raise Http404
@@ -136,7 +136,7 @@ class AcceptedIndividualRide(APIView):
             passenger = m.Passenger.objects.get(user=user)
             rides = m.IndividualRide.objects.filter(passenger=passenger, acceptation_status='Accepted')
             print(rides)
-            serializer = ListaIndividualRideSerializer({'rides': rides})
+            serializer = ListIndividualRideSerializer({'rides': rides})
             return JsonResponse(serializer.data)
         except m.IndividualRide.DoesNotExist:
             raise Http404
@@ -305,11 +305,12 @@ class Rides(APIView):
 class PassengerRoutineList(APIView):
     def get(self, request, pk, format=None):
         try:
-            queryset = m.PassengerRoutine.objects.filter(passennger_id=pk)
+            queryset = m.PassengerRoutine.objects.filter(passenger_id=pk)
+            print(queryset)
         except ObjectDoesNotExist:
             return JsonResponse({'error': 'Passenger does not exist with id {}'.format(pk)},
                                 status=status.HTTP_400_BAD_REQUEST)
-        serializer = PassengerRoutineSerializer(queryset, many=True)
+        serializer = ListPassengerRoutineSerializer({"passenger_routines":queryset})
         return JsonResponse(serializer.data)
 
     def post(self, request, pk, format=None):  # POST de creacion de la routina
@@ -325,11 +326,12 @@ class DriverRoutineList(APIView):
     def get(self, request, pk, format=None):
         try:
             queryset = m.DriverRoutine.objects.filter(driver_id=pk)
+            serializer = ListDriverRoutineSerializer({"driver_routines":queryset})
+            return JsonResponse(serializer.data)
         except ObjectDoesNotExist:
             return JsonResponse({'error': 'Passenger does not exist with id {}'.format(pk)},
                                 status=status.HTTP_400_BAD_REQUEST)
-        serializer = DriverRoutineSerializer(queryset, many=True)
-        return JsonResponse(serializer.data)
+        
 
     def post(self, request, pk, format=None):  # POST de creacion de la routina
         request.data['driver_id'] = pk

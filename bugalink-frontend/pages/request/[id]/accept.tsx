@@ -9,33 +9,35 @@ import ProfileHeader from '@/components/ProfileHeader';
 import TripDetails from '@/components/TripDetails';
 import useMapCoordinates from '@/hooks/useMapCoordinates';
 import { Drawer } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function AcceptRequest() {
-  
   const [time, setTime] = useState<number>(0);
   const [drawerDecline, setDrawerDecline] = useState(false);
   const [reason, setReason] = useState('');
   const { individualRide, isLoading, isError } = useIndividualRides(2);
-  const { reviews , isLoadingReviews, isErrorReviews} = useReviews(1);
-
-  const origin = individualRide[0].start_location;
-  const destination = individualRide[0].end_location;
+  const [origin, setOrigin] = useState();
+  const [destination, setDestination] = useState();
   const originCoords = useMapCoordinates(origin);
   const destinationCoords = useMapCoordinates(destination);
+  const { reviews, isLoadingReviews, isErrorReviews } = useReviews(1);
 
-  if (isLoadingReviews) return <p>Loading...</p>; // TODO: make skeleton
-  if (isErrorReviews) return <p>Error</p>; // TODO: make error message
-  if (isLoading) return <p>Loading...</p>; // TODO: make skeleton
-  if (isError) return <p>Error</p>; // TODO: make error message
-  
+  useEffect(() => {
+    if (individualRide && individualRide.length > 0) {
+      setOrigin(individualRide[0].start_location);
+      setDestination(individualRide[0].end_location);
+    }
+  }, [individualRide]);
+
+  if (isLoading || isLoadingReviews) return <p>Loading...</p>; // TODO: make skeleton
+  if (isError || isErrorReviews) return <p>Error</p>; // TODO: make error message
 
   const ride = individualRide[0];
-  const dateText=`Cada ${ride.passenger_routine.days} a partir del ${ride.start_date}`;
+  const dateText = `Cada ${ride.passenger_routine.days} a partir del ${ride.start_date}`;
 
   let sum = 0;
-  for(let i= 0; i<reviews.length ; i++){
-    sum+= reviews[i].rating;
+  for (const element of reviews) {
+    sum += element.rating;
   }
   const meanReviews = (sum / reviews.length).toFixed(2);
   // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
@@ -58,9 +60,7 @@ export default function AcceptRequest() {
           Nota del pasajero
         </p>
         <div className="flex flex-row">
-          <p className="text-justify leading-5">
-            ✏️ {ride.message}
-          </p>
+          <p className="text-justify leading-5">✏️ {ride.message}</p>
         </div>
 
         {/* Details */}

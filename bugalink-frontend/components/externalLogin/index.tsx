@@ -1,7 +1,7 @@
-import RoundedButton from '../buttons/Rounded';
-import Facebook from '../../public/icons/Login/facebook.svg';
-import Twitter from '../../public/icons/Login/twitter.svg';
-import Google from '../../public/icons/Login/google.svg';
+import RoundedButton from '@/components/buttons/Rounded';
+import Facebook from '/public/icons/Login/facebook.svg';
+import Twitter from '/public/icons/Login/twitter.svg';
+import Google from '/public/icons/Login/google.svg';
 
 export default function ExternalLogin() {
   return (

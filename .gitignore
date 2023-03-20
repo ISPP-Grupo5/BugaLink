@@ -23,4 +23,4 @@ bugalink-backend/newsletter/__pycache__/
 bugalink-backend/newsletter/migrations/__pycache__/
 *.pyc
 
-
+bugalink-backend/files/

@@ -202,7 +202,7 @@
         97.05,
         98.04
       ],
-      "days": "Mon",
+      "day": "Mon",
       "one_ride": false
     },
     {
@@ -219,7 +219,7 @@
         7.05,
         12.04
       ],
-      "days": "Tue",
+      "day": "Tue",
       "one_ride": false
     },
     {
@@ -236,7 +236,7 @@
         17.25,
         1.04
       ],
-      "days": "Wed",
+      "day": "Wed",
       "one_ride": false
     },
     {
@@ -253,7 +253,7 @@
         41.25,
         3.14
       ],
-      "days": "Thu",
+      "day": "Thu",
       "one_ride": false
     },
     {
@@ -270,7 +270,7 @@
         1.25,
         0.14
       ],
-      "days": "Fri",
+      "day": "Fri",
       "one_ride": false
     }
   ],
@@ -370,7 +370,7 @@
         97.05,
         98.04
       ],
-      "days": "Mon"
+      "day": "Mon"
     },
     {
       "passenger_id": 2,
@@ -385,7 +385,7 @@
         9.05,
         9.04
       ],
-      "days": "Tue"
+      "day": "Tue"
     },
     {
       "passenger_id": 3,
@@ -400,7 +400,7 @@
         9.205,
         9.204
       ],
-      "days": "Wed"
+      "day": "Wed"
     },
     {
       "passenger_id": 4,
@@ -415,7 +415,7 @@
         19.205,
         69.204
       ],
-      "days": "Thu"
+      "day": "Thu"
     },
     {
       "passenger_id": 5,
@@ -430,7 +430,7 @@
         1.205,
         6.204
       ],
-      "days": "Fri"
+      "day": "Fri"
     }
   ],
   "IndividualRide": [
@@ -438,90 +438,30 @@
       "ride_id": 1,
       "passenger_id": 1,
       "passenger_routine_id": 1,
-      "start_date": "2023-03-09 8:00",
-      "end_date": "2023-03-09 9:00",
-      "start_location": [
-        97.05,
-        98.04
-      ],
-      "end_location": [
-        97.05,
-        98.04
-      ],
-      "price": 3.0,
-      "ride_status": "Pending_start",
       "acceptation_status": "Accepted"
     },
     {
       "ride_id": 2,
       "passenger_id": 2,
       "passenger_routine_id": 2,
-      "start_date": "2023-03-09 8:00",
-      "end_date": "2023-03-09 9:00",
-      "start_location": [
-        47.05,
-        18.04
-      ],
-      "end_location": [
-        47.05,
-        68.04
-      ],
-      "price": 7.0,
-      "ride_status": "Pending_start",
       "acceptation_status": "Accepted"
     },
     {
       "ride_id": 3,
       "passenger_id": 3,
       "passenger_routine_id": 3,
-      "start_date": "2023-03-09 8:00",
-      "end_date": "2023-03-09 9:00",
-      "start_location": [
-        4.05,
-        1.04
-      ],
-      "end_location": [
-        7.05,
-        8.04
-      ],
-      "price": 2.5,
-      "ride_status": "Pending_start",
       "acceptation_status": "Accepted"
     },
     {
       "ride_id": 4,
       "passenger_id": 4,
       "passenger_routine_id": 4,
-      "start_date": "2023-03-09 8:00",
-      "end_date": "2023-03-09 9:00",
-      "start_location": [
-        4.5,
-        1.4
-      ],
-      "end_location": [
-        0.05,
-        0.04
-      ],
-      "price": 20.5,
-      "ride_status": "Pending_start",
       "acceptation_status": "Accepted"
     },
     {
       "ride_id": 5,
       "passenger_id": 5,
       "passenger_routine_id": 5,
-      "start_date": "2023-03-09 8:00",
-      "end_date": "2023-03-09 9:00",
-      "start_location": [
-        4.52,
-        1.34
-      ],
-      "end_location": [
-        0.045,
-        0.054
-      ],
-      "price": 1.5,
-      "ride_status": "Pending_start",
       "acceptation_status": "Accepted"
     }
   ],

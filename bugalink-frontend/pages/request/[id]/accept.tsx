@@ -1,3 +1,5 @@
+import useIndividualRides from '@/hooks/useIndividualRides';
+import useReviews from '@/hooks/useReviews';
 import { BackButtonText } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import TextAreaField from '@/components/forms/TextAreaField';
@@ -7,22 +9,40 @@ import ProfileHeader from '@/components/ProfileHeader';
 import TripDetails from '@/components/TripDetails';
 import useMapCoordinates from '@/hooks/useMapCoordinates';
 import { Drawer } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function AcceptRequest() {
-  const origin =
-    'Escuela Técnica Superior de Ingeniería Informática, 41002 Sevilla';
-  const destination = 'Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla';
-
+  const [time, setTime] = useState<number>(0);
   const [drawerDecline, setDrawerDecline] = useState(false);
   const [reason, setReason] = useState('');
-  const [time, setTime] = useState<number>(0);
+  const { individualRide, isLoading, isError } = useIndividualRides(2);
+  const [origin, setOrigin] = useState();
+  const [destination, setDestination] = useState();
   const originCoords = useMapCoordinates(origin);
   const destinationCoords = useMapCoordinates(destination);
+  const { reviews, isLoadingReviews, isErrorReviews } = useReviews(1);
 
+  useEffect(() => {
+    if (individualRide && individualRide.length > 0) {
+      setOrigin(individualRide[0].start_location);
+      setDestination(individualRide[0].end_location);
+    }
+  }, [individualRide]);
+
+  if (isLoading || isLoadingReviews) return <p>Loading...</p>; // TODO: make skeleton
+  if (isError || isErrorReviews) return <p>Error</p>; // TODO: make error message
+
+  const ride = individualRide[0];
+  const dateText = `Cada ${ride.passenger_routine.days} a partir del ${ride.start_date}`;
+
+  let sum = 0;
+  for (const element of reviews) {
+    sum += element.rating;
+  }
+  const meanReviews = (sum / reviews.length).toFixed(2);
   // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
-  const startTime = new Date('2021-05-01T21:00:00');
-  const endTime = new Date('2021-05-01T21:00:00');
+  const startTime = new Date(ride.passenger_routine.start_time_initial);
+  const endTime = new Date(ride.passenger_routine.start_time_initial);
   endTime.setMinutes(endTime.getMinutes() + time);
 
   return (
@@ -31,19 +51,16 @@ export default function AcceptRequest() {
       <div className="flex h-full flex-col justify-between overflow-y-scroll bg-white px-6 pb-4 pt-2">
         {/* Profile header */}
         <ProfileHeader
-          name="Jesús Marchena"
-          rating="4.8"
-          numberOfRatings="14"
+          name={ride.passenger.user.username}
+          rating={meanReviews.toString()}
+          numberOfRatings={reviews.length}
+          photo={ride.passenger.user.photo}
         />
         <p className="mt-4 text-justify text-sm font-normal text-dark-gray">
           Nota del pasajero
         </p>
         <div className="flex flex-row">
-          <p className="text-justify leading-5">
-            ✏️ Algunos días sueltos no haré el viaje, pero los cancelaré con un
-            par de días de antelación para dejar el asiento libre a otros
-            usuarios de la aplicación.
-          </p>
+          <p className="text-justify leading-5">✏️ {ride.message}</p>
         </div>
 
         {/* Details */}
@@ -61,7 +78,7 @@ export default function AcceptRequest() {
           />
         )}
         <TripDetails
-          date="Cada viernes a partir del 16 de febrero de 2023"
+          date={dateText}
           originHour={startTime.toLocaleTimeString('es-ES', {
             hour: '2-digit',
             minute: '2-digit',

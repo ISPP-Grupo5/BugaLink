@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from math import radians, sin, cos, atan2, sqrt
 
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 from django.core.exceptions import ObjectDoesNotExist
 
 from .models import *
@@ -15,6 +16,17 @@ from rest_framework import viewsets
 from django.http import Http404
 from rest_framework.response import Response
 
+
+class login(APIView):
+    def get(self, request):
+        username = request.data['username']
+        password = request.data['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return JsonResponse({"message": "Login correcto"}, status = 200)
+        else:
+            return JsonResponse({"message": "usuario y/o contraseña incoorrectos"}, status = 400)
 
 class Users(APIView):
 

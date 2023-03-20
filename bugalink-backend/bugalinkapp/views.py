@@ -17,8 +17,8 @@ from django.http import Http404
 from rest_framework.response import Response
 
 
-class login(APIView):
-    def get(self, request):
+class Login(APIView):
+    def post(self, request):
         username = request.data['username']
         password = request.data['password']
         user = authenticate(request, username=username, password=password)

@@ -158,7 +158,9 @@ class IndividualRides(APIView):
         try:
             individualRides = []
 
-            driver = m.Driver.objects.get(passenger_id=request.data['idDriver'])
+            user = m.User.objects.get(id=request.data['id'])
+            passenger = m.Passenger.objects.get(user=user)
+            driver = m.Driver.objects.get(passenger=passenger)
             driverRoutines = m.DriverRoutine.objects.filter(driver_id=driver.passenger.id)
             for driverRoutine in driverRoutines:
                 rides = list(m.Ride.objects.filter(driver_routine_id=driverRoutine.id))
@@ -168,7 +170,8 @@ class IndividualRides(APIView):
         except m.IndividualRide.DoesNotExist:
             raise Http404
 
-    def get_individual_rides_filter(self, request):
+class FilteredIndividualRides(APIView):
+    def get(self, request):
         try:
             individualRides = []
 
@@ -194,32 +197,14 @@ class IndividualRides(APIView):
                         # Y si el precio del viaje individual supera el filtro, lo añadimos a la lista que devolveremos
                         if lowPrice <= individualRide.price <= highPrice:
                             individualRides.push(individualRide)
-
-            return individualRides
+            
+            serializer = ListIndividualRideSerializer({'individualRides': individualRides})
+            return JsonResponse(serializer.data)
         except m.IndividualRide.DoesNotExist:
             raise Http404
 
-    def put_individual_ride(self, request):
-        try:
-            individualRide = m.IndividualRide.objects.get(id=request.data['idIndividualRide'])
-            '''
-            acceptationStatus = AcceptationStatus.Pending_Confirmation
-            match request.data['acceptationStatus']:
-                case 'accept':
-                    acceptationStatus = AcceptationStatus.Accepted
-                case 'cancel':
-                    acceptationStatus = AcceptationStatus.Cancelled
-            individualRide.acceptation_status = acceptationStatus
-            '''
-            m.IndividualRide.objects.put(individualRide)
-        except m.IndividualRide.DoesNotExist:
-            raise Http404
-
-    """
-    Por si se prefiere hacer uso de estas funciones
-    """
-
-    def accept_individual_ride(self, request):
+class AcceptIndividualRide:
+    def put(self, request):
         try:
             individualRide = m.IndividualRide.objects.get(id=request.data['idIndividualRide'])
             individualRide.acceptation_status = m.AcceptationStatus.Accepted
@@ -227,11 +212,67 @@ class IndividualRides(APIView):
         except m.IndividualRide.DoesNotExist:
             raise Http404
 
-    def cancel_individual_ride(self, request):
+class CancelIndividualRide:
+    def put(self, request):
         try:
             individualRide = m.IndividualRide.objects.get(id=request.data['idIndividualRide'])
             individualRide.acceptation_status = m.AcceptationStatus.Cancelled
             m.IndividualRide.objects.put(individualRide)
+        except m.IndividualRide.DoesNotExist:
+            raise Http404
+
+
+class PendingRoutineRequests(APIView):
+    def get(self, request):
+        try:
+            user = m.User.objects.get(id=request.data['id'])
+            passenger = m.Passenger.objects.get(user=user)
+            routines = m.PassengerRoutine.objects.filter(passenger=passenger)
+            routineRequests = []
+            for routine in routines:
+                routineRequests += m.RoutineRequest.objects.filter(passenger_routine=routine, acceptation_status='Pending Confirmation')
+            driver = m.Driver.objects.get(passenger=passenger)
+            routines = m.DriverRoutine.objects.filter(driver=driver)
+            for routine in routines:
+                routineRequests += m.RoutineRequest.objects.filter(driver_routine=routine, acceptation_status='Pending Confirmation')
+            serializer = ListRoutineRequestSerializer({'routineRequests': routineRequests})
+            return JsonResponse(serializer.data)
+        except m.IndividualRide.DoesNotExist:
+            raise Http404
+        
+class AcceptedRoutineRequests(APIView):
+    def get(self, request):
+        try:
+            user = m.User.objects.get(id=request.data['id'])
+            passenger = m.Passenger.objects.get(user=user)
+            routines = m.PassengerRoutine.objects.filter(passenger=passenger)
+            routineRequests = []
+            for routine in routines:
+                routineRequests += m.RoutineRequest.objects.filter(passenger_routine=routine, acceptation_status='Accepted')
+            driver = m.Driver.objects.get(passenger=passenger)
+            routines = m.DriverRoutine.objects.filter(driver=driver)
+            for routine in routines:
+                routineRequests += m.RoutineRequest.objects.filter(driver_routine=routine, acceptation_status='Accepted')
+            serializer = ListRoutineRequestSerializer({'routineRequests': routineRequests})
+            return JsonResponse(serializer.data)
+        except m.IndividualRide.DoesNotExist:
+            raise Http404
+        
+class CanceledRoutineRequests(APIView):
+    def get(self, request):
+        try:
+            user = m.User.objects.get(id=request.data['id'])
+            passenger = m.Passenger.objects.get(user=user)
+            routines = m.PassengerRoutine.objects.filter(passenger=passenger)
+            routineRequests = []
+            for routine in routines:
+                routineRequests += m.RoutineRequest.objects.filter(passenger_routine=routine, acceptation_status='Canceled')
+            driver = m.Driver.objects.get(passenger=passenger)
+            routines = m.DriverRoutine.objects.filter(driver=driver)
+            for routine in routines:
+                routineRequests += m.RoutineRequest.objects.filter(driver_routine=routine, acceptation_status='Canceled')
+            serializer = ListRoutineRequestSerializer({'routineRequests': routineRequests})
+            return JsonResponse(serializer.data)
         except m.IndividualRide.DoesNotExist:
             raise Http404
 

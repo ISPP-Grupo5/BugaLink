@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { BackButton } from '../../../buttons/Back';
-import CTAButton from '../../../buttons/CTA';
-import PlusMinusCounter from '../../../buttons/PlusMinusCounter';
-import TextField from '../../../forms/TextField';
-import TimePicker from '../../../forms/TimePicker';
+import { BackButton } from '@/components/buttons/Back';
+import CTAButton from '@/components/buttons/CTA';
+import PlusMinusCounter from '@/components/buttons/PlusMinusCounter';
+import TextField from '@/components/forms/TextField';
+import TimePicker from '@/components/forms/TimePicker';
 
 const MIN_FREE_SEATS = 1;
 const MAX_FREE_SEATS = 8;

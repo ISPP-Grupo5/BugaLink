@@ -1,62 +1,15 @@
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
-import { BackButtonText } from '../../../../components/buttons/Back';
-import Entry from '../../../../components/cards/common/entry';
-import AnimatedLayout from '../../../../components/layouts/animated';
+import { BackButtonText } from '@/components/buttons/Back';
+import Entry from '@/components/cards/common/entry';
+import AnimatedLayout from '@/components/layouts/animated';
 import MapPin from '/public/assets/map-pin.svg';
 import OrigenPin from '/public/assets/origen-pin.svg';
 import ThreeDots from '/public/assets/three-dots.svg';
 import SteeringWheel from '/public/assets/steering-wheel.svg';
 import Link from 'next/link';
-
-const routines = [
-  {
-    id: 1,
-    departureHourStart: '8:00',
-    departureHourEnd: '8:15',
-    type: 'driver',
-    origin: 'Centro comercial Way, Dos Hermanas, Sevilla, 41702',
-    destination: 'Centro comercial Lagoh, Sevilla, 41007',
-    day: 'Lunes',
-  },
-  {
-    id: 2,
-    departureHourStart: '13:30',
-    departureHourEnd: '8:40',
-    type: 'passenger',
-    origin: 'Centro comercial Way, Dos Hermanas, Sevilla, 41702',
-    destination: 'Centro comercial Lagoh, Sevilla, 41007',
-    day: 'Jueves',
-  },
-  {
-    id: 3,
-    departureHourStart: '15:00',
-    departureHourEnd: '15:15',
-    type: 'driver',
-    origin: 'Centro comercial Way, Dos Hermanas, Sevilla, 41702',
-    destination: 'Centro comercial Lagoh, Sevilla, 41007',
-    day: 'Martes',
-  },
-  {
-    id: 4,
-    departureHourStart: '18:00',
-    departureHourEnd: '18:15',
-    type: 'passenger',
-    origin: 'Centro comercial Way, Dos Hermanas, Sevilla, 41702',
-    destination: 'Centro comercial Lagoh, Sevilla, 41007',
-    day: 'Domingo',
-  },
-  {
-    id: 5,
-    departureHourStart: '20:00',
-    departureHourEnd: '20:15',
-    type: 'passenger',
-    origin: 'Centro comercial Way, Dos Hermanas, Sevilla, 41702',
-    destination: 'Centro comercial Lagoh, Sevilla, 41007',
-    day: 'Domingo',
-  },
-];
+import useRoutines from '@/hooks/useRoutines';
 
 export default function MyRoutines() {
   const days = [
@@ -68,6 +21,9 @@ export default function MyRoutines() {
     'Sábado',
     'Domingo',
   ];
+  const { routines, isLoading, isError } = useRoutines();
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error</div>;
   return (
     <AnimatedLayout className="flex flex-col bg-white">
       <BackButtonText text={'Mi horario'} />
@@ -228,3 +184,4 @@ const AddRoutineMenu = () => {
     </div>
   );
 };
+ 

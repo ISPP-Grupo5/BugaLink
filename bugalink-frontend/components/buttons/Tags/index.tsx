@@ -1,4 +1,4 @@
-import TriangleDown from '../../../public/assets/triangle-down.svg';
+import TriangleDown from '/public/assets/triangle-down.svg';
 
 type Params = {
   text: string;

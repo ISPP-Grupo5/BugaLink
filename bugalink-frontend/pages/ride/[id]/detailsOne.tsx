@@ -1,12 +1,10 @@
-import { BackButtonText } from '../../../components/buttons/Back';
-import { useRouter } from 'next/router';
-import CTAButton from '../../../components/buttons/CTA';
-import AnimatedLayout from '../../../components/layouts/animated';
-import MapPreview from '../../../components/MapPreview';
-import ProfileHeader from '../../../components/ProfileHeader';
-import TargetPin from '/public/assets/map-mark.svg';
-import SourcePin from '/public/assets/source-pin.svg';
+import { BackButtonText } from '@/components/buttons/Back';
+import CTAButton from '@/components/buttons/CTA';
+import AnimatedLayout from '@/components/layouts/animated';
+import MapPreview from '@/components/MapPreview';
+import ProfileHeader from '@/components/ProfileHeader';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export default function DetailsOne() {
   const router = useRouter();
@@ -25,17 +23,15 @@ export default function DetailsOne() {
           {/* Source and target destinations */}
           <div className="grid grid-cols-2 gap-2 py-2">
             <div>
-              <p className="text-xs font-normal">Origen</p>
-              <p className="text-xs font-bold">
-                <SourcePin className="mr-2 inline" />
+              <p className="text-sm font-normal text-gray">Origen</p>
+              <p className="text-sm font-bold">
                 Escuela Técnica Superior de Ingeniería Informática (ETSII),
                 41002 Sevilla
               </p>
             </div>
             <div>
-              <p className="text-xs font-normal">Destino</p>
-              <p className="text-xs font-bold">
-                <TargetPin className="mr-2 inline" />
+              <p className="text-sm font-normal text-gray">Destino</p>
+              <p className="text-sm font-bold">
                 Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla
               </p>
             </div>
@@ -44,36 +40,36 @@ export default function DetailsOne() {
           <MapPreview />
           {/* Details */}
           <div className="py-2">
-            <p className="text-xs font-normal">Fecha y hora</p>
-            <p className="text-justify text-xs font-medium">
+            <p className="text-sm font-normal text-gray">Fecha y hora</p>
+            <p className="text-md text-justify font-medium">
               📅 Todos los viernes a las 21:00
             </p>
           </div>
           <div className="py-2">
-            <p className="text-xs font-normal">Sobre el conductor</p>
-            <p className="text-justify text-xs font-medium">
+            <p className="text-sm font-normal text-gray">Sobre el conductor</p>
+            <p className="text-md text-justify font-medium">
               🗣 Prefiero hablar durante el viaje
             </p>
-            <p className="text-justify text-xs font-medium">
+            <p className="text-md text-justify font-medium">
               🎶 Prefiero ir escuchando música
             </p>
-            <p className="text-justify text-xs font-medium">
+            <p className="text-md text-justify font-medium">
               🐾 Acepto mascotas
             </p>
-            <p className="text-justify text-xs font-medium">
+            <p className="text-md text-justify font-medium">
               🚭 No fumar en el coche
             </p>
           </div>
           <div className="py-2">
-            <p className="text-xs font-normal">Nota del condutor</p>
-            <p className="text-justify text-xs font-medium">
+            <p className="text-sm font-normal text-gray">Nota del conductor</p>
+            <p className="text-md text-justify font-lato font-medium leading-5">
               ✏️ También puedo recoger pasajeros en otro punto si me pilla de
               camino. Mejor pregúntame por chat antes de reservar asiento
             </p>
           </div>
         </div>
         {/* Trip request */}
-        <div className="absolute bottom-0 my-3 w-full rounded-t-xl bg-white px-5 pt-5 shadow-t-md">
+        <div className="absolute bottom-0 w-full rounded-t-xl bg-white px-5 pt-5 shadow-t-md">
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-col">
               <p className="text-xs font-normal">Tipo de viaje</p>

@@ -1,5 +1,5 @@
 export {};
-import { sampleTripRequests, sampleTrips, IndividualRides} from './data';
+import { sampleRoutines, sampleTripRequests, sampleTrips, IndividualRides} from './data';
 
 // Import required modules
 const express = require('express');
@@ -109,9 +109,25 @@ router.get('/users/:userId/trips', (req, res) => {
   );
 });
 
+// get(`/users/${userId}/trips/upcoming`);
+router.get('/users/:userId/trips/upcoming', (req, res) => {
+  res.json(sampleTrips);
+});
+
+// get(`/users/${userId}/trips/history?type=driver`);
+router.get('/users/:userId/trips/history', (req, res) => {
+  // return trips in random order
+  res.json(sampleTrips.sort(() => Math.random() - 0.5));
+});
+
 // Register API routes
 app.use('/api', router);
 
 // Start the server
 app.listen(port);
 console.log(`Server listening on port ${port}`);
+
+//get('users/${userId}/routines);
+router.get('/users/:userId/routines', (req, res)=>{
+  res.json(sampleRoutines)
+})

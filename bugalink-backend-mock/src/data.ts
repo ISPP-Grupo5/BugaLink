@@ -112,9 +112,9 @@ export const sampleUser = {
   photo: '/assets/avatar.png',
 };
 
-export const IndividualRides = [
+export const individualRides = [
   {
-    IndividualRideId:1,
+    individualRideId:1,
     passenger : {
       user : {
         username :'Jesús Marchena',
@@ -139,7 +139,7 @@ export const IndividualRides = [
     message : 'Algunos días no haré el viaje, avisaré con antelación.',
   },
   {
-    IndividualRideId:2,
+    individualRideId:2,
     passenger : {
       user : {
         username :'Pedro Sánchez',

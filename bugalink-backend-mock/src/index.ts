@@ -1,5 +1,5 @@
 export {};
-import { sampleTripRequests, sampleTrips, IndividualRides} from './data';
+import { sampleTripRequests, sampleTrips, individualRides} from './data';
 
 // Import required modules
 const express = require('express');
@@ -69,12 +69,12 @@ router.get('/trips/recommendations', (req, res) => {
 
 // GET /individualRides/<individualRideId>
 router.get('/individualRides/:IndividualRideId', (req, res) => {
-  const IndividualRideId = req.params.IndividualRideId;
+  const individualRideId = req.params.individualRideId;
 
   // Ugly filter, should work for now until we have a proper backend
   res.json(
-    IndividualRides.filter((IndividualRide) => {
-      return (!IndividualRideId || IndividualRide.IndividualRideId == IndividualRideId);
+    individualRides.filter((individualRide) => {
+      return (!individualRideId || individualRide.individualRideId == individualRideId);
     })
   );
 });

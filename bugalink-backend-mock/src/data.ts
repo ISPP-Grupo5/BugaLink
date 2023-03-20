@@ -94,3 +94,24 @@ export const sampleTripRequests = [
     price: 1.5,
   },
 ];
+export const sampleRoutines = [
+  {
+    id: 1,
+    departureHourStart: '9:00',
+    departureHourEnd: '9:30',
+    type: 'driver',
+    origin: 'San Jacinto, Triana, Sevilla, 41010',
+    destination: 'Centro comercial Lagoh, Sevilla, 41007',
+    day: 'Lunes',
+  },
+  {
+    id: 2,
+    departureHourStart: '15:00',
+    departureHourEnd: '15:30',
+    type: 'passenger',
+    origin: 'San Jacinto, Triana, Sevilla, 41010',
+    destination: 'Centro comercial Lagoh, Sevilla, 41007',
+    day: 'Jueves',
+  }
+
+];

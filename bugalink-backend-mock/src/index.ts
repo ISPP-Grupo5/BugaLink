@@ -1,5 +1,5 @@
 export {};
-import { sampleTripRequests, sampleTrips } from './data';
+import { sampleRoutines, sampleTripRequests, sampleTrips } from './data';
 
 // Import required modules
 const express = require('express');
@@ -101,3 +101,8 @@ app.use('/api', router);
 // Start the server
 app.listen(port);
 console.log(`Server listening on port ${port}`);
+
+//get('users/${userId}/routines);
+router.get('/users/:userId/routines', (req, res)=>{
+  res.json(sampleRoutines)
+})

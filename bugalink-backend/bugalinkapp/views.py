@@ -223,6 +223,25 @@ class CancelPassengerIndividualRide:
         except m.IndividualRide.DoesNotExist:
             raise Http404
 
+class AcceptRoutineRequest(APIView):
+        
+    def put(self, request):
+        try:
+            routineRequest = m.RoutineRequest.objects.get(id=request.data['idRoutineRequest'])
+            routineRequest.acceptation_status = m.AcceptationStatus.Accepted
+            m.RoutineRequest.objects.put(routineRequest)
+        except m.IndividualRide.DoesNotExist:
+            raise Http404
+
+class CancelRoutineRequest(APIView):
+        
+    def put(self, request):
+        try:
+            routineRequest = m.RoutineRequest.objects.get(id=request.data['idRoutineRequest'])
+            routineRequest.acceptation_status = m.AcceptationStatus.Cancelled
+            m.RoutineRequest.objects.put(routineRequest)
+        except m.IndividualRide.DoesNotExist:
+            raise Http404
 
 class CancelIndividualRide(APIView):
     def post(self, request):  

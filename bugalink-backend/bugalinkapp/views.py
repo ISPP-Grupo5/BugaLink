@@ -63,7 +63,7 @@ class RoutineRecommendation(APIView):
                 driver_source_location = routine.start_location
                 driver_ending_location = routine.end_location
 
-                # Obtenner en kilometros la distancia en kilometros entre los lugares de origen
+                # Obtener en kilometros la distancia en kilometros entre los lugares de origen
                 lat_source_passenger, lon_source_passenger = map(radians, source_location)
                 lat_source_driver, lon_source_driver = map(radians, driver_source_location)
                 d_lat_source = lat_source_driver - lat_source_passenger
@@ -98,10 +98,10 @@ class RoutineRecommendation(APIView):
 
             # Llamada al serializer para devolver todos los viajes que han sido seleccionados
             serializer = ListRideSerializer(rides, many=True)
-            return JsonResponse(serializer.data)
+            return JsonResponse(serializer.data, status = 200)
 
         except Exception:
-            raise Http404  # Mejorar errores
+            return JsonResponse({"message": "No hay viajes recomendados para ti"}, status=400)
 
 
 class PendingIndividualRide(APIView):

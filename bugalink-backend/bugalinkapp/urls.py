@@ -7,7 +7,7 @@ urlpatterns = [
     path('pendingindividualrides/', views.PendingIndividualRide.as_view()),
     path('cancelledindividualrides/', views.CancelledIndividualRide.as_view()),
     path('acceptedindividualrides/', views.AcceptedIndividualRide.as_view()),
-    path('routineFilter', views.RoutineRecommendation.as_view()),
+    path('routineRecommendation', views.RoutineRecommendation.as_view()),
     path('individualRides', views.IndividualRides.as_view()),
     path('rides/<int:pk>', views.Rides.as_view()),
     path('users/<int:pk>/passenger-routines', views.PassengerRoutineList.as_view()),

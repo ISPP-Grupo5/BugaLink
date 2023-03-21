@@ -1,9 +1,9 @@
-import Head from 'next/head';
-import { AppProps } from 'next/app';
-import '../styles/globals.css';
-import MobileLayout from '../components/layouts/mobile';
+import MobileLayout from '@/components/layouts/mobile';
+import '@/styles/carousel.css';
+import '@/styles/globals.css';
 import { AnimatePresence } from 'framer-motion';
-import AnimatedLayout from '../components/layouts/animated';
+import { AppProps } from 'next/app';
+import Head from 'next/head';
 
 export default function MyApp({ Component, pageProps, router }: AppProps) {
   return (
@@ -32,7 +32,17 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
           type="image/png"
           sizes="32x32"
         />
-        <link rel="apple-touch-icon" href="/icons/icon-apple.png" />
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+          integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+          crossOrigin=""
+        />
+        <script
+          src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+          integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+          crossOrigin=""
+        ></script>
         {/* Avoid black notch in iOS devices */}
         <meta name="apple-mobile-web-app-capable" content="yes"></meta>
         <meta

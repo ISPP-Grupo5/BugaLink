@@ -1,5 +1,5 @@
-import TripRequestI from '../../../interfaces/tripRequest';
-import TripCard from '../recommendation';
+import TripRequestI from '@/interfaces/tripRequest';
+import TripCard from '@/components/cards/recommendation';
 
 type Props = {
   request: TripRequestI;

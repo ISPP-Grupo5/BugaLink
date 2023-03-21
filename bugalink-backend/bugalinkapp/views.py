@@ -465,7 +465,6 @@ class PassengerRoutineList(APIView):
     def get(self, request, pk, format=None):
         try:
             queryset = m.PassengerRoutine.objects.filter(passenger_id=pk)
-            print(queryset)
         except ObjectDoesNotExist:
             return JsonResponse({'error': 'Passenger does not exist with id {}'.format(pk)},
                                 status=status.HTTP_400_BAD_REQUEST)

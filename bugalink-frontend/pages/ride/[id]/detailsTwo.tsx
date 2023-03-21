@@ -6,6 +6,7 @@ import MapPreview from '@/components/maps/mapPreview';
 import ProfileHeader from '@/components/ProfileHeader';
 import TripDetails from '@/components/TripDetails';
 import useMapCoordinates from '@/hooks/useMapCoordinates';
+import Link from 'next/link';
 import { useState } from 'react';
 
 const MIN_RESERVED_SEATS = 1;
@@ -86,12 +87,17 @@ export default function DetailsTwo() {
         </div>
       </div>
       {/* Trip request */}
-      <div className="flex w-full flex-row items-center justify-between rounded-t-lg bg-white py-6 px-4 shadow-t-md">
+      <div className="flex w-full flex-row items-center justify-around rounded-t-lg bg-white py-6 px-4 shadow-t-md">
         <div className="flex flex-col">
           <p className="text-md font-normal">Precio total</p>
           <p className="text-3xl font-bold">4,00€</p>
         </div>
-        <CTAButton className="w-2/3" text={'SOLICITAR'} />
+        <Link
+                href="/ride/V1StGXR8_Z5jdHi6B-myT/pay"
+                className=""
+              >
+        <CTAButton className="w-full" text={'SOLICITAR'} />
+              </Link>
       </div>
     </AnimatedLayout>
   );

@@ -25,11 +25,11 @@ for key in modelos:
     for attrs in modelos[key]:
         if key in 'User':
             User.objects.create_user(**attrs)
-        elif key in 'Vehicle':
-            driver_id = attrs['driver_id']
-            del attrs['driver_id']
-            vehicle = Vehicle.objects.create(**attrs)
-            vehicle.driver.add(driver_id)
-            vehicle.save()
+        # elif key in 'Vehicle':
+        #     driver_id = attrs['driver_id']
+        #     del attrs['driver_id']
+        #     vehicle = Vehicle.objects.create(**attrs)
+        #     vehicle.driver.add(driver_id)
+        #     vehicle.save()
         else:
             globals()[key].objects.create(**attrs)

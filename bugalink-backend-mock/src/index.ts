@@ -1,5 +1,5 @@
 export {};
-import { sampleTripRequests, sampleTrips } from './data';
+import { sampleRoutines, sampleTripRequests, sampleTrips, individualRides} from './data';
 
 // Import required modules
 const express = require('express');
@@ -39,6 +39,19 @@ router.get('/users/:userId', (req, res) => {
   res.json(user);
 });
 
+router.get('/api/users/:driverId/reviews', (req, res) => {
+  const numberReviews = chance.integer({ min: 1, max: 20 });
+  let reviews = []
+  for(let i = 0; i < numberReviews; i++){
+    const review = {
+      rating : chance.integer({min:1,max:5}),
+      comment : "example comment"
+    };
+    reviews[i]=review;
+  }
+  res.json(reviews);
+});
+
 router.get('/users/:userId/chats/pending/count', (req, res) => {
   const number = chance.integer({ min: 1, max: 4 });
   res.json(number);
@@ -52,6 +65,18 @@ router.get('/users/:userId/requests/pending/count', (req, res) => {
 // GET /rides/recommendations
 router.get('/trips/recommendations', (req, res) => {
   res.json(sampleTrips);
+});
+
+// GET /individualRides/<individualRideId>
+router.get('/individualRides/:IndividualRideId', (req, res) => {
+  const individualRideId = req.params.individualRideId;
+
+  // Ugly filter, should work for now until we have a proper backend
+  res.json(
+    individualRides.filter((individualRide) => {
+      return (!individualRideId || individualRide.individualRideId == individualRideId);
+    })
+  );
 });
 
 // GET /rides/search?origin=...&destination=...&date=...&time=...&price=...&seats=...
@@ -84,9 +109,25 @@ router.get('/users/:userId/trips', (req, res) => {
   );
 });
 
+// get(`/users/${userId}/trips/upcoming`);
+router.get('/users/:userId/trips/upcoming', (req, res) => {
+  res.json(sampleTrips);
+});
+
+// get(`/users/${userId}/trips/history?type=driver`);
+router.get('/users/:userId/trips/history', (req, res) => {
+  // return trips in random order
+  res.json(sampleTrips.sort(() => Math.random() - 0.5));
+});
+
 // Register API routes
 app.use('/api', router);
 
 // Start the server
 app.listen(port);
 console.log(`Server listening on port ${port}`);
+
+//get('users/${userId}/routines);
+router.get('/users/:userId/routines', (req, res)=>{
+  res.json(sampleRoutines)
+})

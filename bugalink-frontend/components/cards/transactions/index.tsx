@@ -22,7 +22,7 @@ export default function Transaction({
   Icon3,
 }: Params) {
   return (
-    <div className="mr-3 flex flex-row place-content-center justify-between space-x-2">
+    <div className="flex flex-row place-content-center justify-between space-x-2">
       <div className="flex scale-90 flex-row -space-x-16">
         {Icon2 != null && (
           <img
@@ -46,7 +46,7 @@ export default function Transaction({
         </p>
       </div>
 
-      <div className="py-4">
+      <div className="py-4 -translate-x-4">
         <p className={'text-right text-base font-bold ' + className}>{money}</p>
         {isPending == true && (
           <p className="text-base text-yellow">Pendiente</p>

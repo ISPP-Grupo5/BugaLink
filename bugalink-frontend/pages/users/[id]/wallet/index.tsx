@@ -35,7 +35,7 @@ export default function Wallet() {
         <p className="sticky top-0 z-10 rounded-t-3xl bg-white py-5 pl-5 text-left text-3xl text-black">
           Últimos movimientos
         </p>
-        <div className="divide-y-2 divide-light-gray ">
+        <div className="divide-y-2  divide-light-gray ">
           <Transaction
             people="Juan Blanco y 2 más..."
             travelType="Conductor"

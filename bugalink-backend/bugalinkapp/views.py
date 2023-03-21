@@ -1,3 +1,4 @@
+import datetime
 from rest_framework import status
 from rest_framework.views import APIView
 
@@ -219,14 +220,6 @@ class IndividualRides(APIView):
     Por si se prefiere hacer uso de estas funciones
     """
 
-    def accept_individual_ride(self, request):
-        try:
-            individualRide = m.IndividualRide.objects.get(id=request.data['idIndividualRide'])
-            individualRide.acceptation_status = m.AcceptationStatus.Accepted
-            m.IndividualRide.objects.put(individualRide)
-        except m.IndividualRide.DoesNotExist:
-            raise Http404
-
     def get_sporadic_individual_rides(self, request):
             try:
                 individual_ride = IndividualRide.objects.get(idIndividualRide=request.data['idIndividualRide'])
@@ -234,6 +227,21 @@ class IndividualRides(APIView):
             except Exception as e:
                 raise e
 
+class CancelIndividualRide(APIView):
+    def post(self, request):  
+        try:
+            indiviudal_ride = IndividualRide.objects.get(id=request.data["idIndividualRide"])
+        except IndividualRide.DoesNotExist:
+            return JsonResponse({'error': 'Ride not found'}, status=404)
+
+        diff = datetime.datetime.now() - indiviudal_ride.start_date
+        if diff.total_seconds() < 86400 :    # Si quedan menos de 24 horas para el viaje
+            return JsonResponse({'error': 'Cancelation deadline has passed'}, status=400)
+
+        indiviudal_ride.delete()
+        return JsonResponse({'success': True})
+    
+############## ENDPOINTS ASOCIADOS A RIDE
 class CreateIndividualRide(APIView):
     def post(self, request):
         if request.method == 'POST':

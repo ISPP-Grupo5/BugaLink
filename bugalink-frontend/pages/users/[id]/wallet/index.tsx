@@ -9,15 +9,15 @@ export default function Wallet() {
   return (
     <AnimatedLayout className="flex flex-col overflow-y-scroll">
       <BackButtonText text="Mi cartera" className="bg-base-origin" />
-      <div className="ml-4 mr-4 flex h-44 flex-col place-content-center space-y-3 rounded-2xl border-2 border-dashed border-light-gray bg-white">
-        <div className="text-center">
+      <div className="ml-4 mr-4 py-4 flex flex-col place-content-center space-y-3 rounded-2xl border-2 border-dashed border-light-gray bg-white">
+        <div className="text-center mt-2">
           <p className="text-xs text-gray">Saldo disponible</p>
           <p className="text-3xl font-bold text-black">13,30€</p>
         </div>
 
-        <div className="translate-y-2 text-center">
+        <div className="text-center">
           <p className="text-xs text-gray">Pendiente por cobrar</p>
-          <p className="text-lg font-bold text-black">3,75€</p>
+          <p className="text-xl font-bold text-black">3,75€</p>
         </div>
       </div>
       <div className="ml-4 mr-4 flex flex-row place-content-center space-x-14 py-5">

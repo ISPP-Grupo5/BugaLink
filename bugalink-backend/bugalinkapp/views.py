@@ -158,9 +158,9 @@ class IndividualRides(APIView):
                 raise e
 
 class CancelIndividualRide():
-    def post(self, request, individual_ride_id):  
+    def post(self, request):  
         try:
-            indiviudal_ride = IndividualRide.objects.get(id=individual_ride_id)
+            indiviudal_ride = IndividualRide.objects.get(id=request.data["idIndividualRide"])
         except IndividualRide.DoesNotExist:
             return JsonResponse({'error': 'Ride not found'}, status=404)
 

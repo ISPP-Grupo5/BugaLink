@@ -1,11 +1,11 @@
-import AnimatedLayout from '../../../components/layouts/animated';
-import { BackButton } from '../../../components/buttons/Back';
+import AnimatedLayout from '@/components/layouts/animated';
+import { BackButton } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import Link from 'next/link';
 import { useState } from 'react';
-import ExternalLogin from '../../../components/externalLogin';
+import ExternalLogin from '@/components/externalLogin';
 import TextField from '@/components/forms/TextField';
-import RegisterImg from '../../../public/assets/register.svg';
+import RegisterImg from '/public/assets/register.svg';
 
 export default function Register() {
   const [email, setEmail] = useState('');

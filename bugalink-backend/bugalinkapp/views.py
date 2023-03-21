@@ -415,9 +415,9 @@ class RoutineRequest(APIView):
 ############## ENDPOINTS ASOCIADOS A DRIVER
 
 class Driver(APIView):
-    def cancel_routine_request(self,request, id):
+    def cancel_routine_request(self,request):
         try:
-            routine_request = RoutineRequest.objects.get(id=id)
+            routine_request = RoutineRequest.objects.get(id=request.data["idRoutineRequest"])
         except RoutineRequest.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'La instancia con el ID dado no existe'}, status=404)
 

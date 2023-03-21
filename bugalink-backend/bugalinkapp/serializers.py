@@ -57,7 +57,7 @@ class IndividualRideSerializer(serializers.ModelSerializer):
 
 
 class ListIndividualRideSerializer(serializers.Serializer):
-    rides = IndividualRideSerializer(many=True)
+    individual_rides = IndividualRideSerializer(many=True)
 
 
 class DriverRatingSerializer(serializers.ModelSerializer):
@@ -70,6 +70,11 @@ class PassengerRatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = PassengerRating
         fields = '__all__'
+
+class ListRatingSelieaizer(serializers.Serializer):
+    driver_rating = DriverRatingSerializer(many=True)
+    passenger_rating = PassengerRatingSerializer(many=True)
+
 
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:

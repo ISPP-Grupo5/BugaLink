@@ -60,7 +60,7 @@ class Coord(models.Field):
         try:
             if not value:
                 return value
-            values = value.split(',')
+            values = value.replace('(', '').replace(')', '').split(',')
             return tuple(float(v) for v in values)
         except Exception:
             raise ValidationError
@@ -72,6 +72,9 @@ class Coord(models.Field):
         try:
             if not value:
                 return value
+            if isinstance(value, str):
+                # Remove parentheses from string input
+                value = value.replace('(', '').replace(')', '')
             return ','.join(str(coord) for coord in value)
         except Exception:
             raise ValidationError
@@ -188,7 +191,7 @@ class IndividualRide(models.Model):
     acceptation_status = models.CharField(max_length=256, choices=AcceptationStatus.choices(), default=AcceptationStatus.Pending_Confirmation)
     message= models.CharField(max_length=256, null=True, blank=True)
     def __str__(self):
-        return "Individual Ride " + str(self.pk) + DRIVER_STR + str(self.ride.driver_routine.driver.pk) + PASSENGER_STR + str(self.passenger.pk) + DATE_STR + str(self.ride.start_date.date()) + " " + str(self.ride.start_date.time())
+        return "Individual Ride " + str(self.pk) + DRIVER_STR + str(self.ride.driver_routine.driver.pk) + PASSENGER_STR + str(self.passenger.pk) + ", ride=" + str(self.ride.pk)
     class Meta:
         verbose_name = "Individual ride"
         verbose_name_plural = "Individual rides"
@@ -199,7 +202,7 @@ class DriverRating(models.Model):
     comment = models.CharField(max_length=1024)
 
     def __str__(self):
-        return "Driver rating " + str(self.pk) + DRIVER_STR + str(self.individual_ride.ride.driver_routine.driver.pk) + PASSENGER_STR + str(self.individual_ride.passenger.pk) + ", rating=" + str(self.rating) + DATE_STR + str(self.individual_ride.start_date.date())
+        return "Driver rating " + str(self.pk) + DRIVER_STR + str(self.individual_ride.ride.driver_routine.driver.pk) + PASSENGER_STR + str(self.individual_ride.passenger.pk) + ", rating=" + str(self.rating) + ", indRide=" + str(self.individual_ride.pk)
     class Meta:
         verbose_name = "Driver rating"
         verbose_name_plural = "Driver ratings"
@@ -217,7 +220,7 @@ class PassengerRating(models.Model):
     rating = models.FloatField(validators=[MinValueValidator(1.0), MaxValueValidator(5.0)])
     comment = models.CharField(max_length=1024)
     def __str__(self):
-        return "Passenger rating " + str(self.pk) + DRIVER_STR + str(self.individual_ride.ride.driver_routine.driver.pk) + PASSENGER_STR + str(self.individual_ride.passenger.pk) + ", rating=" + str(self.rating) + DATE_STR + str(self.individual_ride.start_date.date())
+        return "Passenger rating " + str(self.pk) + DRIVER_STR + str(self.individual_ride.ride.driver_routine.driver.pk) + PASSENGER_STR + str(self.individual_ride.passenger.pk) + ", rating=" + str(self.rating) + ", indRide=" + str(self.individual_ride.pk)
     class Meta:
         verbose_name = "Passenger rating"
         verbose_name_plural = "Passenger ratings"

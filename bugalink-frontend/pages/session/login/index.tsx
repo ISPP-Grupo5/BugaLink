@@ -1,12 +1,12 @@
-import AnimatedLayout from '../../../components/layouts/animated';
-import { BackButton } from '../../../components/buttons/Back';
+import AnimatedLayout from '@/components/layouts/animated';
+import { BackButton } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import Link from 'next/link';
 import { useState } from 'react';
 import Switch from '@/components/forms/Switch';
-import ExternalLogin from '../../../components/externalLogin';
+import ExternalLogin from '@/components/externalLogin';
 
-import CityDriver from '../../../public/assets/CityDriver.svg';
+import CityDriver from '/public/assets/CityDriver.svg';
 import TextField from '@/components/forms/TextField';
 
 export default function Login() {

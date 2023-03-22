@@ -60,6 +60,15 @@ class ListIndividualRideSerializer(serializers.Serializer):
     individual_rides = IndividualRideSerializer(many=True)
 
 
+class RoutineRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoutineRequest
+        fields = '__all__'
+
+class ListRoutineRequestSerializer(serializers.Serializer):
+    routinesRequests = RoutineRequestSerializer(many=True)
+
+
 class DriverRatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = DriverRating

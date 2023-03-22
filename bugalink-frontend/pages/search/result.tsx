@@ -105,7 +105,6 @@ export default function SearchResults() {
       setSearchResults(searchResultsMock);
       setIsLoading(false);
       setIsError(false);
-      false;
     }, 1000);
   });
   ////////////////////////////////////////////////////////////////////////////////////////////////////

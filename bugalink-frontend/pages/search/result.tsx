@@ -1,14 +1,15 @@
-import { Drawer } from '@mui/material';
-import Slider from '@mui/material/Slider';
-import Link from 'next/link';
-import FilterIcon from 'public/assets/filter-icon.svg';
-import React, { useState } from 'react';
 import { BackButton } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import TagsButton from '@/components/buttons/Tags';
 import TripCard from '@/components/cards/recommendation';
 import TimePicker from '@/components/forms/TimePicker';
 import AnimatedLayout from '@/components/layouts/animated';
+import TripCardSkeleton from '@/components/skeletons/TripCard';
+import { Drawer } from '@mui/material';
+import Slider from '@mui/material/Slider';
+import Link from 'next/link';
+import FilterIcon from 'public/assets/filter-icon.svg';
+import React, { useEffect, useState } from 'react';
 import Arrows from '/public/assets/arrows.svg';
 import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
@@ -33,7 +34,7 @@ const filters = [
 ];
 
 // TODO: Replace with data from the mock backend
-const searchResults = [
+const searchResultsMock = [
   {
     type: 'driver',
     rating: 4.6,
@@ -92,6 +93,23 @@ export default function SearchResults() {
   const [pickTimeFrom, setPickTimeFrom] = useState('16:00');
   const [pickTimeTo, setPickTimeTo] = useState('16:15');
   const [values, setValues] = React.useState<number[]>([0, 2]);
+
+  // TODO: remove this block once the API is integrated, it's to simulate the loading of the results
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+  const [searchResults, setSearchResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setSearchResults(searchResultsMock);
+      setIsLoading(false);
+      setIsError(false);
+      false;
+    }, 1000);
+  });
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+
   // TODO: use more meaningful variable names. I suppose "values" is about the price range.
   // Better to define 2 states for that (minPrice, maxPrice) and use them in the slider.
   // Ideally we would have each filter contained in its own file, and this page would
@@ -184,27 +202,35 @@ export default function SearchResults() {
         </div>
       </div>
       <div className="divide-y-2 divide-light-gray">
-        {searchResults.map((trip) => (
-          <Link
-            key={trip.name}
-            href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne?requested=false"
-            className="w-full"
-          >
-            <TripCard
-              key={trip.name}
-              type={trip.type}
-              rating={trip.rating}
-              name={trip.name}
-              gender={trip.gender}
-              avatar={trip.avatar}
-              origin={trip.origin}
-              destination={trip.destination}
-              date={trip.date}
-              price={trip.price}
-              className="rounded-md bg-white outline outline-1 outline-light-gray"
-            />
-          </Link>
-        ))}
+        {isLoading || isError
+          ? [1, 2, 3, 4, 5].map((i) => (
+              <TripCardSkeleton
+                key={i}
+                className="rounded-md bg-white outline outline-1 outline-light-gray"
+              />
+            ))
+          : searchResults.map((trip) => (
+              <Link
+                key={trip.name}
+                href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne?requested=false"
+                className="w-full"
+              >
+                {/* TODO: add TripCardSkeleton. It's useless here  */}
+                <TripCard
+                  key={trip.name}
+                  type={trip.type}
+                  rating={trip.rating}
+                  name={trip.name}
+                  gender={trip.gender}
+                  avatar={trip.avatar}
+                  origin={trip.origin}
+                  destination={trip.destination}
+                  date={trip.date}
+                  price={trip.price}
+                  className="rounded-md bg-white outline outline-1 outline-light-gray"
+                />
+              </Link>
+            ))}
       </div>
 
       <Drawer

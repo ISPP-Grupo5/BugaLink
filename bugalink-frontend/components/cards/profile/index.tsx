@@ -1,11 +1,11 @@
-import Address from 'public/assets/address.svg';
-import Preferences from 'public/assets/preferences.svg';
-import Help from 'public/assets/help.svg';
-import Wallet from 'public/assets/wallet.svg';
-import Logout from 'public/assets/log-out.svg';
-import React, { useState } from 'react';
 import { Drawer } from '@mui/material';
+import Address from 'public/assets/address.svg';
 import ArrowHead from 'public/assets/arrow-head.svg';
+import Help from 'public/assets/help.svg';
+import Logout from 'public/assets/log-out.svg';
+import Preferences from 'public/assets/preferences.svg';
+import Wallet from 'public/assets/wallet.svg';
+import { useState } from 'react';
 
 const preferences = {
   smoke: {
@@ -144,7 +144,7 @@ function PreferenceBox({ checked, setChecked, item }) {
   return (
     <div
       className={
-        'grid min-h-full grid-rows-2 flex-col place-items-center rounded-lg border border-light-gray p-1 transition-colors duration-200 ' +
+        'grid min-h-full w-full grid-rows-2 flex-col place-items-center rounded-lg border border-light-gray p-1 transition-colors duration-200 ' +
         (checked ? 'bg-white' : 'bg-light-gray')
       }
       onClick={() => {

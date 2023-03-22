@@ -4,6 +4,7 @@ import SquareRoutinesButton from '@/components/buttons/Square/Routines';
 import UpcomingTripsCarousel from '@/components/carousel';
 import RecommendationsDrawer from '@/components/drawers/Recommendations';
 import AnimatedLayout from '@/components/layouts/animated';
+import AvatarSkeleton from '@/components/skeletons/Avatar';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import useUser from '@/hooks/useUser';
 import Link from 'next/link';
@@ -27,7 +28,7 @@ export default function Home() {
               type="search"
               placeholder="Dónde quieres ir?"
               className="ml-2 h-full w-full rounded-full pl-2 outline-none"
-            ></input>
+            />
             <Link href={NEXT_ROUTES.SEARCH_RESULTS}>
               <button type="submit">
                 <Glass />
@@ -38,7 +39,11 @@ export default function Home() {
             className="aspect-square h-14"
             href={NEXT_ROUTES.PROFILE(USER_ID)}
           >
-            <img className="rounded-full" src={user?.photo} />
+            {user?.photo ? (
+              <img className="rounded-full" src={user?.photo} />
+            ) : (
+              <AvatarSkeleton />
+            )}
           </Link>
         </span>
 

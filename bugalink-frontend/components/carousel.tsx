@@ -4,6 +4,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback, useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 import UpcomingCard from './cards/upcoming';
+import UpcomingCardSkeleton from './skeletons/Upcoming';
 
 const TWEEN_FACTOR = 0.3;
 
@@ -53,41 +54,63 @@ export default function UpcomingTripsCarousel(props) {
     emblaApi.on('reInit', onScroll);
   }, [emblaApi, onScroll]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error</div>;
-
   return (
     <div className="embla">
       <div className="embla__viewport" ref={emblaRef}>
         <div className="embla__container">
-          {upcomingTrips.map((trip: TripI, index) => (
-            <div
-              className="embla__slide"
-              key={trip.id}
-              style={{
-                ...(tweenValues.length && {
-                  scale: `${Math.max(90, tweenValues[index] * 100)}%`,
-                  opacity: tweenValues[index] ** 2,
-                }),
-              }}
-            >
-              <UpcomingCard
-                trip={trip}
+          {isLoading || isError ? (
+            <CarouselSkeleton tweenValues={tweenValues} />
+          ) : (
+            upcomingTrips.map((trip: TripI, index) => (
+              <div
+                className="embla__slide"
                 key={trip.id}
-                className={
-                  'embla__slide__img transition-transform duration-200 ' +
-                  // Center first card to the left
-                  (tweenValues[0] > 0.95 ? '-translate-x-4 ' : '') +
-                  // Center last card to the right so there is no white space
-                  (tweenValues[tweenValues.length - 1] > 0.95
-                    ? 'translate-x-4'
-                    : '')
-                }
-              />
-            </div>
-          ))}
+                style={{
+                  ...(tweenValues.length && {
+                    scale: `${Math.max(90, tweenValues[index] * 100)}%`,
+                    opacity: tweenValues[index] ** 2,
+                  }),
+                }}
+              >
+                <UpcomingCard
+                  trip={trip}
+                  key={trip.id}
+                  className={
+                    'embla__slide__img transition-transform duration-200' +
+                    // Center first card to the left
+                    (tweenValues[0] > 0.95 ? '-translate-x-4 ' : '') +
+                    // Center last card to the right so there is no white space
+                    (tweenValues[tweenValues.length - 1] > 0.95
+                      ? 'translate-x-4'
+                      : '')
+                  }
+                />
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
   );
 }
+
+const CarouselSkeleton = ({ tweenValues }) => {
+  return (
+    <>
+      {[1, 2, 3].map((i, index) => (
+        <div
+          className="embla__slide transition-transform duration-100"
+          key={i}
+          style={{
+            ...{
+              scale: `${Math.max(90, tweenValues[index] * 100)}%`,
+              opacity: tweenValues[index] ** 2,
+            },
+          }}
+        >
+          <UpcomingCardSkeleton />
+        </div>
+      ))}
+    </>
+  );
+};

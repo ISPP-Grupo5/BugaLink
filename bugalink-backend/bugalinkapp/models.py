@@ -158,6 +158,7 @@ class DriverRoutine(models.Model):
 class Ride(models.Model):
     driver_routine = models.ForeignKey(DriverRoutine, on_delete=models.CASCADE)
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
+    price = models.FloatField(null=False, blank=False, default=0.0)
     num_seats = models.IntegerField()  # Relacionarlo con default_num_seats
     status = models.CharField(max_length=256, choices=RideStatus.choices(), default=RideStatus.Pending_start)
     start_date = models.DateTimeField()
@@ -207,13 +208,19 @@ class DriverRating(models.Model):
         verbose_name = "Driver rating"
         verbose_name_plural = "Driver ratings"
     
-    def get_driver_rating(self, driver):
+    def get_driver_rating(driver):
         ratings = list(DriverRating.objects.all())
-        rating_sum = 0
-        for rating in ratings:
-            if driver.passenger.id == rating.individual_ride.ride.driver_routine.driver.passenger.id:
-                rating_sum += rating.rating
-        return rating_sum/len(ratings)
+        if ratings:
+            rating_sum = 0
+            for rating in ratings:
+                if driver.passenger.id == rating.individual_ride.ride.driver_routine.driver.passenger.id:
+                    rating_sum += rating.rating
+            if len(rating):
+                return rating_sum/len(ratings)
+            else:
+                return 0
+        else:
+            return 0
 
 class PassengerRating(models.Model):
     individual_ride = models.OneToOneField(IndividualRide, null=False, on_delete=models.CASCADE) # Validar que sólo se pueda hacer una vez por viaje

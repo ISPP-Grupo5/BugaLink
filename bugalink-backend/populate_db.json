@@ -282,6 +282,7 @@
       "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
       "end_date": "2023-03-03 9:00",
+      "price": 10.00,
       "start_location": [
         97.05,
         98.04

@@ -11,6 +11,7 @@ urlpatterns = [
     path('individualRides', views.IndividualRides.as_view()),
     path('rides', views.Rides.as_view()),
     path('users/passenger-routines', views.PassengerRoutineList.as_view()),
+    path('users/individualrides', views.UserIndividualRides.as_view()),
     path('users/driver-routines', views.DriverRoutineList.as_view()),
     path('users/passenger-routine', views.PassengerRoutine.as_view()),
     path('users/driver-routine', views.DriverRoutine.as_view()),

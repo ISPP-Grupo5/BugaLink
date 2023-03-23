@@ -82,7 +82,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'BugaLink.urls'
 
-CORS_ORIGIN_ALLOW_ALL = True
 
 TEMPLATES = [
     {

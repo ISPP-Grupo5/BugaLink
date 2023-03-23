@@ -35,6 +35,7 @@ export default function Home() {
             </Link>
           </form>
           <Link
+            data-cy="profile-link"
             className="aspect-square h-14"
             href={NEXT_ROUTES.PROFILE(USER_ID)}
           >

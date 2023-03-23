@@ -44,46 +44,26 @@
   "Passenger": [
     {
       "user_id": 1,
-      "city": "Utrera",
-      "province": "Sevilla",
-      "biography": "Soy un chico muy social que estudia Biología!",
-      "birth_date": "2022-12-31",
       "balance": 25.92,
       "verified": true
     },
     {
       "user_id": 2,
-      "city": "Jerez de la Frontera",
-      "province": "Cádiz",
-      "biography": "Me gustan las motos",
-      "birth_date": "2004-09-04",
       "balance": 12.50,
       "verified": true
     },
     {
       "user_id": 3,
-      "city": "Castilblanco de los Arroyos",
-      "province": "Sevilla",
-      "biography": "Me gustan las hamburguesas, la mecánica y los coches.",
-      "birth_date": "2020-01-01",
       "balance": 50.00,
       "verified": true
     },
     {
       "user_id": 4,
-      "city": "Sevilla",
-      "province": "Sevilla",
-      "biography": "Trabajo en la Cartuja.",
-      "birth_date": "2019-02-28",
       "balance": 5.12,
       "verified": false
     },
     {
       "user_id": 5,
-      "city": "Cantillana",
-      "province": "Sevilla",
-      "biography": "Tengo mucho estilo.",
-      "birth_date": "1999-01-31",
       "balance": 99999.99,
       "verified": false
     }
@@ -91,10 +71,6 @@
   "Driver": [
     {
       "passenger_id": 1,
-      "preferences": "No me gusta transportar animales en mi coche.",
-      "biography": "Llevo conduciendo desde los 14 años y no he tenido ningún accidente.",
-      "has_driver_license": true,
-      "has_sworn_declaration": true,
       "sworn_declaration": null,
       "driver_license": null,
       "dni_front": null,
@@ -103,10 +79,6 @@
     },
     {
       "passenger_id": 2,
-      "preferences": "Me gusta ir despacio pero con buena letra.",
-      "biography": "Conmigo no te aburres porque me gusta rajar mucho.",
-      "has_driver_license": true,
-      "has_sworn_declaration": true,
       "sworn_declaration": null,
       "driver_license": null,
       "dni_front": null,
@@ -115,10 +87,6 @@
     },
     {
       "passenger_id": 3,
-      "preferences": "Corro mucho con el coche asi que llego antes que los demás.",
-      "biography": "Soy silencioso, dame conversación o te aburrirás.",
-      "has_driver_license": true,
-      "has_sworn_declaration": true,
       "sworn_declaration": null,
       "driver_license": null,
       "dni_front": null,
@@ -127,10 +95,6 @@
     },
     {
       "passenger_id": 4,
-      "preferences": "Me gusta ir con la música a todo trapo. Tengo instalado un subwoofer de 15 pulgadas.",
-      "biography": "Me gusta mucho cantar.",
-      "has_driver_license": true,
-      "has_sworn_declaration": true,
       "sworn_declaration": null,
       "driver_license": null,
       "dni_front": null,
@@ -139,10 +103,6 @@
     },
     {
       "passenger_id": 5,
-      "preferences": "Me gusta salir quemando rueda aunque luego voy despacio. Lo siento.",
-      "biography": "Me incomoda la gente que no habla durante el viaje.",
-      "has_driver_license": true,
-      "has_sworn_declaration": true,
       "sworn_declaration": null,
       "driver_license": null,
       "dni_front": null,
@@ -155,35 +115,30 @@
       "driver_id": 1,
       "model": "Toyota Supra mk4",
       "plate": "1234 FTC",
-      "has_insurance": false,
       "insurance": null
     },
     {
       "driver_id": 2,
       "model": "Mazda Miata",
       "plate": "5678 BSB FTC",
-      "has_insurance": false,
       "insurance": null
     },
     {
       "driver_id": 3,
       "model": "Kawasaki Ninja",
       "plate": "3000 HPP",
-      "has_insurance": false,
       "insurance": null
     },
     {
       "driver_id": 4,
       "model": "Lamborghini Gallardo",
       "plate": "2345 AAA",
-      "has_insurance": false,
       "insurance": null
     },
     {
       "driver_id": 5,
       "model": "Nissan 350z",
       "plate": "5643 ACB",
-      "has_insurance": false,
       "insurance": null
     }
   ],
@@ -192,86 +147,66 @@
       "driver_id": 1,
       "default_vehicle_id": 1,
       "default_num_seats": 3,
-      "start_date": "8:00",
+      "start_date_0": "8:00",
+      "start_date_1": "8:15",
       "end_date": "9:00",
-      "start_location": [
-        97.05,
-        98.04
-      ],
-      "end_location": [
-        97.05,
-        98.04
-      ],
+      "start_location": "Calle Asunción",
+      "end_location": "Calle Sierpes",
       "day": "Mon",
-      "one_ride": false
+      "one_ride": false,
+      "price": 2.5
     },
     {
       "driver_id": 2,
       "default_vehicle_id": 2,
       "default_num_seats": 1,
-      "start_date": "8:00",
+      "start_date_0": "8:00",
+      "start_date_1": "8:15",
       "end_date": "9:00",
-      "start_location": [
-        0.20,
-        8.04
-      ],
-      "end_location": [
-        7.05,
-        12.04
-      ],
+      "start_location": "Calle Laraña",
+      "end_location": "Calle Betis",
       "day": "Tue",
-      "one_ride": false
+      "one_ride": false,
+      "price": 3
     },
     {
       "driver_id": 3,
       "default_vehicle_id": 2,
       "default_num_seats": 1,
-      "start_date": "8:00",
+      "start_date_0": "8:00",
+      "start_date_1": "8:15",
       "end_date": "9:00",
-      "start_location": [
-        10.20,
-        8.24
-      ],
-      "end_location": [
-        17.25,
-        1.04
-      ],
+      "start_location": "Calle de los besos",
+      "end_location": "Calle Abbades",
       "day": "Wed",
-      "one_ride": false
+      "one_ride": false,
+      "price": 5
     },
     {
       "driver_id": 4,
       "default_vehicle_id": 2,
       "default_num_seats": 1,
-      "start_date": "8:00",
+      "start_date_0": "8:00",
+      "start_date_1": "8:15",
       "end_date": "9:00",
-      "start_location": [
-        45.20,
-        27.24
-      ],
-      "end_location": [
-        41.25,
-        3.14
-      ],
+      "start_location": "Calle Resolana",
+      "end_location": "Calle San Fernando",
       "day": "Thu",
-      "one_ride": false
+      "one_ride": false,
+      "price": 1.8
     },
     {
       "driver_id": 5,
       "default_vehicle_id": 2,
       "default_num_seats": 1,
-      "start_date": "8:00",
+      "start_date_0": "8:00",
+      "start_date_1": "8:15",
       "end_date": "9:00",
-      "start_location": [
-        5.20,
-        7.24
-      ],
-      "end_location": [
-        1.25,
-        0.14
-      ],
+      "start_location": "Calle San Jacinto",
+      "end_location": "Calle San Luis",
       "day": "Fri",
-      "one_ride": false
+      "one_ride": false,
+      "price": 2.25
     }
   ],
   "Ride": [
@@ -282,14 +217,8 @@
       "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
       "end_date": "2023-03-03 9:00",
-      "start_location": [
-        97.05,
-        98.04
-      ],
-      "end_location": [
-        97.05,
-        98.04
-      ]
+      "start_location": "Calle Asunción",
+      "end_location": "Calle Sierpes"
     },
     {
       "driver_routine_id": 2,
@@ -298,14 +227,8 @@
       "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
       "end_date": "2023-03-03 9:00",
-      "start_location": [
-        9.05,
-        8.04
-      ],
-      "end_location": [
-        7.05,
-        9.04
-      ]
+      "start_location": "Calle Laraña",
+      "end_location": "Calle Betis"
     },
     {
       "driver_routine_id": 3,
@@ -314,14 +237,8 @@
       "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
       "end_date": "2023-03-03 9:00",
-      "start_location": [
-        9.5,
-        8.4
-      ],
-      "end_location": [
-        7.5,
-        9.4
-      ]
+      "start_location": "Calle de los besos",
+      "end_location": "Calle Abbades"
     },
     {
       "driver_routine_id": 4,
@@ -330,14 +247,8 @@
       "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
       "end_date": "2023-03-03 9:00",
-      "start_location": [
-        1.5,
-        5.4
-      ],
-      "end_location": [
-        1.5,
-        8.4
-      ]
+      "start_location": "Calle Resolana",
+      "end_location": "Calle San Fernando"
     },
     {
       "driver_routine_id": 5,
@@ -346,14 +257,8 @@
       "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
       "end_date": "2023-03-03 9:00",
-      "start_location": [
-        1.25,
-        15.4
-      ],
-      "end_location": [
-        31.5,
-        18.4
-      ]
+      "start_location": "Calle San Jacinto",
+      "end_location": "Calle San Luis"
     }
   ],
   "PassengerRoutine": [
@@ -362,14 +267,8 @@
       "start_time_initial": "8:00",
       "start_time_final": "8:30",
       "end_date": "9:00",
-      "start_location": [
-        97.05,
-        98.04
-      ],
-      "end_location": [
-        97.05,
-        98.04
-      ],
+      "start_location": "Calle Asunción",
+      "end_location": "Calle Sierpes",
       "day": "Mon"
     },
     {
@@ -377,14 +276,8 @@
       "start_time_initial": "8:00",
       "start_time_final": "8:30",
       "end_date": "9:00",
-      "start_location": [
-        97.5,
-        98.4
-      ],
-      "end_location": [
-        9.05,
-        9.04
-      ],
+      "start_location": "Calle Laraña",
+      "end_location": "Calle Betis",
       "day": "Tue"
     },
     {
@@ -392,14 +285,8 @@
       "start_time_initial": "8:00",
       "start_time_final": "8:30",
       "end_date": "9:00",
-      "start_location": [
-        7.5,
-        8.4
-      ],
-      "end_location": [
-        9.205,
-        9.204
-      ],
+      "start_location": "Calle de los besos",
+      "end_location": "Calle Abbades",
       "day": "Wed"
     },
     {
@@ -407,14 +294,8 @@
       "start_time_initial": "8:00",
       "start_time_final": "8:30",
       "end_date": "9:00",
-      "start_location": [
-        57.5,
-        28.4
-      ],
-      "end_location": [
-        19.205,
-        69.204
-      ],
+     "start_location": "Calle Resolana",
+      "end_location": "Calle San Fernando",
       "day": "Thu"
     },
     {
@@ -422,14 +303,8 @@
       "start_time_initial": "8:00",
       "start_time_final": "8:30",
       "end_date": "9:00",
-      "start_location": [
-        5.5,
-        2.4
-      ],
-      "end_location": [
-        1.205,
-        6.204
-      ],
+      "start_location": "Calle San Jacinto",
+      "end_location": "Calle San Luis",
       "day": "Fri"
     }
   ],
@@ -522,63 +397,6 @@
       "user_id": 5,
       "email": "prada@gmail.com",
       "password": "pr4d4"
-    }
-  ],
-  "FavDirection": [
-    {
-      "user_id": 1,
-      "name": "Casa",
-      "direction": "Calle Real 26",
-      "city": "Utrera",
-      "location": [
-        97.05,
-        98.04
-      ],
-      "cp": "41560"
-    },
-    {
-      "user_id": 2,
-      "name": "Casa",
-      "direction": "Calle Árbol 19",
-      "city": "Jerez de la Frontera",
-      "location": [
-        9.05,
-        8.04
-      ],
-      "cp": "41560"
-    },
-    {
-      "user_id": 3,
-      "name": "Casa",
-      "direction": "Calle Maceta 23",
-      "city": "Castilblanco de los Arroyos",
-      "location": [
-        19.05,
-        28.04
-      ],
-      "cp": "41560"
-    },
-    {
-      "user_id": 4,
-      "name": "Casa",
-      "direction": "Calle Móstoles 8",
-      "city": "Sevilla",
-      "location": [
-        39.05,
-        85.04
-      ],
-      "cp": "41560"
-    },
-    {
-      "user_id": 5,
-      "name": "Casa",
-      "direction": "Calle Árbol 96",
-      "city": "Cantillana",
-      "location": [
-        0.05,
-        84.04
-      ],
-      "cp": "41560"
     }
   ],
   "DiscountCode": [

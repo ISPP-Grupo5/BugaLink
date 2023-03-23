@@ -1,16 +1,16 @@
 import AnimatedLayout from '@/components/layouts/animated';
 import { BackButtonText } from '@/components/buttons/Back';
-import Transparent from '@/components/buttons/Transparent';
-import Recargar from '../../../../public/assets/recargar.svg';
-import Retirar from '../../../../public/assets/retirar.svg';
+import TransparentButton from '@/components/buttons/Transparent';
+import Recargar from '/public/assets/recargar.svg';
+import Retirar from '/public/assets/retirar.svg';
 import Transaction from '@/components/cards/transactions';
 
 export default function Wallet() {
   return (
     <AnimatedLayout className="flex flex-col overflow-y-scroll">
       <BackButtonText text="Mi cartera" className="bg-base-origin" />
-      <div className="ml-4 mr-4 py-4 flex flex-col place-content-center space-y-3 rounded-2xl border-2 border-dashed border-light-gray bg-white">
-        <div className="text-center mt-2">
+      <div className="ml-4 mr-4 flex flex-col place-content-center space-y-3 rounded-2xl border-2 border-dashed border-light-gray bg-white py-4">
+        <div className="mt-2 text-center">
           <p className="text-xs text-gray">Saldo disponible</p>
           <p className="text-3xl font-bold text-black">13,30€</p>
         </div>
@@ -20,15 +20,9 @@ export default function Wallet() {
           <p className="text-xl font-bold text-black">3,75€</p>
         </div>
       </div>
-      <div className="ml-4 mr-4 flex flex-row place-content-center space-x-14 py-5">
-        <Transparent
-          text="Recargar cuenta"
-          Icon={<Recargar className="absolute left-2 top-2 scale-90" />}
-        />
-        <Transparent
-          text="Retirar saldo"
-          Icon={<Retirar className="absolute left-2 top-2 scale-90" />}
-        />
+      <div className="my-5 flex justify-between space-x-2 px-4">
+        <TransparentButton text="Recargar cuenta" Icon={<Recargar />} />
+        <TransparentButton text="Retirar saldo" Icon={<Retirar />} />
       </div>
 
       <div className="flex flex-col overflow-y-scroll rounded-t-3xl bg-white">

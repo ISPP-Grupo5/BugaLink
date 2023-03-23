@@ -1,17 +1,15 @@
 type Params = {
-    text: string;
-    Icon: any;
-  };
+  text: string;
+  Icon: any;
+};
 
-
-export default function Transparent({text, Icon}: Params){
-    return (
-        <button
-          className={`relative rounded-2xl bg-transparent py-3 px-12 text-turquoise border-2 border-turquoise `}
-
-        >
-          {Icon}  
-          <p className="text-right text-xs font-bold  translate-x-4">{text}</p>
-        </button>
-      );
+export default function TransparentButton({ text, Icon }: Params) {
+  return (
+    <button className="flex grow rounded-2xl border-2 border-turquoise bg-transparent py-3 px-2 text-turquoise">
+      <div className="flex w-full items-center justify-evenly">
+        {Icon}
+        <p className="text-md mx-auto font-bold">{text}</p>
+      </div>
+    </button>
+  );
 }

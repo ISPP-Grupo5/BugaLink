@@ -41,16 +41,14 @@ export default function Transaction({
 
       <div className="w-2/4 text-ellipsis py-4">
         <p className=" text-base text-black">{people}</p>
-        <p className="text-base text-light-gray">
+        <p className="text-base text-gray">
           {travelType} - {date}
         </p>
       </div>
 
-      <div className="py-4 -translate-x-4">
+      <div className="-translate-x-4 py-4">
         <p className={'text-right text-base font-bold ' + className}>{money}</p>
-        {isPending == true && (
-          <p className="text-base text-yellow">Pendiente</p>
-        )}
+        {isPending && <p className="text-base text-yellow">Pendiente</p>}
       </div>
     </div>
   );

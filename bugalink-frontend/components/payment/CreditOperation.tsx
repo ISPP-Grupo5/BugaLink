@@ -2,7 +2,6 @@ import { BackButtonText } from '../buttons/Back';
 import AnimatedLayout from '../layouts/animated';
 import AddMethod from './AddMethod';
 import PayMethod from './PayMethod';
-import BugalinkLogo from '/public/icons/Bugalink.svg';
 import VisaMastercard from '/public/assets/visa_mastercard 1.svg';
 import Paypal from '/public/assets/paypal.svg';
 

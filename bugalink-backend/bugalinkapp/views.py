@@ -632,6 +632,9 @@ class DriverRoutine(APIView):
         return JsonResponse({'message': 'Success'})
 
     def put(self, request, format=None):
+
+        print(request.data['driverRoutineId'])
+        print(request)
         try:
             routine = m.DriverRoutine.objects.get(pk=request.data['driverRoutineId'])
             request.data['default_vehicle_id'] = request.data['defaultVehicleId']

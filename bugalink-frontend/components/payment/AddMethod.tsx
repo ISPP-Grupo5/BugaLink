@@ -2,7 +2,7 @@ type AddMethodProps = {
   text: string;
 };
 
-export default function AddMethod({text}) {
+export default function AddMethod({ text }) {
   return (
     <div className="my-2 flex w-full flex-col items-center justify-center rounded-xl border border-turquoise p-4">
       <p className="font-bold text-turquoise">
@@ -14,4 +14,4 @@ export default function AddMethod({text}) {
       </p>
     </div>
   );
-};
+}

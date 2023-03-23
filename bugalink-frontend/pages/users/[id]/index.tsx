@@ -3,8 +3,11 @@ import { BackButtonText } from '../../../components/buttons/Back';
 import Avatar from 'public/assets/avatar.svg';
 import ProfileItems from '@/components/cards/profile';
 import Check from 'public/assets/check.svg';
+import NEXT_ROUTES from '@/constants/nextRoutes';
+import Link from 'next/link';
 
 export default function Profile() {
+  const USER_ID = 1; // TODO: remove this hardcoded value
   return (
     <AnimatedLayout className="flex h-full flex-col overflow-y-scroll">
       <BackButtonText text="Mi perfil" className="bg-base-origin" />
@@ -19,7 +22,9 @@ export default function Profile() {
             </div>
           </div>
           <p className="pt-2 text-3xl ">Pedro Pérez</p>
-          <p className="text-md text-gray ">Editar perfil</p>
+          <Link href={NEXT_ROUTES.EDIT_PROFILE(USER_ID)}>
+            <p className="text-md text-gray ">Editar perfil</p>
+          </Link>
           <div className="py-4 text-light-gray">
             <hr></hr>
           </div>

@@ -604,16 +604,14 @@ class PassengerRoutine(APIView):
 
     def put(self, request, format=None):
         try:
-            routine = m.PassengerRoutine.objects.get(pk=request.data['driverRoutineId'])
-            request.data['default_vehicle_id'] = request.data['defaultVehicleId']
-            del request.data['driverRoutineId']
+            routine = m.PassengerRoutine.objects.get(pk=request.data['passenger_routine_id'])
             for key, value in request.data.items():
                 setattr(routine, key, value)
             routine.save()
             return JsonResponse({'message': 'Success'})
         except ObjectDoesNotExist:
             return JsonResponse(
-                {'error': 'DriverRoutine does not exist with id {}'.format(request.data['driverRoutineId'])},
+                {'error': 'PassengerRoutine does not exist with id {}'.format(request.data['passenger_routine_id'])},
                 status=status.HTTP_400_BAD_REQUEST)
         except Exception:
             return JsonResponse({'error': 'Invalid arguments'}, status=status.HTTP_400_BAD_REQUEST)
@@ -633,16 +631,14 @@ class DriverRoutine(APIView):
 
     def put(self, request, format=None):
         try:
-            routine = m.DriverRoutine.objects.get(pk=request.data['driverRoutineId'])
-            request.data['default_vehicle_id'] = request.data['defaultVehicleId']
-            del request.data['driverRoutineId']
+            routine = m.DriverRoutine.objects.get(pk=request.data['driver_routine_id'])
             for key, value in request.data.items():
                 setattr(routine, key, value)
             routine.save()
             return JsonResponse({'message': 'Success'})
         except ObjectDoesNotExist:
             return JsonResponse(
-                {'error': 'DriverRoutine does not exist with id {}'.format(request.data['driverRoutineId'])},
+                {'error': 'DriverRoutine does not exist with id {}'.format(request.data['driver_routine_id'])},
                 status=status.HTTP_400_BAD_REQUEST)
         except Exception:
             return JsonResponse({'error': 'Invalid arguments'}, status=status.HTTP_400_BAD_REQUEST)

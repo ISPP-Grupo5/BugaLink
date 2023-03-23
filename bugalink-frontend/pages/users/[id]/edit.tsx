@@ -4,7 +4,7 @@ import TextField from '@/components/forms/TextField';
 import AnimatedLayout from '@/components/layouts/animated';
 import Avatar from 'public/assets/avatar.svg';
 import Pencil from 'public/assets/edit.svg';
-import { MouseEventHandler, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 interface FormErrors {
   name?: string;
@@ -24,7 +24,7 @@ export default function EditProfile() {
   const [name, setName] = useState<string>('Pedro');
   const [surname, setSurname] = useState<string>('Pérez');
   const [email, setEmail] = useState<string>('pedroperez@mail.com');
-  const [password, setPassword] = useState<string>('contraseña');
+  const [password, setPassword] = useState<string>('password1D3!');
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -32,41 +32,36 @@ export default function EditProfile() {
   const formRef = useRef<HTMLFormElement>(null);
 
   const validateForm = (values: FormValues) => {
-    let errors: FormErrors = {};
-    let isValid = true;
+    const errors: FormErrors = {};
 
     if (!values.name) {
       errors.name = 'Por favor, ingrese su nombre';
-      isValid = false;
     }
 
     if (!values.surname) {
       errors.surname = 'Por favor, ingrese sus apellidos';
-      isValid = false;
     }
 
     if (!values.email) {
       errors.email = 'Por favor, ingrese su correo electrónico';
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(values.email)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
       errors.email = 'Por favor, ingrese un correo electrónico válido';
-      isValid = false;
     }
 
+    const regexPassword =
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
     if (!values.password) {
       errors.password = 'La contraseña es obligatoria';
-      isValid = false;
     } else if (values.password.length < 8) {
       errors.password = 'La contraseña debe tener al menos 8 caracteres';
-      isValid = false;
-    } else if (
-      !/(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+/.test(
-        values.password
-      )
-    ) {
+    } else if (values.password.length > 20) {
+      errors.password = 'La contraseña debe tener menos de 20 caracteres';
+    } else if (values.password.includes('contraseña')) {
       errors.password =
-        'La contraseña debe tener al menos una mayúscula, un número y un símbolo';
-      isValid = false;
+        'La contraseña no puede contener la palabra "contraseña"';
+    } else if (!regexPassword.test(values.password)) {
+      errors.password =
+        'La contraseña debe tener al menos una mayúscula, una minúscula, un número y un símbolo.';
     }
 
     setErrors(errors);

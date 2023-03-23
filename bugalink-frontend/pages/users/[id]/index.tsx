@@ -7,7 +7,7 @@ import NEXT_ROUTES from '@/constants/nextRoutes';
 import Link from 'next/link';
 
 export default function Profile() {
-  const USER_ID = 1; // TODO: remove this hardcoded value
+  const USER_ID = 1; // remove this hardcoded value
   return (
     <AnimatedLayout className="flex h-full flex-col overflow-y-scroll">
       <BackButtonText text="Mi perfil" className="bg-base-origin" />

@@ -35,22 +35,27 @@ export default function MyRoutines({ data }) {
     'Sábado',
     'Domingo',
   ];
+  
+  const daysComparator = [
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
+    'Sun',
+  ];
 
   const userId = data.id;
   
   const{ routines: passengerRoutines = [], isLoading: isLoadingPassenger, isError: isErrorPassenger } = usePassengerRoutines(userId);
   const { routines: driverRoutines = [], isLoading: isLoadingDriver, isError: isErrorDriver } = useDriverRoutines(userId);
   
-  
-  // const [isLoading, setIsLoading] = useState(true);
-
   const routines = [];
+  
   if(!isLoadingDriver&&!isLoadingPassenger){
-    console.log(passengerRoutines);
-    console.log(driverRoutines);
+    debugger
     routines.push(...passengerRoutines['passenger_routines'], ...driverRoutines['driver_routines']);
-    console.log(routines);
-    // setIsLoading(false);
   }
 
   if (isLoadingPassenger && isLoadingDriver) return <div>Loading...</div>;
@@ -59,19 +64,19 @@ export default function MyRoutines({ data }) {
     <AnimatedLayout className="flex flex-col bg-white">
       <BackButtonText text={'Mi horario'} />
       <div className="flex flex-col overflow-y-scroll px-6">
-        {days.map((day) => (
+        {daysComparator.map((day) => (
           <div key={day} className="mb-4 space-y-2">
             <h1 className="text-2xl">{day}</h1>
             {routines
               .filter((routine) => routine.day === day)
-              .map((routine) => (
+              .map((rou) => (
                 <RoutineCard
-                  key={routine.id}
-                  departureHourStart={routine.departureHourStart}
-                  departureHourEnd={routine.departureHourEnd}
-                  type={routine.type}
-                  origin={routine.origin}
-                  destination={routine.destination}
+                  key={rou.id}
+                  departureHourStart={rou.start_time_initial}
+                  departureHourEnd={rou.start_time_final}
+                  type={rou.passenger? 1:2}
+                  origin={rou.start_location}
+                  destination={rou.end_location}
                 />
               ))}
             {routines.filter((routine) => routine.day === day).length === 0 && (
@@ -93,9 +98,10 @@ const RoutineCard = ({
   type,
   origin,
   destination,
+  
 }) => {
   const isDriver = type === 'driver';
-
+  debugger;
   return (
     <span className="flex w-full rounded-lg border border-border-color">
       <div

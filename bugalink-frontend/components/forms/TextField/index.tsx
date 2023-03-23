@@ -27,7 +27,7 @@ export default function TextField({
   parentClassName,
   inputClassName,
   disabled,
-  onClick
+  onClick,
 }: props) {
   return (
     <div

@@ -77,7 +77,7 @@ export default function DetailsTwo() {
           name="Jesús Marchena"
           rating="4.8"
           numberOfRatings="14"
-          photo='/assets/avatar.png'
+          photo="/assets/avatar.png"
         />
         <div className="flex flex-row">
           <p className="font-normal text-dark-turquoise">
@@ -92,12 +92,9 @@ export default function DetailsTwo() {
           <p className="text-md font-normal">Precio total</p>
           <p className="text-3xl font-bold">4,00€</p>
         </div>
-        <Link
-                href="/ride/V1StGXR8_Z5jdHi6B-myT/pay"
-                className=""
-              >
-        <CTAButton className="w-full" text={'SOLICITAR'} />
-              </Link>
+        <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/pay" className="">
+          <CTAButton className="w-full" text={'SOLICITAR'} />
+        </Link>
       </div>
     </AnimatedLayout>
   );

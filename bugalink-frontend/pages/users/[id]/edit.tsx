@@ -42,12 +42,14 @@ export default function EditProfile() {
       errors.surname = 'Por favor, ingrese sus apellidos';
     }
 
+    const emailRegex = /^\S+@\S+$/i;
     if (!values.email) {
       errors.email = 'Por favor, ingrese su correo electrónico';
-    } else if (!/^(?>[^\s@]{1,64})(?>@[^\s@]{1,255})(?>\.[^\s@]{1,63})$/.test(values.email)) {
+    } else if (!emailRegex.test(values.email)) {
       errors.email = 'Por favor, ingrese un correo electrónico válido';
     }
 
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
     if (!values.password) {
       errors.password = 'La contraseña es obligatoria';
     } else if (values.password.length < 8) {
@@ -57,7 +59,7 @@ export default function EditProfile() {
     } else if (values.password.includes('contraseña')) {
       errors.password =
         'La contraseña no puede contener la palabra "contraseña"';
-    } else if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/.test(values.password)) {
+    } else if (!passwordRegex.test(values.password)) {
       errors.password =
         'La contraseña debe tener al menos una mayúscula, una minúscula, un número y un símbolo.';
     }

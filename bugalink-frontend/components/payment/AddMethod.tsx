@@ -1,4 +1,8 @@
-export const AddMethod = () => {
+type AddMethodProps = {
+  text: string;
+};
+
+export default function AddMethod({text}) {
   return (
     <div className="my-2 flex w-full flex-col items-center justify-center rounded-xl border border-turquoise p-4">
       <p className="font-bold text-turquoise">
@@ -6,7 +10,7 @@ export const AddMethod = () => {
         <span className="rounded-xl border border-turquoise px-2 py-1">
           +
         </span>{' '}
-        Añadir método de pago
+        {text}
       </p>
     </div>
   );

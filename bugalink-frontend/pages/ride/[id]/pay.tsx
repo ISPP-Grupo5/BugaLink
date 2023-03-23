@@ -3,8 +3,8 @@ import AnimatedLayout from '@/components/layouts/animated';
 import BugalinkLogo from '/public/icons/Bugalink.svg';
 import VisaMastercard from '/public/assets/visa_mastercard 1.svg';
 import Paypal from '/public/assets/paypal.svg';
-import { PayMethod } from '@/components/payment/PayMethod';
-import { AddMethod } from '@/components/payment/AddMethod';
+import PayMethod from '@/components/payment/PayMethod';
+import AddMethod from '@/components/payment/AddMethod';
 
 export default function Pay() {
   return (
@@ -18,7 +18,7 @@ export default function Pay() {
               <p className="text-lg">Saldo disponible</p>
               <p className="text-5xl font-bold">13,30€</p>
             </div>
-            <AddMethod />
+            <AddMethod text="Añadir método de pago" />
           </div>
         </div>
         <br />

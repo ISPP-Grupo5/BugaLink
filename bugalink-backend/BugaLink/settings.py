@@ -31,6 +31,11 @@ SECRET_KEY = 'django-insecure-br8yvhx^^w#x0e3i03qy($-^q49(xk-9uhf^=vj8igoa-8g#75
 
 DEBUG = env['DEBUG']
 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000/',
+    'http://127.0.0.1:3000/',
+]
+
 if os.environ.get("IS_APP_ENGINE"):
     print("The app is being run in App Engine")
     #####
@@ -73,6 +78,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',

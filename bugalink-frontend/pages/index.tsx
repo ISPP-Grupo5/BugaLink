@@ -12,11 +12,11 @@ import { useState } from 'react';
 import Glass from '/public/icons/Vista-Principal/glass.svg';
 
 export default function Home() {
+  console.log(process.env.NODE_ENV);
   const [drawerOpen, setDrawerOpen] = useState(false);
   // userId has to be hardcoded until we have sessions in the app. This info would be stored in the user's browser
   const USER_ID = 1;
   const { user } = useUser(USER_ID);
-
   return (
     <AnimatedLayout className="max-h-full overflow-y-scroll">
       <div className="flex flex-col pb-24">
@@ -43,7 +43,7 @@ export default function Home() {
         </span>
 
         <span className="flex w-full justify-between space-x-5 px-4 md:px-5">
-          <SquareRoutinesButton />
+          <SquareRoutinesButton userId={USER_ID}/>
           <SquareChatsButton />
           <SquareRequestsButton />
         </span>

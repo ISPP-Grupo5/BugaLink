@@ -1,10 +1,9 @@
 import fetcher from '@/utils/fetcher';
 import useSWR from 'swr';
 
-export default function useRoutine() {
-  const USER_ID = 1;
+export default function usePassengerRoutines(id) {
   const { data, error, isLoading } = useSWR(
-    `/users/${USER_ID}/routines`,
+    `/users/${id}/passenger-routines`,
     fetcher
   );
 

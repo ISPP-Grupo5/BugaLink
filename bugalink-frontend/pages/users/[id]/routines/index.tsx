@@ -9,9 +9,23 @@ import OrigenPin from '/public/assets/origen-pin.svg';
 import ThreeDots from '/public/assets/three-dots.svg';
 import SteeringWheel from '/public/assets/steering-wheel.svg';
 import Link from 'next/link';
-import useRoutines from '@/hooks/useRoutines';
+import useDriverRoutines from '@/hooks/useDriverRoutines';
+import { GetServerSideProps } from 'next';
+import usePassengerRoutines from '@/hooks/usePassengerRoutines';
 
-export default function MyRoutines() {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { id } = context.query;
+
+  const data = {
+    id: id,
+  }
+
+  return {
+    props: { data },
+  };
+};
+
+export default function MyRoutines({ data }) {
   const days = [
     'Lunes',
     'Martes',
@@ -21,9 +35,26 @@ export default function MyRoutines() {
     'Sábado',
     'Domingo',
   ];
-  const { routines, isLoading, isError } = useRoutines();
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error</div>;
+
+  const userId = data.id;
+  
+  const{ routines: passengerRoutines = [], isLoading: isLoadingPassenger, isError: isErrorPassenger } = usePassengerRoutines(userId);
+  const { routines: driverRoutines = [], isLoading: isLoadingDriver, isError: isErrorDriver } = useDriverRoutines(userId);
+  
+  
+  // const [isLoading, setIsLoading] = useState(true);
+
+  const routines = [];
+  if(!isLoadingDriver&&!isLoadingPassenger){
+    console.log(passengerRoutines);
+    console.log(driverRoutines);
+    routines.push(...passengerRoutines['passenger_routines'], ...driverRoutines['driver_routines']);
+    console.log(routines);
+    // setIsLoading(false);
+  }
+
+  if (isLoadingPassenger && isLoadingDriver) return <div>Loading...</div>;
+  if (isErrorPassenger && isErrorDriver) return <div>Error</div>;
   return (
     <AnimatedLayout className="flex flex-col bg-white">
       <BackButtonText text={'Mi horario'} />

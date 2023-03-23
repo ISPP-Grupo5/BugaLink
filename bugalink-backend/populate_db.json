@@ -194,14 +194,8 @@
       "default_num_seats": 3,
       "start_date": "8:00",
       "end_date": "9:00",
-      "start_location": [
-        97.05,
-        98.04
-      ],
-      "end_location": [
-        97.05,
-        98.04
-      ],
+      "start_location": "Escuela Politécnica Superior, Escuela Politécnica Superior de la Universidad de Sevilla, Calle Virgen de África, Sevilla",
+      "end_location": "C. Austria, 6, 41012 Sevilla",
       "day": "Mon",
       "one_ride": false
     },
@@ -211,14 +205,8 @@
       "default_num_seats": 1,
       "start_date": "8:00",
       "end_date": "9:00",
-      "start_location": [
-        0.20,
-        8.04
-      ],
-      "end_location": [
-        7.05,
-        12.04
-      ],
+      "start_location": "C. Austria, 6, 41012 Sevilla",
+      "end_location": "Escuela Politécnica Superior, Escuela Politécnica Superior de la Universidad de Sevilla, Calle Virgen de África, Sevilla",
       "day": "Tue",
       "one_ride": false
     },
@@ -228,14 +216,8 @@
       "default_num_seats": 1,
       "start_date": "8:00",
       "end_date": "9:00",
-      "start_location": [
-        10.20,
-        8.24
-      ],
-      "end_location": [
-        17.25,
-        1.04
-      ],
+      "start_location": "C. Austria, 6, 41012 Sevilla",
+      "end_location": "Escuela Politécnica Superior, Escuela Politécnica Superior de la Universidad de Sevilla, Calle Virgen de África, Sevilla",
       "day": "Wed",
       "one_ride": false
     },
@@ -245,14 +227,8 @@
       "default_num_seats": 1,
       "start_date": "8:00",
       "end_date": "9:00",
-      "start_location": [
-        45.20,
-        27.24
-      ],
-      "end_location": [
-        41.25,
-        3.14
-      ],
+      "start_location": "C. Berlín, 41012 Sevilla",
+      "end_location": "Escuela Politécnica Superior, Escuela Politécnica Superior de la Universidad de Sevilla, Calle Virgen de África, Sevilla",
       "day": "Thu",
       "one_ride": false
     },
@@ -262,14 +238,8 @@
       "default_num_seats": 1,
       "start_date": "8:00",
       "end_date": "9:00",
-      "start_location": [
-        5.20,
-        7.24
-      ],
-      "end_location": [
-        1.25,
-        0.14
-      ],
+      "start_location": "Escuela Politécnica Superior, Escuela Politécnica Superior de la Universidad de Sevilla, Calle Virgen de África, Sevilla",
+      "end_location": "C. Berlín, 41012 Sevilla",
       "day": "Fri",
       "one_ride": false
     }
@@ -282,14 +252,8 @@
       "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
       "end_date": "2023-03-03 9:00",
-      "start_location": [
-        97.05,
-        98.04
-      ],
-      "end_location": [
-        97.05,
-        98.04
-      ]
+      "start_location": "Escuela Técnica Superior de Arquitectura",
+      "end_location": "Av. de Francia, 25D, 41012 Sevilla"
     },
     {
       "driver_routine_id": 2,
@@ -298,14 +262,8 @@
       "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
       "end_date": "2023-03-03 9:00",
-      "start_location": [
-        9.05,
-        8.04
-      ],
-      "end_location": [
-        7.05,
-        9.04
-      ]
+      "start_location": "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla",
+      "end_location": "Av. de Francia, 25D, 41012 Sevilla"
     },
     {
       "driver_routine_id": 3,
@@ -314,14 +272,8 @@
       "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
       "end_date": "2023-03-03 9:00",
-      "start_location": [
-        9.5,
-        8.4
-      ],
-      "end_location": [
-        7.5,
-        9.4
-      ]
+      "start_location": "Av. de Francia, 25D, 41012 Sevilla",
+      "end_location": "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla"
     },
     {
       "driver_routine_id": 4,
@@ -330,14 +282,8 @@
       "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
       "end_date": "2023-03-03 9:00",
-      "start_location": [
-        1.5,
-        5.4
-      ],
-      "end_location": [
-        1.5,
-        8.4
-      ]
+      "start_location": "Av. de Francia, 25D, 41012 Sevilla",
+      "end_location": "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla"
     },
     {
       "driver_routine_id": 5,
@@ -346,14 +292,8 @@
       "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
       "end_date": "2023-03-03 9:00",
-      "start_location": [
-        1.25,
-        15.4
-      ],
-      "end_location": [
-        31.5,
-        18.4
-      ]
+      "start_location": "Av. de Francia, 25D, 41012 Sevilla",
+      "end_location": "Escuela Técnica Superior de Arquitectura"
     }
   ],
   "PassengerRoutine": [
@@ -362,14 +302,8 @@
       "start_time_initial": "8:00",
       "start_time_final": "8:30",
       "end_date": "9:00",
-      "start_location": [
-        97.05,
-        98.04
-      ],
-      "end_location": [
-        97.05,
-        98.04
-      ],
+      "start_location": "C. Berlín, 41012 Sevilla",
+      "end_location": "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla",
       "day": "Mon"
     },
     {
@@ -377,14 +311,8 @@
       "start_time_initial": "8:00",
       "start_time_final": "8:30",
       "end_date": "9:00",
-      "start_location": [
-        97.5,
-        98.4
-      ],
-      "end_location": [
-        9.05,
-        9.04
-      ],
+      "start_location": "Av. de Italia, 41012 Sevilla",
+      "end_location": "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla",
       "day": "Tue"
     },
     {
@@ -392,14 +320,8 @@
       "start_time_initial": "8:00",
       "start_time_final": "8:30",
       "end_date": "9:00",
-      "start_location": [
-        7.5,
-        8.4
-      ],
-      "end_location": [
-        9.205,
-        9.204
-      ],
+      "start_location": "Av. de Italia, 41012 Sevilla",
+      "end_location": "C. Berlín, 41012 Sevilla",
       "day": "Wed"
     },
     {
@@ -407,14 +329,8 @@
       "start_time_initial": "8:00",
       "start_time_final": "8:30",
       "end_date": "9:00",
-      "start_location": [
-        57.5,
-        28.4
-      ],
-      "end_location": [
-        19.205,
-        69.204
-      ],
+      "start_location": "Av. de Italia, 41012 Sevilla",
+      "end_location": "C. Berlín, 41012 Sevilla",
       "day": "Thu"
     },
     {
@@ -422,14 +338,8 @@
       "start_time_initial": "8:00",
       "start_time_final": "8:30",
       "end_date": "9:00",
-      "start_location": [
-        5.5,
-        2.4
-      ],
-      "end_location": [
-        1.205,
-        6.204
-      ],
+      "start_location": "C. Berlín, 41012 Sevilla",
+      "end_location": "Av. de Italia, 41012 Sevilla",
       "day": "Fri"
     }
   ],

@@ -164,8 +164,8 @@ class DriverRoutine(models.Model):
     default_num_seats = models.IntegerField(validators=[MinValueValidator(1)])
     start_date = models.TimeField()
     end_date = models.TimeField()
-    start_location = Coord(null=False)
-    end_location = Coord(null=False)
+    start_location = models.CharField(max_length=256)
+    end_location = models.CharField(max_length=256)
     day = models.CharField(max_length=6, choices=Days.choices(), default=Days.Mon)
     one_ride = models.BooleanField(default=False)
 
@@ -184,8 +184,8 @@ class Ride(models.Model):
     status = models.CharField(max_length=256, choices=RideStatus.choices(), default=RideStatus.Pending_start)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    start_location = Coord(null=False)
-    end_location = Coord(null=False)
+    start_location = models.CharField(max_length=256)
+    end_location = models.CharField(max_length=256)
 
     def __str__(self):
         return "Ride " + str(self.pk) + ": driverRoutine=" + str(self.driver_routine.pk) + DATE_STR + str(
@@ -198,8 +198,8 @@ class Ride(models.Model):
 
 class PassengerRoutine(models.Model):
     passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
-    start_location = Coord(null=False)
-    end_location = Coord(null=False)
+    start_location = models.CharField(max_length=256)
+    end_location = models.CharField(max_length=256)
     day = models.CharField(max_length=6, choices=Days.choices(), default=Days.Mon)
     end_date = models.TimeField()
     start_time_initial = models.TimeField()

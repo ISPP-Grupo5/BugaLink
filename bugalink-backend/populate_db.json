@@ -150,8 +150,8 @@
       "start_date_0": "8:00",
       "start_date_1": "8:15",
       "end_date": "9:00",
-      "start_location": "Calle Asunción",
-      "end_location": "Calle Sierpes",
+      "start_location": "Escuela Politécnica Superior, Escuela Politécnica Superior de la Universidad de Sevilla, Calle Virgen de África, Sevilla",
+      "end_location": "C. Austria, 6, 41012 Sevilla",
       "day": "Mon",
       "one_ride": false,
       "price": 2.5
@@ -163,8 +163,8 @@
       "start_date_0": "8:00",
       "start_date_1": "8:15",
       "end_date": "9:00",
-      "start_location": "Calle Laraña",
-      "end_location": "Calle Betis",
+      "start_location": "C. Austria, 6, 41012 Sevilla",
+      "end_location": "Escuela Politécnica Superior, Escuela Politécnica Superior de la Universidad de Sevilla, Calle Virgen de África, Sevilla",
       "day": "Tue",
       "one_ride": false,
       "price": 3
@@ -176,8 +176,8 @@
       "start_date_0": "8:00",
       "start_date_1": "8:15",
       "end_date": "9:00",
-      "start_location": "Calle de los besos",
-      "end_location": "Calle Abbades",
+      "start_location": "C. Austria, 6, 41012 Sevilla",
+      "end_location": "Escuela Politécnica Superior, Escuela Politécnica Superior de la Universidad de Sevilla, Calle Virgen de África, Sevilla",
       "day": "Wed",
       "one_ride": false,
       "price": 5
@@ -189,8 +189,8 @@
       "start_date_0": "8:00",
       "start_date_1": "8:15",
       "end_date": "9:00",
-      "start_location": "Calle Resolana",
-      "end_location": "Calle San Fernando",
+      "start_location": "C. Berlín, 41012 Sevilla",
+      "end_location": "Escuela Politécnica Superior, Escuela Politécnica Superior de la Universidad de Sevilla, Calle Virgen de África, Sevilla",
       "day": "Thu",
       "one_ride": false,
       "price": 1.8
@@ -202,8 +202,8 @@
       "start_date_0": "8:00",
       "start_date_1": "8:15",
       "end_date": "9:00",
-      "start_location": "Calle San Jacinto",
-      "end_location": "Calle San Luis",
+      "start_location": "Escuela Politécnica Superior, Escuela Politécnica Superior de la Universidad de Sevilla, Calle Virgen de África, Sevilla",
+      "end_location": "C. Berlín, 41012 Sevilla",
       "day": "Fri",
       "one_ride": false,
       "price": 2.25
@@ -217,8 +217,8 @@
       "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
       "end_date": "2023-03-03 9:00",
-      "start_location": "Calle Asunción",
-      "end_location": "Calle Sierpes"
+      "start_location": "Escuela Técnica Superior de Arquitectura",
+      "end_location": "Av. de Francia, 25D, 41012 Sevilla"
     },
     {
       "driver_routine_id": 2,
@@ -227,8 +227,8 @@
       "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
       "end_date": "2023-03-03 9:00",
-      "start_location": "Calle Laraña",
-      "end_location": "Calle Betis"
+      "start_location": "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla",
+      "end_location": "Av. de Francia, 25D, 41012 Sevilla"
     },
     {
       "driver_routine_id": 3,
@@ -237,8 +237,8 @@
       "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
       "end_date": "2023-03-03 9:00",
-      "start_location": "Calle de los besos",
-      "end_location": "Calle Abbades"
+      "start_location": "Av. de Francia, 25D, 41012 Sevilla",
+      "end_location": "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla"
     },
     {
       "driver_routine_id": 4,
@@ -247,8 +247,8 @@
       "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
       "end_date": "2023-03-03 9:00",
-      "start_location": "Calle Resolana",
-      "end_location": "Calle San Fernando"
+      "start_location": "Av. de Francia, 25D, 41012 Sevilla",
+      "end_location": "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla"
     },
     {
       "driver_routine_id": 5,
@@ -257,8 +257,8 @@
       "status": "Pending_start",
       "start_date": "2023-03-09 8:00",
       "end_date": "2023-03-03 9:00",
-      "start_location": "Calle San Jacinto",
-      "end_location": "Calle San Luis"
+      "start_location": "Av. de Francia, 25D, 41012 Sevilla",
+      "end_location": "Escuela Técnica Superior de Arquitectura"
     }
   ],
   "PassengerRoutine": [
@@ -267,8 +267,8 @@
       "start_time_initial": "8:00",
       "start_time_final": "8:30",
       "end_date": "9:00",
-      "start_location": "Calle Asunción",
-      "end_location": "Calle Sierpes",
+      "start_location": "C. Berlín, 41012 Sevilla",
+      "end_location": "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla",
       "day": "Mon"
     },
     {
@@ -276,8 +276,8 @@
       "start_time_initial": "8:00",
       "start_time_final": "8:30",
       "end_date": "9:00",
-      "start_location": "Calle Laraña",
-      "end_location": "Calle Betis",
+      "start_location": "Av. de Italia, 41012 Sevilla",
+      "end_location": "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla",
       "day": "Tue"
     },
     {
@@ -285,8 +285,8 @@
       "start_time_initial": "8:00",
       "start_time_final": "8:30",
       "end_date": "9:00",
-      "start_location": "Calle de los besos",
-      "end_location": "Calle Abbades",
+      "start_location": "Av. de Italia, 41012 Sevilla",
+      "end_location": "C. Berlín, 41012 Sevilla",
       "day": "Wed"
     },
     {
@@ -294,8 +294,8 @@
       "start_time_initial": "8:00",
       "start_time_final": "8:30",
       "end_date": "9:00",
-     "start_location": "Calle Resolana",
-      "end_location": "Calle San Fernando",
+      "start_location": "Av. de Italia, 41012 Sevilla",
+      "end_location": "C. Berlín, 41012 Sevilla",
       "day": "Thu"
     },
     {
@@ -303,8 +303,8 @@
       "start_time_initial": "8:00",
       "start_time_final": "8:30",
       "end_date": "9:00",
-      "start_location": "Calle San Jacinto",
-      "end_location": "Calle San Luis",
+      "start_location": "C. Berlín, 41012 Sevilla",
+      "end_location": "Av. de Italia, 41012 Sevilla",
       "day": "Fri"
     }
   ],

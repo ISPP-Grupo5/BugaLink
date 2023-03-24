@@ -19,11 +19,9 @@ export default function ReportProblem() {
       <div className="my-3 flex flex-col">
         <SelectField
           label="He tenido un problema con..."
-          id="people"
           options={options}
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
-          inputClassName="w-full"
         />
       </div>
       <div className="my-3 flex flex-col">

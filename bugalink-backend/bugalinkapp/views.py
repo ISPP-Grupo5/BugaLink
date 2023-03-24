@@ -108,7 +108,8 @@ class PendingIndividualRides(APIView):
     def get(self, request, user_id):
         try:
             passenger = m.Passenger.objects.get(user_id=user_id)
-            rides = m.IndividualRide.objects.filter(passenger=passenger, acceptation_status='Pending Confirmation')
+            rides = m.IndividualRide.objects.filter(passenger=passenger, 
+                                                    acceptation_status=m.AcceptationStatus.Pending_Confirmation)
             serializer = ListIndividualRideSerializer({'individual_rides': rides})
             return JsonResponse(serializer.data)
         except m.IndividualRide.DoesNotExist:
@@ -325,25 +326,29 @@ class PendingIndividualRidesAndRoutineRequests(APIView):
     def get(self, request, user_id):
         try:
             passenger = m.Passenger.objects.get(user_id=user_id)
-            rides = m.IndividualRide.objects.filter(passenger=passenger, acceptation_status='Pending Confirmation')
+            rides = m.IndividualRide.objects.filter(passenger=passenger,
+                                                    acceptation_status=m.AcceptationStatus.Pending_Confirmation)
             
             routines = m.PassengerRoutine.objects.filter(passenger=passenger)
-            routineRequests = []
+            routine_requests = []
             for routine in routines:
-                routineRequests += m.RoutineRequest.objects.filter(passenger_routine=routine,
-                                                                   acceptation_status='Pending Confirmation')
-            driver = m.Driver.objects.get(passenger=passenger)
-            routines = m.DriverRoutine.objects.filter(driver=driver)
-            for routine in routines:
-                routineRequests += m.RoutineRequest.objects.filter(driver_routine=routine,
-                                                                   acceptation_status='Pending Confirmation')
+                routine_requests += m.RoutineRequest.objects.filter(passenger_routine=routine,
+                                                    acceptation_status=m.AcceptationStatus.Pending_Confirmation)
+            try:
+                driver = m.Driver.objects.get(passenger=passenger)
+                routines = m.DriverRoutine.objects.filter(driver=driver)
+                for routine in routines:
+                    routine_requests += m.RoutineRequest.objects.filter(driver_routine=routine,
+                                                        acceptation_status=m.AcceptationStatus.Pending_Confirmation)
+            except:
+                pass
                 
-            serializer = ListIndividualRideAndRoutineRquestSerializer(
-                {'individual_rides': rides},
-                {'routine_requests': routineRequests},
-                )
+            serializer = ListIndividualRideAndRoutineRquestSerializer({
+                'individual_rides': rides,
+                'routine_requests': routine_requests,
+                })
             return JsonResponse(serializer.data)
-        except m.IndividualRide.DoesNotExist:
+        except (m.IndividualRide.DoesNotExist, m.RoutineRequest.DoesNotExist):
             raise Http404
 
 

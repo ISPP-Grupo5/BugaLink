@@ -67,7 +67,7 @@ class ListRoutineRequestSerializer(serializers.Serializer):
 
 class ListIndividualRideAndRoutineRquestSerializer(serializers.Serializer):
     individual_rides = IndividualRideSerializer(many=True)
-    routines_requests = RoutineRequestSerializer(many=True)
+    routine_requests = RoutineRequestSerializer(many=True)
 
 class DriverRatingSerializer(serializers.ModelSerializer):
     class Meta:

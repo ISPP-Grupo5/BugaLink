@@ -693,6 +693,15 @@ class DriverRoutineList(APIView):
 
 
 class PassengerRoutine(APIView):
+    def get(self, request, passenger_routine_id, format=None):
+        try:
+            routine = m.PassengerRoutine.objects.get(pk=passenger_routine_id)
+            serializer = PassengerRoutineSerializer(routine, context={'request': request})
+            return JsonResponse(serializer.data)
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'PassengerRoutine does not exist with id {}'.format(passenger_routine_id)},
+                                status=status.HTTP_400_BAD_REQUEST)
+        
     def delete(self, request, format=None):
         try:
             routine = m.PassengerRoutine.objects.get(pk=request.data['passengerRoutineId'])
@@ -731,6 +740,15 @@ class PassengerRoutine(APIView):
 
 
 class DriverRoutine(APIView):
+    def get(self, request, driver_routine_id, format=None):
+        try:
+            routine = m.DriverRoutine.objects.get(pk=driver_routine_id)
+            serializer = DriverRoutineSerializer(routine, context={'request': request})
+            return JsonResponse(serializer.data)
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'DriverRoutine does not exist with id {}'.format(driver_routine_id)},
+                                status=status.HTTP_400_BAD_REQUEST)
+        
     def delete(self, request, format=None):
         try:
             routine = m.DriverRoutine.objects.get(pk=request.data['driverRoutineId'])

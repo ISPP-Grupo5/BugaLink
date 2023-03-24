@@ -19,7 +19,6 @@ from rest_framework import viewsets
 from django.http import Http404
 from rest_framework.response import Response
 
-
 class Login(APIView):
     def post(self, request):
         username = request.data['username']
@@ -31,7 +30,7 @@ class Login(APIView):
         else:
             return JsonResponse({"message": "usuario y/o contraseña incoorrectos"}, status = 400)
 
-class Users(APIView):
+class Passengers(APIView):
 
     def get(self, request):
         try:
@@ -40,7 +39,78 @@ class Users(APIView):
             return JsonResponse(serializer.data)
         except m.User.DoesNotExist:
             return JsonResponse({"message": "Not found"}, status=404)
+        
+# users /<userId> -> Devuelve la información del usuario
+class Users(APIView):
+    def get(self, request, user_id):
+        try:
+            user = m.User.objects.get(id=user_id)
+            passenger = m.Passenger.objects.get(user=user)
+            serializer = UserSerializer(user, context={'request': request})
+            serializer_data = serializer.data
+            serializer_data.update(PassengerSerializer(passenger, context={'request': request}).data)
+            return JsonResponse(serializer_data)
+        except m.User.DoesNotExist:
+            return JsonResponse({"message": "Not found"}, status=404)
 
+
+# users /<userId>/rides/total -> Devuelve el número total de viajes que ha hecho el usuario con BugaLink
+
+class TotalRides(APIView):
+    def get(self, request, user_id):
+        try:
+            total_rides = 0
+            passenger = m.Passenger.objects.get(user_id=user_id)
+            try:    # Count rides in case the user is also a driver
+                driver = m.Driver.objects.get(passenger=passenger)
+                driver_routines = list(m.DriverRoutine.objects.filter(driver=driver))
+                for driver_routine in driver_routines:
+                    rides = m.Ride.objects.filter(driver_routine=driver_routine).count()
+                    total_rides += rides
+            except:
+                pass
+
+            individual_rides = m.IndividualRide.objects.filter(passenger=passenger).count()
+            total_rides += individual_rides
+            json_data = {}
+            json_data['total_rides'] = total_rides
+            return JsonResponse(json_data)
+        except m.User.DoesNotExist:
+            return JsonResponse({"message": "Not found"}, status=404)
+
+#GET* reviews/rating -> GET* Debe devolver: valoración (Double), el número de valoraciones(int) y devuelva nombre e imagen del usuario valorado
+class Ratings(APIView):
+    def get(self, request, user_id):
+        try:
+            rating = 0
+            total_ratings = 0
+            passenger = m.Passenger.objects.get(user_id=user_id)
+            try:    # Count ratings in case the user is also a driver
+                driver = m.Driver.objects.get(passenger=passenger)
+                ratings_driver_rating = list(DriverRating.objects.all())
+                for rating_dr in ratings_driver_rating:
+                    if driver.passenger.user_id == rating_dr.individual_ride.ride.driver_routine.driver.passenger.user_id:
+                        rating += rating_dr.rating
+                        total_ratings +=1
+            except:
+                pass
+            
+            ratings_passenger_rating = list(PassengerRating.objects.all())
+            for rating_pr in ratings_passenger_rating:
+                    if passenger.user_id == rating_pr.individual_ride.passenger.user_id:
+                        rating += rating_pr.rating
+                        total_ratings +=1
+            
+            user = m.User.objects.get(id=user_id)
+
+            json_data = {}
+            json_data['rating'] = rating/total_ratings
+            json_data['total_ratings'] = total_ratings
+            json_data['profile_photo'] = str(passenger.photo)   #Mirar si esta bien así
+            json_data['username'] = user.username
+            return JsonResponse(json_data)
+        except m.User.DoesNotExist:
+            return JsonResponse({"message": "Not found"}, status=404)
 
 class RoutineRecommendation(APIView):
     def get(self, request):

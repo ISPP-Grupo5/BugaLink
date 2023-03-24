@@ -294,6 +294,94 @@ class DeleteTest(TestCase):
         response2 = self.client.get(url)
         self.assertEqual(response2.status_code,404)
 
+# users /<userId> -> Devuelve la información del usuario
+class UserGetTest(TestCase):
+    
+    def setUp(self):
+        self.client = APIClient()
+        self.user1 = User.objects.create(username="TEST USER", email="test@test.es")
+        self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
+
+    def tearDown(self):    
+        self.passenger1.delete()
+        self.user1.delete()
+       
+
+    def test_get_user_by_id(self):
+        url = "/api/users/" + str(self.user1.pk)
+        response = self.client.get(url)
+
+        data = json.loads(response.content)
+
+        self.assertEqual(data['user'],self.user1.pk)
+
+# users /<userId>/rides/total -> Devuelve el número total de viajes que ha hecho el usuario con BugaLink
+class TotalRidesGetTest(TestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.user1 = User.objects.create(username="TEST USER", email="test@test.es")
+        self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
+        self.driver1 = Driver.objects.create(passenger = self.passenger1, sworn_declaration = None, driver_license = None, dni_front = None, dni_back = None)
+
+    def tearDown(self):    
+        self.passenger1.delete()
+        self.user1.delete()
+        self.driver1.delete()
+       
+    def test_get_user_by_id(self):
+        url = "/api/users/" + str(self.user1.pk) + "/rides/total" 
+        response = self.client.get(url)
+        data = json.loads(response.content)
+
+        self.assertEqual(data['total_rides'],0)
+
+class RatingsGetTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user1 = User.objects.create(username="TEST USER", email="test@test.es")
+        self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
+        self.driver1 = Driver.objects.create(passenger = self.passenger1, sworn_declaration = None, driver_license = None, dni_front = None, dni_back = None)
+        
+        self.user2 = User.objects.create(username="TEST USER 2", email="test2@test.es")
+        self.passenger2 = Passenger.objects.create(user=self.user2, balance=0.0)
+        self.driver2 = Driver.objects.create(passenger = self.passenger2, sworn_declaration = None, driver_license = None, dni_front = None, dni_back = None)
+        
+        self.driverRoutine1 = DriverRoutine.objects.create(driver = self.driver1, default_num_seats = 4, start_date_0 = '11:30:00', start_date_1 = '11:35:00', end_date = '12:30:00', start_location = "Mi casa", end_location = "Universidad", price = 2.0)
+        self.ride1 = Ride.objects.create(driver_routine = self.driverRoutine1, num_seats = 4, start_date = datetime.strptime('2023-03-24 11:30:00', '%Y-%m-%d %H:%M:%S'), end_date = datetime.strptime('2023-03-24 12:30:00', '%Y-%m-%d %H:%M:%S'), start_location = "Mi casa", end_location = "Universidad")
+        self.individualRide1 = IndividualRide.objects.create(ride = self.ride1, passenger = self.passenger2, passenger_routine = None, passenger_note = None, decline_note = None)
+        self.ratingDriver = DriverRating.objects.create(individual_ride = self.individualRide1, rating = 5)
+        
+        self.driverRoutine2 = DriverRoutine.objects.create(driver = self.driver2, default_num_seats = 2, start_date_0 = '01:30:00', start_date_1 = '01:35:00', end_date = '02:30:00', start_location = "Mi casa", end_location = "Universidad", price = 2.0)
+        self.ride2 = Ride.objects.create(driver_routine = self.driverRoutine2, num_seats = 4, start_date = datetime.strptime('2023-03-24 01:30:00', '%Y-%m-%d %H:%M:%S'), end_date = datetime.strptime('2023-03-24 02:30:00', '%Y-%m-%d %H:%M:%S'), start_location = "Mi trabajo", end_location = "Universidad")
+        self.individualRide2 = IndividualRide.objects.create(ride = self.ride2, passenger = self.passenger1, passenger_routine = None, passenger_note = None, decline_note = None)
+        self.ratingPassenger = PassengerRating.objects.create(individual_ride = self.individualRide2, rating = 1)
+        
+    def tearDown(self):    
+        self.passenger1.delete()
+        self.user1.delete()
+        self.driver1.delete()
+        self.driverRoutine1.delete()
+        self.ride1.delete()
+        self.individualRide1.delete()
+        self.ratingDriver.delete() 
+
+        self.passenger2.delete()
+        self.user2.delete()
+        self.driver2.delete()
+        self.driverRoutine2.delete()
+        self.ride2.delete()
+        self.individualRide2.delete()
+        self.ratingPassenger.delete()
+        
+    def test_get_user_by_id(self):
+        url = "/api/users/" + str(self.user1.pk) + "/reviews/rating" 
+        response = self.client.get(url)
+        print("Respuesta : ")
+        data = json.loads(response.content)
+
+        self.assertEqual(data['total_ratings'],2)
+        self.assertEqual(data['rating'],3)
 
 
 #Test de ejemplo de un put
@@ -432,4 +520,3 @@ class RideSearchTest(TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
         self.assertEqual(data['rides'][0]['num_seats'], 1)
-

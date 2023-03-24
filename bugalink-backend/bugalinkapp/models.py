@@ -147,6 +147,10 @@ class DriverRoutine(models.Model):
     start_date_0 = models.TimeField()
     start_date_1 = models.TimeField()
     end_date = models.TimeField()
+    start_longitude = models.DecimalField(max_digits=15, decimal_places=10, null=True)
+    start_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
+    end_longitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
+    end_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
     start_location = models.CharField(max_length=512)
     end_location = models.CharField(max_length=512)
     day = models.CharField(max_length=6, choices=Days.choices(), default=Days.Mon)
@@ -169,6 +173,10 @@ class Ride(models.Model):
     status = models.CharField(max_length=256, choices=RideStatus.choices(), default=RideStatus.Pending_start)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    start_longitude = models.DecimalField(max_digits=15, decimal_places=10, null=True)
+    start_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
+    end_longitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
+    end_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
     start_location = models.CharField(max_length=512)
     end_location = models.CharField(max_length=512)
 
@@ -183,6 +191,10 @@ class Ride(models.Model):
 
 class PassengerRoutine(models.Model):
     passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
+    start_longitude = models.DecimalField(max_digits=15, decimal_places=10, null=True)
+    start_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
+    end_longitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
+    end_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
     start_location = models.CharField(max_length=512)
     end_location = models.CharField(max_length=512)
     day = models.CharField(max_length=6, choices=Days.choices(), default=Days.Mon)
@@ -263,16 +275,16 @@ class PassengerRating(models.Model):
         verbose_name_plural = "Passenger ratings"
 
 
-class Report(models.Model): 
+class Report(models.Model):
     ride = models.ForeignKey(Ride, null=False,
-                                           on_delete=models.CASCADE)  # Validar que sólo se pueda hacer una vez por viaje
+                             on_delete=models.CASCADE)  # Validar que sólo se pueda hacer una vez por viaje
     passenger_reported = models.ForeignKey(Passenger, on_delete=models.CASCADE, related_name='passenger_reported')
     passenger_doing_reporter = models.ForeignKey(Passenger, on_delete=models.CASCADE, related_name='passenger_reporter')
     message = models.CharField(max_length=1024, null=False)
 
     def __str__(self):
         result = "Report " + str(self.pk) + ": userReported=" + str(self.passenger_reported.pk)
-        
+
         return result
 
     class Meta:

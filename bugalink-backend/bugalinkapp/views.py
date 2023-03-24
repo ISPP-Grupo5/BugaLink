@@ -104,11 +104,10 @@ class RoutineRecommendation(APIView):
             raise Http404  # Mejorar errores
 
 
-class PendingIndividualRide(APIView):
-    def get(self, request):
+class PendingIndividualRides(APIView):
+    def get(self, request, user_id):
         try:
-            user = m.User.objects.get(id=request.data['userId'])
-            passenger = m.Passenger.objects.get(user=user)
+            passenger = m.Passenger.objects.get(user_id=user_id)
             rides = m.IndividualRide.objects.filter(passenger=passenger, acceptation_status='Pending Confirmation')
             serializer = ListIndividualRideSerializer({'individual_rides': rides})
             return JsonResponse(serializer.data)
@@ -322,12 +321,12 @@ class CreateIndividualRide(APIView):
         else:
             return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
-
-class PendingRoutineRequests(APIView):
-    def get(self, request):
+class PendingIndividualRidesAndRoutineRequests(APIView):
+    def get(self, request, user_id):
         try:
-            user = m.User.objects.get(id=request.data['userId'])
-            passenger = m.Passenger.objects.get(user=user)
+            passenger = m.Passenger.objects.get(user_id=user_id)
+            rides = m.IndividualRide.objects.filter(passenger=passenger, acceptation_status='Pending Confirmation')
+            
             routines = m.PassengerRoutine.objects.filter(passenger=passenger)
             routineRequests = []
             for routine in routines:
@@ -338,7 +337,11 @@ class PendingRoutineRequests(APIView):
             for routine in routines:
                 routineRequests += m.RoutineRequest.objects.filter(driver_routine=routine,
                                                                    acceptation_status='Pending Confirmation')
-            serializer = ListRoutineRequestSerializer({'routineRequests': routineRequests})
+                
+            serializer = ListIndividualRideAndRoutineRquestSerializer(
+                {'individual_rides': rides},
+                {'routine_requests': routineRequests},
+                )
             return JsonResponse(serializer.data)
         except m.IndividualRide.DoesNotExist:
             raise Http404

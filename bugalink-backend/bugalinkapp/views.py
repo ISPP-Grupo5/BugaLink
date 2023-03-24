@@ -201,7 +201,7 @@ class FilteredIndividualRides(APIView):
 
                 # Filtramos por valoración
                 driver = ride.driver_routine.driver  # Tenemos que sacar al conductor para averiguar su valoración
-                ratingFilter = rating <= m.DriverRating.get_driver_rating(driver)
+                ratingFilter = rating <= m.Passenger.get_driver_rating(driver)
 
                 # Si se han cumplido estos filtros, revisamos todos los viajes individuales de este viaje
                 if (dateFilter and ratingFilter):

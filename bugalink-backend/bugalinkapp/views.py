@@ -671,13 +671,13 @@ class Rides(APIView):
             raise e
 
 class PassengerRoutineList(APIView):
-    def get(self, request, format=None):
+    def get(self, request, user_id):
         try:
-            queryset = m.PassengerRoutine.objects.filter(passenger_id=request.data['passengerId'])
+            queryset = m.PassengerRoutine.objects.filter(passenger_id=user_id)
         except ObjectDoesNotExist:
-            return JsonResponse({'error': 'Passenger does not exist with id {}'.format(request.data['passengerId'])},
+            return JsonResponse({'error': 'Passenger does not exist with id {}'.format(request.data['user_id'])},
                                 status=status.HTTP_400_BAD_REQUEST)
-        serializer = ListPassengerRoutineSerializer({"passenger_routines": queryset})
+        serializer = ListPassengerRoutineSerializer({"passenger_routines":queryset})
         return JsonResponse(serializer.data)
 
 

@@ -12,7 +12,6 @@ import { useState } from 'react';
 import Glass from '/public/icons/Vista-Principal/glass.svg';
 
 export default function Home() {
-  console.log(process.env.NODE_ENV);
   const [drawerOpen, setDrawerOpen] = useState(false);
   // userId has to be hardcoded until we have sessions in the app. This info would be stored in the user's browser
   const USER_ID = 1;

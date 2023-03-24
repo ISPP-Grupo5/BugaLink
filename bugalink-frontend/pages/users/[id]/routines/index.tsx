@@ -55,7 +55,8 @@ export default function MyRoutines({ data }) {
   
   if(!isLoadingDriver&&!isLoadingPassenger){
     debugger
-    routines.push(...passengerRoutines['passenger_routines'], ...driverRoutines['driver_routines']);
+    passengerRoutines['passenger_routines'] && routines.push(...passengerRoutines['passenger_routines']);
+    driverRoutines['driver_routines'] && routines.push(...driverRoutines['driver_routines']);
   }
 
   if (isLoadingPassenger && isLoadingDriver) return <div>Loading...</div>;

@@ -8,6 +8,7 @@ const NEXT_ROUTES = {
   RIDE_DETAILS_ONE: (rideId) => `/ride/${rideId}/detailsOne`,
   RIDE_DETAILS_TWO: (rideId) => `/ride/${rideId}/detailsTwo`,
   RIDE_MAP: (rideId) => `/ride/${rideId}/map`,
+  RATING_RIDE: (userId) => `/users/${userId}/rating/new`,
   NEW_ROUTINE_DRIVER: (userId) => `/users/${userId}/routines/driver/new`,
   NEW_ROUTINE_PASSENGER: (userId) => `/users/${userId}/routines/passenger/new`,
   ACCEPT_RIDE: (rideId) => `/request/${rideId}/accept`,

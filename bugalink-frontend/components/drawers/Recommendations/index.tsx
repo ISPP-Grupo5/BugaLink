@@ -1,4 +1,4 @@
-import TripCard from '@/components/cards/recommendation';
+import { TripCard } from '@/components/cards/recommendation';
 import useRecommendedTrips from '@/hooks/useRecommendedTrips';
 import TripI from '@/interfaces/trip';
 import { Link, SwipeableDrawer } from '@mui/material';

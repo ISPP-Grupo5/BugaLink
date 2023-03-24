@@ -18,6 +18,9 @@ urlpatterns = [
     path('reviews', views.RatingList.as_view()),
     path('reviews/rating', views.Rating.as_view()),
     path('reviews/pending', views.PendingRatings.as_view()), # Devuelve un listado de individualRides pendientes de valorar dado en el body un userId
+    path('rides/<int:ride_id>/detail',views.RideDetail.as_view()),
+    
+    #Endpoints de tests de prueba
     path('test/users/<int:userId>', views.UsersTest.as_view()),
     path('test/reviews', views.RatingListTest.as_view()),
 ]

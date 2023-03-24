@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from django.core.files.uploadedfile import SimpleUploadedFile
 import json
+import populate_db as populate
 
 
 ### IMPORTANTE ###
@@ -294,3 +295,14 @@ class DeleteTest(TestCase):
         response2 = self.client.get(url)
         self.assertEqual(response2.status_code,404)
 
+
+class RideDetailTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        User.objects.create(username="User1", password="My super secret pw")
+        populate.execute()
+    
+    def tearDown(self):
+        pass
+    def test_get_ride_detail(self):
+        pass

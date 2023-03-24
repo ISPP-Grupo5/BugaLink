@@ -67,6 +67,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'newsletter',
     'bugalinkapp',
+    'corsheaders',
+
 ]
 
 MIDDLEWARE = [
@@ -81,6 +83,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'BugaLink.urls'
+
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 
 TEMPLATES = [

@@ -16,7 +16,20 @@ export default function RatingScreen() {
 
   //Add the values of the 3 RatingButtons to selectedButtonText depending if they are selected or not
   
+  const handleButton1Click = () => {
+    setSelectedButtonsText(selectedButtonsText ? `${selectedButtonsText}, Buena conducción` : 'Buena conducción');
 
+  };
+
+  const handleButton2Click = () => {
+    setSelectedButtonsText(selectedButtonsText ? `${selectedButtonsText}, Conductor agradable` : 'Conductor agradable');
+
+  };
+
+  const handleButton3Click = () => {
+    setSelectedButtonsText(selectedButtonsText ? `${selectedButtonsText}, Ya nos conocíamos` : 'Ya nos conocíamos');
+
+  };
 
   const driverId = 1; //TODO: change this to the id of the driver
   const passengerId = 2; //TODO: change this to the passenger's id
@@ -38,9 +51,10 @@ export default function RatingScreen() {
     console.log("Good conduction: ", goodConduction);
     console.log("Friendly driver: ", friendlyDriver);
     console.log("Knew each other: ", knewEachOther);
+    console.log("Knew each other: ", selectedButtonsText);
 
       // transform to asnyc await
-      const response = await axios.post('/users' + driverId + '/reviews/', data);
+      const response = await axios.post('/users/' + driverId + '/reviews/', data);
       console.log(response.data);
   };
   

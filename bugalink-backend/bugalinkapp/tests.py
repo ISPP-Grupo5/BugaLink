@@ -295,6 +295,104 @@ class DeleteTest(TestCase):
         self.assertEqual(response2.status_code,404)
 
 
+
+#Test de ejemplo de un put
+class PutRoutinesTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        
+        self.user1 = User.objects.create(username="TEST USER1", first_name="John", last_name="Smith", email="test1@test.es", password="My secret pw")
+        self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
+        self.driver1=Driver.objects.create(passenger=self.passenger1)
+        self.vehicle1 = Vehicle.objects.create(driver=self.driver1)
+        self.driver_routine1 = DriverRoutine.objects.create(driver=self.driver1,default_vehicle=self.vehicle1,default_num_seats=2, start_date_0=time(12,00),start_date_1=time(12,30),end_date=time(13,00),start_location="Virgen de Lujan 120",end_location="Paseo de las Delicias S/N",day=Days.Mon,one_ride=True,price=2.0)
+        self.passenger_routine1 = PassengerRoutine.objects.create(passenger=self.passenger1,start_time_initial=time(12,00),start_time_final=time(12,30),end_date=time(13,00),start_location="Virgen de Lujan 120",end_location="Paseo de las Delicias S/N",day=Days.Mon)
+
+    def tearDown(self):
+        self.user1.delete()
+        self.passenger1.delete()
+        self.driver1.delete()
+        self.vehicle1.delete()
+        self.driver_routine1.delete()
+        self.passenger_routine1.delete()
+
+
+    def test_put_driver_routine(self):
+        url = "/api/users/driver-routine/" + str(self.driver_routine1.pk)
+
+        body = {
+            "default_vehicle_id":self.vehicle1.pk,
+            "driver_id": self.driver1.pk,
+            "default_num_seats": 1,
+            "start_date_0": "9:00",
+            "start_date_1": "9:10",
+            "end_date": "9:30",
+            "start_latitude":33.233,
+            "start_longitude":33.3333,
+            "end_latitude":32.83,
+            "end_longitude":34.1,
+            "start_location": "Av. de Italia, 41012 Sevilla",
+            "end_location": "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla",
+            "day": "Mon",
+            "one_ride": "False",
+            "price": 3.22,
+            "driver_note":"La puerta de detrás te la tengo que abrir yo desde dentro"
+        }
+        response = self.client.put(url, data=body)
+
+        # este comando parsea la JsonResponse a un diccionario para poder acceder a los valores
+        data = json.loads(response.content)
+        # Se hacen las comprobaciones
+        self.assertEqual(data['default_vehicle'],str(self.vehicle1.pk))
+        self.assertEqual(data['driver'],str(self.driver1.pk))
+        self.assertEqual(data['default_num_seats'],1)
+        self.assertEqual(data['start_date_0'],"9:00")
+        self.assertEqual(data['start_date_1'],"9:10")
+        self.assertEqual(data['end_date'],"9:30")
+        self.assertEqual(data['start_latitude'],'33.2330000000')
+        self.assertEqual(data['start_longitude'],'33.3333000000')
+        self.assertEqual(data['end_latitude'],'32.8300000000')
+        self.assertEqual(data['end_longitude'],'34.1000000000')
+        self.assertEqual(data['start_location'],"Av. de Italia, 41012 Sevilla")
+        self.assertEqual(data['end_location'],"Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla")
+        self.assertEqual(data['day'],"Mon")
+        self.assertEqual(data['one_ride'],False)
+        self.assertEqual(data['price'],'3.22')
+        self.assertEqual(data['driver_note'],"La puerta de detrás te la tengo que abrir yo desde dentro")
+    
+    def test_put_passenger_routine(self):
+        url = "/api/users/passenger-routine/" + str(self.passenger_routine1.pk)
+
+        body = {
+            "passenger_id": self.passenger1.pk,
+            "start_latitude":33.32233,
+            "start_longitude":33.333333333,
+            "end_latitude":33.44,
+            "end_longitude":33.22,
+            "start_location": "Av. de Italia, 41012 Sevilla",
+            "end_location": "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla",
+            "start_time_initial": "9:00",
+            "start_time_final": "9:30",
+            "end_date": "10:00",
+            "day": "Mon"
+        }
+        response = self.client.put(url, data=body)
+
+        # este comando parsea la JsonResponse a un diccionario para poder acceder a los valores
+        data = json.loads(response.content)
+        # Se hacen las comprobaciones
+        self.assertEqual(data['start_time_initial'],"9:00")
+        self.assertEqual(data['start_time_final'],"9:30")
+        self.assertEqual(data['end_date'],"10:00")
+        self.assertEqual(data['start_latitude'],'33.3223300000')
+        self.assertEqual(data['start_longitude'],'33.3333333330')
+        self.assertEqual(data['end_latitude'],'33.4400000000')
+        self.assertEqual(data['end_longitude'],'33.2200000000')
+        self.assertEqual(data['start_location'],"Av. de Italia, 41012 Sevilla")
+        self.assertEqual(data['end_location'],"Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla")
+        self.assertEqual(data['day'],"Mon")
+
+
 class RideSearchTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -334,4 +432,4 @@ class RideSearchTest(TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
         self.assertEqual(data['rides'][0]['num_seats'], 1)
-        
+

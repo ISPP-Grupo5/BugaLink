@@ -192,8 +192,9 @@ class PostTest(TestCase):
         self.user2 = User.objects.create(username="TEST USER2", email="test2@test.es")
         self.passenger2 = Passenger.objects.create(user=self.user2, balance=0.0)
         self.driver1 = Driver.objects.create(passenger=self.passenger1)
+        self.vehicle1 = Vehicle.objects.create(driver=self.driver1)
         self.driver_routine1 = DriverRoutine.objects.create(driver=self.driver1,
-                                                            default_num_seats=2,
+                                                            default_vehicle=self.vehicle1,default_num_seats=2,
                                                             start_date_0=time(12,00),
                                                             start_date_1=time(12,30),
                                                             end_date=time(13,00),
@@ -202,6 +203,13 @@ class PostTest(TestCase):
                                                             day=Days.Mon,
                                                             one_ride=True,
                                                             price=2.0)
+        self.passenger_routine1 = PassengerRoutine.objects.create(passenger=self.passenger1,start_time_initial=time(12,00),
+                                                                  start_time_final=time(12,30),
+                                                                  end_date=time(13,00),
+                                                                  start_location="Virgen de Lujan 120",
+                                                                  end_location="Paseo de las Delicias S/N",
+                                                                  day=Days.Mon)
+
         self.ride1 = Ride.objects.create(driver_routine=self.driver_routine1,
                                          num_seats=self.driver_routine1.default_num_seats,
                                           start_date = datetime(2020,4,7),
@@ -234,10 +242,10 @@ class PostTest(TestCase):
         data = json.loads(response.content)
 
         # Se hacen las comprobaciones
-        self.assertAlmostEqual(float(data['start_longitude']), float(-77.0366), places=5)
-        self.assertAlmostEqual(float(data['start_latitude']), float(38.8951), places=5)
-        self.assertAlmostEqual(float(data['end_longitude']), float(-76.6183), places=5)
-        self.assertAlmostEqual(float(data['end_latitude']), float(39.2904), places=5)
+        self.assertAlmostEqual(float(data['start_longitude']), float(-77.0366), places=10)
+        self.assertAlmostEqual(float(data['start_latitude']), float(38.8951), places=10)
+        self.assertAlmostEqual(float(data['end_longitude']), float(-76.6183), places=10)
+        self.assertAlmostEqual(float(data['end_latitude']), float(39.2904), places=10)
         self.assertEqual(data['start_location'],"Washington D.C.")
         self.assertEqual(data['end_location'],"Baltimore, MD")
         self.assertEqual(data['day'],"Mon")
@@ -248,21 +256,21 @@ class PostTest(TestCase):
     def test_post_driver_routine(self):
         body = {
                     "driver": str(self.driver1.pk),
-                    "default_vehicle": 1,
-                    "start_longitude": -77.0366,
-                    "start_latitude": 38.8951,
-                    "end_longitude": -76.6183,
-                    "end_latitude": 39.2904,
-                    "start_location": "Washington D.C.",
-                    "end_location": "Baltimore, MD",
-                    "day": "Mon",
+                    "default_vehicle_id":1,
+                    "default_num_seats": 3,
+                    "start_date_0": "08:00:00",
+                    "start_date_1": "08:30:00",
                     "end_date": "18:00:00",
-                    "start_date_0": "07:00:00",
-                    "start_date_1": "09:00:00",
-                    "default_num_seats": 2,
-                    "price": 2.0,
-                    "driver_note": "Las ventanas no se abren",
-                    "one_ride": True
+                    "start_longitude": -74.0059,
+                    "start_latitude": 40.7128,
+                    "end_longitude": -73.935242,
+                    "end_latitude": 40.730610,
+                    "start_location": "New York City, NY, USA",
+                    "end_location": "Brooklyn, NY, USA",
+                    "day": "Mon",
+                    "one_ride": False,
+                    "price": 25.99,
+                    "driver_note": "Las ventanas no se abren"
                 }
         url = "/api/users/driver-routine"
         response = self.client.post(url, data=body)
@@ -271,16 +279,20 @@ class PostTest(TestCase):
         data = json.loads(response.content)
 
         # Se hacen las comprobaciones
-        self.assertAlmostEqual(float(data['start_longitude']), float(-77.0366), places=5)
-        self.assertAlmostEqual(float(data['start_latitude']), float(38.8951), places=5)
-        self.assertAlmostEqual(float(data['end_longitude']), float(-76.6183), places=5)
-        self.assertAlmostEqual(float(data['end_latitude']), float(39.2904), places=5)
-        self.assertEqual(data['start_location'],"Washington D.C.")
-        self.assertEqual(data['end_location'],"Baltimore, MD")
-        self.assertEqual(data['day'],"Mon")
+        self.assertEqual(data['default_num_seats'],3)
+        self.assertEqual(data['start_date_0'],"08:00:00")
+        self.assertEqual(data['start_date_1'],"08:30:00")
         self.assertEqual(data['end_date'],"18:00:00")
-        self.assertEqual(data['start_time_initial'],"07:00:00")
-        self.assertEqual(data['start_time_final'],"09:00:00")
+        self.assertAlmostEqual(float(data['start_longitude']), float(-74.0059), places=10)
+        self.assertAlmostEqual(float(data['start_latitude']), float(40.7128), places=10)
+        self.assertAlmostEqual(float(data['end_longitude']), float(-73.935242), places=10)
+        self.assertAlmostEqual(float(data['end_latitude']), float(40.730610), places=10)
+        self.assertEqual(data['start_location'],"New York City, NY, USA")
+        self.assertEqual(data['end_location'],"Brooklyn, NY, USA")
+        self.assertEqual(data['day'],"Mon")
+        self.assertFalse(data['one_ride'])
+        self.assertEqual(str(data['price']), '25.99')
+        self.assertEqual(data['driver_note'], "Las ventanas no se abren")
 
     def tearDown(self):    
         self.driver1.delete()

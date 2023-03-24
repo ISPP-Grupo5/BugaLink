@@ -227,13 +227,13 @@ class AcceptedIndividualRide(APIView):
 
 
 class IndividualRides(APIView):
-    def get(self, request):
+    def get(self, request, individualRideId):
         try:
-            individual_ride = m.IndividualRide.objects.get(id=request.data['individualRideId'])
+            individual_ride = m.IndividualRide.objects.get(id=individualRideId)
             serializer = IndividualRideSerializer(individual_ride)
-            return JsonResponse(serializer.data)
-        except m.IndividualRide.DoesNotExist:
-            raise Http404
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserIndividualRides(APIView):
@@ -287,14 +287,15 @@ class FilteredIndividualRides(APIView):
             raise Http404
 
 
-class AcceptPassengerIndividualRide:
-    def put(self, request):
+class AcceptPassengerIndividualRide(APIView):
+    def patch(self, request, individualRideId):
         try:
-            individualRide = m.IndividualRide.objects.get(id=request.data['individualRideId'])
+            individualRide = m.IndividualRide.objects.get(id=individualRideId)
             individualRide.acceptation_status = m.AcceptationStatus.Accepted
-            m.IndividualRide.objects.put(individualRide)
-        except m.IndividualRide.DoesNotExist:
-            raise Http404
+            individualRide.save()
+            return JsonResponse({"message": "Viaje aceptado"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status = status.HTTP_400_BAD_REQUEST)
 
 
 class CancelPassengerIndividualRide:

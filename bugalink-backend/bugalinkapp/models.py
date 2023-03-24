@@ -98,11 +98,11 @@ class Passenger(models.Model):
                 if passenger.id == rating.individual_ride.ride.driver_routine.driver.passenger.id:
                     rating_sum += rating.rating
             if len(rating):
-                return rating_sum/len(ratings)
+                return float(rating_sum/len(ratings))
             else:
-                return 0
+                return 0.0
         else:
-            return 0
+            return 0.0
 
 
 class Driver(models.Model):

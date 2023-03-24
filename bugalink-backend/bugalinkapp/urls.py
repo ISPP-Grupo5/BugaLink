@@ -13,8 +13,8 @@ urlpatterns = [
     path('users/passenger-routines', views.PassengerRoutineList.as_view()),
     path('users/individualrides', views.UserIndividualRides.as_view()),
     path('users/driver-routines', views.DriverRoutineList.as_view()),
-    path('users/passenger-routine', views.PassengerRoutine.as_view()),
-    path('users/driver-routine', views.DriverRoutine.as_view()),
+    path('users/passenger-routine/<int:routine_id>', views.PassengerRoutine.as_view()),
+    path('users/driver-routine/<int:routine_id>', views.DriverRoutine.as_view()),
     path('reviews', views.RatingList.as_view()),
     path('reviews/rating', views.Rating.as_view()),
     path('reviews/pending', views.PendingRatings.as_view())# Devuelve un listado de individualRides pendientes de valorar dado en el body un userId

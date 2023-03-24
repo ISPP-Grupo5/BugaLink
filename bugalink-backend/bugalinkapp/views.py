@@ -581,15 +581,26 @@ class DriverRoutineList(APIView):
 
 
 class PassengerRoutine(APIView):
-    def delete(self, request, format=None):
+    def get(self, request, routine_id, format=None):
         try:
-            routine = m.PassengerRoutine.objects.get(pk=request.data['passengerRoutineId'])
+            routine = m.PassengerRoutine.objects.get(pk= routine_id)
         except ObjectDoesNotExist:
             return JsonResponse(
-                {'error': 'PassengerRoutine does not exist with id {}'.format(request.data['passengerRoutineId'])},
+                {'error': 'PassengerRoutine does not exist with id {}'.format(routine_id)},
+                status = status.HTTP_404_NOT_FOUND)
+        serializer = PassengerRoutineSerializer({'PassengerRoutine': routine})
+        return JsonResponse(serializer.data)
+
+
+    def delete(self, request, routine_id, format=None):
+        try:
+            routine = m.PassengerRoutine.objects.get(pk= routine_id)
+        except ObjectDoesNotExist:
+            return JsonResponse(
+                {'error': 'PassengerRoutine does not exist with id {}'.format(routine_id)},
                 status=status.HTTP_400_BAD_REQUEST)
         routine.delete()
-        return JsonResponse({'message': 'Success'})
+        return JsonResponse({'message': 'Success on delete'})
 
     def post(self, request, format=None):  # POST de creacion de la routina
         try:
@@ -620,16 +631,16 @@ class PassengerRoutine(APIView):
 
 
 class DriverRoutine(APIView):
-    def delete(self, request, format=None):
+    def delete(self, request, routine_id, format=None): #EJEMPLO EFECTIVO DE DELETE
         try:
-            routine = m.DriverRoutine.objects.get(pk=request.data['driverRoutineId'])
+            routine = m.DriverRoutine.objects.get(pk=routine_id)
         except ObjectDoesNotExist:
             return JsonResponse(
-                {'error': 'DriverRoutine does not exist with id {}'.format(request.data['passengerRoutineId'])},
+                {'error': 'DriverRoutine does not exist with id {}'.format(routine_id)},
                 status=status.HTTP_400_BAD_REQUEST)
 
         routine.delete()
-        return JsonResponse({'message': 'Success'})
+        return JsonResponse({'message': 'Success on delete'})
 
     def put(self, request, format=None):
         try:

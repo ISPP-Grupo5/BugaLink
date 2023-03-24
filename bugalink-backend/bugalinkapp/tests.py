@@ -294,3 +294,24 @@ class DeleteTest(TestCase):
         response2 = self.client.get(url)
         self.assertEqual(response2.status_code,404)
 
+# users /<userId> -> Devuelve la información del usuario
+class UserGetTest(TestCase):
+    
+    def setUp(self):
+        self.client = APIClient()
+        self.user1 = User.objects.create(username="TEST USER", email="test@test.es")
+        self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
+
+    def tearDown(self):    
+        self.passenger1.delete()
+        self.user1.delete()
+       
+
+    def test_get_user_by_id(self):
+        url = "/api/users/" + str(self.user1.pk)
+        response = self.client.get(url)
+
+        data = json.loads(response.content)
+
+        self.assertEqual(data['user'],self.user1.pk)
+

@@ -31,9 +31,9 @@ class Passengers(APIView):
         
 # users /<userId> -> Devuelve la información del usuario
 class Users(APIView):
-    def get(self, request, userId):
+    def get(self, request, user_id):
         try:
-            user = m.User.objects.get(id=userId)
+            user = m.User.objects.get(id=user_id)
             passenger = m.Passenger.objects.get(user=user)
             serializer = UserSerializer(user, context={'request': request})
             serializer_data = serializer.data

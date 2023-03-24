@@ -329,7 +329,9 @@ class RideSearchTest(TestCase):
                 'rating' : 0.00
                 }
 
-        url = "/api/test/ride/search"
+        url = "/api/ride/search"
         response = self.client.post(url, data=body)
         self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(data['rides'][0]['num_seats'], 1)
         

@@ -294,3 +294,82 @@ class DeleteTest(TestCase):
         response2 = self.client.get(url)
         self.assertEqual(response2.status_code,404)
 
+class DeletePassengerRoutineTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user1 = User.objects.create(
+            username="TEST USER1", 
+            first_name="John", 
+            last_name="Smith", 
+            email="test1@test.es", 
+            password="My secret pw")
+        self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
+        self.passengerRoutine1 = PassengerRoutine.objects.create(
+            passenger=self.passenger1, 
+            start_time_initial='8:00', 
+            start_time_final='8:30',
+            end_date='9:00',
+            start_location= "C. Berlín, 41012 Sevilla",
+            end_location= "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla",
+            day= "Mon"
+            )
+    def tearDown(self):
+        self.passengerRoutine1.delete()
+        self.passenger1.delete()
+        self.user1.delete()
+        
+    def test_delete_passenger_routine(self):
+        url = "/api/test/users/passenger-routines/" + str(self.passengerRoutine1.pk)
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code,status.HTTP_204_NO_CONTENT)
+        
+        response2 = self.client.get(url)
+        self.assertEqual(response2.status_code,status.HTTP_404_NOT_FOUND)
+
+class DeleteDriverRoutineTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user1 = User.objects.create(
+            username="TEST USER1", 
+            first_name="John", 
+            last_name="Smith", 
+            email="test1@test.es", 
+            password="My secret pw")
+        self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
+        self.driver1 = Driver.objects.create(passenger=self.passenger1,
+                                             sworn_declaration= None,
+                                             driver_license = None,
+                                             dni_front = None,
+                                             dni_back = None,
+                                             entry_date = '2023-01-01'
+                                            )
+        self.driverRoutine1 = DriverRoutine.objects.create(
+            driver=self.driver1, 
+            default_vehicle_id = 1,
+            default_num_seats = 3,
+            start_date_0='8:00', 
+            start_date_1='8:30',
+            end_date='9:00',
+            start_location= "C. Berlín, 41012 Sevilla",
+            end_location= "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla",
+            day= "Mon",
+            one_ride = False,
+            price= 2
+            )
+
+    def tearDown(self):
+        self.driverRoutine1.delete()
+        self.driver1.delete()
+        self.passenger1.delete()
+        self.user1.delete()
+        
+    def test_delete_driver_routine(self):
+        url = "/api/test/users/driver-routines/" + str(self.driverRoutine1.pk)
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code,status.HTTP_204_NO_CONTENT)
+        
+        # This line produces an error because GET for driver routines is not defined ////////////////////////////////////////////////////////////
+        #response2 = self.client.get(url)
+        #self.assertEqual(response2.status_code,status.HTTP_404_NOT_FOUND)

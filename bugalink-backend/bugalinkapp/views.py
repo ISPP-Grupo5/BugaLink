@@ -598,9 +598,9 @@ class PassengerRoutine(APIView):
         except ObjectDoesNotExist:
             return JsonResponse(
                 {'error': 'PassengerRoutine does not exist with id {}'.format(routine_id)},
-                status=status.HTTP_400_BAD_REQUEST)
+                status=status.HTTP_404_NOT_FOUND)
         routine.delete()
-        return JsonResponse({'message': 'Success on delete'})
+        return JsonResponse({'message': 'Success on delete'}, status = status.HTTP_204_NO_CONTENT)
 
     def post(self, request, format=None):  # POST de creacion de la routina
         try:
@@ -634,13 +634,13 @@ class DriverRoutine(APIView):
     def delete(self, request, routine_id, format=None): #EJEMPLO EFECTIVO DE DELETE
         try:
             routine = m.DriverRoutine.objects.get(pk=routine_id)
+            routine.delete()
+            return JsonResponse({'message': 'Success on delete'}, status=status.HTTP_204_NO_CONTENT)
         except ObjectDoesNotExist:
             return JsonResponse(
                 {'error': 'DriverRoutine does not exist with id {}'.format(routine_id)},
-                status=status.HTTP_400_BAD_REQUEST)
+                status=status.HTTP_404_NOT_FOUND)
 
-        routine.delete()
-        return JsonResponse({'message': 'Success on delete'})
 
     def put(self, request, format=None):
         try:

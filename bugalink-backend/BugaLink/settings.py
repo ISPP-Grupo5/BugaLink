@@ -72,6 +72,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -79,6 +80,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# CONFIGURACION DE SESIONES
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 31536000
 
 ROOT_URLCONF = 'BugaLink.urls'
 
@@ -174,7 +179,6 @@ STATICFILES_DIRS = []
 MEDIA_ROOT = os.path.join(BASE_DIR.parent, 'files')
 MEDIA_URL = '/media/'
 
-# print(MEDIA_ROOT)
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

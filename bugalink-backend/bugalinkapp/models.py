@@ -43,6 +43,7 @@ class RideStatus(Enum):
 class TransactionStatus(Enum):
     Accepted = 'Accepted'
     Declined = 'Declined'
+    Pending = 'Pending'
 
     @classmethod
     def choices(cls):
@@ -151,7 +152,7 @@ class DriverRoutine(models.Model):
     day = models.CharField(max_length=6, choices=Days.choices(), default=Days.Mon)
     one_ride = models.BooleanField(default=False)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    driver_note = models.CharField(max_length=1024)
+    driver_note = models.CharField(max_length=1024, null=True, blank=True)
 
     def __str__(self):
         return "Driver routine " + str(self.pk) + DRIVER_STR + str(self.driver.pk) + ", day=" + self.day
@@ -163,7 +164,7 @@ class DriverRoutine(models.Model):
 
 class Ride(models.Model):
     driver_routine = models.ForeignKey(DriverRoutine, on_delete=models.CASCADE)
-    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, null=True, blank=True)
     num_seats = models.IntegerField()  # Relacionarlo con default_num_seats
     status = models.CharField(max_length=256, choices=RideStatus.choices(), default=RideStatus.Pending_start)
     start_date = models.DateTimeField()
@@ -262,21 +263,16 @@ class PassengerRating(models.Model):
         verbose_name_plural = "Passenger ratings"
 
 
-class Report(models.Model):
-    individual_ride = models.OneToOneField(IndividualRide, null=False,
+class Report(models.Model): 
+    ride = models.ForeignKey(Ride, null=False,
                                            on_delete=models.CASCADE)  # Validar que sólo se pueda hacer una vez por viaje
     passenger_reported = models.ForeignKey(Passenger, on_delete=models.CASCADE, related_name='passenger_reported')
     passenger_doing_reporter = models.ForeignKey(Passenger, on_delete=models.CASCADE, related_name='passenger_reporter')
     message = models.CharField(max_length=1024, null=False)
-    is_user_reported_the_driver = models.BooleanField(null=False)
 
     def __str__(self):
-        result = "Report " + str(self.pk) + ": userReported="
-        if self.is_user_reported_the_driver:
-            result += str(self.individual_ride.ride.driver_routine.driver.passenger.user.pk)
-        else:
-            result += str(self.individual_ride.passenger.user.pk)
-        result += DATE_STR + str(self.individual_ride.start_date.date())
+        result = "Report " + str(self.pk) + ": userReported=" + str(self.passenger_reported.pk)
+        
         return result
 
     class Meta:
@@ -383,5 +379,6 @@ class IndividualDiscountCode(models.Model):
 class Transaction(models.Model):
     sender = models.ForeignKey(Passenger, on_delete=models.CASCADE, related_name='sender')
     receiver = models.ForeignKey(Passenger, on_delete=models.CASCADE, related_name='receiver')
-    status = models.CharField(max_length=16, choices=TransactionStatus.choices(), default=TransactionStatus.Declined)
+    status = models.CharField(max_length=16, choices=TransactionStatus.choices(), default=TransactionStatus.Pending)
     is_refund = models.BooleanField(default=False)
+    amount = models.FloatField()

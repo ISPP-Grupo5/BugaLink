@@ -1,11 +1,10 @@
 from rest_framework import serializers
-from .models import *
-
+from .models import Passenger, Ride, Driver, DriverRating, PassengerRating, Vehicle, IndividualRide,PassengerRoutine, DriverRoutine, CreditCard, Paypal,DiscountCode,IndividualDiscountCode,PassengerDiscountCode,RoutineRequest,Report, Transaction
+from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        # fields    = '__all__'
         exclude = ['password']
 
 class PassengerSerializer(serializers.ModelSerializer):
@@ -105,9 +104,9 @@ class PaypalSerializer(serializers.ModelSerializer):
         model = Paypal
         fields = '__all__'
 
-class FavDirectionSerializer(serializers.ModelSerializer):
+class Transaction(serializers.ModelSerializer):
     class Meta:
-        model = FavDirection
+        model = Transaction
         fields = '__all__'
 
 class DiscountCodeSerializer(serializers.ModelSerializer):

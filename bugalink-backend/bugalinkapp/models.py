@@ -20,11 +20,30 @@ def get_file_path(instance, filename):
     return 'passenger{0}/{1}'.format(instance.get_passenger().pk, filename)
 
 
-# Create your models here.
+class DocumentValidationStatus(Enum):
+    none = 'None'
+    Waiting_Validation = 'Waiting Validation'
+    Validated = 'Validated'
+    Cancelled = 'Cancelled'
+
+    @classmethod
+    def choices(cls):
+        return [(key.value, key.name) for key in cls]
+
+
 class RideStatus(Enum):
     Pending_start = 'Pending start'
-    Ongoing = 'Ongoing'
     Finished = 'Finished'
+
+    @classmethod
+    def choices(cls):
+        return [(key.value, key.name) for key in cls]
+
+
+class TransactionStatus(Enum):
+    Accepted = 'Accepted'
+    Declined = 'Declined'
+    Pending = 'Pending'
 
     @classmethod
     def choices(cls):
@@ -55,51 +74,8 @@ class Days(Enum):
         return [(key.value, key.name) for key in cls]
 
 
-# A los valores se accede con el nombre de la variable [0] y [1]: Por ejemplo start_location[0]
-class Coord(models.Field):
-    def __init__(self, *args, **kwargs):
-        kwargs['max_length'] = 50
-        super().__init__(*args, **kwargs)
-
-    def from_db_value(self, value, expression, connection):
-        try:
-            if not value:
-                return value
-            if isinstance(value, list):
-                return value
-            values = value.replace('(', '').replace(')', '').split(',')
-            return tuple(float(v) for v in values)
-        except Exception:
-            raise ValidationError
-
-    def to_python(self, value):
-        return self.from_db_value(value, None, None)
-
-    def get_prep_value(self, value):
-        try:
-            if not value:
-                return value
-            if isinstance(value, str):
-                value = value.replace('(', '').replace(')', '')
-                value = [value[:value.find(',')], value[value.find(',') - 1:]]
-            if isinstance(value, list) or isinstance(value, tuple):
-                return str(','.join(str(coord) for coord in value))
-        except Exception:
-            raise ValidationError
-
-    def db_type(self, connection):
-        return 'varchar'
-
-    def __str__(self):
-        return f"({self.value[0]}, {self.value[1]})" if self.value else ""
-
-
 class Passenger(models.Model):
     user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
-    biography = models.CharField(max_length=256)
-    city = models.CharField(max_length=256)
-    province = models.CharField(max_length=256)
-    birth_date = models.DateField()
     balance = models.DecimalField(max_digits=8, decimal_places=2)
     photo = models.ImageField(null=True, blank=True, upload_to=get_file_path)
     verified = models.BooleanField(default=False)
@@ -117,12 +93,17 @@ class Passenger(models.Model):
 
 class Driver(models.Model):
     passenger = models.OneToOneField(Passenger, primary_key=True, on_delete=models.CASCADE)
-    preferences = models.CharField(max_length=2048)
-    biography = models.CharField(max_length=256)
-    has_dni = models.BooleanField(default=False)
+    preference_0 = models.BooleanField(default=False)
+    preference_1 = models.BooleanField(default=False)
+    preference_2 = models.BooleanField(default=False)
+    preference_3 = models.BooleanField(default=False)
+    dni_status = models.CharField(max_length=32, choices=DocumentValidationStatus.choices(),
+                                  default=DocumentValidationStatus.none)
     entry_date = models.DateField()
-    has_driver_license = models.BooleanField(default=False)
-    has_sworn_declaration = models.BooleanField(default=False)
+    driver_license_status = models.CharField(max_length=32, choices=DocumentValidationStatus.choices(),
+                                             default=DocumentValidationStatus.none)
+    sworn_declaration_status = models.CharField(max_length=32, choices=DocumentValidationStatus.choices(),
+                                                default=DocumentValidationStatus.none)
     sworn_declaration = models.FileField(null=True, blank=True, upload_to=get_file_path)
     driver_license = models.FileField(null=True, blank=True, upload_to=get_file_path)
     dni_front = models.FileField(null=True, blank=True, upload_to=get_file_path)
@@ -142,9 +123,10 @@ class Driver(models.Model):
 
 class Vehicle(models.Model):
     driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
-    model = models.CharField(max_length=256)
-    plate = models.CharField(max_length=256)
-    has_insurance = models.BooleanField(default=False)
+    model = models.CharField(max_length=256, null=True)
+    plate = models.CharField(max_length=256, null=True)
+    insurance_status = models.CharField(max_length=32, choices=DocumentValidationStatus.choices(),
+                                        default=DocumentValidationStatus.none)
     insurance = models.FileField(null=True, blank=True)
 
     def get_passenger(self):
@@ -162,12 +144,19 @@ class DriverRoutine(models.Model):
     driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
     default_vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, null=True, blank=True)
     default_num_seats = models.IntegerField(validators=[MinValueValidator(1)])
-    start_date = models.TimeField()
+    start_date_0 = models.TimeField()
+    start_date_1 = models.TimeField()
     end_date = models.TimeField()
-    start_location = models.CharField(max_length=256)
-    end_location = models.CharField(max_length=256)
+    start_longitude = models.DecimalField(max_digits=15, decimal_places=10, null=True)
+    start_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
+    end_longitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
+    end_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
+    start_location = models.CharField(max_length=512)
+    end_location = models.CharField(max_length=512)
     day = models.CharField(max_length=6, choices=Days.choices(), default=Days.Mon)
     one_ride = models.BooleanField(default=False)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    driver_note = models.CharField(max_length=1024, null=True, blank=True)
 
     def __str__(self):
         return "Driver routine " + str(self.pk) + DRIVER_STR + str(self.driver.pk) + ", day=" + self.day
@@ -179,13 +168,17 @@ class DriverRoutine(models.Model):
 
 class Ride(models.Model):
     driver_routine = models.ForeignKey(DriverRoutine, on_delete=models.CASCADE)
-    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
+    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, null=True, blank=True)
     num_seats = models.IntegerField()  # Relacionarlo con default_num_seats
     status = models.CharField(max_length=256, choices=RideStatus.choices(), default=RideStatus.Pending_start)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    start_location = models.CharField(max_length=256)
-    end_location = models.CharField(max_length=256)
+    start_longitude = models.DecimalField(max_digits=15, decimal_places=10, null=True)
+    start_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
+    end_longitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
+    end_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
+    start_location = models.CharField(max_length=512)
+    end_location = models.CharField(max_length=512)
 
     def __str__(self):
         return "Ride " + str(self.pk) + ": driverRoutine=" + str(self.driver_routine.pk) + DATE_STR + str(
@@ -198,8 +191,12 @@ class Ride(models.Model):
 
 class PassengerRoutine(models.Model):
     passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
-    start_location = models.CharField(max_length=256)
-    end_location = models.CharField(max_length=256)
+    start_longitude = models.DecimalField(max_digits=15, decimal_places=10, null=True)
+    start_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
+    end_longitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
+    end_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
+    start_location = models.CharField(max_length=512)
+    end_location = models.CharField(max_length=512)
     day = models.CharField(max_length=6, choices=Days.choices(), default=Days.Mon)
     end_date = models.TimeField()
     start_time_initial = models.TimeField()
@@ -219,7 +216,9 @@ class IndividualRide(models.Model):
     passenger_routine = models.ForeignKey(PassengerRoutine, on_delete=models.CASCADE, null=True, blank=True)
     acceptation_status = models.CharField(max_length=256, choices=AcceptationStatus.choices(),
                                           default=AcceptationStatus.Pending_Confirmation)
-    message = models.CharField(max_length=256, null=True, blank=True)
+    passenger_note = models.CharField(max_length=1024, null=True, blank=True)
+    decline_note = models.CharField(max_length=1024, null=True, blank=True)
+    n_seats = models.IntegerField(default=1)
 
     def __str__(self):
         return "Individual Ride " + str(self.pk) + DRIVER_STR + str(
@@ -234,7 +233,9 @@ class DriverRating(models.Model):
     individual_ride = models.OneToOneField(IndividualRide, null=False,
                                            on_delete=models.CASCADE)  # Validar que sólo se pueda hacer una vez por viaje
     rating = models.FloatField(validators=[MinValueValidator(1.0), MaxValueValidator(5.0)])
-    comment = models.CharField(max_length=1024)
+    preference_0 = models.BooleanField(default=False)
+    preference_1 = models.BooleanField(default=False)
+    preference_2 = models.BooleanField(default=False)
 
     def __str__(self):
         return "Driver rating " + str(self.pk) + DRIVER_STR + str(
@@ -259,7 +260,9 @@ class PassengerRating(models.Model):
     individual_ride = models.OneToOneField(IndividualRide, null=False,
                                            on_delete=models.CASCADE)  # Validar que sólo se pueda hacer una vez por viaje
     rating = models.FloatField(validators=[MinValueValidator(1.0), MaxValueValidator(5.0)])
-    comment = models.CharField(max_length=1024)
+    preference_0 = models.BooleanField(default=False)
+    preference_1 = models.BooleanField(default=False)
+    preference_2 = models.BooleanField(default=False)
 
     def __str__(self):
         return "Passenger rating " + str(self.pk) + DRIVER_STR + str(
@@ -273,18 +276,15 @@ class PassengerRating(models.Model):
 
 
 class Report(models.Model):
-    individual_ride = models.OneToOneField(IndividualRide, null=False,
-                                           on_delete=models.CASCADE)  # Validar que sólo se pueda hacer una vez por viaje
-    message = models.CharField(max_length=1024)
-    is_user_reported_the_driver = models.BooleanField(null=False)
+    ride = models.ForeignKey(Ride, null=False,
+                             on_delete=models.CASCADE)  # Validar que sólo se pueda hacer una vez por viaje
+    passenger_reported = models.ForeignKey(Passenger, on_delete=models.CASCADE, related_name='passenger_reported')
+    passenger_doing_reporter = models.ForeignKey(Passenger, on_delete=models.CASCADE, related_name='passenger_reporter')
+    message = models.CharField(max_length=1024, null=False)
 
     def __str__(self):
-        result = "Report " + str(self.pk) + ": userReported="
-        if self.is_user_reported_the_driver:
-            result += str(self.individual_ride.ride.driver_routine.driver.passenger.user.pk)
-        else:
-            result += str(self.individual_ride.passenger.user.pk)
-        result += DATE_STR + str(self.individual_ride.start_date.date())
+        result = "Report " + str(self.pk) + ": userReported=" + str(self.passenger_reported.pk)
+
         return result
 
     class Meta:
@@ -332,23 +332,6 @@ class Paypal(models.Model):
     class Meta:
         verbose_name = "Paypal"
         verbose_name_plural = "Paypals"
-
-
-class FavDirection(models.Model):
-    user = models.ForeignKey(Passenger, on_delete=models.CASCADE)
-    name = models.CharField(max_length=256)
-    location = Coord(null=False)
-    direction = models.CharField(max_length=256)
-    city = models.CharField(max_length=256)
-    cp = models.CharField(max_length=10)
-
-    def __str__(self):
-        return "Direction " + str(self.pk) + USER_STR + str(self.user.user.pk) + ", name=" + str(
-            self.name) + ", location=" + str(self.location)
-
-    class Meta:
-        verbose_name = "FavDirection"
-        verbose_name_plural = "FavDirections"
 
 
 class DiscountCode(models.Model):
@@ -403,3 +386,11 @@ class IndividualDiscountCode(models.Model):
     class Meta:
         verbose_name = "Individual Discount code"
         verbose_name_plural = "Individual Discount codes"
+
+
+class Transaction(models.Model):
+    sender = models.ForeignKey(Passenger, on_delete=models.CASCADE, related_name='sender')
+    receiver = models.ForeignKey(Passenger, on_delete=models.CASCADE, related_name='receiver')
+    status = models.CharField(max_length=16, choices=TransactionStatus.choices(), default=TransactionStatus.Pending)
+    is_refund = models.BooleanField(default=False)
+    amount = models.FloatField()

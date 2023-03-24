@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import *
+from .models import Passenger, Ride, Driver, DriverRating, PassengerRating, Vehicle, IndividualRide,PassengerRoutine, DriverRoutine, CreditCard, Paypal,DiscountCode,IndividualDiscountCode,PassengerDiscountCode,RoutineRequest,Report, Transaction
 
 # Register your models here.
 
@@ -14,10 +14,10 @@ admin.site.register(PassengerRoutine)
 admin.site.register(DriverRoutine)
 admin.site.register(CreditCard)
 admin.site.register(Paypal)
-admin.site.register(FavDirection)
 admin.site.register(DiscountCode)
 admin.site.register(IndividualDiscountCode)
 admin.site.register(PassengerDiscountCode)
 admin.site.register(RoutineRequest)
 admin.site.register(Report)
+admin.site.register(Transaction)
 

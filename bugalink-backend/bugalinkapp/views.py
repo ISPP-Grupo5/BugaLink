@@ -253,8 +253,8 @@ class CancelRoutineRequest(APIView):
 class CancelIndividualRide(APIView):
     def post(self, request):
         try:
-            indiviudal_ride = IndividualRide.objects.get(id=request.data["individualRideId"])
-        except IndividualRide.DoesNotExist:
+            indiviudal_ride = m.IndividualRide.objects.get(id=request.data["individualRideId"])
+        except m.IndividualRide.DoesNotExist:
             return JsonResponse({'error': 'Ride not found'}, status=404)
 
         diff = datetime.datetime.now() - indiviudal_ride.start_date
@@ -270,18 +270,18 @@ class CreateIndividualRide(APIView):
     def post(self, request):
         if request.method == 'POST':
             user = User.objects.get(id=request.data["userId"])
-            passenger = Passenger.objects.get(user=user)
-            ride = Ride.objects.get(id=request.data["rideId"])
+            passenger = m.Passenger.objects.get(user=user)
+            ride = m.Ride.objects.get(id=request.data["rideId"])
             driver_routine = ride.driver_routine
             day = driver_routine.days
 
-            passenger_routine_qs = PassengerRoutine.objects.filter(passenger=passenger, days=request.data["day"])
+            passenger_routine_qs = m.PassengerRoutine.objects.filter(passenger=passenger, days=request.data["day"])
             list_passenger_routine = list(passenger_routine_qs)  # L-8 , L-10, L-19
 
             not_satisfied_passenger_routines = []
             for p_routine in list_passenger_routine:  # Se obtienen todos passenger routines no satisfechos por una routine_request
-                routine_request = RoutineRequest.objects.get(passenger_routine=p_routine,
-                                                             acceptation_status=AcceptationStatus.Accepted)
+                routine_request = m.RoutineRequest.objects.get(passenger_routine=p_routine,
+                                                             acceptation_status=m.AcceptationStatus.Accepted)
                 if routine_request == None:
                     not_satisfied_passenger_routines.append(p_routine)
 
@@ -295,7 +295,7 @@ class CreateIndividualRide(APIView):
             if satisfied == True:
                 passenger_routine = p_r
             else:
-                passenger_routine = PassengerRoutine(
+                passenger_routine = m.PassengerRoutine(
                     passenger=passenger,
                     start_location=driver_routine.start_location,
                     end_location=driver_routine.end_location,
@@ -305,12 +305,12 @@ class CreateIndividualRide(APIView):
                     start_time_final=driver_routine.start_date)
                 passenger_routine.save()
 
-            i_r = IndividualRide(ride=ride,
+            i_r = m.IndividualRide(ride=ride,
                                  passenger=passenger,
                                  passenger_routine=passenger_routine,
                                  price=0,  # TODO Pendiente de revisión
-                                 ride_status=RideStatus.Pending_start,
-                                 acceptation_status=AcceptationStatus.Pending_Confirmation,
+                                 ride_status=m.RideStatus.Pending_start,
+                                 acceptation_status=m.AcceptationStatus.Pending_Confirmation,
                                  start_date=ride.start_date,
                                  end_date=ride.end_date,
                                  start_location=ride.start_location,
@@ -663,24 +663,24 @@ class DriverRoutine(APIView):
 class RoutineRequest(APIView):
     def post(self, request):
         if request.method == 'POST':
-            user = User.objects.get(id=request.data["userId"])
-            passenger = Passenger.objects.get(user=user)
-            passenger_routine_qs = PassengerRoutine.objects.filter(passenger=passenger, days=request.data["day"])
+            user = m.User.objects.get(id=request.data["userId"])
+            passenger = m.Passenger.objects.get(user=user)
+            passenger_routine_qs = m.PassengerRoutine.objects.filter(passenger=passenger, days=request.data["day"])
             list_passenger_routine = list(passenger_routine_qs)  # L-8 , L-10, L-19
 
             not_satisfied_passenger_routines = []
             for p_routine in list_passenger_routine:  # Se obtienen todos passenger routines no satisfechos por una routine_request
-                routine_request = RoutineRequest.objects.get(passenger_routine=p_routine,
-                                                             acceptation_status=AcceptationStatus.Accepted)
+                routine_request = m.RoutineRequest.objects.get(passenger_routine=p_routine,
+                                                             acceptation_status=m.AcceptationStatus.Accepted)
                 if routine_request == None:
                     not_satisfied_passenger_routines.append(p_routine)
 
-            ride = Ride.objects.get(id=request.data["rideId"])
+            ride = m.Ride.objects.get(id=request.data["rideId"])
             driver_routine = ride.driver_routine
             day = driver_routine.days
 
             for passenger_routine in not_satisfied_passenger_routines:
-                p_r = PassengerRoutine.objects.get(
+                p_r = m.PassengerRoutine.objects.get(
                     passenger_routine.start_time_initial <= ride.start_date <= passenger_routine.start_time_final)
                 if p_r != None:
                     satisfied = True
@@ -689,7 +689,7 @@ class RoutineRequest(APIView):
             if satisfied == True:
                 pass
             else:
-                p_r = PassengerRoutine(
+                p_r = m.PassengerRoutine(
                     passenger=passenger,
                     start_location=driver_routine.start_location,
                     end_location=driver_routine.end_location,
@@ -699,8 +699,8 @@ class RoutineRequest(APIView):
                     start_time_final=driver_routine.start_date)
                 p_r.save()
 
-            rq = RoutineRequest(passenger_routine=p_r, driver_routine=driver_routine, day=day,
-                                acceptation_status=AcceptationStatus.Pending_Confirmation)
+            rq = m.RoutineRequest(passenger_routine=p_r, driver_routine=driver_routine, day=day,
+                                acceptation_status=m.AcceptationStatus.Pending_Confirmation)
             rq.save()
             return JsonResponse({'success': True})
         else:
@@ -712,12 +712,12 @@ class RoutineRequest(APIView):
 class Driver(APIView):
     def cancel_routine_request(self, request):
         try:
-            routine_request = RoutineRequest.objects.get(id=request.data["routineRequestId"])
-        except RoutineRequest.DoesNotExist:
+            routine_request = m.RoutineRequest.objects.get(id=request.data["routineRequestId"])
+        except m.RoutineRequest.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'La instancia con el ID dado no existe'}, status=404)
 
         if request.method == 'PUT':
-            routine_request.acceptation_status = AcceptationStatus.Cancelled
+            routine_request.acceptation_status = m.AcceptationStatus.Cancelled
             routine_request.save()
             return JsonResponse({'success': True})
         else:

@@ -22,8 +22,8 @@ export default function Transaction({
   Icon3,
 }: Params) {
   return (
-    <div className="flex flex-row place-content-center justify-between space-x-2">
-      <div className="flex scale-90 flex-row -space-x-16">
+    <div className="grid grid-cols-4 place-content-center justify-between space-x-2">
+      <div className="mx-auto col-span-1 flex scale-90 flex-row -space-x-16">
         {Icon2 != null && (
           <img
             src={Icon2}
@@ -39,15 +39,15 @@ export default function Transaction({
         )}
       </div>
 
-      <div className="w-2/4 text-ellipsis py-4">
-        <p className=" text-base text-black">{people}</p>
+      <div className="col-span-2 text-ellipsis py-4">
+        <p className=" text-lg text-black font-bold">{people}</p>
         <p className="text-base text-gray">
           {travelType} - {date}
         </p>
       </div>
 
-      <div className="-translate-x-4 py-4">
-        <p className={'text-right text-base font-bold ' + className}>{money}</p>
+      <div className="my-auto mx-auto col-span-1 text-right pr-3 ">
+        <p className={'text-lg font-bold ' + className}>{money}</p>
         {isPending && <p className="text-base text-yellow">Pendiente</p>}
       </div>
     </div>

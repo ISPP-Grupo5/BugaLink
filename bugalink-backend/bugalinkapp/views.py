@@ -722,3 +722,102 @@ class Driver(APIView):
             return JsonResponse({'success': True})
         else:
             return JsonResponse({'success': False, 'error': 'El método de solicitud no está permitido'}, status=405)
+
+
+class UsersTest(APIView):
+    def get(self, request, userId):
+        try:
+            user = m.Passenger.objects.get(user_id=userId)
+            serializer = PassengerSerializer(user, context={'request': request})
+            return JsonResponse(serializer.data)
+        except m.Passenger.DoesNotExist:
+            return JsonResponse({"message": "Not found"}, status=404)
+        
+    def put(self, request, userId):
+        try:
+            passenger = m.Passenger.objects.get(user_id=userId)
+            user = passenger.user
+            if request.data.get('photo'):
+                passenger.photo = request.data.get('photo')
+            if request.data.get('firstName'):
+                user.first_name = request.data.get('firstName')
+            if request.data.get('lastName'):
+                user.last_name = request.data.get('lastName')
+            if request.data.get('password'):
+                user.set_password(request.data.get('password'))
+            passenger.save()
+            user.save()
+            serializer = UserSerializer(user)
+            return JsonResponse(serializer.data,status= 201)
+        except m.User.DoesNotExist:
+             return JsonResponse({"message": "Not found"}, status=404)
+        
+    def delete(self,request, userId):
+        try:
+            user = m.User.objects.get(pk=userId)
+            user.delete()
+            return Response(status=204)
+        except m.User.DoesNotExist:
+            return JsonResponse({"error":"User not found"}, status=404)
+
+            
+
+
+class RatingListTest(APIView):
+    def post(self, request):
+        try:
+            rating_type = request.data.get('rating_type')
+            driver_id = int(request.data['driverId'])
+            passenger_id = int(request.data['passengerId'])
+            individual_ride_id = int(request.data['individualRideId'])
+            rating = float(request.data['rating'])
+            preference_0 = request.data['preference0']
+            preference_1 = request.data['preference1']
+            preference_2 = request.data['preference2']
+        except Exception as e:
+            return JsonResponse({'error': 'Data not valid'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            individual_ride = m.IndividualRide.objects.get(pk=individual_ride_id)
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'Data not valid. The id\'s does not exist'},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if driver_id == passenger_id:
+            return JsonResponse({'error': 'Data not valid. Same Driver and Passenger id'},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if individual_ride.passenger.pk != passenger_id:
+            return JsonResponse({'error': 'Data not valid. Passenger id does not match the IndividualRide passenger'},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if individual_ride.ride.driver_routine.driver.pk != driver_id:
+            return JsonResponse({'error': 'Data not valid. Driver id does not match the IndividualRide driver'},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        data = {
+                "individual_ride": individual_ride_id,
+                "rating": rating,
+                "preference_0": preference_0,
+                "preference_1": preference_1,
+                "preference_2": preference_2,
+            }
+        if rating_type == 'driver':
+            serializer = DriverRatingSerializer(data=data)
+
+        elif rating_type == 'passenger':
+            serializer = PassengerRatingSerializer(data=data)
+        else:
+            return JsonResponse({'error': 'Invalid rating type. Options are "driver" and "passenger"'},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class CancelRoutineRequestTest(APIView):
+    def put(self, request, routineRequestId):
+        try:
+            routineRequest = m.RoutineRequest.objects.get(id=routineRequestId)
+            routineRequest.acceptation_status = m.AcceptationStatus.Cancelled
+            m.RoutineRequest.objects.put(routineRequest)
+        except m.IndividualRide.DoesNotExist:
+            raise Http404

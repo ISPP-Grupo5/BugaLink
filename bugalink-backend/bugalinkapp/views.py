@@ -78,7 +78,7 @@ class Ratings(APIView):
                 driver = m.Driver.objects.get(passenger=passenger)
                 ratings_driver_rating = list(DriverRating.objects.all())
                 for rating_dr in ratings_driver_rating:
-                    if driver.passenger.id == rating_dr.individual_ride.ride.driver_routine.driver.passenger.id:
+                    if driver.passenger.user_id == rating_dr.individual_ride.ride.driver_routine.driver.passenger.user_id:
                         rating += rating_dr.rating
                         total_ratings +=1
             except:
@@ -86,7 +86,7 @@ class Ratings(APIView):
             
             ratings_passenger_rating = list(PassengerRating.objects.all())
             for rating_pr in ratings_passenger_rating:
-                    if passenger.id == rating_pr.individual_ride.passenger.id:
+                    if passenger.user_id == rating_pr.individual_ride.passenger.user_id:
                         rating += rating_pr.rating
                         total_ratings +=1
             
@@ -95,7 +95,7 @@ class Ratings(APIView):
             json_data = {}
             json_data['rating'] = rating/total_ratings
             json_data['total_ratings'] = total_ratings
-            json_data['profile_photo'] = passenger.photo
+            json_data['profile_photo'] = str(passenger.photo)   #Mirar si esta bien así
             json_data['username'] = user.username
             return JsonResponse(json_data)
         except m.User.DoesNotExist:

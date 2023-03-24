@@ -316,7 +316,7 @@ class UserGetTest(TestCase):
         self.assertEqual(data['user'],self.user1.pk)
 
 # users /<userId>/rides/total -> Devuelve el número total de viajes que ha hecho el usuario con BugaLink
-'''class TotalRidesGetTest(TestCase):
+class TotalRidesGetTest(TestCase):
 
     def setUp(self):
         self.client = APIClient()
@@ -330,16 +330,11 @@ class UserGetTest(TestCase):
         self.driver1.delete()
        
     def test_get_user_by_id(self):
-        print(User.objects.get(pk=8))
-        print(self.user1.pk)
-        url = "users/" + str(self.user1.pk) + "/rides/total" 
-        print(url)
+        url = "/api/users/" + str(self.user1.pk) + "/rides/total" 
         response = self.client.get(url)
-        print("Respuesta : ")
-        print(response.content)
         data = json.loads(response.content)
 
-        self.assertEqual(data['total_rides'],0)'''
+        self.assertEqual(data['total_rides'],0)
 
 class RatingsGetTest(TestCase):
     def setUp(self):
@@ -366,12 +361,23 @@ class RatingsGetTest(TestCase):
         self.passenger1.delete()
         self.user1.delete()
         self.driver1.delete()
+        self.driverRoutine1.delete()
+        self.ride1.delete()
+        self.individualRide1.delete()
+        self.ratingDriver.delete() 
+
+        self.passenger2.delete()
+        self.user2.delete()
+        self.driver2.delete()
+        self.driverRoutine2.delete()
+        self.ride2.delete()
+        self.individualRide2.delete()
+        self.ratingPassenger.delete()
         
     def test_get_user_by_id(self):
-        url = "users/" + str(self.user1.pk) + "/reviews/rating" 
+        url = "/api/users/" + str(self.user1.pk) + "/reviews/rating" 
         response = self.client.get(url)
         print("Respuesta : ")
-        print(response.content)
         data = json.loads(response.content)
 
         self.assertEqual(data['total_ratings'],2)

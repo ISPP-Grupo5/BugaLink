@@ -19,7 +19,11 @@ export default function MapPreview({
   setTime,
 }: Props) {
   return (
-    <Link href="/ride/V1StGXR8_Z5jdHi6B-myT/map" className="h-3/6 w-full">
+    <Link
+      data-cy="map-link"
+      href="/ride/V1StGXR8_Z5jdHi6B-myT/map"
+      className="h-3/6 w-full"
+    >
       <div
         className={
           'flex w-full flex-row items-center justify-between py-2 ' + className

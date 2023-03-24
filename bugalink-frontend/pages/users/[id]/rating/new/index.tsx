@@ -44,7 +44,7 @@ export default function Rating() {
   };
 
   return (
-    <div className="flex justify-center h-screen bg-base">
+    <div className="bg-base flex h-screen justify-center">
       <BackButton />
       <div className="w-11/12 bg-white pb-44">
         {/* Profile header */}
@@ -64,7 +64,7 @@ export default function Rating() {
                 fontSize: '28px',
                 lineHeight: '28px',
               }}
-              className="text-xl font-Lato"
+              className="font-Lato text-xl"
             >
               ¿Cómo ha ido el viaje?
             </p>
@@ -87,7 +87,7 @@ export default function Rating() {
             alignItems: 'center',
             marginTop: '20px',
           }}
-          className="grid grid-cols-2 px-5 py-2 gap-2"
+          className="grid grid-cols-2 gap-2 px-5 py-2"
         >
           <div style={{ marginTop: '-20px' }} className="font-bold">
             <p
@@ -96,7 +96,7 @@ export default function Rating() {
                 fontSize: '18px',
                 lineHeight: '16px',
               }}
-              className="text-xl font-Lato"
+              className="font-Lato text-xl"
             >
               Pablo Delfín López
             </p>

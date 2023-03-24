@@ -277,8 +277,7 @@ class CancelIndividualRide(APIView):
 ############## ENDPOINTS ASOCIADOS A RIDE
 
 class RideSearch(APIView):
-    
-    def get(self, request):
+    def post(self, request):
         try:
             resultRides = []
 
@@ -295,18 +294,18 @@ class RideSearch(APIView):
 
                 # Filtramos por valoración
                 driver = ride.driver_routine.driver  # Tenemos que sacar al conductor para averiguar su valoración
-                ratingFilter = rating <= m.DriverRating.get_driver_rating(driver=driver)
+                ratingFilter = float(rating) <= m.Passenger.get_driver_rating(driver)
                 free_seats = ride.num_seats
-                price = ride.price
+                price = ride.driver_routine.price
                 # Si se han cumplido estos filtros, revisamos todos los viajes individuales de este viaje
-                if dateFilter and ratingFilter and free_seats > 0 and lowPrice <= price and highPrice >= price:
+                if dateFilter and ratingFilter and free_seats > 0 and float(lowPrice) <= price and float(highPrice) >= price:
                     resultRides.append(ride)
-
             serializer = ListRideSerializer({"rides": resultRides})
 
-            return JsonResponse(serializer.data)
+            return JsonResponse(serializer.data, status = status.HTTP_200_OK)
         except Exception as e:
-            return JsonResponse({"message": str(e)}, status = 400)
+            print('EL ERROR ' + str(e))
+            return JsonResponse({"message": str(e)}, status = status.HTTP_400_BAD_REQUEST)
 
 
 class CreateIndividualRide(APIView):

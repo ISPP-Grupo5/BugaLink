@@ -133,3 +133,30 @@ class Test(TestCase):
         self.assertEqual(self.vehicle.plate, 'Test Plate')
         self.assertTrue(self.vehicle.has_insurance)
         self.assertEqual(self.vehicle.insurance.name, 'test_insurance.pdf')
+
+    # Test ROUTINES
+
+    # Test PUT routines
+    def test_put_driver_routine(self):
+        data = {
+            "default_vehicle_id":1,
+            "driver_id": 2,
+            "default_num_seats": 1,
+            "start_date_0": "9:00",
+            "start_date_1": "9:10",
+            "end_date": "9:30",
+            "start_latitude":33.333333333,
+            "start_longitude":33.333333333,
+            "end_latitude":32.24,
+            "end_longitude":34.2,
+            "start_location": "Av. de Italia, 41012 Sevilla",
+            "end_location": "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla",
+            "day": "Mon",
+            "one_ride": "False",
+            "price": 3.22,
+            "driver_note":"La puerta de detrás te la tengo que abrir yo desde dentro"
+        }
+        
+        
+        response = self.client.put('/api/users/driver-routine/1', data)
+        print(response)

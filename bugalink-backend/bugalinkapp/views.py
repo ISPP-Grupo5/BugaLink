@@ -97,7 +97,6 @@ class RoutineRecommendation(APIView):
                         rides.append(ride)
 
             # Llamada al serializer para devolver todos los viajes que han sido seleccionados
-            print('LOS RIDES' + str(rides))
             serializer = ListRideSerializer({"rides": rides})
             return JsonResponse(serializer.data, status=status.HTTP_200_OK)
 

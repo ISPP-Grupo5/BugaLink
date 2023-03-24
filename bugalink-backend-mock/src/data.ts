@@ -94,6 +94,67 @@ export const sampleTripRequests = [
     price: 1.5,
   },
 ];
+
+export const sampleUser = {
+  id: 1,
+  name: 'Paco',
+  lastName: 'Perez',
+  photo: '/assets/avatar.png',
+};
+
+export const individualRides = [
+  {
+    individualRideId:1,
+    passenger : {
+      user : {
+        username :'Jesús Marchena',
+        photo: '/assets/avatar.png',
+      }
+    },
+    passenger_routine : {
+      start_location : '88.2231, 88.2324',
+      end_location : '88.2431, 88.2124',
+      days : 'martes y jueves',
+      end_date : '14 de Marzo de 2023',
+      start_time_initial : '2021-05-01T21:00:00',
+      start_time_final : '2021-05-01T21:00:00',
+    },
+    price : 3,
+    ride_status : 'Pending start',
+    acceptation_status : 'Pending Confirmation',
+    start_date : '14 de Marzo de 2023',
+    end_date : '14 de Marzo de 2023',
+    start_location : 'Escuela Técnica Superior de Ingeniería Informática, 41002 Sevilla',
+    end_location : 'Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla',
+    message : 'Algunos días no haré el viaje, avisaré con antelación.',
+  },
+  {
+    individualRideId:2,
+    passenger : {
+      user : {
+        username :'Pedro Sánchez',
+        photo: '/assets/avatar.png',
+      }
+    },
+    passenger_routine : {
+      start_location : '88.2231, 88.2324',
+      end_location : '88.2431, 88.2124',
+      days : 'martes y jueves',
+      end_date : '14 de Marzo de 2023: 8:00',
+      start_time_initial : '8:00',
+      start_time_final : '8:15',
+    },
+    price : 3,
+    ride_status : 'Pending start',
+    acceptation_status : 'Pending Confirmation',
+    start_date : '14 de Marzo de 2023: 7:30',
+    end_date : '14 de Marzo de 2023: 8:00',
+    start_location : '9.33,19.23',
+    end_location : '9.33,19.28',
+    message : 'Algunos días no haré el viaje, avisaré con antelación',
+  },
+]
+  
 export const sampleRoutines = [
   {
     id: 1,

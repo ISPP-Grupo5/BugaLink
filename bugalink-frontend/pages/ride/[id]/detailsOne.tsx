@@ -38,6 +38,7 @@ export default function DetailsOne() {
             name="Jesús Marchena"
             rating="4.8"
             numberOfRatings="14"
+            photo='/assets/avatar.png'
           />
           {/* Origin and target destinations */}
           <div className="grid grid-cols-2 gap-2 py-2 text-sm">

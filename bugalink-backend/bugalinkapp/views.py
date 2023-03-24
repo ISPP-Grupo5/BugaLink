@@ -31,16 +31,14 @@ class Users(APIView):
 
 
 class RoutineRecommendation(APIView):
-    def get(self, request):
+    def get(self, request, user_id):
         try:
             # Definicion de parametros del passenger asociado al user que efectua el filtro
             driver_routines = m.DriverRoutine.objects.all()
-            user = m.User.objects.get(id=request.data['userId'])
+            user = m.User.objects.get(id=user_id)
             passenger = m.Passenger.objects.get(user=user)
             passenger_routine = m.PassengerRoutine.objects.get(
                 passenger=passenger)
-            source_location = passenger_routine.start_location
-            destination_location = passenger_routine.end_location
             min_time = passenger_routine.start_time_initial
             max_time = passenger_routine.start_time_final
             passenger_days = passenger_routine.day
@@ -56,16 +54,20 @@ class RoutineRecommendation(APIView):
                     similar_days.append(driver_day)
 
                 # Definir las horas de inicio y fin de la rutina del pasajero
-                drivers_beggining_of_ride = routine.start_date
-                drivers_ending_of_ride = routine.end_date
+                drivers_beggining_of_ride_0 = routine.start_date_0
+                drivers_beggining_of_ride_1 = routine.start_date_1
 
                 # Definir lugares de inicio y fin de la rutina del conductor
-                driver_source_location = routine.start_location
-                driver_ending_location = routine.end_location
+                lat_source_driver = routine.start_latitude
+                lon_source_driver = routine.start_longitude
+                lat_end_driver = routine.end_latitude
+                lon_end_driver = routine.end_longitude
 
                 # Obtenner en kilometros la distancia en kilometros entre los lugares de origen
-                lat_source_passenger, lon_source_passenger = map(radians, source_location)
-                lat_source_driver, lon_source_driver = map(radians, driver_source_location)
+                lat_source_passenger = passenger_routine.start_latitude
+                lon_source_passenger = passenger_routine.start_longitude
+                lat_end_passenger = passenger_routine.end_latitude
+                lon_end_passenger = passenger_routine.end_longitude
                 d_lat_source = lat_source_driver - lat_source_passenger
                 d_lon_source = lon_source_driver - lon_source_passenger
                 a = sin(d_lat_source / 2) ** 2 + cos(lat_source_passenger) * cos(lat_source_driver) * sin(
@@ -74,8 +76,6 @@ class RoutineRecommendation(APIView):
                 source_distance = 6371 * c
 
                 # Obtener en kilometros la diferencia de distancia entre los lugares destino
-                lat_end_passenger, lon_end_passenger = map(radians, destination_location)
-                lat_end_driver, lon_end_driver = map(radians, driver_ending_location)
                 d_lat_destination = lat_end_driver - lat_end_passenger
                 d_lon_destination = lon_end_driver - lon_end_passenger
                 a = sin(d_lat_destination / 2) ** 2 + cos(lat_end_passenger) * cos(lat_end_driver) * sin(
@@ -85,7 +85,7 @@ class RoutineRecommendation(APIView):
 
                 # Uso de todos los datos obtenidos para crear un filtro que compruebe si la rutina es valida
                 # Si es valida se guarda en una lista
-                if len(similar_days) > 0 and min_time <= drivers_beggining_of_ride and max_time >= drivers_beggining_of_ride and destination_distance <= 1 and source_distance <= 1:
+                if len(similar_days) > 0 and (drivers_beggining_of_ride_0 <= max_time and drivers_beggining_of_ride_1 >= min_time) and destination_distance <= 1 and source_distance <= 1:
                     valid_routines.append(routine)
 
             # Se obtienen los viajes asociados a las rutinas marcadas como validas y se guardan a una lista que las devolvera como respuesta
@@ -97,12 +97,12 @@ class RoutineRecommendation(APIView):
                         rides.append(ride)
 
             # Llamada al serializer para devolver todos los viajes que han sido seleccionados
-            serializer = ListRideSerializer(rides, many=True)
-            return JsonResponse(serializer.data)
+            print('LOS RIDES' + str(rides))
+            serializer = ListRideSerializer({"rides": rides})
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
 
-        except Exception:
-            raise Http404  # Mejorar errores
-
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status = status.HTTP_400_BAD_REQUEST)
 
 class PendingIndividualRide(APIView):
     def get(self, request):
@@ -387,10 +387,9 @@ class CanceledRoutineRequests(APIView):
 
 
 class Rating(APIView):
-    def get(self, request):
-        user_id = request.data.get('userId')
+    def get(self, request, user_id):
         if not user_id:
-            return JsonResponse({'error': 'userId not provided'}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'error': 'user_id not provided'}, status=status.HTTP_400_BAD_REQUEST)
 
         driver_rating_list = []
         passenger_rating_list = []

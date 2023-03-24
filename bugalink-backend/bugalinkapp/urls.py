@@ -10,6 +10,7 @@ urlpatterns = [
     path('ride/search', views.RideSearch.as_view()),
     path('individualRides', views.IndividualRides.as_view()),
     path('rides', views.Rides.as_view()),
+    path('rides/individual/<int:individualRideId>/decline', views.CancelPassengerIndividualRide.as_view()),
     path('users/<int:user_id>', views.Users.as_view()),
     path('users/<int:user_id>/rides/total', views.TotalRides.as_view()),
     path('users/<int:user_id>/reviews/rating', views.Ratings.as_view()),

@@ -297,14 +297,15 @@ class AcceptPassengerIndividualRide:
             raise Http404
 
 
-class CancelPassengerIndividualRide:
-    def put(self, request):
+class CancelPassengerIndividualRide(APIView):
+    def patch(self, request, individualRideId):
         try:
-            individualRide = m.IndividualRide.objects.get(id=request.data['individualRideId'])
+            individualRide = m.IndividualRide.objects.get(id=individualRideId)
             individualRide.acceptation_status = m.AcceptationStatus.Cancelled
-            m.IndividualRide.objects.put(individualRide)
-        except m.IndividualRide.DoesNotExist:
-            raise Http404
+            individualRide.save()
+            return JsonResponse({"message": "Solicitud rechazada"}, status = status.HTTP_200_OK)
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status = status.HTTP_400_BAD_REQUEST)
 
 
 class AcceptRoutineRequest(APIView):

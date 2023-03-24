@@ -596,7 +596,7 @@ class PassengerRoutine(APIView):
             serializer = PassengerRoutineSerializer(data=request.data, many=False)
             if serializer.is_valid():
                 serializer.save()
-                return JsonResponse(serializer.data)
+                return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception:
@@ -652,7 +652,7 @@ class DriverRoutine(APIView):
             serializer = DriverRoutineSerializer(data=request.data, many=False)
             if serializer.is_valid():
                 serializer.save()
-                return JsonResponse(serializer.data)
+                return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception:

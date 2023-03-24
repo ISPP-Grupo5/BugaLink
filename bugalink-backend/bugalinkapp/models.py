@@ -99,7 +99,7 @@ class Driver(models.Model):
     preference_3 = models.BooleanField(default=False)
     dni_status = models.CharField(max_length=32, choices=DocumentValidationStatus.choices(),
                                   default=DocumentValidationStatus.none)
-    entry_date = models.DateField()
+    entry_date = models.DateField(default=timezone.now)
     driver_license_status = models.CharField(max_length=32, choices=DocumentValidationStatus.choices(),
                                              default=DocumentValidationStatus.none)
     sworn_declaration_status = models.CharField(max_length=32, choices=DocumentValidationStatus.choices(),
@@ -153,7 +153,7 @@ class DriverRoutine(models.Model):
     end_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
     start_location = models.CharField(max_length=512)
     end_location = models.CharField(max_length=512)
-    day = models.CharField(max_length=6, choices=Days.choices(), default=Days.Mon)
+    day = models.CharField(max_length=26, choices=Days.choices(), default=Days.Mon)
     one_ride = models.BooleanField(default=False)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     driver_note = models.CharField(max_length=1024, null=True, blank=True)
@@ -197,7 +197,7 @@ class PassengerRoutine(models.Model):
     end_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
     start_location = models.CharField(max_length=512)
     end_location = models.CharField(max_length=512)
-    day = models.CharField(max_length=6, choices=Days.choices(), default=Days.Mon)
+    day = models.CharField(max_length=26, choices=Days.choices(), default=Days.Mon)
     end_date = models.TimeField()
     start_time_initial = models.TimeField()
     start_time_final = models.TimeField()

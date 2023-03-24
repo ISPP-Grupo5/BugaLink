@@ -19,13 +19,49 @@ from django.http import Http404
 from rest_framework.response import Response
 
 
-class Users(APIView):
+class Passengers(APIView):
 
     def get(self, request):
         try:
             user = m.Passenger.objects.get(user_id=request.data['userId'])
             serializer = PassengerSerializer(user, context={'request': request})
             return JsonResponse(serializer.data)
+        except m.User.DoesNotExist:
+            return JsonResponse({"message": "Not found"}, status=404)
+        
+# users /<userId> -> Devuelve la información del usuario
+class Users(APIView):
+    def get(self, request, userId):
+        try:
+            user = m.User.objects.get(id=userId)
+            passenger = m.Passenger.objects.get(user=user)
+            serializer = UserSerializer(user, context={'request': request})
+            serializer_data = serializer.data
+            serializer_data.update(PassengerSerializer(passenger, context={'request': request}).data)
+            return JsonResponse(serializer_data)
+        except m.User.DoesNotExist:
+            return JsonResponse({"message": "Not found"}, status=404)
+
+
+# users /<userId>/rides/total -> Devuelve el número total de viajes que ha hecho el usuario con BugaLink
+
+class TotalRides(APIView):
+    def get(self, request, userId):
+        try:
+            total_rides = 0
+            passenger = m.Passenger.objects.get(user_id=userId)
+            try:    # Count rides in case the user is also a driver
+                driver = m.Driver.objects.get(passenger=passenger)
+                driver_routines = m.DriverRoutine.objects.filter(driver=driver)
+                for driver_routine in driver_routines:
+                    rides = m.Ride.objects.filter(driver_routine=driver_routine).count()
+                    total_rides += rides
+            except:
+                pass
+
+            individual_rides = m.IndividualRide.objects.filter(passenger=passenger).count()
+            total_rides += individual_rides
+            return JsonResponse({"total_rides": total_rides})
         except m.User.DoesNotExist:
             return JsonResponse({"message": "Not found"}, status=404)
 

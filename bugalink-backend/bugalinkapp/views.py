@@ -608,7 +608,8 @@ class PassengerRoutine(APIView):
             for key, value in request.data.items():
                 setattr(routine, key, value)
             routine.save()
-            return JsonResponse({'message': 'Success'})
+            serializer = PassengerRoutineSerializer(routine, context={'request': request})
+            return JsonResponse(serializer.data,status= 201)
         except ObjectDoesNotExist:
             return JsonResponse(
                 {'error': 'PassengerRoutine does not exist with id {}'.format(passenger_routine_id)},
@@ -635,7 +636,8 @@ class DriverRoutine(APIView):
             for key, value in request.data.items():
                 setattr(routine, key, value)
             routine.save()
-            return JsonResponse({'message': 'Success'})
+            serializer = DriverRoutineSerializer(routine, context={'request': request})
+            return JsonResponse(serializer.data,status= 201)
         except ObjectDoesNotExist:
             return JsonResponse(
                 {'error': 'DriverRoutine does not exist with id {}'.format(driver_routine_id)},

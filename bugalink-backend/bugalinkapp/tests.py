@@ -395,7 +395,17 @@ class PutRoutinesTest(TestCase):
         self.vehicle1 = Vehicle.objects.create(driver=self.driver1)
         self.driver_routine1 = DriverRoutine.objects.create(driver=self.driver1,default_vehicle=self.vehicle1,default_num_seats=2, start_date_0=time(12,00),start_date_1=time(12,30),end_date=time(13,00),start_location="Virgen de Lujan 120",end_location="Paseo de las Delicias S/N",day=Days.Mon,one_ride=True,price=2.0)
         self.passenger_routine1 = PassengerRoutine.objects.create(passenger=self.passenger1,start_time_initial=time(12,00),start_time_final=time(12,30),end_date=time(13,00),start_location="Virgen de Lujan 120",end_location="Paseo de las Delicias S/N",day=Days.Mon)
-
+        self.passenger_routine2 = PassengerRoutine.objects.create(passenger=self.passenger1,
+                                                                  start_time_initial=time(12,00),
+                                                                  start_time_final=time(12,30),
+                                                                  end_date=time(13,00),
+                                                                  start_longitude = "-77.0680000000",
+                                                                  start_latitude = "38.8951000000",
+                                                                  end_longitude = "-76.6183000000",
+                                                                  end_latitude = "39.2904000000",
+                                                                  start_location="Virgen de Lujan 120",
+                                                                  end_location="Paseo de las Delicias S/N",
+                                                                  day=Days.Tue)
     def tearDown(self):
         self.user1.delete()
         self.passenger1.delete()
@@ -479,6 +489,25 @@ class PutRoutinesTest(TestCase):
         self.assertEqual(data['start_location'],"Av. de Italia, 41012 Sevilla")
         self.assertEqual(data['end_location'],"Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla")
         self.assertEqual(data['day'],"Mon")
+
+    def test_get_passenger_routine(self):
+        print(self.passenger_routine2.pk)
+        url = "/api/users/passenger-routine/" + str(self.passenger_routine2.pk)
+        response = self.client.get(url)
+
+        data = json.loads(response.content)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['end_location'],"Paseo de las Delicias S/N")
+
+    def test_get_driver_routine(self):
+        url = "/api/users/driver-routine/" + str(self.driver_routine1.pk)
+        response = self.client.get(url)
+
+        data = json.loads(response.content)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['end_location'],"Paseo de las Delicias S/N")
 
 
 class RideSearchTest(TestCase):

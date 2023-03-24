@@ -1,4 +1,4 @@
-import datetime
+from datetime import *
 from django.db import IntegrityError
 from rest_framework import status
 from rest_framework.views import APIView
@@ -49,71 +49,68 @@ class RoutineRecommendation(APIView):
             driver_routines = m.DriverRoutine.objects.all()
             user = m.User.objects.get(id=request.data['userId'])
             passenger = m.Passenger.objects.get(user=user)
-            passenger_routine = m.PassengerRoutine.objects.get(
+            passenger_routines = m.PassengerRoutine.objects.filter(
                 passenger=passenger)
-            source_location = passenger_routine.start_location
-            destination_location = passenger_routine.end_location
-            min_time = passenger_routine.start_time_initial
-            max_time = passenger_routine.start_time_final
-            passenger_days = passenger_routine.day
+            
+            for passenger_routine in passenger_routines:
+                request = m.RoutineRequest.objects.filter(passenger_routine=passenger_routine).first()
+                if request.acceptation_status != 'Accepted':
+                    source_location = passenger_routine.start_location
+                    destination_location = passenger_routine.end_location
+                    min_time = passenger_routine.start_time_initial
+                    max_time = passenger_routine.start_time_final
+                    passenger_day = passenger_routine.day
+                    valid_routines = []
 
-            valid_routines = []
-            similar_days = []
+                    for routine in driver_routines:
+                        driver_day = routine.day
 
-            for routine in driver_routines:
-                driver_day = routine.day
+                        # Definir las horas de inicio y fin de la rutina del pasajero
+                        drivers_beggining_of_ride = routine.start_date
+                        drivers_ending_of_ride = routine.end_date
 
-                # Comprobacion de cuantos dias coinciden en cada rutina
-                if driver_day in passenger_days:
-                    similar_days.append(driver_day)
+                        # Definir lugares de inicio y fin de la rutina del conductor
+                        driver_source_location = routine.start_location
+                        driver_ending_location = routine.end_location
 
-                # Definir las horas de inicio y fin de la rutina del pasajero
-                drivers_beggining_of_ride = routine.start_date
-                drivers_ending_of_ride = routine.end_date
+                        # Obtener en kilometros la distancia en kilometros entre los lugares de origen
+                        lat_source_passenger, lon_source_passenger = map(radians, source_location)
+                        lat_source_driver, lon_source_driver = map(radians, driver_source_location)
+                        d_lat_source = lat_source_driver - lat_source_passenger
+                        d_lon_source = lon_source_driver - lon_source_passenger
+                        a = sin(d_lat_source / 2) ** 2 + cos(lat_source_passenger) * cos(lat_source_driver) * sin(
+                            d_lon_source / 2) ** 2
+                        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+                        source_distance = 6371 * c
 
-                # Definir lugares de inicio y fin de la rutina del conductor
-                driver_source_location = routine.start_location
-                driver_ending_location = routine.end_location
+                        # Obtener en kilometros la diferencia de distancia entre los lugares destino
+                        lat_end_passenger, lon_end_passenger = map(radians, destination_location)
+                        lat_end_driver, lon_end_driver = map(radians, driver_ending_location)
+                        d_lat_destination = lat_end_driver - lat_end_passenger
+                        d_lon_destination = lon_end_driver - lon_end_passenger
+                        a = sin(d_lat_destination / 2) ** 2 + cos(lat_end_passenger) * cos(lat_end_driver) * sin(
+                            d_lon_destination / 2) ** 2
+                        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+                        destination_distance = 6371 * c
 
-                # Obtenner en kilometros la distancia en kilometros entre los lugares de origen
-                lat_source_passenger, lon_source_passenger = map(radians, source_location)
-                lat_source_driver, lon_source_driver = map(radians, driver_source_location)
-                d_lat_source = lat_source_driver - lat_source_passenger
-                d_lon_source = lon_source_driver - lon_source_passenger
-                a = sin(d_lat_source / 2) ** 2 + cos(lat_source_passenger) * cos(lat_source_driver) * sin(
-                    d_lon_source / 2) ** 2
-                c = 2 * atan2(sqrt(a), sqrt(1 - a))
-                source_distance = 6371 * c
+                        # Uso de todos los datos obtenidos para crear un filtro que compruebe si la rutina es valida
+                        # Si es valida se guarda en una lista
+                        if passenger_day == driver_day and min_time <= drivers_beggining_of_ride and max_time >= drivers_beggining_of_ride and destination_distance <= 1 and source_distance <= 1:
+                            valid_routines.append(routine)
 
-                # Obtener en kilometros la diferencia de distancia entre los lugares destino
-                lat_end_passenger, lon_end_passenger = map(radians, destination_location)
-                lat_end_driver, lon_end_driver = map(radians, driver_ending_location)
-                d_lat_destination = lat_end_driver - lat_end_passenger
-                d_lon_destination = lon_end_driver - lon_end_passenger
-                a = sin(d_lat_destination / 2) ** 2 + cos(lat_end_passenger) * cos(lat_end_driver) * sin(
-                    d_lon_destination / 2) ** 2
-                c = 2 * atan2(sqrt(a), sqrt(1 - a))
-                destination_distance = 6371 * c
+                    # Se obtienen los viajes asociados a las rutinas marcadas como validas y se guardan a una lista que las devolvera como respuesta
+                    rides = []
+                    for routine in valid_routines:
+                        ride = m.Ride.objects.filter(driver_routine=routine).first()
+                        if ride and ride.num_seats > 0:
+                            rides.append(ride)
 
-                # Uso de todos los datos obtenidos para crear un filtro que compruebe si la rutina es valida
-                # Si es valida se guarda en una lista
-                if len(similar_days) > 0 and min_time <= drivers_beggining_of_ride and max_time >= drivers_beggining_of_ride and destination_distance <= 1 and source_distance <= 1:
-                    valid_routines.append(routine)
+                    # Llamada al serializer para devolver todos los viajes que han sido seleccionados
+                    serializer = ListRideSerializer({"rides": rides})
+                    return JsonResponse(serializer.data, status = 200)
 
-            # Se obtienen los viajes asociados a las rutinas marcadas como validas y se guardan a una lista que las devolvera como respuesta
-            rides = []
-            for routine in valid_routines:
-                ride = m.Ride.objects.filter(driver_routine=routine).first()
-                if ride:
-                    if ride.num_seats > 0:
-                        rides.append(ride)
-
-            # Llamada al serializer para devolver todos los viajes que han sido seleccionados
-            serializer = ListRideSerializer(rides, many=True)
-            return JsonResponse(serializer.data)
-
-        except Exception:
-            raise Http404  # Mejorar errores
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status=400)
 
 
 class PendingIndividualRide(APIView):
@@ -204,7 +201,7 @@ class FilteredIndividualRides(APIView):
 
                 # Filtramos por valoración
                 driver = ride.driver_routine.driver  # Tenemos que sacar al conductor para averiguar su valoración
-                ratingFilter = rating <= m.DriverRating.get_driver_rating(driver)
+                ratingFilter = rating <= m.Passenger.get_driver_rating(driver)
 
                 # Si se han cumplido estos filtros, revisamos todos los viajes individuales de este viaje
                 if (dateFilter and ratingFilter):
@@ -278,6 +275,40 @@ class CancelIndividualRide(APIView):
 
 
 ############## ENDPOINTS ASOCIADOS A RIDE
+
+class RideSearch(APIView):
+    
+    def get(self, request):
+        try:
+            resultRides = []
+
+            date = datetime.strptime(request.data['date'], '%Y-%m-%d %H:%M').date()
+            lowPrice = request.data['lowPrice']
+            highPrice = request.data['highPrice']
+            rating = request.data['rating']
+
+            
+            for ride in m.Ride.objects.all():
+                # Filtramos por fecha
+                # Hacemos que la fecha sea la misma. El criterio de filtrado puede cambiar en el futuro
+                dateFilter = date == ride.start_date.date()
+
+                # Filtramos por valoración
+                driver = ride.driver_routine.driver  # Tenemos que sacar al conductor para averiguar su valoración
+                ratingFilter = rating <= m.DriverRating.get_driver_rating(driver=driver)
+                free_seats = ride.num_seats
+                price = ride.price
+                # Si se han cumplido estos filtros, revisamos todos los viajes individuales de este viaje
+                if dateFilter and ratingFilter and free_seats > 0 and lowPrice <= price and highPrice >= price:
+                    resultRides.append(ride)
+
+            serializer = ListRideSerializer({"rides": resultRides})
+
+            return JsonResponse(serializer.data)
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status = 400)
+
+
 class CreateIndividualRide(APIView):
     def post(self, request):
         if request.method == 'POST':

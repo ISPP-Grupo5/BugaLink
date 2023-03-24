@@ -89,6 +89,20 @@ class Passenger(models.Model):
     class Meta:
         verbose_name = "Passenger"
         verbose_name_plural = "Passengers"
+     
+    def get_driver_rating(passenger):
+        ratings = list(DriverRating.objects.all())
+        if ratings:
+            rating_sum = 0
+            for rating in ratings:
+                if passenger.id == rating.individual_ride.ride.driver_routine.driver.passenger.id:
+                    rating_sum += rating.rating
+            if len(rating):
+                return rating_sum/len(ratings)
+            else:
+                return 0
+        else:
+            return 0
 
 
 class Driver(models.Model):
@@ -168,6 +182,7 @@ class DriverRoutine(models.Model):
 
 class Ride(models.Model):
     driver_routine = models.ForeignKey(DriverRoutine, on_delete=models.CASCADE)
+
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, null=True, blank=True)
     num_seats = models.IntegerField()  # Relacionarlo con default_num_seats
     status = models.CharField(max_length=256, choices=RideStatus.choices(), default=RideStatus.Pending_start)
@@ -246,15 +261,6 @@ class DriverRating(models.Model):
     class Meta:
         verbose_name = "Driver rating"
         verbose_name_plural = "Driver ratings"
-
-    def get_driver_rating(self, driver):
-        ratings = list(DriverRating.objects.all())
-        rating_sum = 0
-        for rating in ratings:
-            if driver.passenger.id == rating.individual_ride.ride.driver_routine.driver.passenger.id:
-                rating_sum += rating.rating
-        return rating_sum / len(ratings)
-
 
 class PassengerRating(models.Model):
     individual_ride = models.OneToOneField(IndividualRide, null=False,

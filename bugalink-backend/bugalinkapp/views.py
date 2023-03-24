@@ -46,13 +46,13 @@ class Users(APIView):
 # users /<userId>/rides/total -> Devuelve el número total de viajes que ha hecho el usuario con BugaLink
 
 class TotalRides(APIView):
-    def get(self, request, userId):
+    def get(self, request, user_id):
         try:
             total_rides = 0
-            passenger = m.Passenger.objects.get(user_id=userId)
+            passenger = m.Passenger.objects.get(user_id=user_id)
             try:    # Count rides in case the user is also a driver
                 driver = m.Driver.objects.get(passenger=passenger)
-                driver_routines = m.DriverRoutine.objects.filter(driver=driver)
+                driver_routines = list(m.DriverRoutine.objects.filter(driver=driver))
                 for driver_routine in driver_routines:
                     rides = m.Ride.objects.filter(driver_routine=driver_routine).count()
                     total_rides += rides
@@ -61,10 +61,45 @@ class TotalRides(APIView):
 
             individual_rides = m.IndividualRide.objects.filter(passenger=passenger).count()
             total_rides += individual_rides
-            return JsonResponse({"total_rides": total_rides})
+            json_data = {}
+            json_data['total_rides'] = total_rides
+            return JsonResponse(json_data)
         except m.User.DoesNotExist:
             return JsonResponse({"message": "Not found"}, status=404)
 
+#GET* reviews/rating -> GET* Debe devolver: valoración (Double), el número de valoraciones(int) y devuelva nombre e imagen del usuario valorado
+class Ratings(APIView):
+    def get(self, request, user_id):
+        try:
+            rating = 0
+            total_ratings = 0
+            passenger = m.Passenger.objects.get(user_id=user_id)
+            try:    # Count ratings in case the user is also a driver
+                driver = m.Driver.objects.get(passenger=passenger)
+                ratings_driver_rating = list(DriverRating.objects.all())
+                for rating_dr in ratings_driver_rating:
+                    if driver.passenger.id == rating_dr.individual_ride.ride.driver_routine.driver.passenger.id:
+                        rating += rating_dr.rating
+                        total_ratings +=1
+            except:
+                pass
+            
+            ratings_passenger_rating = list(PassengerRating.objects.all())
+            for rating_pr in ratings_passenger_rating:
+                    if passenger.id == rating_pr.individual_ride.passenger.id:
+                        rating += rating_pr.rating
+                        total_ratings +=1
+            
+            user = m.User.objects.get(id=user_id)
+
+            json_data = {}
+            json_data['rating'] = rating/total_ratings
+            json_data['total_ratings'] = total_ratings
+            json_data['profile_photo'] = passenger.photo
+            json_data['username'] = user.username
+            return JsonResponse(json_data)
+        except m.User.DoesNotExist:
+            return JsonResponse({"message": "Not found"}, status=404)
 
 class RoutineRecommendation(APIView):
     def get(self, request):

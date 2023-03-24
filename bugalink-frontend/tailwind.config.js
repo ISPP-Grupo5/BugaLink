@@ -27,6 +27,9 @@ module.exports = {
       'pale-green': '#E7FBAF',
       yellow: '#f9c200',
       'border-color': '#DADADA',
+      'gray-select': '#C8C4C4',
+      'gray-text-select': '#666666',
+      'blue-select': '#1871C9',
       orange: '#F99746',
     },
     extend: {

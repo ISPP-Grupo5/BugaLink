@@ -6,6 +6,8 @@ type props = {
   setContent: (value: string) => void;
   parentClassName?: string;
   inputClassName?: string;
+  disabled?: boolean;
+  onClick?: () => void;
 };
 
 // Adapted from https://tailwind-elements.com/docs/standard/forms/inputs/
@@ -16,6 +18,8 @@ export default function TextField({
   setContent,
   parentClassName,
   inputClassName,
+  disabled,
+  onClick
 }: props) {
   return (
     <div
@@ -28,6 +32,8 @@ export default function TextField({
         onChange={(e) => setContent(e.target.value)}
         value={content}
         id={fieldName}
+        disabled={disabled}
+        onClick={onClick}
       />
       <label
         onSelectCapture={(e) => e.preventDefault()} // Prevents context menu from opening when selecting text

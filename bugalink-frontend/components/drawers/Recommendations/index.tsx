@@ -2,7 +2,7 @@ import TripCard from '@/components/cards/recommendation';
 import useRecommendedTrips from '@/hooks/useRecommendedTrips';
 import TripI from '@/interfaces/trip';
 import { Link, SwipeableDrawer } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 
 type Props = {
   open: boolean;
@@ -10,14 +10,10 @@ type Props = {
 };
 
 export default function RecommendationsDrawer({ open, setOpen }: Props) {
-  const [firstOpened, setFirstOpened] = useState(false);
+  const [isFirstLoaded, setIsFirstLoaded] = useState(false);
 
-  // We will use firstOpened to handle the first time the drawer is opened
-  // This is because we want don't want to fetch the recommendations
-  // until the user actually opens the drawer for the first time.
-  // This is to avoid unnecessary requests to the backend
   useEffect(() => {
-    open && setFirstOpened(true);
+    if (open) setIsFirstLoaded(true);
   }, [open]);
 
   return (
@@ -40,7 +36,7 @@ export default function RecommendationsDrawer({ open, setOpen }: Props) {
           width: '100%',
           margin: '0 auto',
           overflow: 'visible',
-          height: 'calc(70% - 90px)',
+          height: 'calc(80%)',
         },
       }}
     >
@@ -51,13 +47,13 @@ export default function RecommendationsDrawer({ open, setOpen }: Props) {
         >
           <div className="ml-4 mt-4">
             <div className="absolute top-2 left-1/2 h-1.5 w-7 -translate-x-1/2 transform rounded-lg bg-light-gray"></div>
-            <p className="font-lato text-3xl font-semibold">Recomendaciones</p>
-            <p className="mb-5 font-lato text-base font-thin leading-3 text-gray">
+            <p className="text-3xl font-semibold">Recomendaciones</p>
+            <p className="mb-5 text-base font-thin leading-3 text-gray">
               En base a tu horario sin cubrir
             </p>
           </div>
         </div>
-        {firstOpened && <RecommendationsList />}
+        {isFirstLoaded && <RecommendationsList />}
       </div>
     </SwipeableDrawer>
   );
@@ -80,11 +76,11 @@ const RecommendationsList = () => {
         >
           <TripCard
             key={trip.id}
-            type={trip.type}
-            rating={trip.rating}
+            type={'recurring'}
+            rating={0}
             name={trip.driver.name}
-            gender={trip.gender}
-            avatar={trip.avatar}
+            gender={'M'}
+            avatar={trip.driver.photo}
             origin={trip.origin}
             destination={trip.destination}
             date={trip.date}

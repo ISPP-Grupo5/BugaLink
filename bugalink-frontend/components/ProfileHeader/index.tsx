@@ -5,6 +5,7 @@ type Params = {
   rating: string;
   numberOfRatings: string;
   className?: string;
+  photo: string;
 };
 
 export default function ProfileHeader({
@@ -12,6 +13,7 @@ export default function ProfileHeader({
   rating,
   numberOfRatings,
   className = '',
+  photo,
 }: Params) {
   return (
     <div
@@ -22,7 +24,7 @@ export default function ProfileHeader({
       {/* Profile header */}
       <div className="flex flex-row">
         <img
-          src="/assets/mocks/profile1.png"
+          src={photo}
           className="h-11 w-11 rounded-full"
         />
         <div className="ml-3 flex flex-col">

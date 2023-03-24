@@ -10,10 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 from pathlib import Path
+from urllib.parse import urlparse
 from dotenv import dotenv_values
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -30,7 +31,29 @@ SECRET_KEY = 'django-insecure-br8yvhx^^w#x0e3i03qy($-^q49(xk-9uhf^=vj8igoa-8g#75
 
 DEBUG = env['DEBUG']
 
-ALLOWED_HOSTS = []
+if os.environ.get("IS_APP_ENGINE"):
+    print("The app is being run in App Engine")
+    #####
+    # Para despliege en APP ENGINE
+    APPENGINE_URL = env['APPENGINE_URL']
+    if APPENGINE_URL:
+        # Ensure a scheme is present in the URL before it's processed.
+        if not urlparse(APPENGINE_URL).scheme:
+            APPENGINE_URL = f"https://{APPENGINE_URL}"
+        APP_URL="https://app.bugalink.es"
+        WWW_APP_URL="https://www.app.bugalink.es"
+        
+
+        ALLOWED_HOSTS = [urlparse(APPENGINE_URL).netloc,urlparse(APP_URL).netloc,urlparse(WWW_APP_URL).netloc]
+        CSRF_TRUSTED_ORIGINS = [APPENGINE_URL,APP_URL,WWW_APP_URL]
+        SECURE_SSL_REDIRECT = True
+    else:
+        ALLOWED_HOSTS = ["*"]
+    #
+    #####
+else:
+    print("The app is being run locally")
+    ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -49,6 +72,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -57,6 +81,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'BugaLink.urls'
+
 
 TEMPLATES = [
     {
@@ -80,17 +105,30 @@ WSGI_APPLICATION = 'BugaLink.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+if os.environ.get("IS_APP_ENGINE"):
 
-DATABASES = {
-    'default': {
-        'ENGINE': env['ENGINE'],
-        'NAME': env['NAME'],
-        'USER': env['USER'],
-        'PASSWORD': env['PASSWORD'],
-        'HOST': env['HOST'],
-        'PORT': env['PORT'],
+    DATABASES = {
+        'default': {
+            'ENGINE': env['ENGINE'],
+            'NAME': env['NAME'],
+            'USER': env['USER'],
+            'PASSWORD': env['PASSWORD'],
+            'HOST': env['HOST'],
+            'PORT': env['PORT'],
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': { 
+            'ENGINE': env['ENGINE'],
+            'NAME': env['NAME'],
+            'USER': env['USER'],
+            'PASSWORD': env['PASSWORD'],
+            'HOST': 'localhost',
+            'PORT': env['PORT'],
+        }
+    }
+
 
 
 # Password validation
@@ -127,9 +165,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_ROOT = "static"
+STATIC_URL = "/static/"
+STATICFILES_DIRS = []
+
+
+MEDIA_ROOT = os.path.join(BASE_DIR.parent, 'files')
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

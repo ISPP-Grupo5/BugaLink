@@ -272,6 +272,36 @@ class PutTest(TestCase):
         self.assertEqual(data['first_name'],"New Name")
         self.assertEqual(data['last_name'],"New lastName")
 
+class UploadDocsDriverTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user1 = User.objects.create(username="TEST USER1", first_name="John", last_name="Smith", email="test1@test.es", password="My secret pw")
+        self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
+        self.driver1 = Driver.objects.create(passenger=self.passenger1)
+        with open('bugalinkapp/test/dni_front.jpg', 'rb') as f:
+            self.dni_front = f.read()
+        
+        with open('bugalinkapp/test/sworn_declaration.pdf', 'rb') as f:
+            self.sworn_declaration = f.read()
+
+    def tearDown(self):
+        self.passenger1.delete()
+        self.user1.delete()
+        self.driver1.delete()
+
+    def test_put_user(self):
+        url = "/api/users/" + str(self.user1.pk) + "/driver/docs" 
+        body = {
+            "sworn_declaration" : self.sworn_declaration,
+            "dni_front" : self.dni_front
+        }
+        response = self.client.put(url, data=body)
+
+        data = json.loads(response.content)
+
+        self.assertEqual(data['sworn_declaration'], self.driver1.sworn_declaration)
+        self.assertEqual(data['dni_front'], self.driver1.dni_front)
+  
 
 # Ejemplo de delete
 class DeleteTest(TestCase):

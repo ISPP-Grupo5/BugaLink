@@ -16,6 +16,7 @@ urlpatterns = [
     path('users/passenger-routines', views.PassengerRoutineList.as_view()),
     path('users/individualrides', views.UserIndividualRides.as_view()),
     path('users/driver-routines', views.DriverRoutineList.as_view()),
+    path('users/<int:user_id>/driver/docs', views.UploadDocsDriver.as_view()),
     path('users/passenger-routine/<int:passenger_routine_id>', views.PassengerRoutine.as_view()),
     path('users/driver-routine/<int:driver_routine_id>', views.DriverRoutine.as_view()),
     path('reviews', views.RatingList.as_view()),

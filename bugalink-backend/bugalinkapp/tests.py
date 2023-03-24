@@ -8,7 +8,6 @@ from rest_framework.test import APIClient
 from django.core.files.uploadedfile import SimpleUploadedFile
 import json
 
-
 ### IMPORTANTE ###
 '''
 Para que los tests ejecuten bien django crea una base de datos de prueba para tests, y luego la elimina. El problema es que
@@ -22,14 +21,13 @@ Una vez dentro, hay que hacer  `ALTER USER <nombre_usuario_de_config.env> CREATE
 
 class ModelTest(TestCase):
     def setUp(self):
-
-        # CREATE USER 
+        # CREATE USER
         self.user = User.objects.create_user(
             username='testuser',
             password='testpass'
         )
-        
-        self.photo=None
+
+        self.photo = None
         # self.photo = SimpleUploadedFile(
         #     name='test_photo.jpg',
         #     content=open("bugalinkapp/test/test_photo.jpg", 'rb').read(),
@@ -47,7 +45,7 @@ class ModelTest(TestCase):
             photo=self.photo,
             verified=False
         )
-        
+
         self.sworn_declaration = None
         # self.sworn_declaration = SimpleUploadedFile(
         #     name='sworn_declaration.pdf',
@@ -81,20 +79,19 @@ class ModelTest(TestCase):
             # has_driver_license=True,
             # has_sworn_declaration=True,
             entry_date='2022-03-11',
-            sworn_declaration= self.sworn_declaration,
+            sworn_declaration=self.sworn_declaration,
             driver_license=self.driver_license,
             dni_front=self.dni_front,
             dni_back=self.dni_back
         )
 
-        #RATING  HA CAMBIADO CON EL V3
-        #self.rating = Rating.objects.create(
+        # RATING  HA CAMBIADO CON EL V3
+        # self.rating = Rating.objects.create(
         #    driver= Driver.objects.first(),
         #    passenger=Passenger.objects.first(),
         #    value=4.5,
         #    comment='Test Comment',
-        #)
-
+        # )
 
         # self.insurance_file = SimpleUploadedFile(
         #     name='test_insurance.pdf',
@@ -102,7 +99,7 @@ class ModelTest(TestCase):
         #     content_type='application/pdf'
         # )
 
-        #VEHICLE
+        # VEHICLE
         # self.vehicle = Vehicle.objects.create(
         #     driver = self.driver,
         #     model='Test Model',
@@ -112,14 +109,14 @@ class ModelTest(TestCase):
         # )
 
     # Esto permite borrar los archivos "subidos"
-    def tearDown(self):         
+    def tearDown(self):
         self.passenger.photo.delete()
         self.driver.dni_front.delete()
         self.driver.dni_back.delete()
         self.driver.driver_license.delete()
         self.driver.sworn_declaration.delete()
         # self.vehicle.insurance.delete()
-    
+
     ######### EMPIEZA EL TESTING ###################
 
     def test_passenger_creation(self):
@@ -143,8 +140,8 @@ class ModelTest(TestCase):
         # self.assertEqual(self.driver.sworn_declaration.name, 'sworn_declaration.pdf')
         # self.assertIsNotNone(self.driver.driver_license.name)
         # self.assertIsNotNone(self.driver.dni_front)
-    
-    #def test_rating_creation(self):
+
+    # def test_rating_creation(self):
     #    self.assertIsInstance(self.rating, Rating)
     #    self.assertEqual(self.rating.driver, self.rating.driver)
     #    self.assertEqual(self.rating.passenger, self.rating.passenger)
@@ -167,10 +164,9 @@ class GetTest(TestCase):
         self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
 
     # Se borran las instancias creadas, aunque teoricamente si se usa una bd para tests no haría falta
-    def tearDown(self):    
+    def tearDown(self):
         self.passenger1.delete()
         self.user1.delete()
-       
 
     def test_get_user_by_id(self):
         url = "/api/test/users/" + str(self.user1.pk)
@@ -180,7 +176,7 @@ class GetTest(TestCase):
         data = json.loads(response.content)
 
         # Se hacen las comprobaciones
-        self.assertEqual(data['user'],self.user1.pk)
+        self.assertEqual(data['user'], self.user1.pk)
 
 
 # Testing del endpoint POST api/test/reviews
@@ -194,9 +190,9 @@ class PostTest(TestCase):
         self.driver1 = Driver.objects.create(passenger=self.passenger1)
         self.driver_routine1 = DriverRoutine.objects.create(driver=self.driver1,
                                                             default_num_seats=2,
-                                                            start_date_0=time(12,00),
-                                                            start_date_1=time(12,30),
-                                                            end_date=time(13,00),
+                                                            start_date_0=time(12, 00),
+                                                            start_date_1=time(12, 30),
+                                                            end_date=time(13, 00),
                                                             start_location="Virgen de Lujan 120",
                                                             end_location="Paseo de las Delicias S/N",
                                                             day=Days.Mon,
@@ -204,52 +200,52 @@ class PostTest(TestCase):
                                                             price=2.0)
         self.ride1 = Ride.objects.create(driver_routine=self.driver_routine1,
                                          num_seats=self.driver_routine1.default_num_seats,
-                                          start_date = datetime(2020,4,7),
-                                           end_date =datetime(2020,4,7),
-                                           start_location = self.driver_routine1.start_location,
-                                           end_location = self.driver_routine1.end_location
-                                           )
+                                         start_date=datetime(2020, 4, 7),
+                                         end_date=datetime(2020, 4, 7),
+                                         start_location=self.driver_routine1.start_location,
+                                         end_location=self.driver_routine1.end_location
+                                         )
         self.individual_ride1 = IndividualRide.objects.create(ride=self.ride1,
                                                               passenger=self.passenger2,
                                                               n_seats=1)
 
-    def tearDown(self):    
+    def tearDown(self):
         self.driver1.delete()
         self.passenger1.delete()
-        self.user1.delete()  
+        self.user1.delete()
 
     def test_post_review(self):
         body = {
-                "individualRideId": str(self.individual_ride1.pk),
-                'rating_type' : "driver",
-                'driverId' : str(self.driver1.pk),
-                'passengerId' : str(self.passenger2.pk),
-                "rating": 4.0,
-                "preference0": True,
-                "preference1": True,
-                "preference2": False,
-            }
+            "individualRideId": str(self.individual_ride1.pk),
+            'rating_type': "driver",
+            'driverId': str(self.driver1.pk),
+            'passengerId': str(self.passenger2.pk),
+            "rating": 4.0,
+            "preference0": True,
+            "preference1": True,
+            "preference2": False,
+        }
         url = "/api/test/reviews"
         response = self.client.post(url, data=body)
 
         # este comando parsea la JsonResponse a un diccionario para poder acceder a los valores
         data = json.loads(response.content)
-        #print(data)
+        # print(data)
 
         # Se hacen las comprobaciones
-        self.assertEqual(data['rating'],4)
-        self.assertEqual(data['preference_0'],True)
-        self.assertEqual(data['preference_1'],True)
-        self.assertEqual(data['preference_2'],False)
+        self.assertEqual(data['rating'], 4)
+        self.assertEqual(data['preference_0'], True)
+        self.assertEqual(data['preference_1'], True)
+        self.assertEqual(data['preference_2'], False)
 
 
-#Test de ejemplo de un put
+# Test de ejemplo de un put
 class PutTest(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user1 = User.objects.create(username="TEST USER1", first_name="John", last_name="Smith", email="test1@test.es", password="My secret pw")
+        self.user1 = User.objects.create(username="TEST USER1", first_name="John", last_name="Smith",
+                                         email="test1@test.es", password="My secret pw")
         self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
-
 
     def tearDown(self):
         self.passenger1.delete()
@@ -259,8 +255,8 @@ class PutTest(TestCase):
         url = "/api/test/users/" + str(self.user1.pk)
 
         body = {
-            "firstName" : "New Name",
-            "lastName" : "New lastName"
+            "firstName": "New Name",
+            "lastName": "New lastName"
         }
         response = self.client.put(url, data=body)
 
@@ -268,18 +264,18 @@ class PutTest(TestCase):
         data = json.loads(response.content)
         # print(data)
         # Se hacen las comprobaciones
-        self.assertEqual(data['id'],self.user1.pk)
-        self.assertEqual(data['first_name'],"New Name")
-        self.assertEqual(data['last_name'],"New lastName")
+        self.assertEqual(data['id'], self.user1.pk)
+        self.assertEqual(data['first_name'], "New Name")
+        self.assertEqual(data['last_name'], "New lastName")
 
 
 # Ejemplo de delete
 class DeleteTest(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user1 = User.objects.create(username="TEST USER1", first_name="John", last_name="Smith", email="test1@test.es", password="My secret pw")
+        self.user1 = User.objects.create(username="TEST USER1", first_name="John", last_name="Smith",
+                                         email="test1@test.es", password="My secret pw")
         self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
-
 
     def tearDown(self):
         self.passenger1.delete()
@@ -289,8 +285,161 @@ class DeleteTest(TestCase):
         url = "/api/test/users/" + str(self.user1.pk)
         response = self.client.delete(url)
 
-        self.assertEqual(response.status_code,204)
-        
-        response2 = self.client.get(url)
-        self.assertEqual(response2.status_code,404)
+        self.assertEqual(response.status_code, 204)
 
+        response2 = self.client.get(url)
+        self.assertEqual(response2.status_code, 404)
+
+
+class PassengerRoutineListTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user1 = User.objects.create(username="TEST USER1", first_name="John", last_name="Smith",
+                                         email="test1@test.es", password="My secret pw")
+        self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
+        self.passenger_routine1 = PassengerRoutine.objects.create(passenger=self.passenger1,
+                                                                  start_location='Calle Betis',
+                                                                  end_location='Calle Alfonso XIII',
+                                                                  start_time_initial=time(8, 0),
+                                                                  start_time_final=time(8, 30), end_date=time(12, 30))
+
+    def tearDown(self):
+        self.passenger_routine1.delete()
+        self.passenger1.delete()
+        self.user1.delete()
+
+    def test_get_passenger_routine(self):
+        url = '/api/users/{}/passenger-routines'.format(self.passenger1.pk)
+        response = self.client.get(url)
+        data = response.json()
+        self.assertEqual(data['passenger_routines'][0]['end_location'],
+                         'Calle Alfonso XIII')
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_passenger_routine(self):
+        url = '/api/users/{}/passenger-routines'.format(self.passenger1.pk)
+        body = {
+            "passenger_id": self.passenger1.pk,
+            "start_time_initial": "8:00",
+            "start_time_final": "8:30",
+            "end_date": "9:00",
+            "start_location": "C. Berlín, 41012 Sevilla",
+            "end_location": "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla",
+            "day": "Mon"
+        }
+        response = self.client.post(url, data=body)
+        data = response.json()
+        self.assertEqual(data['end_location'],
+                         "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla")
+        self.assertEqual(response.status_code, 200)
+
+
+class DriverRoutineListTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user1 = User.objects.create(username="TEST USER1", first_name="John", last_name="Smith",
+                                         email="test1@test.es", password="My secret pw")
+        self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
+        self.driver1 = Driver.objects.create(passenger=self.passenger1)
+        self.driver_routine1 = DriverRoutine.objects.create(driver=self.driver1, default_num_seats=3,
+                                                            start_date_0=time(23, 30), start_date_1=time(23, 45),
+                                                            end_date=time(3, 0),
+                                                            start_location='Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla',
+                                                            end_location='C. Berlín, 41012 Sevilla',
+                                                            price=3.00)
+
+    def tearDown(self):
+        self.driver_routine1.delete()
+        self.driver1.delete()
+        self.passenger1.delete()
+        self.user1.delete()
+
+    def test_get_driver_routine(self):
+        url = '/api/users/{}/driver-routines'.format(self.driver1.pk)
+        response = self.client.get(url)
+        data = response.json()
+        self.assertEqual(data['driver_routines'][0]['end_location'],
+                         'C. Berlín, 41012 Sevilla')
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_driver_routine(self):
+        url = '/api/users/{}/driver-routines'.format(self.driver1.pk)
+        body = {'driver_id': self.driver1.pk, 'default_num_seats': 1, 'start_date_0': '15:00', 'start_date_1': '15:30',
+                'end_date': '18:00', 'start_location': 'Calle Alfonso XIII', 'end_location': 'Mi casa', 'price': 50.0,
+                'day': 'Mon'}
+        response = self.client.post(url, data=body)
+        data = response.json()
+        self.assertEqual(data['start_location'], 'Calle Alfonso XIII')
+        self.assertEqual(data['price'], '50.00')
+        self.assertEqual(response.status_code, 200)
+
+class DriverRoutineTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user1 = User.objects.create(username="TEST USER1", first_name="John", last_name="Smith",
+                                         email="test1@test.es", password="My secret pw")
+        self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
+        self.driver1 = Driver.objects.create(passenger=self.passenger1)
+        self.driver_routine1 = DriverRoutine.objects.create(driver=self.driver1, default_num_seats=3,
+                                                            start_date_0=time(23, 30), start_date_1=time(23, 45),
+                                                            end_date=time(3, 0),
+                                                            start_location='Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla',
+                                                            end_location='C. Berlín, 41012 Sevilla',
+                                                            price=3.00)
+
+    def tearDown(self):
+        self.driver_routine1.delete()
+        self.driver1.delete()
+        self.passenger1.delete()
+        self.user1.delete()
+
+    def test_put_driver_routine(self):
+        url = '/api/users/{}/driver-routine/{}'.format(self.passenger1.pk, self.driver_routine1.pk)
+        body = {
+            'day': 'Tue'
+        }
+        response = self.client.put(url, data=body)
+        routine = DriverRoutine.objects.get(pk=self.driver_routine1.pk)
+        self.assertEqual(routine.day, 'Tue')
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_driver_routine(self):
+        url = '/api/users/{}/driver-routine/{}'.format(self.passenger1.pk, self.driver_routine1.pk)
+        response = self.client.delete(url)
+        data = response.json()
+        self.assertEqual(data['message'], 'Success')
+        self.assertEqual(response.status_code, 200)
+
+class PassengerRoutineTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user1 = User.objects.create(username="TEST USER1", first_name="John", last_name="Smith",
+                                         email="test1@test.es", password="My secret pw")
+        self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
+        self.passenger_routine1 = PassengerRoutine.objects.create(passenger=self.passenger1,
+                                                                  start_location='Calle Betis',
+                                                                  end_location='Calle Alfonso XIII',
+                                                                  start_time_initial=time(8, 0),
+                                                                  start_time_final=time(8, 30), end_date=time(12, 30))
+
+    def tearDown(self):
+        self.passenger_routine1.delete()
+        self.passenger1.delete()
+        self.user1.delete()
+
+    def test_put_passenger_routine(self):
+        url = '/api/users/{}/passenger-routine/{}'.format(self.passenger1.pk, self.passenger_routine1.pk)
+        body = {
+            'day': 'Tue'
+        }
+        response = self.client.put(url, data=body)
+        routine = PassengerRoutine.objects.get(pk=self.passenger_routine1.pk)
+        self.assertEqual(routine.day, 'Tue')
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_driver_routine(self):
+        url = '/api/users/{}/passenger-routine/{}'.format(self.passenger1.pk, self.passenger_routine1.pk)
+        response = self.client.delete(url)
+        data = response.json()
+        self.assertEqual(data['message'], 'Success')
+        self.assertEqual(response.status_code, 200)

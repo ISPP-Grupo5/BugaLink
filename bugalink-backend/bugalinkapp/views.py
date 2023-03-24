@@ -281,7 +281,7 @@ class CreateIndividualRide(APIView):
             not_satisfied_passenger_routines = []
             for p_routine in list_passenger_routine:  # Se obtienen todos passenger routines no satisfechos por una routine_request
                 routine_request = m.RoutineRequest.objects.get(passenger_routine=p_routine,
-                                                             acceptation_status=m.AcceptationStatus.Accepted)
+                                                               acceptation_status=m.AcceptationStatus.Accepted)
                 if routine_request == None:
                     not_satisfied_passenger_routines.append(p_routine)
 
@@ -306,17 +306,17 @@ class CreateIndividualRide(APIView):
                 passenger_routine.save()
 
             i_r = m.IndividualRide(ride=ride,
-                                 passenger=passenger,
-                                 passenger_routine=passenger_routine,
-                                 price=0,  # TODO Pendiente de revisión
-                                 ride_status=m.RideStatus.Pending_start,
-                                 acceptation_status=m.AcceptationStatus.Pending_Confirmation,
-                                 start_date=ride.start_date,
-                                 end_date=ride.end_date,
-                                 start_location=ride.start_location,
-                                 end_location=ride.end_location,
-                                 message=request.data["message"]
-                                 )
+                                   passenger=passenger,
+                                   passenger_routine=passenger_routine,
+                                   price=0,  # TODO Pendiente de revisión
+                                   ride_status=m.RideStatus.Pending_start,
+                                   acceptation_status=m.AcceptationStatus.Pending_Confirmation,
+                                   start_date=ride.start_date,
+                                   end_date=ride.end_date,
+                                   start_location=ride.start_location,
+                                   end_location=ride.end_location,
+                                   message=request.data["message"]
+                                   )
             i_r.save()
             return JsonResponse({'success': True})
         else:
@@ -558,55 +558,59 @@ class Rides(APIView):
         except Exception as e:
             raise e
 
+
 class PassengerRoutineList(APIView):
-    def get(self, request, format=None):
+    def get(self, request, user_id, format=None):
         try:
-            queryset = m.PassengerRoutine.objects.filter(passenger_id=request.data['passengerId'])
+            queryset = m.PassengerRoutine.objects.filter(passenger_id=user_id)
+            serializer = ListPassengerRoutineSerializer({"passenger_routines": queryset})
+            return JsonResponse(serializer.data)
         except ObjectDoesNotExist:
-            return JsonResponse({'error': 'Passenger does not exist with id {}'.format(request.data['passengerId'])},
+            return JsonResponse({'error': 'Passenger does not exist with id {}'.format(user_id)},
                                 status=status.HTTP_400_BAD_REQUEST)
-        serializer = ListPassengerRoutineSerializer({"passenger_routines": queryset})
-        return JsonResponse(serializer.data)
+
+    def post(self, request, user_id, format=None):  # POST de creacion de la routina
+        try:
+            routine = m.PassengerRoutine.objects.create(**{key: request.data.get(key) for key in request.data})
+            serializer = PassengerRoutineSerializer(routine, many=False)
+            return JsonResponse(serializer.data)
+        except Exception:
+            return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DriverRoutineList(APIView):
-    def get(self, request, format=None):
+    def get(self, request, user_id, format=None):
         try:
-            queryset = m.DriverRoutine.objects.filter(driver_id=request.data['driverId'])
+            queryset = m.DriverRoutine.objects.filter(driver_id=user_id)
             serializer = ListDriverRoutineSerializer({"driver_routines": queryset})
             return JsonResponse(serializer.data)
         except ObjectDoesNotExist:
-            return JsonResponse({'error': 'Passenger does not exist with id {}'.format(request.data['driverId'])},
+            return JsonResponse({'error': 'Passenger does not exist with id {}'.format(user_id)},
                                 status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request, user_id, format=None):  # POST de creacion de la routina
+        try:
+            routine = m.DriverRoutine.objects.create(**{key: request.data.get(key) for key in request.data})
+            serializer = DriverRoutineSerializer(routine, many=False)
+            return JsonResponse(serializer.data)
+        except Exception as e:
+            return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PassengerRoutine(APIView):
-    def delete(self, request, format=None):
+    def delete(self, request, user_id, routine_id, format=None):
         try:
-            routine = m.PassengerRoutine.objects.get(pk=request.data['passengerRoutineId'])
+            routine = m.PassengerRoutine.objects.get(pk=routine_id)
         except ObjectDoesNotExist:
             return JsonResponse(
-                {'error': 'PassengerRoutine does not exist with id {}'.format(request.data['passengerRoutineId'])},
+                {'error': 'PassengerRoutine does not exist with id {}'.format(routine_id)},
                 status=status.HTTP_400_BAD_REQUEST)
         routine.delete()
         return JsonResponse({'message': 'Success'})
 
-    def post(self, request, format=None):  # POST de creacion de la routina
+    def put(self, request, user_id, routine_id, format=None):
         try:
-            serializer = PassengerRoutineSerializer(data=request.data, many=False)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data)
-            else:
-                return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception:
-            return JsonResponse({'error': 'Unexpected error'})
-
-    def put(self, request, format=None):
-        try:
-            routine = m.PassengerRoutine.objects.get(pk=request.data['driverRoutineId'])
-            request.data['default_vehicle_id'] = request.data['defaultVehicleId']
-            del request.data['driverRoutineId']
+            routine = m.PassengerRoutine.objects.get(pk=routine_id)
             for key, value in request.data.items():
                 setattr(routine, key, value)
             routine.save()
@@ -620,22 +624,22 @@ class PassengerRoutine(APIView):
 
 
 class DriverRoutine(APIView):
-    def delete(self, request, format=None):
+    def delete(self, request, user_id, routine_id, format=None):
         try:
-            routine = m.DriverRoutine.objects.get(pk=request.data['driverRoutineId'])
+            routine = m.DriverRoutine.objects.get(pk=routine_id)
         except ObjectDoesNotExist:
             return JsonResponse(
-                {'error': 'DriverRoutine does not exist with id {}'.format(request.data['passengerRoutineId'])},
+                {'error': 'DriverRoutine does not exist with id {}'.format(routine_id)},
                 status=status.HTTP_400_BAD_REQUEST)
-
         routine.delete()
         return JsonResponse({'message': 'Success'})
 
-    def put(self, request, format=None):
+    def put(self, request,user_id, routine_id, format=None):
         try:
-            routine = m.DriverRoutine.objects.get(pk=request.data['driverRoutineId'])
-            request.data['default_vehicle_id'] = request.data['defaultVehicleId']
-            del request.data['driverRoutineId']
+            routine = m.DriverRoutine.objects.get(pk=routine_id)
+            if 'default_vehicle_id' in request.data:
+                request.data['default_vehicle_id'] = request.data['defaultVehicleId']
+                del request.data['driverRoutineId']
             for key, value in request.data.items():
                 setattr(routine, key, value)
             routine.save()
@@ -647,16 +651,6 @@ class DriverRoutine(APIView):
         except Exception:
             return JsonResponse({'error': 'Invalid arguments'}, status=status.HTTP_400_BAD_REQUEST)
 
-    def post(self, request, format=None):  # POST de creacion de la routina
-        try:
-            serializer = DriverRoutineSerializer(data=request.data, many=False)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data)
-            else:
-                return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception:
-            return JsonResponse({'error': 'Unexpected error'})
     ############## ENDPOINTS ASOCIADOS A ROUTINE_REQUEST
 
 
@@ -671,7 +665,7 @@ class RoutineRequest(APIView):
             not_satisfied_passenger_routines = []
             for p_routine in list_passenger_routine:  # Se obtienen todos passenger routines no satisfechos por una routine_request
                 routine_request = m.RoutineRequest.objects.get(passenger_routine=p_routine,
-                                                             acceptation_status=m.AcceptationStatus.Accepted)
+                                                               acceptation_status=m.AcceptationStatus.Accepted)
                 if routine_request == None:
                     not_satisfied_passenger_routines.append(p_routine)
 
@@ -700,7 +694,7 @@ class RoutineRequest(APIView):
                 p_r.save()
 
             rq = m.RoutineRequest(passenger_routine=p_r, driver_routine=driver_routine, day=day,
-                                acceptation_status=m.AcceptationStatus.Pending_Confirmation)
+                                  acceptation_status=m.AcceptationStatus.Pending_Confirmation)
             rq.save()
             return JsonResponse({'success': True})
         else:
@@ -732,7 +726,7 @@ class UsersTest(APIView):
             return JsonResponse(serializer.data)
         except m.Passenger.DoesNotExist:
             return JsonResponse({"message": "Not found"}, status=404)
-        
+
     def put(self, request, userId):
         try:
             passenger = m.Passenger.objects.get(user_id=userId)
@@ -748,19 +742,17 @@ class UsersTest(APIView):
             passenger.save()
             user.save()
             serializer = UserSerializer(user)
-            return JsonResponse(serializer.data,status= 201)
+            return JsonResponse(serializer.data, status=201)
         except m.User.DoesNotExist:
-             return JsonResponse({"message": "Not found"}, status=404)
-        
-    def delete(self,request, userId):
+            return JsonResponse({"message": "Not found"}, status=404)
+
+    def delete(self, request, userId):
         try:
             user = m.User.objects.get(pk=userId)
             user.delete()
             return Response(status=204)
         except m.User.DoesNotExist:
-            return JsonResponse({"error":"User not found"}, status=404)
-
-            
+            return JsonResponse({"error": "User not found"}, status=404)
 
 
 class RatingListTest(APIView):
@@ -792,12 +784,12 @@ class RatingListTest(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
 
         data = {
-                "individual_ride": individual_ride_id,
-                "rating": rating,
-                "preference_0": preference_0,
-                "preference_1": preference_1,
-                "preference_2": preference_2,
-            }
+            "individual_ride": individual_ride_id,
+            "rating": rating,
+            "preference_0": preference_0,
+            "preference_1": preference_1,
+            "preference_2": preference_2,
+        }
         if rating_type == 'driver':
             serializer = DriverRatingSerializer(data=data)
 
@@ -811,7 +803,7 @@ class RatingListTest(APIView):
             serializer.save()
             return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 class CancelRoutineRequestTest(APIView):
     def put(self, request, routineRequestId):

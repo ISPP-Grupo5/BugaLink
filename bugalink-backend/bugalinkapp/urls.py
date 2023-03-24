@@ -2,12 +2,12 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-
     path('users', views.Users.as_view()),
     path('pendingindividualrides', views.PendingIndividualRide.as_view()),
     path('cancelledindividualrides', views.CancelledIndividualRide.as_view()),
     path('acceptedindividualrides', views.AcceptedIndividualRide.as_view()),
     path('routineFilter', views.RoutineRecommendation.as_view()),
+    path('ride/search', views.RideSearch.as_view()),
     path('individualRides', views.IndividualRides.as_view()),
     path('rides', views.Rides.as_view()),
     path('users/<int:user_id>', views.Users.as_view()),

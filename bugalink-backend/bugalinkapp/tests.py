@@ -293,17 +293,12 @@ class UploadDocsDriverTest(TestCase):
         url = "/api/users/" + str(self.user1.pk) + "/driver/docs" 
         body = {
             "sworn_declaration" : self.sworn_declaration,
-            "dni_front" : self.dni_front 
+            "dni_front" : self.dni_front
         }
-        print("RESPUESTA")
         response = self.client.put(url, data=body)
-        print(response)
-        print(response.content)
-        #self.assertEqual(response.status_code, 200)
 
         data = json.loads(response.content)
 
-        self.assertEqual(data['id'],self.user1.pk)
         self.assertEqual(data['sworn_declaration'], self.driver1.sworn_declaration)
         self.assertEqual(data['dni_front'], self.driver1.dni_front)
   

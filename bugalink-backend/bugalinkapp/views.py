@@ -869,7 +869,6 @@ class CancelRoutineRequestTest(APIView):
 
 class UploadDocsDriver(APIView):
     def put(self, request, user_id):
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         try:
             passenger = m.Passenger.objects.get(user_id = user_id)
             driver = m.Driver.objects.get(passenger = passenger)

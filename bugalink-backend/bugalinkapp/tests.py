@@ -213,6 +213,75 @@ class PostTest(TestCase):
                                                               passenger=self.passenger2,
                                                               n_seats=1)
 
+    def test_post_passenger_routine(self):
+        body = {
+                    "passenger": str(self.passenger1.pk),
+                    "start_longitude": -77.0366,
+                    "start_latitude": 38.8951,
+                    "end_longitude": -76.6183,
+                    "end_latitude": 39.2904,
+                    "start_location": "Washington D.C.",
+                    "end_location": "Baltimore, MD",
+                    "day": "Mon",
+                    "end_date": "18:00:00",
+                    "start_time_initial": "07:00:00",
+                    "start_time_final": "09:00:00"
+                }
+        url = "/api/users/passenger-routine"
+        response = self.client.post(url, data=body)
+
+        # este comando parsea la JsonResponse a un diccionario para poder acceder a los valores
+        data = json.loads(response.content)
+
+        # Se hacen las comprobaciones
+        self.assertAlmostEqual(float(data['start_longitude']), float(-77.0366), places=5)
+        self.assertAlmostEqual(float(data['start_latitude']), float(38.8951), places=5)
+        self.assertAlmostEqual(float(data['end_longitude']), float(-76.6183), places=5)
+        self.assertAlmostEqual(float(data['end_latitude']), float(39.2904), places=5)
+        self.assertEqual(data['start_location'],"Washington D.C.")
+        self.assertEqual(data['end_location'],"Baltimore, MD")
+        self.assertEqual(data['day'],"Mon")
+        self.assertEqual(data['end_date'],"18:00:00")
+        self.assertEqual(data['start_time_initial'],"07:00:00")
+        self.assertEqual(data['start_time_final'],"09:00:00")
+
+    def test_post_driver_routine(self):
+        body = {
+                    "driver": str(self.driver1.pk),
+                    "default_vehicle": 1,
+                    "start_longitude": -77.0366,
+                    "start_latitude": 38.8951,
+                    "end_longitude": -76.6183,
+                    "end_latitude": 39.2904,
+                    "start_location": "Washington D.C.",
+                    "end_location": "Baltimore, MD",
+                    "day": "Mon",
+                    "end_date": "18:00:00",
+                    "start_date_0": "07:00:00",
+                    "start_date_1": "09:00:00",
+                    "default_num_seats": 2,
+                    "price": 2.0,
+                    "driver_note": "Las ventanas no se abren",
+                    "one_ride": True
+                }
+        url = "/api/users/driver-routine"
+        response = self.client.post(url, data=body)
+
+        # este comando parsea la JsonResponse a un diccionario para poder acceder a los valores
+        data = json.loads(response.content)
+
+        # Se hacen las comprobaciones
+        self.assertAlmostEqual(float(data['start_longitude']), float(-77.0366), places=5)
+        self.assertAlmostEqual(float(data['start_latitude']), float(38.8951), places=5)
+        self.assertAlmostEqual(float(data['end_longitude']), float(-76.6183), places=5)
+        self.assertAlmostEqual(float(data['end_latitude']), float(39.2904), places=5)
+        self.assertEqual(data['start_location'],"Washington D.C.")
+        self.assertEqual(data['end_location'],"Baltimore, MD")
+        self.assertEqual(data['day'],"Mon")
+        self.assertEqual(data['end_date'],"18:00:00")
+        self.assertEqual(data['start_time_initial'],"07:00:00")
+        self.assertEqual(data['start_time_final'],"09:00:00")
+
     def tearDown(self):    
         self.driver1.delete()
         self.passenger1.delete()

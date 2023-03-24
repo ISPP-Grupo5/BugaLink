@@ -15,6 +15,7 @@ urlpatterns = [
     path('users/driver-routines', views.DriverRoutineList.as_view()),
     path('users/passenger-routine', views.PassengerRoutine.as_view()),
     path('users/driver-routine', views.DriverRoutine.as_view()),
+    path('users/<int:user_id>/driver/docs/', views.UploadDocsDriver.as_view()),
     path('reviews', views.RatingList.as_view()),
     path('reviews/rating', views.Rating.as_view()),
     path('reviews/pending', views.PendingRatings.as_view()), # Devuelve un listado de individualRides pendientes de valorar dado en el body un userId

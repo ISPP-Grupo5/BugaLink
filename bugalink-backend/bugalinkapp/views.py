@@ -864,44 +864,42 @@ class CancelRoutineRequestTest(APIView):
         except m.IndividualRide.DoesNotExist:
             raise Http404
 
-# GET POST users/<int:user_id>/driver/docs -> Se sube la documentación.
+# PUT users/<int:user_id>/driver/docs -> Se sube la documentación.
 # Cada solicitud hace el post de un documento y un atributo para identificar que documento es.
 
 class UploadDocsDriver(APIView):
     def put(self, request, user_id):
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         try:
             passenger = m.Passenger.objects.get(user_id = user_id)
             driver = m.Driver.objects.get(passenger = passenger)
             try:
                 sworn_declaration = request.data['sworn_declaration']
                 driver.sworn_declaration = sworn_declaration
+                driver.sworn_declaration_status = m.DocumentValidationStatus.Waiting_Validation
             except:
                 pass
             try:
                 driver_license = request.data['driver_license']
                 driver.driver_license = driver_license
+                driver.driver_license = m.DocumentValidationStatus.Waiting_Validation
             except:
                 pass
             try:
                 dni_front = request.data['dni_front']
                 driver.dni_front = dni_front
+                driver.dni_front = m.DocumentValidationStatus.Waiting_Validation
             except:
                 pass
             try:
                 dni_back = request.data['dni_back']
                 driver.dni_back = dni_back
+                driver.dni_back = m.DocumentValidationStatus.Waiting_Validation
             except:
                 pass
-
             driver.save()
             serializer = DriverSerializer(driver)
             return JsonResponse(serializer.data,status= 201)
         
-        except m.Driver.DoesNotExist:
-            raise Http404
-
-    '''
-    sworn_declaration = models.FileField(null=True, blank=True, upload_to=get_file_path)
-    driver_license = models.FileField(null=True, blank=True, upload_to=get_file_path)
-    dni_front = models.FileField(null=True, blank=True, upload_to=get_file_path)
-    dni_back = models.FileField(null=True, blank=True, upload_to=get_file_path)'''
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status = status.HTTP_400_BAD_REQUEST)

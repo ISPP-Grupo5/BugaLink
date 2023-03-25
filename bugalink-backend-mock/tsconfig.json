@@ -6,14 +6,15 @@
     "skipLibCheck": true,
     "strict": false,
     "forceConsistentCasingInFileNames": false,
-    "noEmit": true,
+    "noEmit": false,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "module": "commonjs",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": false,
+    "outDir": "dist"
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules"]

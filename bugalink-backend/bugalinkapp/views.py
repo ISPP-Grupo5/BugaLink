@@ -249,6 +249,18 @@ class UserIndividualRides(APIView):
         except m.IndividualRide.DoesNotExist:
             raise Http404
 
+class UserRideList(APIView):
+    def get(self, request, user_id):
+        try:
+            driver = m.Driver.objects.get(passenger__pk=user_id)
+            queryset = m.Ride.objects.filter(driver_routine__driver=driver)
+            serializer = ListRideSerializer({'rides': queryset})
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        except m.Driver.DoesNotExist:
+            return JsonResponse({'error': 'Driver does not exist with id {}'.format(user_id)},
+                                status=status.HTTP_404_NOT_FOUND)
+        except Exception:
+            return JsonResponse({'error': 'Unexpected error'}, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class FilteredIndividualRides(APIView):
     def get(self, request):

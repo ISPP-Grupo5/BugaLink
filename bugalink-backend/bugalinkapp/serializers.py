@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import Passenger, Ride, Driver, DriverRating, PassengerRating, Vehicle, IndividualRide,PassengerRoutine, DriverRoutine, CreditCard, Paypal,DiscountCode,IndividualDiscountCode,PassengerDiscountCode,RoutineRequest,Report, Transaction
-from django.contrib.auth.models import User
+from .models import User, Passenger, Ride, Driver, DriverRating, PassengerRating, Vehicle, IndividualRide,PassengerRoutine, DriverRoutine, CreditCard, Paypal,DiscountCode,IndividualDiscountCode,PassengerDiscountCode,RoutineRequest,Report, Transaction
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:

@@ -31,14 +31,14 @@ class Login(APIView):
         
 class Register(APIView):
     def validate_username(self,username):
-        if(m.User.objects.filter(username=username).exists()):
+        if(len(username)<3 or m.User.objects.filter(username=username).exists()):
             return False
         return True
     def validate_email(self,email):
         # regex pattern for email validation
         pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         print(re.match(pattern, email))
-        if(m.User.objects.filter(email=email).exists() or re.match(pattern, email) is not None):
+        if(m.User.objects.filter(email=email).exists() or re.match(pattern, email) is None):
             return False
         return True
     def validate_password(self,password):
@@ -49,7 +49,7 @@ class Register(APIView):
     def post(self, request):
         try:
             if not self.validate_username(request.data["username"]):
-                return JsonResponse({"message": "Nombre de usuario no válido o ya existe"}, status = 400)
+                return JsonResponse({"message": "Nombre de usuario no válido (debe contener al menos 3 caracteres) o ya existe"}, status = 400)
             if not self.validate_email(request.data["email"]):
                 return JsonResponse({"message": "Email no válido o ya utilizado"}, status = 400)
             if not self.validate_password(request.data["password"]):
@@ -62,7 +62,8 @@ class Register(APIView):
             user.save()
             passenger = m.Passenger(user=user, balance=0.00)
             passenger.save()
-            return JsonResponse({"message": "Usuario creado correctamente"}, status = 200)
+            serializer= UserSerializer(user, context={'request': request})
+            return JsonResponse(serializer.data, status = 200)
         except IntegrityError:
             return JsonResponse({"message": "Ha habido un error en el registro"}, status = 400)
 

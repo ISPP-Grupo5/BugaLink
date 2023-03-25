@@ -1,6 +1,5 @@
 from datetime import time, datetime, timedelta
 from django.test import TestCase
-from django.contrib.auth.models import User
 from .models import *
 from django.urls import reverse
 from rest_framework import status
@@ -917,6 +916,80 @@ class RideSearchTest(TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
         self.assertEqual(data['rides'][0]['num_seats'], 1)
+
+
+class RegisterTest(TestCase):
+    def setUp(self):
+        self.user1= User.objects.create(username="johndoe", email="john.doe@gmail.com", password="password")
+        self.user1.save()
+    def tearDown(self):
+        self.user1.delete()
+    def test_positive_register(self):
+        url = "/api/register"
+
+        body = {
+            "username":"johndoe125",
+            "email":"johndoe512@gmail.com",
+            "password":"Pruebapass"
+        }
+        response = self.client.post(url, data=body)
+        data = json.loads(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['username'], "johndoe125")
+        self.assertEqual(data['email'], "johndoe512@gmail.com")
+
+    def test_bad_username_register(self):
+        url = "/api/register"
+
+        body = {
+            "username":"jo",
+            "email":"johndoe3@gmail.com",
+            "password":"validpassword"
+        }
+        response = self.client.post(url, data=body)
+        data = json.loads(response.content)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data['message'], "Nombre de usuario no válido (debe contener al menos 3 caracteres) o ya existe")
+
+    def test_bad_password_register(self):
+        url = "/api/register"
+
+        body = {
+            "username":"johndoe1",
+            "email":"johndoe1@gmail.com",
+            "password":"123"
+        }
+        response = self.client.post(url, data=body)
+        data = json.loads(response.content)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data['message'], "Contraseña no válida, al menos debe tener 6 caracteres")
+    
+    def test_bad_email_register(self):
+        url = "/api/register"
+
+        body = {
+            "username":"johndoe4",
+            "email":"johndoe4gmail.com",
+            "password":"validpassword"
+        }
+        response = self.client.post(url, data=body)
+        data = json.loads(response.content)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data['message'], "Email no válido o ya utilizado")
+
+    def test_user_alreardy_exists_register(self):
+        url = "/api/register"
+
+        body = {
+            "username":self.user1.username,
+            "email":"johndoe2@gmail.com",
+            "password":"validpassword"
+        }
+        response = self.client.post(url, data=body)
+        data = json.loads(response.content)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data['message'], "Nombre de usuario no válido (debe contener al menos 3 caracteres) o ya existe")
+    
 
 class AcceptPassengerIndividualRideTest(TestCase):
     def setUp(self):

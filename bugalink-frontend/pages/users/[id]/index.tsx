@@ -9,6 +9,8 @@ import useUser from '@/hooks/useUser';
 import { GetServerSideProps } from 'next';
 import useUserTotalRides from '@/hooks/useUserTotalRides';
 import useUserTotalRatings from '@/hooks/useUserTotalRatings';
+import Link from 'next/link';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
@@ -50,7 +52,9 @@ export default function Profile({data}) {
           </div>
           
           <p className="pt-2 text-3xl ">{user ? user.first_name : 'Loading...'}</p>
-          <p className="text-md text-gray ">Editar perfil</p>
+          <Link href={NEXT_ROUTES.EDIT_PROFILE(user_id)}>
+            <p className="text-md text-gray ">Editar perfil</p>
+          </Link>
           <div className="py-4 text-light-gray">
             <hr></hr>
           </div>
@@ -60,11 +64,11 @@ export default function Profile({data}) {
               <p className="text-sm text-gray">Experiencia</p>
             </div>
             <div className="w-full -space-y-1 rounded-lg bg-white p-2 shadow-lg">
-              <p className="text-xl font-bold">{userTotalRides ? userTotalRides.total_rides : 'Loading...'}</p>
+              <p className="text-xl font-bold">{userTotalRides ? userTotalRides.total_rides : 'Ninguno'}</p>
               <p className="text-sm text-gray">Viajes</p>
             </div>
             <div className="w-full -space-y-1 rounded-lg bg-white p-2 shadow-lg">
-              <p className="text-xl font-bold">{userTotalRatings ? `${userTotalRatings.total_rating}⭐` : 'Loading...'}</p>
+              <p className="text-xl font-bold">{userTotalRatings ? `${userTotalRatings.rating}⭐` : 'Ninguna'}</p>
 
               <p className="text-sm text-gray">Valoraciones</p>
             </div>

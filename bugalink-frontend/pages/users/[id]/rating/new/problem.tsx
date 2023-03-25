@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import CTAButton from '../../../../../components/buttons/CTA';
-import SelectField from '../../../../../components/forms/SelectField';
-import TextAreaField from '../../../../../components/forms/TextAreaField';
+import CTAButton from '@/components/buttons/CTA';
+import SelectField from '@/components/forms/SelectField';
+import TextAreaField from '@/components/forms/TextAreaField';
 
 export default function ReportProblem() {
   const [selectedOption, setSelectedOption] = useState('');

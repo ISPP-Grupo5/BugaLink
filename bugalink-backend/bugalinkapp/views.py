@@ -113,75 +113,77 @@ class Ratings(APIView):
             return JsonResponse({"message": "Not found"}, status=404)
 
 class RoutineRecommendation(APIView):
-    def get(self, request):
+    def get(self, request, user_id):
         try:
             # Definicion de parametros del passenger asociado al user que efectua el filtro
             driver_routines = m.DriverRoutine.objects.all()
-            user = m.User.objects.get(id=request.data['userId'])
+            user = m.User.objects.get(id=user_id)
             passenger = m.Passenger.objects.get(user=user)
             passenger_routines = m.PassengerRoutine.objects.filter(
                 passenger=passenger)
-            
-            for passenger_routine in passenger_routines:
-                request = m.RoutineRequest.objects.filter(passenger_routine=passenger_routine).first()
-                if request.acceptation_status != 'Accepted':
-                    source_location = passenger_routine.start_location
-                    destination_location = passenger_routine.end_location
-                    min_time = passenger_routine.start_time_initial
-                    max_time = passenger_routine.start_time_final
-                    passenger_day = passenger_routine.day
-                    valid_routines = []
+            min_time = passenger_routine.start_time_initial
+            max_time = passenger_routine.start_time_final
+            passenger_days = passenger_routine.day
 
-                    for routine in driver_routines:
-                        driver_day = routine.day
+            valid_routines = []
+            similar_days = []
 
-                        # Definir las horas de inicio y fin de la rutina del pasajero
-                        drivers_beggining_of_ride = routine.start_date
-                        drivers_ending_of_ride = routine.end_date
+            for routine in driver_routines:
+                driver_day = routine.day
 
-                        # Definir lugares de inicio y fin de la rutina del conductor
-                        driver_source_location = routine.start_location
-                        driver_ending_location = routine.end_location
+                # Comprobacion de cuantos dias coinciden en cada rutina
+                if driver_day in passenger_days:
+                    similar_days.append(driver_day)
 
-                        # Obtener en kilometros la distancia en kilometros entre los lugares de origen
-                        lat_source_passenger, lon_source_passenger = map(radians, source_location)
-                        lat_source_driver, lon_source_driver = map(radians, driver_source_location)
-                        d_lat_source = lat_source_driver - lat_source_passenger
-                        d_lon_source = lon_source_driver - lon_source_passenger
-                        a = sin(d_lat_source / 2) ** 2 + cos(lat_source_passenger) * cos(lat_source_driver) * sin(
-                            d_lon_source / 2) ** 2
-                        c = 2 * atan2(sqrt(a), sqrt(1 - a))
-                        source_distance = 6371 * c
+                # Definir las horas de inicio y fin de la rutina del pasajero
+                drivers_beggining_of_ride_0 = routine.start_date_0
+                drivers_beggining_of_ride_1 = routine.start_date_1
 
-                        # Obtener en kilometros la diferencia de distancia entre los lugares destino
-                        lat_end_passenger, lon_end_passenger = map(radians, destination_location)
-                        lat_end_driver, lon_end_driver = map(radians, driver_ending_location)
-                        d_lat_destination = lat_end_driver - lat_end_passenger
-                        d_lon_destination = lon_end_driver - lon_end_passenger
-                        a = sin(d_lat_destination / 2) ** 2 + cos(lat_end_passenger) * cos(lat_end_driver) * sin(
-                            d_lon_destination / 2) ** 2
-                        c = 2 * atan2(sqrt(a), sqrt(1 - a))
-                        destination_distance = 6371 * c
+                # Definir lugares de inicio y fin de la rutina del conductor
+                lat_source_driver = routine.start_latitude
+                lon_source_driver = routine.start_longitude
+                lat_end_driver = routine.end_latitude
+                lon_end_driver = routine.end_longitude
 
-                        # Uso de todos los datos obtenidos para crear un filtro que compruebe si la rutina es valida
-                        # Si es valida se guarda en una lista
-                        if passenger_day == driver_day and min_time <= drivers_beggining_of_ride and max_time >= drivers_beggining_of_ride and destination_distance <= 1 and source_distance <= 1:
-                            valid_routines.append(routine)
+                # Obtenner en kilometros la distancia en kilometros entre los lugares de origen
+                lat_source_passenger = passenger_routine.start_latitude
+                lon_source_passenger = passenger_routine.start_longitude
+                lat_end_passenger = passenger_routine.end_latitude
+                lon_end_passenger = passenger_routine.end_longitude
+                d_lat_source = lat_source_driver - lat_source_passenger
+                d_lon_source = lon_source_driver - lon_source_passenger
+                a = sin(d_lat_source / 2) ** 2 + cos(lat_source_passenger) * cos(lat_source_driver) * sin(
+                    d_lon_source / 2) ** 2
+                c = 2 * atan2(sqrt(a), sqrt(1 - a))
+                source_distance = 6371 * c
 
-                    # Se obtienen los viajes asociados a las rutinas marcadas como validas y se guardan a una lista que las devolvera como respuesta
-                    rides = []
-                    for routine in valid_routines:
-                        ride = m.Ride.objects.filter(driver_routine=routine).first()
-                        if ride and ride.num_seats > 0:
-                            rides.append(ride)
+                # Obtener en kilometros la diferencia de distancia entre los lugares destino
+                d_lat_destination = lat_end_driver - lat_end_passenger
+                d_lon_destination = lon_end_driver - lon_end_passenger
+                a = sin(d_lat_destination / 2) ** 2 + cos(lat_end_passenger) * cos(lat_end_driver) * sin(
+                    d_lon_destination / 2) ** 2
+                c = 2 * atan2(sqrt(a), sqrt(1 - a))
+                destination_distance = 6371 * c
 
-                    # Llamada al serializer para devolver todos los viajes que han sido seleccionados
-                    serializer = ListRideSerializer({"rides": rides})
-                    return JsonResponse(serializer.data, status = 200)
+                # Uso de todos los datos obtenidos para crear un filtro que compruebe si la rutina es valida
+                # Si es valida se guarda en una lista
+                if len(similar_days) > 0 and (drivers_beggining_of_ride_0 <= max_time and drivers_beggining_of_ride_1 >= min_time) and destination_distance <= 1 and source_distance <= 1:
+                    valid_routines.append(routine)
+
+            # Se obtienen los viajes asociados a las rutinas marcadas como validas y se guardan a una lista que las devolvera como respuesta
+            rides = []
+            for routine in valid_routines:
+                ride = m.Ride.objects.filter(driver_routine=routine).first()
+                if ride:
+                    if ride.num_seats > 0:
+                        rides.append(ride)
+
+            # Llamada al serializer para devolver todos los viajes que han sido seleccionados
+            serializer = ListRideSerializer({"rides": rides})
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
 
         except Exception as e:
-            return JsonResponse({"message": str(e)}, status=400)
-
+            return JsonResponse({"message": str(e)}, status = status.HTTP_400_BAD_REQUEST)
 
 class PendingIndividualRide(APIView):
     def get(self, request):
@@ -227,13 +229,13 @@ class AcceptedIndividualRide(APIView):
 
 
 class IndividualRides(APIView):
-    def get(self, request):
+    def get(self, request, individualRideId):
         try:
-            individual_ride = m.IndividualRide.objects.get(id=request.data['individualRideId'])
+            individual_ride = m.IndividualRide.objects.get(id=individualRideId)
             serializer = IndividualRideSerializer(individual_ride)
-            return JsonResponse(serializer.data)
-        except m.IndividualRide.DoesNotExist:
-            raise Http404
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserIndividualRides(APIView):
@@ -287,14 +289,15 @@ class FilteredIndividualRides(APIView):
             raise Http404
 
 
-class AcceptPassengerIndividualRide:
-    def put(self, request):
+class AcceptPassengerIndividualRide(APIView):
+    def patch(self, request, individualRideId):
         try:
-            individualRide = m.IndividualRide.objects.get(id=request.data['individualRideId'])
+            individualRide = m.IndividualRide.objects.get(id=individualRideId)
             individualRide.acceptation_status = m.AcceptationStatus.Accepted
-            m.IndividualRide.objects.put(individualRide)
-        except m.IndividualRide.DoesNotExist:
-            raise Http404
+            individualRide.save()
+            return JsonResponse({"message": "Viaje aceptado"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status = status.HTTP_400_BAD_REQUEST)
 
 
 class CancelPassengerIndividualRide:
@@ -499,10 +502,9 @@ class CanceledRoutineRequests(APIView):
 
 
 class Rating(APIView):
-    def get(self, request):
-        user_id = request.data.get('userId')
+    def get(self, request, user_id):
         if not user_id:
-            return JsonResponse({'error': 'userId not provided'}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse({'error': 'user_id not provided'}, status=status.HTTP_400_BAD_REQUEST)
 
         driver_rating_list = []
         passenger_rating_list = []
@@ -679,18 +681,17 @@ class PassengerRoutineList(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
         serializer = ListPassengerRoutineSerializer({"passenger_routines": queryset})
         return JsonResponse(serializer.data)
-
-
-class DriverRoutineList(APIView):
-    def get(self, request, format=None):
+    
+    def post(self, request, format=None):  # POST de creacion de la routina
         try:
-            queryset = m.DriverRoutine.objects.filter(driver_id=request.data['driverId'])
-            serializer = ListDriverRoutineSerializer({"driver_routines": queryset})
-            return JsonResponse(serializer.data)
-        except ObjectDoesNotExist:
-            return JsonResponse({'error': 'Passenger does not exist with id {}'.format(request.data['driverId'])},
-                                status=status.HTTP_400_BAD_REQUEST)
-
+            serializer = PassengerRoutineSerializer(data=request.data, many=False)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            return JsonResponse({'error': 'Unexpected error'})
 
 class PassengerRoutine(APIView):
     def get(self, request, passenger_routine_id, format=None):
@@ -712,17 +713,6 @@ class PassengerRoutine(APIView):
         routine.delete()
         return JsonResponse({'message': 'Success'})
 
-    def post(self, request, format=None):  # POST de creacion de la routina
-        try:
-            serializer = PassengerRoutineSerializer(data=request.data, many=False)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data)
-            else:
-                return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception:
-            return JsonResponse({'error': 'Unexpected error'})
-
     def put(self, request,passenger_routine_id, format=None):
         try:
             routine = m.PassengerRoutine.objects.get(pk=passenger_routine_id)
@@ -738,6 +728,27 @@ class PassengerRoutine(APIView):
         except Exception:
             return JsonResponse({'error': 'Invalid arguments'}, status=status.HTTP_400_BAD_REQUEST)
 
+
+class DriverRoutineList(APIView):
+    def get(self, request, format=None):
+        try:
+            queryset = m.DriverRoutine.objects.filter(driver_id=request.data['driverId'])
+            serializer = ListDriverRoutineSerializer({"driver_routines": queryset})
+            return JsonResponse(serializer.data)
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'Passenger does not exist with id {}'.format(request.data['driverId'])},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request, format=None):  # POST de creacion de la routina
+        try:
+            serializer = DriverRoutineSerializer(data=request.data, many=False)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            return JsonResponse({'error': 'Unexpected error'})
 
 class DriverRoutine(APIView):
     def get(self, request, driver_routine_id, format=None):
@@ -775,16 +786,6 @@ class DriverRoutine(APIView):
         except Exception:
             return JsonResponse({'error': 'Invalid arguments'}, status=status.HTTP_400_BAD_REQUEST)
 
-    def post(self, request, format=None):  # POST de creacion de la routina
-        try:
-            serializer = DriverRoutineSerializer(data=request.data, many=False)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data)
-            else:
-                return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception:
-            return JsonResponse({'error': 'Unexpected error'})
     ############## ENDPOINTS ASOCIADOS A ROUTINE_REQUEST
 
 

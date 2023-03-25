@@ -48,7 +48,7 @@ export default function Login() {
                 />
               </div>
 
-              <div className="justify-between mr-8 ml-8 flex flex-row items-center py-3">
+              <div className="mr-8 ml-8 flex flex-row items-center justify-between py-3">
                 <span className="flex flex-row items-center -justify-between space-x-7">
                   <Switch />
                   <p className="-translate-x-5 text-base font-bold text-light-gray">

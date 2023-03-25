@@ -170,9 +170,8 @@ class RoutineRecommendation(APIView):
                 rides = []
                 for routine in valid_routines:
                     ride = m.Ride.objects.filter(driver_routine=routine).first()
-                    if ride:
-                        if ride.num_seats > 0:
-                            rides.append(ride)
+                    if ride.num_seats < 0:
+                        rides.append(ride)
 
                 # Llamada al serializer para devolver todos los viajes que han sido seleccionados
                 serializer = ListRideSerializer({"rides": rides})

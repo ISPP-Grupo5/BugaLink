@@ -730,16 +730,6 @@ class PassengerRoutine(APIView):
             return JsonResponse({'error': 'Invalid arguments'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class DriverRoutineList(APIView):
-    def get(self, request, format=None):
-        try:
-            queryset = m.DriverRoutine.objects.filter(driver_id=request.data['driverId'])
-            serializer = ListDriverRoutineSerializer({"driver_routines": queryset})
-            return JsonResponse(serializer.data)
-        except ObjectDoesNotExist:
-            return JsonResponse({'error': 'Passenger does not exist with id {}'.format(request.data['driverId'])},
-                                status=status.HTTP_400_BAD_REQUEST)
-
 
 class DriverRoutine(APIView):
     def get(self, request, driver_routine_id, format=None):

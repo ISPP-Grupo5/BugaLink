@@ -36,5 +36,7 @@ urlpatterns = [
     path('test/users/<int:userId>', views.UsersTest.as_view()),
     path('test/users/<int:user_id>/rideRecommendation', views.RoutineRecommendation.as_view()),
     path('test/users/<int:user_id>/reviews/rating', views.Rating.as_view()),
-    path('test/reviews', views.RatingListTest.as_view())
+    path('test/reviews', views.RatingListTest.as_view()),
+    path('test/users/passenger-routines/<int:passenger_routine_id>', views.PassengerRoutine.as_view()),
+    path('test/users/driver-routines/<int:driver_routine_id>', views.DriverRoutine.as_view()),
 ]

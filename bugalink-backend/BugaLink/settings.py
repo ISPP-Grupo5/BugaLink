@@ -67,6 +67,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'newsletter',
     'bugalinkapp',
+    'corsheaders',
+
+
 ]
 
 MIDDLEWARE = [
@@ -85,6 +88,8 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 31536000
 
 ROOT_URLCONF = 'BugaLink.urls'
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 
 TEMPLATES = [

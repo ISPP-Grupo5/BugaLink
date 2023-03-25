@@ -679,18 +679,17 @@ class PassengerRoutineList(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
         serializer = ListPassengerRoutineSerializer({"passenger_routines": queryset})
         return JsonResponse(serializer.data)
-
-
-class DriverRoutineList(APIView):
-    def get(self, request, format=None):
+    
+    def post(self, request, format=None):  # POST de creacion de la routina
         try:
-            queryset = m.DriverRoutine.objects.filter(driver_id=request.data['driverId'])
-            serializer = ListDriverRoutineSerializer({"driver_routines": queryset})
-            return JsonResponse(serializer.data)
-        except ObjectDoesNotExist:
-            return JsonResponse({'error': 'Passenger does not exist with id {}'.format(request.data['driverId'])},
-                                status=status.HTTP_400_BAD_REQUEST)
-
+            serializer = PassengerRoutineSerializer(data=request.data, many=False)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            return JsonResponse({'error': 'Unexpected error'})
 
 class PassengerRoutine(APIView):
     def get(self, request, passenger_routine_id, format=None):
@@ -712,17 +711,6 @@ class PassengerRoutine(APIView):
         routine.delete()
         return JsonResponse({'message': 'Success'})
 
-    def post(self, request, format=None):  # POST de creacion de la routina
-        try:
-            serializer = PassengerRoutineSerializer(data=request.data, many=False)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data)
-            else:
-                return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception:
-            return JsonResponse({'error': 'Unexpected error'})
-
     def put(self, request,passenger_routine_id, format=None):
         try:
             routine = m.PassengerRoutine.objects.get(pk=passenger_routine_id)
@@ -738,6 +726,27 @@ class PassengerRoutine(APIView):
         except Exception:
             return JsonResponse({'error': 'Invalid arguments'}, status=status.HTTP_400_BAD_REQUEST)
 
+
+class DriverRoutineList(APIView):
+    def get(self, request, format=None):
+        try:
+            queryset = m.DriverRoutine.objects.filter(driver_id=request.data['driverId'])
+            serializer = ListDriverRoutineSerializer({"driver_routines": queryset})
+            return JsonResponse(serializer.data)
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'Passenger does not exist with id {}'.format(request.data['driverId'])},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request, format=None):  # POST de creacion de la routina
+        try:
+            serializer = DriverRoutineSerializer(data=request.data, many=False)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            return JsonResponse({'error': 'Unexpected error'})
 
 class DriverRoutine(APIView):
     def get(self, request, driver_routine_id, format=None):
@@ -775,16 +784,6 @@ class DriverRoutine(APIView):
         except Exception:
             return JsonResponse({'error': 'Invalid arguments'}, status=status.HTTP_400_BAD_REQUEST)
 
-    def post(self, request, format=None):  # POST de creacion de la routina
-        try:
-            serializer = DriverRoutineSerializer(data=request.data, many=False)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data)
-            else:
-                return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception:
-            return JsonResponse({'error': 'Unexpected error'})
     ############## ENDPOINTS ASOCIADOS A ROUTINE_REQUEST
 
 

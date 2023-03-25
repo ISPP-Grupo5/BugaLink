@@ -253,10 +253,9 @@ class RoutineRecommendationTest(TestCase):
         url = "/api/users/" + str(self.user1.pk) + "/routineFilter"
         response = self.client.get(url)
         data = json.loads(response.content)
-        print(str(data))
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data['rides'][0]['id'], 1) #Busca el viaje de id 1 ya que los datos introducidos en la rutina del driver son muy similares a los de la rutina del passenger definida
+        self.assertEqual(data['rides'][0]['driver_routine'], self.driverRoutine2.pk) #Busca el viaje con la driverRoutine definida arriba ya que los datos introducidos en la rutina del driver son muy similares a los de la rutina del passenger definida
         
 class RatingTest(TestCase):
     def setUp(self):

@@ -692,7 +692,7 @@ class PassengerRoutine(APIView):
             return JsonResponse(serializer.data)
         except ObjectDoesNotExist:
             return JsonResponse({'error': 'PassengerRoutine does not exist with id {}'.format(passenger_routine_id)},
-                                status=status.HTTP_400_BAD_REQUEST)
+                                status=status.HTTP_404_NOT_FOUND)
     def post(self, request, format=None):  # POST de creacion de la routina
         try:
             serializer = PassengerRoutineSerializer(data=request.data, many=False)
@@ -704,15 +704,15 @@ class PassengerRoutine(APIView):
         except Exception:
             return JsonResponse({'error': 'Unexpected error'})
         
-    def delete(self, request, format=None):
+    def delete(self, request, passenger_routine_id, format=None):
         try:
-            routine = m.PassengerRoutine.objects.get(pk=request.data['passengerRoutineId'])
+            routine = m.PassengerRoutine.objects.get(pk= passenger_routine_id)
         except ObjectDoesNotExist:
             return JsonResponse(
-                {'error': 'PassengerRoutine does not exist with id {}'.format(request.data['passengerRoutineId'])},
-                status=status.HTTP_400_BAD_REQUEST)
+                {'error': 'PassengerRoutine does not exist with id {}'.format(passenger_routine_id)},
+                status=status.HTTP_404_NOT_FOUND)
         routine.delete()
-        return JsonResponse({'message': 'Success'})
+        return JsonResponse({'message': 'Success on delete'}, status = status.HTTP_204_NO_CONTENT)
 
     def put(self, request,passenger_routine_id, format=None):
         try:
@@ -749,7 +749,7 @@ class DriverRoutine(APIView):
             return JsonResponse(serializer.data)
         except ObjectDoesNotExist:
             return JsonResponse({'error': 'DriverRoutine does not exist with id {}'.format(driver_routine_id)},
-                                status=status.HTTP_400_BAD_REQUEST)
+                                status=status.HTTP_404_NOT_FOUND)
     def post(self, request, format=None):  # POST de creacion de la routina
         try:
             serializer = DriverRoutineSerializer(data=request.data, many=False)
@@ -761,16 +761,15 @@ class DriverRoutine(APIView):
         except Exception:
             return JsonResponse({'error': 'Unexpected error'})
         
-    def delete(self, request, format=None):
+    def delete(self, request, driver_routine_id, format=None): #EJEMPLO EFECTIVO DE DELETE
         try:
-            routine = m.DriverRoutine.objects.get(pk=request.data['driverRoutineId'])
+            routine = m.DriverRoutine.objects.get(pk=driver_routine_id)
+            routine.delete()
+            return JsonResponse({'message': 'Success on delete'}, status=status.HTTP_204_NO_CONTENT)
         except ObjectDoesNotExist:
             return JsonResponse(
-                {'error': 'DriverRoutine does not exist with id {}'.format(request.data['passengerRoutineId'])},
-                status=status.HTTP_400_BAD_REQUEST)
-
-        routine.delete()
-        return JsonResponse({'message': 'Success'})
+                {'error': 'DriverRoutine does not exist with id {}'.format(driver_routine_id)},
+                status=status.HTTP_404_NOT_FOUND)
 
     def put(self, request, driver_routine_id, format=None):
         try:

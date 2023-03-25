@@ -140,9 +140,15 @@ export default function NewRoutine({
                   )
                 }
               />
+              <div className='flex flex-row space-x-4 items-center place-content-center mt-2'>
+                <input type="checkbox" className='w-5 h-5'/>
+                <label className='text-xl font-bold'>No repetir el viaje</label>
+              </div>
+
             </div>
+            
           )}
-          <CTAButton className="mt-6 w-full" text="CREAR" />
+          <CTAButton className="mt-3 w-full" text="CREAR" />
         </form>
       </div>
     </AnimatedLayout>

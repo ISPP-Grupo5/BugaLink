@@ -10,6 +10,7 @@ import Link from 'next/link';
 import Destino from 'public/icons/Vista-Principal/destino.svg';
 import { useState } from 'react';
 import Glass from '/public/icons/Vista-Principal/glass.svg';
+import OptionButton from '@/components/buttons/Option';
 
 export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -20,7 +21,7 @@ export default function Home() {
   return (
     <AnimatedLayout className="max-h-full overflow-y-scroll">
       <div className="flex flex-col pb-24">
-        <span className="my-10 flex items-center space-x-4 px-4 md:px-5">
+        <span className="my-8 flex items-center space-x-4 px-4 md:px-5">
           <form className="flex w-full items-center rounded-full bg-white px-4 py-3">
             <Destino className="h-5 w-5 flex-none translate-y-0.5 scale-125 fill-light-turquoise stroke-light-turquoise" />
             <input
@@ -42,6 +43,16 @@ export default function Home() {
           </Link>
         </span>
 
+        <OptionButton
+          text="Crear Viaje"
+          className="mx-auto h-1/6 w-full mb-6 px-4"
+          Option1="Como Pasajero"
+          Option2="Como Conductor"
+          isLink={true}
+          linkOption1="/users/273932t8437/routines/passenger/new"
+          linkOption2="/users/273932t8437/routines/driver/new"
+        />
+
         <span className="flex w-full justify-between space-x-5 px-4 md:px-5">
           <SquareRoutinesButton />
           <SquareChatsButton />
@@ -55,6 +66,7 @@ export default function Home() {
           </Link>
         </span>
         <UpcomingTripsCarousel />
+
         <span className="mt-4 flex flex-col px-4 md:px-5">
           <p className="mb-2 text-left text-xl font-semibold">
             Viajes guardados
@@ -65,6 +77,7 @@ export default function Home() {
             ¡Guárdalo y aparecerá aquí!
           </div>
         </span>
+
       </div>
       <RecommendationsDrawer open={drawerOpen} setOpen={setDrawerOpen} />
     </AnimatedLayout>

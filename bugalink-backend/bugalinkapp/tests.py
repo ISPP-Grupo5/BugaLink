@@ -829,5 +829,5 @@ class RideDetailTest(TestCase):
         url = "/api/rides/{}/detail".format(self.ride1.pk)
         response = self.client.get(url)
         data = json.loads(response.content)
-        self.assertEqual(data['available_seats'],self.ride1.num_seats - self.individual_ride1.n_seats)
+        self.assertEqual(data['available_seats'],self.ride1.get_available_seats())
         self.assertEqual(data['recurrent'],not self.driver_routine1.one_ride)

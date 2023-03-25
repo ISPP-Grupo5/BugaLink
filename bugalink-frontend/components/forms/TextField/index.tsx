@@ -3,15 +3,7 @@ import EyeOffIcon from '@/public/assets/eye-off.svg';
 
 //type in  email, password...
 type props = {
-  type:
-    | 'text'
-    | 'email'
-    | 'password'
-    | 'number'
-    | 'date'
-    | 'tel'
-    | 'textarea'
-    | undefined;
+  type: 'text' | 'email' | 'password' | 'number' | 'date' | 'tel' | undefined;
   fieldName: string;
   name?: string;
   content: string;

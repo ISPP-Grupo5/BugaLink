@@ -1,4 +1,5 @@
 from datetime import *
+
 import re
 from django.db import IntegrityError
 from rest_framework import status
@@ -6,9 +7,9 @@ from rest_framework.views import APIView
 
 from django.http import JsonResponse
 from math import radians, sin, cos, atan2, sqrt
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ObjectDoesNotExist
-
+from rest_framework.authentication import TokenAuthentication
 # Se importa como m para que no de conflictos con django.db.models
 from . import models as m
 from .serializers import *
@@ -20,14 +21,22 @@ from rest_framework.response import Response
 
 class Login(APIView):
     def post(self, request):
+        # authentication_classes = (TokenAuthentication,)
         username = request.data['username']
         password = request.data['password']
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request,username=username, password=password)
         if user is not None:
             login(request, user)
             return JsonResponse({"message": "Login correcto"}, status = 200)
         else:
-            return JsonResponse({"message": "usuario y/o contraseña incoorrectos"}, status = 400)
+            return JsonResponse({"message": "Usuario y/o contraseña incoorrectos"}, status = 400)
+class Logout(APIView):
+    def post(self, request):
+        # Borramos de la request la información de sesión
+        logout(request)
+
+        # Devolvemos la respuesta al cliente
+        return Response(status=status.HTTP_200_OK)
         
 class Register(APIView):
     def validate_username(self,username):
@@ -57,8 +66,8 @@ class Register(APIView):
             user = m.User.objects.create(
             username=request.data["username"],
             email=request.data['email'],
-            password=request.data['password']
             )
+            user.set_password(request.data['password'])
             user.save()
             passenger = m.Passenger(user=user, balance=0.00)
             passenger.save()

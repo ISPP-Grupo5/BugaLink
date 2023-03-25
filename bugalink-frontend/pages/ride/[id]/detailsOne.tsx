@@ -4,29 +4,68 @@ import AnimatedLayout from '@/components/layouts/animated';
 import MapPreview from '@/components/maps/mapPreview';
 import ProfileHeader from '@/components/ProfileHeader';
 import useMapCoordinates from '@/hooks/useMapCoordinates';
+import useRideDetails from '@/hooks/useRideDetails';
+import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
 
-export default function DetailsOne() {
-  const origin =
-    'Escuela Técnica Superior de Ingeniería Informática, 41002 Sevilla';
-  const destination = 'Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla';
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { id } = context.query;
+
+  const data = {
+    id: id,
+  }
+
+  return {
+    props: { data },
+  };
+};
+
+export default function DetailsOne({ data }) {
+  const [origin, setOrigin] = useState();
+  const [destination, setDestination] = useState();
+  const originCoords = useMapCoordinates(origin);
+  const destinationCoords = useMapCoordinates(destination);
 
   const router = useRouter();
   const { requested } = router.query;
 
-  const originCoords = useMapCoordinates(origin);
-  const destinationCoords = useMapCoordinates(destination);
+  const dayDictionary = {
+    Mon: 'Lunes',
+    Tue: 'Martes',
+    Wed: 'Miércoles',
+    Thu: 'Jueves',
+    Fri: 'Viernes',
+    Sat: 'Sábado',
+    Sun: 'Domingo',
+  };
 
   const [time, setTime] = useState<number>(0);
 
   // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
-  const startTime = new Date('2021-05-01T21:00:00');
+  //const startTime = new Date('2021-05-01T21:00:00');
   const endTime = new Date('2021-05-01T21:00:00');
   endTime.setMinutes(endTime.getMinutes() + time);
+
+
+  const ride_id = data.id;
+  const { rideData, isLoading, isError } = useRideDetails(ride_id);
+
+  useEffect(() => {
+    if (rideData) {
+      setOrigin(rideData.ride.start_location);
+      setDestination(rideData.ride.end_location);
+
+      
+    }
+  }, [rideData]);
+
+  let startTime = rideData ? rideData.start_time_0 : 'Loading...';
+  startTime = startTime.substr(0, 5);
 
   return (
     <AnimatedLayout>
@@ -46,19 +85,19 @@ export default function DetailsOne() {
               <p className="text-gray">Origen</p>
               <p className="font-bold">
                 <SourcePin className="mr-2 inline" />
-                {origin}
+                {rideData && rideData.ride.start_location ? rideData.ride.start_location : 'No se ha encontrado'}
               </p>
             </div>
             <div>
               <p>Destino</p>
               <p className="font-bold">
                 <TargetPin className="mr-2 inline" />
-                {destination}
+                {rideData && rideData.ride.end_location ? rideData.ride.end_location : 'No se ha encontrado'}
               </p>
             </div>
           </div>
           {/* Map preview */}
-          {!originCoords.isLoading && !destinationCoords.isLoading && (
+          {origin && destination && (
             <MapPreview
               originCoords={originCoords.coordinates}
               destinationCoords={destinationCoords.coordinates}
@@ -70,7 +109,9 @@ export default function DetailsOne() {
           <div className="py-2">
             <p className="text-sm text-gray">Fecha y hora</p>
             <p className="text-md text-justify font-medium">
-              📅 Todos los viernes a las{' '}
+              📅 Todos los{' '}
+              {rideData? dayDictionary[rideData.day] : "Loading..."}
+              {' '}a las{' '}
               {startTime.toLocaleString('es-ES', {
                 hour: '2-digit',
                 minute: '2-digit',
@@ -79,24 +120,26 @@ export default function DetailsOne() {
           </div>
           <div className="py-2">
             <p className="text-sm text-gray">Sobre el conductor</p>
+            
+            
             <p className="text-md text-justify font-medium">
-              🗣 Prefiero hablar durante el viaje
+              {rideData && rideData.driver_preferences.preference_0 ? '🚬 Puedes fumar en mi coche' : '🚭 Mi coche es libre de humos'}
             </p>
             <p className="text-md text-justify font-medium">
-              🎶 Prefiero ir escuchando música
+              {rideData && rideData.driver_preferences.preference_0 ? '🔉 Prefiero ir escuchando música' : '🔇 Prefiero no escuchar musica'}
             </p>
             <p className="text-md text-justify font-medium">
-              🐾 Acepto mascotas
+              {rideData && rideData.driver_preferences.preference_0 ? '🐾 Puedes traer a tu mascota' : '😿 No acepto mascotas'}
             </p>
             <p className="text-md text-justify font-medium">
-              🚭 No fumar en el coche
+              {rideData && rideData.driver_preferences.preference_0 ? '🗣 Prefiero hablar durante el camino' : '🤐 Prefiero no hablar durante el camino'}
             </p>
           </div>
           <div className="py-2">
             <p className="text-sm font-normal text-gray">Nota del conductor</p>
             <p className="text-md text-justify font-medium leading-5">
-              ✏️ También puedo recoger pasajeros en otro punto si me pilla de
-              camino. Mejor pregúntame por chat antes de reservar asiento
+              {rideData && rideData.driver_note ? '✏️' + rideData.driver_note : "✏️ El conductor no ha dejado ninguna nota"}
+ 
             </p>
           </div>
         </div>
@@ -105,15 +148,15 @@ export default function DetailsOne() {
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-col">
               <p className="text-xs font-normal">Tipo de viaje</p>
-              <p className="text-xl font-bold">Recurrente</p>
+              <p className="text-xl font-bold">{rideData && rideData.recurrent ? 'Recurrente' : 'Individual'}</p>
             </div>
             <div className="flex flex-col">
               <p className="text-xs font-normal">Precio por asiento</p>
-              <p className="text-xl font-bold">2,00€</p>
+              <p className="text-xl font-bold">{rideData ? rideData.price : 'Loading...'}€</p>
             </div>
             <div className="flex flex-col">
               <p className="text-xs font-normal">Plazas libres</p>
-              <p className="text-xl font-bold">2</p>
+              <p className="text-xl font-bold">{rideData ? rideData.available_seats : 'Loading...'}</p>
             </div>
           </div>
           {requested === 'false' && (

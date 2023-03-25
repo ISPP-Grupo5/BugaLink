@@ -1102,3 +1102,7 @@ class LoginTest(TestCase):
         url = "/api/login"
         response = self.client.post(url, {"username": "johndoe", "password": "johnpassword"})
         self.assertEqual(response.status_code, 200)
+    def test_incorrect_login(self):
+        url = "/api/login"
+        response = self.client.post(url, {"username": "johndoe", "password": "johnbadpassword"})
+        self.assertEqual(response.status_code, 400)

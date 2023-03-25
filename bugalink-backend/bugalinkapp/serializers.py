@@ -125,3 +125,7 @@ class IndividualDiscountCodeSerializer(serializers.ModelSerializer):
         model = IndividualDiscountCode
         fields = '__all__'
 
+class DriverPreferencesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Driver
+        fields = ['preference_0', 'preference_1', 'preference_2', 'preference_3']

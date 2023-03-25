@@ -852,7 +852,33 @@ class Driver(APIView):
         else:
             return JsonResponse({'success': False, 'error': 'El método de solicitud no está permitido'}, status=405)
 
+# /ride/ride_id/detail -> Vista detalle 1
+class RideDetail(APIView):
+    def get(self,request, ride_id):
+        try:
+            ride = m.Ride.objects.get(pk=ride_id)
+        except m.Ride.DoesNotExist:
+            return JsonResponse({"Error": "Ride with id {} does not exist".format(ride_id)},status=404)
+        
+        driver_routine = ride.driver_routine
+        driver = driver_routine.driver
+        serializer = RideSerializer(ride)
 
+        response = {
+            "available_seats": ride.get_available_seats(),
+            "recurrent": not driver_routine.one_ride,
+            "price": driver_routine.price,
+            "day":driver_routine.day,
+            "start_time_0": driver_routine.start_date_0,
+            "start_time_1": driver_routine.start_date_1,
+            "driver_note": driver_routine.driver_note,
+            "driver_preferences": DriverPreferencesSerializer(driver).data,      
+            "ride":serializer.data
+        }
+
+        return JsonResponse(response)
+
+### TESTING ###
 class UsersTest(APIView):
     def get(self, request, userId):
         try:
@@ -888,9 +914,6 @@ class UsersTest(APIView):
             return Response(status=204)
         except m.User.DoesNotExist:
             return JsonResponse({"error":"User not found"}, status=404)
-
-            
-
 
 class RatingListTest(APIView):
     def post(self, request):

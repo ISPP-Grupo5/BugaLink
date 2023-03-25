@@ -893,6 +893,7 @@ class RideDetail(APIView):
 
         response = {
             "available_seats": ride.get_available_seats(),
+            "driver_id" : driver_routine.driver.pk,
             "recurrent": not driver_routine.one_ride,
             "price": driver_routine.price,
             "day":driver_routine.day,

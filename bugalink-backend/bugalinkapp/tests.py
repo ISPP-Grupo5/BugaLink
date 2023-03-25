@@ -247,23 +247,15 @@ class RoutineRecommendationTest(TestCase):
         self.driver2 = Driver.objects.create(passenger=self.passenger2)
         self.driverRoutine2 = DriverRoutine.objects.create(driver=self.driver2, default_num_seats=1, start_date_0='8:00', start_date_1='8:15', end_date='9:00', start_latitude=10.0, end_latitude=11.0, start_longitude=10.0, end_longitude=11.0,day='Mon', price=10.0)
         self.ride2 = Ride.objects.create(driver_routine=self.driverRoutine2, num_seats=1, start_date='2023-03-11 8:00', end_date='2023-03-11 8:15')
-        
-    def tearDown(self):
-        self.ride2.delete()
-        self.driverRoutine2.delete()
-        self.driver2.delete()
-        self.passenger2.delete()
-        self.user2.delete()
-
-        self.passengerRoutine1.delete()
-        self.passenger1.delete()
-        self.user1.delete()
 
     def test_get_routine_recommendation_by_user_id(self):
         url = "/api/test/users/" + str(self.user1.pk) + "/rideRecommendation"
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
 
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['rides'][0]['id'], 1) #Busca el viaje de id 1 ya que los datos introducidos en la rutina del driver son muy similares a los de la rutina del passenger definida
+        
 class RatingTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -421,7 +413,7 @@ class PostTest(TestCase):
                     "start_time_initial": "07:00:00",
                     "start_time_final": "09:00:00"
                 }
-        url = "/api/users/passenger-routines"
+        url = "/api/users/passenger-routine"
         response = self.client.post(url, data=body)
 
         # este comando parsea la JsonResponse a un diccionario para poder acceder a los valores
@@ -458,7 +450,7 @@ class PostTest(TestCase):
                     "price": 25.99,
                     "driver_note": "Las ventanas no se abren"
                 }
-        url = "/api/users/driver-routines"
+        url = "/api/users/driver-routine"
         response = self.client.post(url, data=body)
 
         # este comando parsea la JsonResponse a un diccionario para poder acceder a los valores
@@ -591,6 +583,85 @@ class DeleteTest(TestCase):
         response2 = self.client.get(url)
         self.assertEqual(response2.status_code,404)
 
+class DeletePassengerRoutineTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user1 = User.objects.create(
+            username="TEST USER1", 
+            first_name="John", 
+            last_name="Smith", 
+            email="test1@test.es", 
+            password="My secret pw")
+        self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
+        self.passengerRoutine1 = PassengerRoutine.objects.create(
+            passenger=self.passenger1, 
+            start_time_initial='8:00', 
+            start_time_final='8:30',
+            end_date='9:00',
+            start_location= "C. Berlín, 41012 Sevilla",
+            end_location= "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla",
+            day= "Mon"
+            )
+    def tearDown(self):
+        self.passengerRoutine1.delete()
+        self.passenger1.delete()
+        self.user1.delete()
+        
+    def test_delete_passenger_routine(self):
+        url = "/api/test/users/passenger-routines/" + str(self.passengerRoutine1.pk)
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code,status.HTTP_204_NO_CONTENT)
+        
+        response2 = self.client.get(url)
+        self.assertEqual(response2.status_code,status.HTTP_404_NOT_FOUND)
+
+class DeleteDriverRoutineTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user1 = User.objects.create(
+            username="TEST USER1", 
+            first_name="John", 
+            last_name="Smith", 
+            email="test1@test.es", 
+            password="My secret pw")
+        self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
+        self.driver1 = Driver.objects.create(passenger=self.passenger1,
+                                             sworn_declaration= None,
+                                             driver_license = None,
+                                             dni_front = None,
+                                             dni_back = None,
+                                             entry_date = '2023-01-01'
+                                            )
+        self.driverRoutine1 = DriverRoutine.objects.create(
+            driver=self.driver1, 
+            default_vehicle_id = 1,
+            default_num_seats = 3,
+            start_date_0='8:00', 
+            start_date_1='8:30',
+            end_date='9:00',
+            start_location= "C. Berlín, 41012 Sevilla",
+            end_location= "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla",
+            day= "Mon",
+            one_ride = False,
+            price= 2
+            )
+
+    def tearDown(self):
+        self.driverRoutine1.delete()
+        self.driver1.delete()
+        self.passenger1.delete()
+        self.user1.delete()
+        
+    def test_delete_driver_routine(self):
+        url = "/api/test/users/driver-routines/" + str(self.driverRoutine1.pk)
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code,status.HTTP_204_NO_CONTENT)
+        
+        # This line produces an error because GET for driver routines is not defined ////////////////////////////////////////////////////////////
+        #response2 = self.client.get(url)
+        #self.assertEqual(response2.status_code,status.HTTP_404_NOT_FOUND)
 # users /<userId> -> Devuelve la información del usuario
 class UserGetTest(TestCase):
     
@@ -1016,4 +1087,3 @@ class RideDetailTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data['available_seats'],self.ride1.get_available_seats())
         self.assertEqual(data['recurrent'],not self.driver_routine1.one_ride)
-

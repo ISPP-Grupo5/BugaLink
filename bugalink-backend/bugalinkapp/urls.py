@@ -15,6 +15,8 @@ urlpatterns = [
     path('users/<int:user_id>', views.Users.as_view()),
     path('users/<int:user_id>/rides/total', views.TotalRides.as_view()),
     path('users/<int:user_id>/reviews/rating', views.Ratings.as_view()),
+    path('users/<int:user_id>/passenger-routines', views.PassengerRoutineList.as_view()),
+    path('users/<int:user_id>/driver-routines', views.DriverRoutineList.as_view()),
     path('users/individualrides', views.UserIndividualRides.as_view()),
     path('users/<int:user_id>/driver/docs', views.UploadDocsDriver.as_view()),
     #PASSENGER ROUTINES
@@ -35,5 +37,7 @@ urlpatterns = [
     path('test/users/<int:userId>', views.UsersTest.as_view()),
     path('test/users/<int:user_id>/rideRecommendation', views.RoutineRecommendation.as_view()),
     path('test/users/<int:user_id>/reviews/rating', views.Rating.as_view()),
-    path('test/reviews', views.RatingListTest.as_view())
+    path('test/reviews', views.RatingListTest.as_view()),
+    path('test/users/passenger-routines/<int:passenger_routine_id>', views.PassengerRoutine.as_view()),
+    path('test/users/driver-routines/<int:driver_routine_id>', views.DriverRoutine.as_view()),
 ]

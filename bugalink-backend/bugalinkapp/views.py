@@ -1,12 +1,11 @@
 from datetime import *
+import re
 from django.db import IntegrityError
 from rest_framework import status
 from rest_framework.views import APIView
 
 from django.http import JsonResponse
 from math import radians, sin, cos, atan2, sqrt
-
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -29,7 +28,45 @@ class Login(APIView):
             login(request, user)
             return JsonResponse({"message": "Login correcto"}, status=200)
         else:
-            return JsonResponse({"message": "usuario y/o contraseña incoorrectos"}, status=400)
+            return JsonResponse({"message": "usuario y/o contraseña incoorrectos"}, status = 400)
+        
+class Register(APIView):
+    def validate_username(self,username):
+        if(len(username)<3 or m.User.objects.filter(username=username).exists()):
+            return False
+        return True
+    def validate_email(self,email):
+        # regex pattern for email validation
+        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        print(re.match(pattern, email))
+        if(m.User.objects.filter(email=email).exists() or re.match(pattern, email) is None):
+            return False
+        return True
+    def validate_password(self,password):
+        if(len(password)<6):
+            return False
+        return True
+
+    def post(self, request):
+        try:
+            if not self.validate_username(request.data["username"]):
+                return JsonResponse({"message": "Nombre de usuario no válido (debe contener al menos 3 caracteres) o ya existe"}, status = 400)
+            if not self.validate_email(request.data["email"]):
+                return JsonResponse({"message": "Email no válido o ya utilizado"}, status = 400)
+            if not self.validate_password(request.data["password"]):
+                return JsonResponse({"message": "Contraseña no válida, al menos debe tener 6 caracteres"}, status = 400)
+            user = m.User.objects.create(
+            username=request.data["username"],
+            email=request.data['email'],
+            password=request.data['password']
+            )
+            user.save()
+            passenger = m.Passenger(user=user, balance=0.00)
+            passenger.save()
+            serializer= UserSerializer(user, context={'request': request})
+            return JsonResponse(serializer.data, status = 200)
+        except IntegrityError:
+            return JsonResponse({"message": "Ha habido un error en el registro"}, status = 400)
 
 
 class Passengers(APIView):
@@ -437,7 +474,7 @@ class RideSearch(APIView):
 class CreateIndividualRide(APIView):
     def post(self, request):
         if request.method == 'POST':
-            user = User.objects.get(id=request.data["userId"])
+            user = m.User.objects.get(id=request.data["userId"])
             passenger = m.Passenger.objects.get(user=user)
             ride = m.Ride.objects.get(id=request.data["rideId"])
             driver_routine = ride.driver_routine
@@ -752,7 +789,7 @@ class PassengerRoutine(APIView):
             return JsonResponse(serializer.data)
         except ObjectDoesNotExist:
             return JsonResponse({'error': 'PassengerRoutine does not exist with id {}'.format(passenger_routine_id)},
-                                status=status.HTTP_400_BAD_REQUEST)
+                                status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request, format=None):  # POST de creacion de la routina
         try:
@@ -765,15 +802,17 @@ class PassengerRoutine(APIView):
         except Exception:
             return JsonResponse({'error': 'Unexpected error'})
 
-    def delete(self, request, format=None):
+        
+    def delete(self, request, passenger_routine_id, format=None):
+
         try:
-            routine = m.PassengerRoutine.objects.get(pk=request.data['passengerRoutineId'])
+            routine = m.PassengerRoutine.objects.get(pk= passenger_routine_id)
         except ObjectDoesNotExist:
             return JsonResponse(
-                {'error': 'PassengerRoutine does not exist with id {}'.format(request.data['passengerRoutineId'])},
-                status=status.HTTP_400_BAD_REQUEST)
+                {'error': 'PassengerRoutine does not exist with id {}'.format(passenger_routine_id)},
+                status=status.HTTP_404_NOT_FOUND)
         routine.delete()
-        return JsonResponse({'message': 'Success'})
+        return JsonResponse({'message': 'Success on delete'}, status = status.HTTP_204_NO_CONTENT)
 
     def put(self, request, passenger_routine_id, format=None):
         try:
@@ -810,7 +849,8 @@ class DriverRoutine(APIView):
             return JsonResponse(serializer.data)
         except ObjectDoesNotExist:
             return JsonResponse({'error': 'DriverRoutine does not exist with id {}'.format(driver_routine_id)},
-                                status=status.HTTP_400_BAD_REQUEST)
+
+                                status=status.HTTP_404_NOT_FOUND)
 
     def post(self, request, format=None):  # POST de creacion de la routina
         try:
@@ -823,16 +863,16 @@ class DriverRoutine(APIView):
         except Exception:
             return JsonResponse({'error': 'Unexpected error'})
 
-    def delete(self, request, format=None):
+    def delete(self, request, driver_routine_id, format=None): #EJEMPLO EFECTIVO DE DELETE
+
         try:
-            routine = m.DriverRoutine.objects.get(pk=request.data['driverRoutineId'])
+            routine = m.DriverRoutine.objects.get(pk=driver_routine_id)
+            routine.delete()
+            return JsonResponse({'message': 'Success on delete'}, status=status.HTTP_204_NO_CONTENT)
         except ObjectDoesNotExist:
             return JsonResponse(
-                {'error': 'DriverRoutine does not exist with id {}'.format(request.data['passengerRoutineId'])},
-                status=status.HTTP_400_BAD_REQUEST)
-
-        routine.delete()
-        return JsonResponse({'message': 'Success'})
+                {'error': 'DriverRoutine does not exist with id {}'.format(driver_routine_id)},
+                status=status.HTTP_404_NOT_FOUND)
 
     def put(self, request, driver_routine_id, format=None):
         try:

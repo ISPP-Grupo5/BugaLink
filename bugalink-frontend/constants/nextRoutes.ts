@@ -3,6 +3,8 @@ const NEXT_ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   PROFILE: (userId) => `/users/${userId}`,
+  RECHARGE_CREDIT: (userId) => `/users/${userId}/wallet/recharge`,
+  WITHDRAW_CREDIT: (userId) => `/users/${userId}/wallet/withdraw`,
   MY_ROUTINES: (userId) => `/users/${userId}/routines`,
   RIDE_HISTORY: (userId) => `/users/${userId}/history`,
   RIDE_DETAILS_ONE: (rideId) => `/ride/${rideId}/detailsOne`,

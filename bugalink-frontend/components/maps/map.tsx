@@ -5,6 +5,7 @@ export default function LeafletMap({
   originCoords,
   destinationCoords,
   setTime = null,
+  setTotalDistance = null
 }) {
   return (
     <MapContainer
@@ -14,12 +15,14 @@ export default function LeafletMap({
     >
       <TileLayer
         url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' />
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      />
       {originCoords && destinationCoords && (
         <RoutingMachine
           origin={originCoords}
           destination={destinationCoords}
           setTime={setTime}
+          setTotalDistance={setTotalDistance}
         />
       )}
     </MapContainer>

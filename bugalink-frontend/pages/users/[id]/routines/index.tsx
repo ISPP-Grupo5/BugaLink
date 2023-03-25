@@ -9,41 +9,78 @@ import OrigenPin from '/public/assets/origen-pin.svg';
 import ThreeDots from '/public/assets/three-dots.svg';
 import SteeringWheel from '/public/assets/steering-wheel.svg';
 import Link from 'next/link';
-import useRoutines from '@/hooks/useRoutines';
+import useDriverRoutines from '@/hooks/useDriverRoutines';
+import { GetServerSideProps } from 'next';
+import usePassengerRoutines from '@/hooks/usePassengerRoutines';
 
-export default function MyRoutines() {
-  const days = [
-    'Lunes',
-    'Martes',
-    'Miércoles',
-    'Jueves',
-    'Viernes',
-    'Sábado',
-    'Domingo',
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { id } = context.query;
+
+  const data = {
+    id: id,
+  }
+
+  return {
+    props: { data },
+  };
+};
+
+export default function MyRoutines({ data }) {
+  
+  const daysComparator = [
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
+    'Sun',
   ];
-  const { routines, isLoading, isError } = useRoutines();
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error</div>;
+
+  const dayDictionary = {
+    Mon: 'Lunes',
+    Tue: 'Martes',
+    Wed: 'Miércoles',
+    Thu: 'Jueves',
+    Fri: 'Viernes',
+    Sat: 'Sábado',
+    Sun: 'Domingo',
+  };
+
+  const user_id = data.id;
+  
+  const{ routines: passengerRoutines = [], isLoading: isLoadingPassenger, isError: isErrorPassenger } = usePassengerRoutines(user_id);
+  const { routines: driverRoutines = [], isLoading: isLoadingDriver, isError: isErrorDriver } = useDriverRoutines(user_id);
+  
+  const routines = [];
+  
+  if(!isLoadingDriver&&!isLoadingPassenger){
+    passengerRoutines['passenger_routines'] && routines.push(...passengerRoutines['passenger_routines']);
+    driverRoutines['driver_routines'] && routines.push(...driverRoutines['driver_routines']);
+  }
+
+  if (isLoadingPassenger && isLoadingDriver) return <div>Loading...</div>;
+  if (isErrorPassenger && isErrorDriver) return <div>Error</div>;
   return (
     <AnimatedLayout className="flex flex-col bg-white">
       <BackButtonText text={'Mi horario'} />
       <div className="flex flex-col overflow-y-scroll px-6">
-        {days.map((day) => (
-          <div key={day} className="mb-4 space-y-2">
-            <h1 className="text-2xl">{day}</h1>
+        {daysComparator.map((dayComp) => (
+          <div key={dayComp} className="mb-4 space-y-2">
+            <h1 className="text-2xl">{dayDictionary[dayComp]}</h1>
             {routines
-              .filter((routine) => routine.day === day)
-              .map((routine) => (
+              .filter((routine) => routine.day === dayComp)
+              .map((rou) => (
                 <RoutineCard
-                  key={routine.id}
-                  departureHourStart={routine.departureHourStart}
-                  departureHourEnd={routine.departureHourEnd}
-                  type={routine.type}
-                  origin={routine.origin}
-                  destination={routine.destination}
+                  key={rou.id}
+                  departureHourStart={rou.start_time_initial||rou.start_date_0}
+                  departureHourEnd={rou.start_time_final||rou.start_date_1}
+                  type={rou.passenger? 1:2}
+                  origin={rou.start_location}
+                  destination={rou.end_location}
                 />
               ))}
-            {routines.filter((routine) => routine.day === day).length === 0 && (
+            {routines.filter((routine) => routine.day === dayComp).length === 0 && (
               <div className="w-full rounded-md border border-border-color py-2 text-center font-light text-gray">
                 No tienes horario para este día
               </div>
@@ -62,9 +99,9 @@ const RoutineCard = ({
   type,
   origin,
   destination,
+  
 }) => {
-  const isDriver = type === 'driver';
-
+  const isDriver = type === 2;
   return (
     <span className="flex w-full rounded-lg border border-border-color">
       <div
@@ -159,6 +196,7 @@ const AddRoutineMenu = () => {
   return (
     <div className="absolute bottom-0 right-0 mb-8 mr-8">
       <button
+        data-cy="add-routine-menu"
         className="flex aspect-square w-14 items-center justify-center rounded-full bg-dark-turquoise text-2xl text-white"
         onClick={handleClick}
       >
@@ -174,14 +212,19 @@ const AddRoutineMenu = () => {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <Link href="/users/273932t8437/routines/passenger/new">
+        <Link
+          data-cy="new-passenger-routine"
+          href="/users/273932t8437/routines/passenger/new"
+        >
           <MenuItem onClick={handleClose}>Como pasajero</MenuItem>
         </Link>
-        <Link href="/users/273932t8437/routines/driver/new">
+        <Link
+          data-cy="new-driver-routine"
+          href="/users/273932t8437/routines/driver/new"
+        >
           <MenuItem onClick={handleClose}>Como conductor</MenuItem>
         </Link>
       </Menu>
     </div>
   );
 };
- 

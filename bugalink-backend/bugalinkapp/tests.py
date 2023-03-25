@@ -824,8 +824,7 @@ class RideDetailTest(TestCase):
         self.client = APIClient()
         load_data(self)
     
-    def tearDown(self):
-        pass
+
     def test_get_ride_detail(self):
         url = "/api/rides/{}/detail".format(self.ride1.pk)
         response = self.client.get(url)

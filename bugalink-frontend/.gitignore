@@ -14,6 +14,7 @@
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
@@ -46,3 +47,10 @@ next-env.d.ts
 /public/workbox-*.js.map
 /public/worker-*.js.map
 /public/fallback-*.js
+
+# CYPRESS GITIGNORE
+lib-cov
+.grunt
+.lock-wscript
+cypress/videos
+cypress/screenshots

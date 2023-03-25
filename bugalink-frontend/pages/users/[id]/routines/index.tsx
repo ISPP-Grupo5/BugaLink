@@ -196,6 +196,7 @@ const AddRoutineMenu = () => {
   return (
     <div className="absolute bottom-0 right-0 mb-8 mr-8">
       <button
+        data-cy="add-routine-menu"
         className="flex aspect-square w-14 items-center justify-center rounded-full bg-dark-turquoise text-2xl text-white"
         onClick={handleClick}
       >
@@ -211,14 +212,19 @@ const AddRoutineMenu = () => {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <Link href="/users/273932t8437/routines/passenger/new">
+        <Link
+          data-cy="new-passenger-routine"
+          href="/users/273932t8437/routines/passenger/new"
+        >
           <MenuItem onClick={handleClose}>Como pasajero</MenuItem>
         </Link>
-        <Link href="/users/273932t8437/routines/driver/new">
+        <Link
+          data-cy="new-driver-routine"
+          href="/users/273932t8437/routines/driver/new"
+        >
           <MenuItem onClick={handleClose}>Como conductor</MenuItem>
         </Link>
       </Menu>
     </div>
   );
 };
- 

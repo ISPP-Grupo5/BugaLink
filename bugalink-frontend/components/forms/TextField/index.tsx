@@ -2,24 +2,28 @@
 type props = {
   type: 'text' | 'email' | 'password' | 'number' | 'date' | 'tel' | undefined;
   fieldName: string;
+  name?: string;
   content: string;
   setContent: (value: string) => void;
   parentClassName?: string;
   inputClassName?: string;
   disabled?: boolean;
   onClick?: () => void;
+  error?: string;
 };
 
 // Adapted from https://tailwind-elements.com/docs/standard/forms/inputs/
 export default function TextField({
   type,
   fieldName,
+  name,
   content,
   setContent,
   parentClassName,
   inputClassName,
   disabled,
-  onClick
+  onClick,
+  error,
 }: props) {
   return (
     <div
@@ -34,16 +38,24 @@ export default function TextField({
         id={fieldName}
         disabled={disabled}
         onClick={onClick}
+        name={name}
       />
       <label
         onSelectCapture={(e) => e.preventDefault()} // Prevents context menu from opening when selecting text
         htmlFor={fieldName}
-        className={`pointer-events-none absolute top-0 left-3 mb-0 max-w-[90%] origin-[0_0] truncate bg-transparent px-1.5 pt-3 text-light-gray transition-all duration-200 ease-out peer-focus:-translate-y-5 peer-focus:scale-75 peer-focus:bg-white peer-focus:text-turquoise ${
+        className={`pointer-events-none absolute top-0 left-3 mb-0 max-w-[90%] origin-[0_0] truncate bg-transparent px-1.5 pt-3 transition-all duration-200 ease-out peer-focus:-translate-y-5 peer-focus:scale-75 peer-focus:bg-white ${
+          error
+            ? 'text-red peer-focus:text-red'
+            : 'text-light-gray peer-focus:text-turquoise'
+        } ${
           content === '' ? '' : '-translate-y-5 scale-75 bg-white'
         }  motion-reduce:transition-none`}
       >
         {fieldName}
       </label>
+      {error && (
+        <div className="mt-1 text-xs font-medium text-red">{error}</div>
+      )}
     </div>
   );
 }

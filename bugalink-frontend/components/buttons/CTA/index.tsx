@@ -2,9 +2,7 @@ type Params = {
   text: string;
   disabled?: boolean;
   className?: string;
-  onClick?: () => void;
-
-  
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
 export default function CTAButton({ text, disabled, className, onClick}: Params) {

@@ -1087,3 +1087,18 @@ class RideDetailTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data['available_seats'],self.ride1.get_available_seats())
         self.assertEqual(data['recurrent'],not self.driver_routine1.one_ride)
+
+
+class LoginTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create(username="johndoe")
+        self.user.set_password("johnpassword")
+        self.user.save()
+    def tearDown(self):
+        self.user.delete()
+
+    def test_login(self):
+        url = "/api/login"
+        response = self.client.post(url, {"username": "johndoe", "password": "johnpassword"})
+        self.assertEqual(response.status_code, 200)

@@ -20,7 +20,9 @@ def get_file_path(instance, filename):
     return 'passenger{0}/{1}'.format(instance.get_passenger().pk, filename)
 
 class User(User):
-    pass
+    class Meta:
+        proxy = True
+        ordering = ('username', )
 
 class DocumentValidationStatus(Enum):
     none = 'None'

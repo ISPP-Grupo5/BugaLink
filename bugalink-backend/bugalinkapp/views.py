@@ -38,7 +38,7 @@ class Register(APIView):
         # regex pattern for email validation
         pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         print(re.match(pattern, email))
-        if(m.User.objects.filter(email=email).exists() and re.match(pattern, email) is not None):
+        if(m.User.objects.filter(email=email).exists() or re.match(pattern, email) is not None):
             return False
         return True
     def validate_password(self,password):

@@ -23,10 +23,7 @@ export default function ProfileHeader({
     >
       {/* Profile header */}
       <div className="flex flex-row">
-        <img
-          src={photo}
-          className="h-11 w-11 rounded-full"
-        />
+        <img src={photo} className="h-11 w-11 rounded-full" />
         <div className="ml-3 flex flex-col">
           <p className="text-lg font-bold leading-normal">{name}</p>
           <p className="text-xs font-normal">

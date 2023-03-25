@@ -401,7 +401,6 @@ class PostTest(TestCase):
         
     def test_post_passenger_routine(self):
         body = {
-                    "passenger": str(self.passenger1.pk),
                     "start_longitude": -77.0366,
                     "start_latitude": 38.8951,
                     "end_longitude": -76.6183,
@@ -413,7 +412,7 @@ class PostTest(TestCase):
                     "start_time_initial": "07:00:00",
                     "start_time_final": "09:00:00"
                 }
-        url = "/api/users/passenger-routine"
+        url = "/api/users/" + str(self.user1.pk) + "/passenger-routine"
         response = self.client.post(url, data=body)
 
         # este comando parsea la JsonResponse a un diccionario para poder acceder a los valores
@@ -433,7 +432,6 @@ class PostTest(TestCase):
 
     def test_post_driver_routine(self):
         body = {
-                    "driver": str(self.driver1.pk),
                     "default_vehicle_id":1,
                     "default_num_seats": 3,
                     "start_date_0": "08:00:00",
@@ -450,7 +448,7 @@ class PostTest(TestCase):
                     "price": 25.99,
                     "driver_note": "Las ventanas no se abren"
                 }
-        url = "/api/users/driver-routine"
+        url = "/api/users/" + str(self.user1.pk) + "/driver-routine"
         response = self.client.post(url, data=body)
 
         # este comando parsea la JsonResponse a un diccionario para poder acceder a los valores

@@ -22,9 +22,17 @@ class VehicleSerializer(serializers.ModelSerializer):
         fields    = '__all__'
 
 class DriverRoutineSerializer(serializers.ModelSerializer):
+    driver = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = DriverRoutine
         fields = '__all__'
+
+    def create(self, validated_data):
+        user_id = self.context['user_id']
+        driver = Driver.objects.get(pk=user_id)
+        routine = DriverRoutine.objects.create(driver=driver, **validated_data)
+        return routine
 
 class ListDriverRoutineSerializer(serializers.Serializer):
     driver_routines = DriverRoutineSerializer(many=True)
@@ -41,7 +49,13 @@ class ListRideSerializer(serializers.Serializer):
 class PassengerRoutineSerializer(serializers.ModelSerializer):
     class Meta:
         model = PassengerRoutine
-        fields = '__all__'
+        fields = ['start_longitude', 'start_latitude', 'end_longitude', 'end_latitude', 'start_location', 'end_location', 'day', 'end_date', 'start_time_initial', 'start_time_final']
+
+    def create(self, validated_data):
+        user_id = self.context['user_id']
+        passenger = Passenger.objects.get(pk=user_id)
+        routine = PassengerRoutine.objects.create(passenger=passenger, **validated_data)
+        return routine
 
 class ListPassengerRoutineSerializer(serializers.Serializer):
     passenger_routines = PassengerRoutineSerializer(many=True)

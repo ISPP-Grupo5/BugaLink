@@ -682,14 +682,14 @@ class PassengerRoutineList(APIView):
 
 
 class DriverRoutineList(APIView):
-    def get(self, request, format=None):
+    def get(self, request, user_id):
         try:
-            queryset = m.DriverRoutine.objects.filter(driver_id=request.data['driverId'])
-            serializer = ListDriverRoutineSerializer({"driver_routines": queryset})
-            return JsonResponse(serializer.data)
+            queryset = m.DriverRoutine.objects.filter(driver_id=user_id)
         except ObjectDoesNotExist:
-            return JsonResponse({'error': 'Passenger does not exist with id {}'.format(request.data['driverId'])},
+            return JsonResponse({'error': 'Driver does not exist with id {}'.format(request.data['user_id'])},
                                 status=status.HTTP_400_BAD_REQUEST)
+        serializer = ListDriverRoutineSerializer({"driver_routines":queryset})
+        return JsonResponse(serializer.data)
 
 
 class PassengerRoutine(APIView):

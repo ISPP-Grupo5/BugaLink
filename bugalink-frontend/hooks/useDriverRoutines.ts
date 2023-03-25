@@ -1,9 +1,9 @@
 import fetcher from '@/utils/fetcher';
 import useSWR from 'swr';
 
-export default function useDriverRoutines(id) {
+export default function useDriverRoutines(user_id) {
   const { data, error, isLoading } = useSWR(
-    `/users/${id}/driver-routines`,
+    `/users/${user_id}/driver-routines`,
     fetcher
   );
 

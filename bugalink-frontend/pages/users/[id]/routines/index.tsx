@@ -26,15 +26,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default function MyRoutines({ data }) {
-  const days = [
-    'Lunes',
-    'Martes',
-    'Miércoles',
-    'Jueves',
-    'Viernes',
-    'Sábado',
-    'Domingo',
-  ];
   
   const daysComparator = [
     'Mon',
@@ -46,15 +37,24 @@ export default function MyRoutines({ data }) {
     'Sun',
   ];
 
-  const userId = data.id;
+  const dayDictionary = {
+    Mon: 'Lunes',
+    Tue: 'Martes',
+    Wed: 'Miércoles',
+    Thu: 'Jueves',
+    Fri: 'Viernes',
+    Sat: 'Sábado',
+    Sun: 'Domingo',
+  };
+
+  const user_id = data.id;
   
-  const{ routines: passengerRoutines = [], isLoading: isLoadingPassenger, isError: isErrorPassenger } = usePassengerRoutines(userId);
-  const { routines: driverRoutines = [], isLoading: isLoadingDriver, isError: isErrorDriver } = useDriverRoutines(userId);
+  const{ routines: passengerRoutines = [], isLoading: isLoadingPassenger, isError: isErrorPassenger } = usePassengerRoutines(user_id);
+  const { routines: driverRoutines = [], isLoading: isLoadingDriver, isError: isErrorDriver } = useDriverRoutines(user_id);
   
   const routines = [];
   
   if(!isLoadingDriver&&!isLoadingPassenger){
-    debugger
     passengerRoutines['passenger_routines'] && routines.push(...passengerRoutines['passenger_routines']);
     driverRoutines['driver_routines'] && routines.push(...driverRoutines['driver_routines']);
   }
@@ -65,22 +65,22 @@ export default function MyRoutines({ data }) {
     <AnimatedLayout className="flex flex-col bg-white">
       <BackButtonText text={'Mi horario'} />
       <div className="flex flex-col overflow-y-scroll px-6">
-        {daysComparator.map((day) => (
-          <div key={day} className="mb-4 space-y-2">
-            <h1 className="text-2xl">{day}</h1>
+        {daysComparator.map((dayComp) => (
+          <div key={dayComp} className="mb-4 space-y-2">
+            <h1 className="text-2xl">{dayDictionary[dayComp]}</h1>
             {routines
-              .filter((routine) => routine.day === day)
+              .filter((routine) => routine.day === dayComp)
               .map((rou) => (
                 <RoutineCard
                   key={rou.id}
-                  departureHourStart={rou.start_time_initial}
-                  departureHourEnd={rou.start_time_final}
+                  departureHourStart={rou.start_time_initial||rou.start_date_0}
+                  departureHourEnd={rou.start_time_final||rou.start_date_1}
                   type={rou.passenger? 1:2}
                   origin={rou.start_location}
                   destination={rou.end_location}
                 />
               ))}
-            {routines.filter((routine) => routine.day === day).length === 0 && (
+            {routines.filter((routine) => routine.day === dayComp).length === 0 && (
               <div className="w-full rounded-md border border-border-color py-2 text-center font-light text-gray">
                 No tienes horario para este día
               </div>
@@ -101,8 +101,7 @@ const RoutineCard = ({
   destination,
   
 }) => {
-  const isDriver = type === 'driver';
-  debugger;
+  const isDriver = type === 2;
   return (
     <span className="flex w-full rounded-lg border border-border-color">
       <div

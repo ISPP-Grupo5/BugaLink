@@ -3,6 +3,7 @@ const NEXT_ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   PROFILE: (userId) => `/users/${userId}`,
+  EDIT_PROFILE: (userId) => `/users/${userId}/edit`,
   MY_ROUTINES: (userId) => `/users/${userId}/routines`,
   RIDE_HISTORY: (userId) => `/users/${userId}/history`,
   RIDE_DETAILS_ONE: (rideId) => `/ride/${rideId}/detailsOne`,

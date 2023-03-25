@@ -1,3 +1,6 @@
+import EyeIcon from '@/public/assets/eye.svg';
+import EyeOffIcon from '@/public/assets/eye-off.svg';
+
 //type in  email, password...
 type props = {
   type: 'text' | 'email' | 'password' | 'number' | 'date' | 'tel' | undefined;
@@ -9,6 +12,8 @@ type props = {
   inputClassName?: string;
   disabled?: boolean;
   onClick?: () => void;
+  showPassword?: boolean;
+  setShowPassword?: (value: boolean) => void;
   error?: string;
 };
 
@@ -23,6 +28,8 @@ export default function TextField({
   inputClassName,
   disabled,
   onClick,
+  showPassword,
+  setShowPassword,
   error,
 }: props) {
   return (
@@ -31,8 +38,12 @@ export default function TextField({
       data-te-input-wrapper-init
     >
       <input
-        type={type || 'text'}
-        className={`peer block min-h-[auto] rounded-lg border-none bg-transparent py-3 px-4 text-lg outline outline-1 outline-light-gray transition-all duration-200 ease-linear focus:outline-turquoise motion-reduce:transition-none ${inputClassName}`}
+        type={showPassword ? 'text' : type}
+        className={`peer block min-h-[auto] rounded-lg border-none bg-transparent py-3 px-4 text-lg outline outline-1 transition-all duration-200 ease-linear motion-reduce:transition-none ${inputClassName} ${
+          error
+            ? 'text-red outline-red focus:outline-red'
+            : 'outline-light-gray focus:outline-turquoise'
+        }`}
         onChange={(e) => setContent(e.target.value)}
         value={content}
         id={fieldName}
@@ -40,6 +51,19 @@ export default function TextField({
         onClick={onClick}
         name={name}
       />
+      {type === 'password' && (
+        <div
+          className="absolute right-3 top-4 cursor-pointer"
+          onClick={() => setShowPassword(!showPassword)}
+        >
+          {showPassword ? (
+            <EyeOffIcon className="h-5 w-5 text-gray" />
+          ) : (
+            <EyeIcon className="h-5 w-5 text-gray" />
+          )}
+        </div>
+      )}
+
       <label
         onSelectCapture={(e) => e.preventDefault()} // Prevents context menu from opening when selecting text
         htmlFor={fieldName}

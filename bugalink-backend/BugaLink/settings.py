@@ -80,6 +80,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# CONFIGURACION DE SESIONES
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 31536000
+
 ROOT_URLCONF = 'BugaLink.urls'
 
 

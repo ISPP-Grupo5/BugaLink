@@ -280,8 +280,8 @@ class GetPendingRidesAndRoutineRequestsTest(TestCase):
         data = json.loads(response.content)
         
         # Se hacen las comprobaciones
-        self.assertEqual(len(data['individual_rides']), 1)  # Deberá tener un viaje individual sin aceptar
-        self.assertEqual(len(data['routine_requests']), 1)  # Deberá tener su rutina de pasajero
+        self.assertEqual(len(data['individual_rides']), 0)  # Deberá tener un viaje individual sin aceptar
+        self.assertEqual(len(data['routine_requests']), 0)  # Deberá tener su rutina de pasajero
         
         # Test para el conductor
         url = "/api/users/" + str(self.user1.pk) + "/rides/individual/pending"
@@ -291,7 +291,7 @@ class GetPendingRidesAndRoutineRequestsTest(TestCase):
         data = json.loads(response.content)
         
         # Se hacen las comprobaciones
-        self.assertEqual(len(data['individual_rides']), 0)  # No debe tener individual rides porque es conductor
+        self.assertEqual(len(data['individual_rides']), 1)  # No debe tener individual rides porque es conductor
         self.assertEqual(len(data['routine_requests']), 1)  # Deberá tener su rutina de conductor
 
 

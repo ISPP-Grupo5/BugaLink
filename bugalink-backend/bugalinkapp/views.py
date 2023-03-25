@@ -326,23 +326,10 @@ class PendingIndividualRidesAndRoutineRequests(APIView):
     def get(self, request, user_id):
         try:
             passenger = m.Passenger.objects.get(user_id=user_id)
-            rides = m.IndividualRide.objects.filter(passenger=passenger,
+            rides = m.IndividualRide.objects.filter(ride__driver_routine__driver__passenger=passenger,
                                                     acceptation_status="Pending Confirmation")
-            
-            routines = m.PassengerRoutine.objects.filter(passenger=passenger)
-            routine_requests = []
-            for routine in routines:
-                routine_requests += m.RoutineRequest.objects.filter(passenger_routine=routine,
-                                                    acceptation_status="Pending Confirmation")
-            try:
-                driver = m.Driver.objects.get(passenger=passenger)
-                routines = m.DriverRoutine.objects.filter(driver=driver)
-                for routine in routines:
-                    routine_requests += m.RoutineRequest.objects.filter(driver_routine=routine,
-                                                        acceptation_status="Pending Confirmation")
-            except:
-                pass
-                
+            routine_requests = m.RoutineRequest.objects.filter(driver_routine__driver__passenger=passenger,
+                                                        acceptation_status="Pending Confirmation")                
             serializer = ListIndividualRideAndRoutineRquestSerializer({
                 'individual_rides': rides,
                 'routine_requests': routine_requests,

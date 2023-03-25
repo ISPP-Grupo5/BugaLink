@@ -5,7 +5,7 @@ export default function useReviews(driverId) {
   // TODO: once we have local sessions, we can extract the user id from the session
 
   const { data, error, isLoading } = useSWR(
-    `/api/users/${driverId}/reviews`,
+    `/users/${driverId}/reviews/rating`,
     fetcher
   );
 

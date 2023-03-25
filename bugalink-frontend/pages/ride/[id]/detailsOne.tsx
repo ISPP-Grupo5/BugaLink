@@ -4,6 +4,7 @@ import AnimatedLayout from '@/components/layouts/animated';
 import MapPreview from '@/components/maps/mapPreview';
 import ProfileHeader from '@/components/ProfileHeader';
 import useMapCoordinates from '@/hooks/useMapCoordinates';
+import useReviews from '@/hooks/useReviews';
 import useRideDetails from '@/hooks/useRideDetails';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
@@ -28,6 +29,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 export default function DetailsOne({ data }) {
   const [origin, setOrigin] = useState();
   const [destination, setDestination] = useState();
+  const [driver_id, setDriverId] = useState();
+
   const originCoords = useMapCoordinates(origin);
   const destinationCoords = useMapCoordinates(destination);
 
@@ -54,6 +57,10 @@ export default function DetailsOne({ data }) {
 
   const ride_id = data.id;
   const { rideData, isLoading, isError } = useRideDetails(ride_id);
+  let driverId = rideData ? rideData.driver_id : 'Loading...';
+
+  const { reviews } = useReviews(driverId);
+
 
   useEffect(() => {
     if (rideData) {
@@ -74,10 +81,10 @@ export default function DetailsOne({ data }) {
         <div className="h-full overflow-y-scroll bg-white px-5 py-2">
           {/* Profile header */}
           <ProfileHeader
-            name="Jesús Marchena"
-            rating="4.8"
-            numberOfRatings="14"
-            photo="/assets/avatar.png"
+            name={reviews && reviews.username ? reviews.username : 'Loading...'}
+            rating={reviews && reviews.rating ? reviews.rating : 'Loading...'}
+            numberOfRatings={reviews && reviews.total_ratings? reviews.total_ratings : 'Loading...'}
+            photo={reviews && reviews.profile_photo ? reviews.profile_photo : '/assets/avatar.png'}
           />
           {/* Origin and target destinations */}
           <div className="grid grid-cols-2 gap-2 py-2 text-sm">

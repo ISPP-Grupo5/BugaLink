@@ -252,7 +252,7 @@ class UserIndividualRides(APIView):
 class UserRideList(APIView):
     def get(self, request, user_id):
         try:
-            driver = m.Driver.objects.get(passenger__pk=user_id)
+            driver = m.Driver.objects.get(passenger__user__pk=user_id)
             queryset = m.Ride.objects.filter(driver_routine__driver=driver)
             serializer = ListRideSerializer({'rides': queryset})
             return JsonResponse(serializer.data, status=status.HTTP_200_OK)

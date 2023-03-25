@@ -1,4 +1,4 @@
-from datetime import time, datetime
+from datetime import time, datetime, timedelta
 from django.test import TestCase
 from .models import *
 from django.urls import reverse
@@ -122,6 +122,34 @@ class ModelTest(TestCase):
             dni_back=self.dni_back
         )
 
+        # CREATE DRIVERROUTINE
+        self.driverRoutine = DriverRoutine.objects.create(
+            driver = self.driver,
+            default_num_seats = 5,
+            start_date_0 = datetime.now(),
+            start_date_1 = datetime.now() + timedelta(hours=1),
+            end_date = datetime.now() + timedelta(hours=2),
+            start_location = "start location",
+            end_location = "end location",
+            price = 9.5
+        )
+
+        # CREATE RIDE
+        self.ride = Ride.objects.create(
+            driver_routine = self.driverRoutine,
+            num_seats = 5,
+            start_date = datetime.now(),
+            end_date = datetime.now() + timedelta(hours=2),
+            start_location = "start location",
+            end_location = "end location",
+        )
+
+        # CREATE INDIVIDUALRIDE
+        self.individualRide = IndividualRide.objects.create(
+            ride = self.ride,
+            passenger = self.passenger,
+        )
+
         #RATING  HA CAMBIADO CON EL V3
         #self.rating = Rating.objects.create(
         #    driver= Driver.objects.first(),
@@ -178,6 +206,18 @@ class ModelTest(TestCase):
         # self.assertEqual(self.driver.sworn_declaration.name, 'sworn_declaration.pdf')
         # self.assertIsNotNone(self.driver.driver_license.name)
         # self.assertIsNotNone(self.driver.dni_front)
+
+    def test_driver_routine_creation(self):
+        self.assertIsInstance(self.driverRoutine, DriverRoutine)
+        self.assertEqual(self.driverRoutine.driver, self.driver)
+
+    def test_ride_creation(self):
+        self.assertIsInstance(self.ride, Ride)
+        self.assertEqual(self.ride.driver_routine, self.driverRoutine)
+
+    def test_individual_ride_creation(self):
+        self.assertIsInstance(self.individualRide, IndividualRide)
+        self.assertEqual(self.individualRide.passenger, self.passenger)
     
     #def test_rating_creation(self):
     #    self.assertIsInstance(self.rating, Rating)
@@ -287,6 +327,78 @@ class GetTest(TestCase):
 
         # Se hacen las comprobaciones
         self.assertEqual(data['user'],self.user1.pk)
+        
+class GetPendingRidesAndRoutineRequestsTest(TestCase):
+    # Se inicializan datos para que se puedan devolver
+    def setUp(self):
+        self.client = APIClient()
+        self.user1 = User.objects.create(username="TEST USER", email="test@test.es")
+        self.user2 = User.objects.create(username="TEST USER 2", email="test@test.es")
+        self.driverPassenger = Passenger.objects.create(user=self.user1, balance=0.0)
+        self.nonDriverPassenger = Passenger.objects.create(user=self.user2, balance=0.0)
+        self.driver1 = Driver.objects.create(
+            passenger=self.driverPassenger,
+            entry_date='2022-03-11',
+        )
+        self.passengerRoutine1 = PassengerRoutine.objects.create(
+            passenger = self.nonDriverPassenger,
+            start_location = "start location",
+            end_location = "end location",
+            end_date = datetime.now() + timedelta(hours=2),
+            start_time_initial = datetime.now(),
+            start_time_final = datetime.now() + timedelta(hours=1),
+        )
+        self.driverRoutine1 = DriverRoutine.objects.create(
+            driver = self.driver1,
+            default_num_seats = 5,
+            start_date_0 = datetime.now(),
+            start_date_1 = datetime.now() + timedelta(hours=1),
+            end_date = datetime.now() + timedelta(hours=2),
+            start_location = "start location",
+            end_location = "end location",
+            price = 9.5
+        )
+        self.ride1 = Ride.objects.create(
+            driver_routine = self.driverRoutine1,
+            num_seats = 5,
+            start_date = datetime.now(),
+            end_date = datetime.now() + timedelta(hours=2),
+            start_location = "start location",
+            end_location = "end location",
+        )
+        self.individualRide1 = IndividualRide.objects.create(
+            ride = self.ride1,
+            passenger = self.nonDriverPassenger,
+            acceptation_status = "Pending Confirmation",
+        )
+        self.routineRequest1 = RoutineRequest.objects.create(
+            passenger_routine = self.passengerRoutine1,
+            driver_routine = self.driverRoutine1,
+            acceptation_status = "Pending Confirmation")
+       
+
+    def test_get_pending_rides_routines_by_user_id(self):
+        # Test para el pasajero
+        url = "/api/users/" + str(self.user2.pk) + "/rides/individual/pending"
+        response = self.client.get(url)
+        
+        # este comando parsea la JsonResponse a un diccionario para poder acceder a los valores
+        data = json.loads(response.content)
+        
+        # Se hacen las comprobaciones
+        self.assertEqual(len(data['individual_rides']), 0)  # Deberá tener un viaje individual sin aceptar
+        self.assertEqual(len(data['routine_requests']), 0)  # Deberá tener su rutina de pasajero
+        
+        # Test para el conductor
+        url = "/api/users/" + str(self.user1.pk) + "/rides/individual/pending"
+        response = self.client.get(url)
+        
+        # este comando parsea la JsonResponse a un diccionario para poder acceder a los valores
+        data = json.loads(response.content)
+        
+        # Se hacen las comprobaciones
+        self.assertEqual(len(data['individual_rides']), 1)  # No debe tener individual rides porque es conductor
+        self.assertEqual(len(data['routine_requests']), 1)  # Deberá tener su rutina de conductor
 
 
 # Testing del endpoint POST api/test/reviews

@@ -46,8 +46,6 @@ class PassengerRoutineSerializer(serializers.ModelSerializer):
 class ListPassengerRoutineSerializer(serializers.Serializer):
     passenger_routines = PassengerRoutineSerializer(many=True)
 
-
-
 class IndividualRideSerializer(serializers.ModelSerializer):
     class Meta:
         model = IndividualRide
@@ -64,8 +62,11 @@ class RoutineRequestSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ListRoutineRequestSerializer(serializers.Serializer):
-    routinesRequests = RoutineRequestSerializer(many=True)
+    routines_requests = RoutineRequestSerializer(many=True)
 
+class ListIndividualRideAndRoutineRquestSerializer(serializers.Serializer):
+    individual_rides = IndividualRideSerializer(many=True)
+    routine_requests = RoutineRequestSerializer(many=True)
 
 class DriverRatingSerializer(serializers.ModelSerializer):
     class Meta:

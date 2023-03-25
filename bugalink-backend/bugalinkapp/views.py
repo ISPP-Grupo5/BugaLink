@@ -662,25 +662,27 @@ class Rides(APIView):
             raise e
 
 class PassengerRoutineList(APIView):
-    def get(self, request, format=None):
+    def get(self, request, user_id):
         try:
-            queryset = m.PassengerRoutine.objects.filter(passenger_id=request.data['passengerId'])
+            queryset = m.PassengerRoutine.objects.filter(passenger_id=user_id)
         except ObjectDoesNotExist:
-            return JsonResponse({'error': 'Passenger does not exist with id {}'.format(request.data['passengerId'])},
+            return JsonResponse({'error': 'Passenger does not exist with id {}'.format(request.data['user_id'])},
                                 status=status.HTTP_400_BAD_REQUEST)
-        serializer = ListPassengerRoutineSerializer({"passenger_routines": queryset})
+        serializer = ListPassengerRoutineSerializer({"passenger_routines":queryset})
+        return JsonResponse(serializer.data)
+
+class DriverRoutineList(APIView):
+    def get(self, request, user_id):
+        try:
+            queryset = m.DriverRoutine.objects.filter(driver_id=user_id)
+        except ObjectDoesNotExist:
+            return JsonResponse({'error': 'Driver does not exist with id {}'.format(request.data['user_id'])},
+                                status=status.HTTP_400_BAD_REQUEST)
+        serializer = ListDriverRoutineSerializer({"driver_routines":queryset})
         return JsonResponse(serializer.data)
     
-    def post(self, request, format=None):  # POST de creacion de la routina
-        try:
-            serializer = PassengerRoutineSerializer(data=request.data, many=False)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception:
-            return JsonResponse({'error': 'Unexpected error'})
+    
+
 
 class PassengerRoutine(APIView):
     def get(self, request, passenger_routine_id, format=None):
@@ -691,6 +693,16 @@ class PassengerRoutine(APIView):
         except ObjectDoesNotExist:
             return JsonResponse({'error': 'PassengerRoutine does not exist with id {}'.format(passenger_routine_id)},
                                 status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, format=None):  # POST de creacion de la routina
+        try:
+            serializer = PassengerRoutineSerializer(data=request.data, many=False)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            return JsonResponse({'error': 'Unexpected error'})
         
     def delete(self, request, format=None):
         try:
@@ -728,16 +740,6 @@ class DriverRoutineList(APIView):
             return JsonResponse({'error': 'Passenger does not exist with id {}'.format(request.data['driverId'])},
                                 status=status.HTTP_400_BAD_REQUEST)
 
-    def post(self, request, format=None):  # POST de creacion de la routina
-        try:
-            serializer = DriverRoutineSerializer(data=request.data, many=False)
-            if serializer.is_valid():
-                serializer.save()
-                return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
-            else:
-                return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception:
-            return JsonResponse({'error': 'Unexpected error'})
 
 class DriverRoutine(APIView):
     def get(self, request, driver_routine_id, format=None):
@@ -748,6 +750,16 @@ class DriverRoutine(APIView):
         except ObjectDoesNotExist:
             return JsonResponse({'error': 'DriverRoutine does not exist with id {}'.format(driver_routine_id)},
                                 status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, format=None):  # POST de creacion de la routina
+        try:
+            serializer = DriverRoutineSerializer(data=request.data, many=False)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return JsonResponse({'error': 'Provided data is not valid'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception:
+            return JsonResponse({'error': 'Unexpected error'})
         
     def delete(self, request, format=None):
         try:

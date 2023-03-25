@@ -414,7 +414,7 @@ class PostTest(TestCase):
                     "start_time_initial": "07:00:00",
                     "start_time_final": "09:00:00"
                 }
-        url = "/api/users/passenger-routines"
+        url = "/api/users/passenger-routine"
         response = self.client.post(url, data=body)
 
         # este comando parsea la JsonResponse a un diccionario para poder acceder a los valores
@@ -451,7 +451,7 @@ class PostTest(TestCase):
                     "price": 25.99,
                     "driver_note": "Las ventanas no se abren"
                 }
-        url = "/api/users/driver-routines"
+        url = "/api/users/driver-routine"
         response = self.client.post(url, data=body)
 
         # este comando parsea la JsonResponse a un diccionario para poder acceder a los valores

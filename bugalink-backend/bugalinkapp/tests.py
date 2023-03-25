@@ -248,23 +248,15 @@ class RoutineRecommendationTest(TestCase):
         self.driver2 = Driver.objects.create(passenger=self.passenger2)
         self.driverRoutine2 = DriverRoutine.objects.create(driver=self.driver2, default_num_seats=1, start_date_0='8:00', start_date_1='8:15', end_date='9:00', start_latitude=10.0, end_latitude=11.0, start_longitude=10.0, end_longitude=11.0,day='Mon', price=10.0)
         self.ride2 = Ride.objects.create(driver_routine=self.driverRoutine2, num_seats=1, start_date='2023-03-11 8:00', end_date='2023-03-11 8:15')
-        
-    def tearDown(self):
-        self.ride2.delete()
-        self.driverRoutine2.delete()
-        self.driver2.delete()
-        self.passenger2.delete()
-        self.user2.delete()
-
-        self.passengerRoutine1.delete()
-        self.passenger1.delete()
-        self.user1.delete()
 
     def test_get_routine_recommendation_by_user_id(self):
         url = "/api/test/users/" + str(self.user1.pk) + "/rideRecommendation"
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
 
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['rides'][0]['id'], 1) #Busca el viaje de id 1 ya que los datos introducidos en la rutina del driver son muy similares a los de la rutina del passenger definida
+        
 class RatingTest(TestCase):
     def setUp(self):
         self.client = APIClient()

@@ -327,19 +327,19 @@ class PendingIndividualRidesAndRoutineRequests(APIView):
         try:
             passenger = m.Passenger.objects.get(user_id=user_id)
             rides = m.IndividualRide.objects.filter(passenger=passenger,
-                                                    acceptation_status=m.AcceptationStatus.Pending_Confirmation)
+                                                    acceptation_status="Pending Confirmation")
             
             routines = m.PassengerRoutine.objects.filter(passenger=passenger)
             routine_requests = []
             for routine in routines:
                 routine_requests += m.RoutineRequest.objects.filter(passenger_routine=routine,
-                                                    acceptation_status=m.AcceptationStatus.Pending_Confirmation)
+                                                    acceptation_status="Pending Confirmation")
             try:
                 driver = m.Driver.objects.get(passenger=passenger)
                 routines = m.DriverRoutine.objects.filter(driver=driver)
                 for routine in routines:
                     routine_requests += m.RoutineRequest.objects.filter(driver_routine=routine,
-                                                        acceptation_status=m.AcceptationStatus.Pending_Confirmation)
+                                                        acceptation_status="Pending Confirmation")
             except:
                 pass
                 

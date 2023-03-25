@@ -263,12 +263,12 @@ class GetPendingRidesAndRoutineRequestsTest(TestCase):
         self.individualRide1 = IndividualRide.objects.create(
             ride = self.ride1,
             passenger = self.nonDriverPassenger,
-            acceptation_status = AcceptationStatus.Pending_Confirmation,
+            acceptation_status = "Pending Confirmation",
         )
         self.routineRequest1 = RoutineRequest.objects.create(
             passenger_routine = self.passengerRoutine1,
             driver_routine = self.driverRoutine1,
-            acceptation_status = AcceptationStatus.Pending_Confirmation)
+            acceptation_status = "Pending Confirmation")
        
 
     def test_get_pending_rides_routines_by_user_id(self):

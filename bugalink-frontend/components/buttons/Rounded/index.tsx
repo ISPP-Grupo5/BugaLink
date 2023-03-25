@@ -7,7 +7,7 @@ type Params = {
 
 export default function RoundedButton({ Icon, link }: Params) {
   return (
-    <Link href={link} className="rounded-full border-light-gray border-2">
+    <Link href={link} className="rounded-full border-2 border-light-gray">
       <button className="h-10 w-10">{Icon}</button>
     </Link>
   );

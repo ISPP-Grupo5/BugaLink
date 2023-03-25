@@ -1085,3 +1085,15 @@ class RideDetailTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data['available_seats'],self.ride1.get_available_seats())
         self.assertEqual(data['recurrent'],not self.driver_routine1.one_ride)
+
+class UserRidesTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        load_data(self)
+
+    def test_get_user_rides(self):
+        url = '/api/users/{}/rides'.format(self.passenger1.pk)
+        response = self.client.get(url)
+        data = response.json()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(data['rides'][0]['start_date'], '2020-04-07T14:00:00')

@@ -34,7 +34,6 @@ urlpatterns = [
     
     #Endpoints de tests de prueba
     path('test/users/<int:userId>', views.UsersTest.as_view()),
-    path('test/users/<int:user_id>/rideRecommendation', views.RoutineRecommendation.as_view()),
     path('test/users/<int:user_id>/reviews/rating', views.Rating.as_view()),
     path('test/reviews', views.RatingListTest.as_view())
 ]

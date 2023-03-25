@@ -7,7 +7,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from django.core.files.uploadedfile import SimpleUploadedFile
 import json
-# import populate_db as populate
+
 
 
 ### IMPORTANTE ###
@@ -20,6 +20,41 @@ Para mas info mirar semana 4 > guia configuración backend
 Una vez dentro, hay que hacer  `ALTER USER <nombre_usuario_de_config.env> CREATEDB;` y ya tendría permisos
 '''
 
+def load_data(self):
+    self.user1 = User.objects.create(username="TEST USER1", email="test1@test.es")
+    self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
+    self.user2 = User.objects.create(username="TEST USER2", email="test2@test.es")
+    self.passenger2 = Passenger.objects.create(user=self.user2, balance=0.0)
+    self.driver1 = Driver.objects.create(passenger=self.passenger1)
+    self.vehicle1 = Vehicle.objects.create(driver=self.driver1)
+    self.driver_routine1 = DriverRoutine.objects.create(driver=self.driver1,
+                                                        default_vehicle=self.vehicle1,default_num_seats=4,
+                                                        start_date_0=time(12,00),
+                                                        start_date_1=time(12,30),
+                                                        end_date=time(13,00),
+                                                        start_location="Virgen de Lujan 120",
+                                                        end_location="Paseo de las Delicias S/N",
+                                                        day=Days.Mon,
+                                                        one_ride=True,
+                                                        price=2.0)
+    self.passenger_routine1 = PassengerRoutine.objects.create(passenger=self.passenger1,start_time_initial=time(12,00),
+                                                                start_time_final=time(12,30),
+                                                                end_date=time(13,00),
+                                                                start_location="Virgen de Lujan 120",
+                                                                end_location="Paseo de las Delicias S/N",
+                                                                day=Days.Mon)
+
+    self.ride1 = Ride.objects.create(driver_routine=self.driver_routine1,
+                                        num_seats=self.driver_routine1.default_num_seats,
+                                        start_date = datetime(2020,4,7,14,0,0),
+                                        end_date =datetime(2020,4,7,15,0,0),
+                                        start_location = self.driver_routine1.start_location,
+                                        end_location = self.driver_routine1.end_location
+                                        )
+    self.individual_ride1 = IndividualRide.objects.create(ride=self.ride1,
+                                                            passenger=self.passenger2,
+                                                            n_seats=1,
+                                                            acceptation_status="Accepted")
 
 class ModelTest(TestCase):
     def setUp(self):
@@ -259,39 +294,7 @@ class GetTest(TestCase):
 class PostTest(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user1 = User.objects.create(username="TEST USER1", email="test1@test.es")
-        self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
-        self.user2 = User.objects.create(username="TEST USER2", email="test2@test.es")
-        self.passenger2 = Passenger.objects.create(user=self.user2, balance=0.0)
-        self.driver1 = Driver.objects.create(passenger=self.passenger1)
-        self.vehicle1 = Vehicle.objects.create(driver=self.driver1)
-        self.driver_routine1 = DriverRoutine.objects.create(driver=self.driver1,
-                                                            default_vehicle=self.vehicle1,default_num_seats=2,
-                                                            start_date_0=time(12,00),
-                                                            start_date_1=time(12,30),
-                                                            end_date=time(13,00),
-                                                            start_location="Virgen de Lujan 120",
-                                                            end_location="Paseo de las Delicias S/N",
-                                                            day=Days.Mon,
-                                                            one_ride=True,
-                                                            price=2.0)
-        self.passenger_routine1 = PassengerRoutine.objects.create(passenger=self.passenger1,start_time_initial=time(12,00),
-                                                                  start_time_final=time(12,30),
-                                                                  end_date=time(13,00),
-                                                                  start_location="Virgen de Lujan 120",
-                                                                  end_location="Paseo de las Delicias S/N",
-                                                                  day=Days.Mon)
-
-        self.ride1 = Ride.objects.create(driver_routine=self.driver_routine1,
-                                         num_seats=self.driver_routine1.default_num_seats,
-                                          start_date = datetime(2020,4,7),
-                                           end_date =datetime(2020,4,7),
-                                           start_location = self.driver_routine1.start_location,
-                                           end_location = self.driver_routine1.end_location
-                                           )
-        self.individual_ride1 = IndividualRide.objects.create(ride=self.ride1,
-                                                              passenger=self.passenger2,
-                                                              n_seats=1)
+        load_data(self)
         
     def test_post_passenger_routine(self):
         body = {
@@ -819,40 +822,7 @@ class IndividualRidesTest(TestCase):
 class RideDetailTest(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user1 = User.objects.create(username="TEST USER1", email="test1@test.es")
-        self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
-        self.user2 = User.objects.create(username="TEST USER2", email="test2@test.es")
-        self.passenger2 = Passenger.objects.create(user=self.user2, balance=0.0)
-        self.driver1 = Driver.objects.create(passenger=self.passenger1)
-        self.vehicle1 = Vehicle.objects.create(driver=self.driver1)
-        self.driver_routine1 = DriverRoutine.objects.create(driver=self.driver1,
-                                                            default_vehicle=self.vehicle1,default_num_seats=4,
-                                                            start_date_0=time(12,00),
-                                                            start_date_1=time(12,30),
-                                                            end_date=time(13,00),
-                                                            start_location="Virgen de Lujan 120",
-                                                            end_location="Paseo de las Delicias S/N",
-                                                            day=Days.Mon,
-                                                            one_ride=True,
-                                                            price=2.0)
-        self.passenger_routine1 = PassengerRoutine.objects.create(passenger=self.passenger1,start_time_initial=time(12,00),
-                                                                  start_time_final=time(12,30),
-                                                                  end_date=time(13,00),
-                                                                  start_location="Virgen de Lujan 120",
-                                                                  end_location="Paseo de las Delicias S/N",
-                                                                  day=Days.Mon)
-
-        self.ride1 = Ride.objects.create(driver_routine=self.driver_routine1,
-                                         num_seats=self.driver_routine1.default_num_seats,
-                                          start_date = datetime(2020,4,7),
-                                           end_date =datetime(2020,4,7),
-                                           start_location = self.driver_routine1.start_location,
-                                           end_location = self.driver_routine1.end_location
-                                           )
-        self.individual_ride1 = IndividualRide.objects.create(ride=self.ride1,
-                                                              passenger=self.passenger2,
-                                                              n_seats=1,
-                                                              acceptation_status="Accepted")
+        load_data(self)
     
     def tearDown(self):
         pass
@@ -860,5 +830,6 @@ class RideDetailTest(TestCase):
         url = "/api/rides/{}/detail".format(self.ride1.pk)
         response = self.client.get(url)
         data = json.loads(response.content)
+        print(self.ride1)
         self.assertEqual(data['available_seats'],self.ride1.num_seats - self.individual_ride1.n_seats)
         self.assertEqual(data['recurrent'],not self.driver_routine1.one_ride)

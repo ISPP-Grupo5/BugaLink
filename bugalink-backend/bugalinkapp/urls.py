@@ -26,12 +26,12 @@ urlpatterns = [
     # DriverRoutines
     path('users/<int:user_id>/driver-routines', views.DriverRoutineList.as_view()),
     path('users/driver-routines/<int:driver_routine_id>', views.DriverRoutine.as_view()),
-    path('users/driver-routine', views.DriverRoutine.as_view()),
+    path('users/<int:user_id>/driver-routine', views.DriverRoutine.as_view()),
 
     # PassengerRoutines
     path('users/<int:user_id>/passenger-routines', views.PassengerRoutineList.as_view()),
     path('users/passenger-routines/<int:passenger_routine_id>', views.PassengerRoutine.as_view()),
-    path('users/passenger-routine', views.PassengerRoutine.as_view()),
+    path('users/<int:user_id>/passenger-routine', views.PassengerRoutine.as_view()),
     
     #Endpoints de tests de prueba
     path('test/users/<int:userId>', views.UsersTest.as_view()),

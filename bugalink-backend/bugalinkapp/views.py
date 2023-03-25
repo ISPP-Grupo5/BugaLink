@@ -730,9 +730,9 @@ class PassengerRoutine(APIView):
         except ObjectDoesNotExist:
             return JsonResponse({'error': 'PassengerRoutine does not exist with id {}'.format(passenger_routine_id)},
                                 status=status.HTTP_404_NOT_FOUND)
-    def post(self, request, format=None):  # POST de creacion de la routina
+    def post(self, request, user_id):
         try:
-            serializer = PassengerRoutineSerializer(data=request.data, many=False)
+            serializer = PassengerRoutineSerializer(data=request.data, context={'user_id': user_id})
             if serializer.is_valid():
                 serializer.save()
                 return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
@@ -777,9 +777,9 @@ class DriverRoutine(APIView):
         except ObjectDoesNotExist:
             return JsonResponse({'error': 'DriverRoutine does not exist with id {}'.format(driver_routine_id)},
                                 status=status.HTTP_404_NOT_FOUND)
-    def post(self, request, format=None):  # POST de creacion de la routina
+    def post(self, request, user_id):
         try:
-            serializer = DriverRoutineSerializer(data=request.data, many=False)
+            serializer = DriverRoutineSerializer(data=request.data, context={'user_id': user_id})
             if serializer.is_valid():
                 serializer.save()
                 return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)

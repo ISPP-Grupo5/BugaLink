@@ -943,3 +943,25 @@ class RideDetailTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data['available_seats'],self.ride1.get_available_seats())
         self.assertEqual(data['recurrent'],not self.driver_routine1.one_ride)
+
+
+class RideRequestTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        load_data(self)
+        self.individual_ride1.delete()
+
+    def test_post_ride_request(self):
+        url = "/api/rides/{}/request".format(self.ride1.pk)
+        
+        body={
+            "user_id" : self.passenger2.user.pk,
+            "n_seats" : 1,
+            "passenger_note":"Helooo"
+        }
+        response = self.client.post(url, data=body)
+        data =json.loads(response.content)
+        self.assertEqual(data['ride'], self.ride1.pk)
+        self.assertEqual(data['passenger'],self.passenger2.pk)
+        self.assertEqual(data['passenger_note'],"Helooo")
+        self.assertEqual(data['n_seats'],1)

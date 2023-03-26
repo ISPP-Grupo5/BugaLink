@@ -1,5 +1,5 @@
 import TripRequestI from '@/interfaces/tripRequest';
-import TripCard from '@/components/cards/recommendation';
+import TripCard from '../recommendation';
 
 type Props = {
   request: TripRequestI;
@@ -34,6 +34,7 @@ export default function RequestCard({ request, className = '' }: Props) {
         price={request.price}
         date={request.date}
         avatar={request.requestedBy.avatar}
+        isHistory={false}
       />
     </div>
   );

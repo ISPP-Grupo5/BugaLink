@@ -72,15 +72,14 @@ const HistoryList = ({ trips }) => {
       {historyTrips.map((trip: TripI) => (
         <TripCard
           key={trip.id}
-          type={trip.driver.id === USER_ID ? 'driver' : 'passenger'}
           rating={0.0}
           name={trip.driver.name}
           avatar={trip.driver.photo}
-          gender={'M'}
           origin={trip.origin}
           destination={trip.destination}
           date={trip.date}
           price={trip.price}
+          isHistory={true}          
         />
       ))}
     </div>

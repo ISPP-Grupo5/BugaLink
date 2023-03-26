@@ -1,4 +1,4 @@
-import { TripCard } from '@/components/cards/recommendation';
+import TripCard from '@/components/cards/recommendation';
 import useRecommendedTrips from '@/hooks/useRecommendedTrips';
 import TripI from '@/interfaces/trip';
 import { Link, SwipeableDrawer } from '@mui/material';
@@ -86,6 +86,7 @@ const RecommendationsList = () => {
             date={trip.date}
             price={trip.price}
             className="rounded-md bg-white outline outline-1 outline-light-gray"
+            isHistory={false}
           />
         </Link>
       ))}

@@ -1,4 +1,4 @@
-import { HistoryCard } from '@/components/cards/recommendation';
+import TripCard from '@/components/cards/recommendation';
 import useHistoryTrips from '@/hooks/useHistoryTrips';
 import TripI from '@/interfaces/trip';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -70,7 +70,7 @@ const HistoryList = ({ trips }) => {
   return (
     <div className="absolute w-full divide-y-2 divide-light-gray px-4">
       {historyTrips.map((trip: TripI) => (
-        <HistoryCard
+        <TripCard
           key={trip.id}
           rating={0.0}
           name={trip.driver.name}
@@ -79,6 +79,7 @@ const HistoryList = ({ trips }) => {
           destination={trip.destination}
           date={trip.date}
           price={trip.price}
+          isHistory={true}          
         />
       ))}
     </div>

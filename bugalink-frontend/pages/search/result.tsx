@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { BackButton } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import TagsButton from '@/components/buttons/Tags';
-import { TripCard } from '@/components/cards/recommendation';
+import TripCard from '@/components/cards/recommendation';
 import TimePicker from '@/components/forms/TimePicker';
 import AnimatedLayout from '@/components/layouts/animated';
 import Arrows from '/public/assets/arrows.svg';
@@ -202,6 +202,7 @@ export default function SearchResults() {
               date={trip.date}
               price={trip.price}
               className="rounded-md bg-white outline outline-1 outline-light-gray"
+              isHistory={false}
             />
           </Link>
         ))}

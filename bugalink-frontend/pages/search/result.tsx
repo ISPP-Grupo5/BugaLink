@@ -5,6 +5,7 @@ import TripCard from '@/components/cards/recommendation';
 import TimePicker from '@/components/forms/TimePicker';
 import AnimatedLayout from '@/components/layouts/animated';
 import TripCardSkeleton from '@/components/skeletons/TripCard';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 import { Drawer } from '@mui/material';
 import Slider from '@mui/material/Slider';
 import Link from 'next/link';
@@ -214,7 +215,6 @@ export default function SearchResults() {
                 href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne?requested=false"
                 className="w-full"
               >
-                {/* TODO: add TripCardSkeleton. It's useless here  */}
                 <TripCard
                   key={trip.name}
                   type={trip.type}
@@ -227,6 +227,7 @@ export default function SearchResults() {
                   date={trip.date}
                   price={trip.price}
                   className="rounded-md bg-white outline outline-1 outline-light-gray"
+                  href={NEXT_ROUTES.RIDE_DETAILS_ONE(trip.id)}
                 />
               </Link>
             ))}

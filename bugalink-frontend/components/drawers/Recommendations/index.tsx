@@ -1,9 +1,10 @@
 import TripCard from '@/components/cards/recommendation';
 import TripCardSkeleton from '@/components/skeletons/TripCard';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 import useRecommendedTrips from '@/hooks/useRecommendedTrips';
 import TripI from '@/interfaces/trip';
-import { Link, SwipeableDrawer } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { SwipeableDrawer } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 type Props = {
   open: boolean;
@@ -74,25 +75,20 @@ const RecommendationsList = () => {
             />
           ))
         : trips.map((trip: TripI) => (
-            <Link
+            <TripCard
               key={trip.id}
-              href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne?requested=false"
-              className="unstyle-link w-full"
-            >
-              <TripCard
-                key={trip.id}
-                type={'recurring'}
-                rating={0}
-                name={trip.driver.name}
-                gender={'M'}
-                avatar={trip.driver.photo}
-                origin={trip.origin}
-                destination={trip.destination}
-                date={trip.date}
-                price={trip.price}
-                className="rounded-md bg-white outline outline-1 outline-light-gray"
-              />
-            </Link>
+              type={'recurring'}
+              rating={0}
+              name={trip.driver.name}
+              gender={'M'}
+              avatar={trip.driver.photo}
+              origin={trip.origin}
+              destination={trip.destination}
+              date={trip.date}
+              price={trip.price}
+              href={NEXT_ROUTES.RIDE_DETAILS_ONE(trip.id)}
+              className="w-full rounded-md bg-white outline outline-1 outline-light-gray"
+            />
           ))}
     </div>
   );

@@ -16,6 +16,7 @@ export default function UpcomingCard({
 }) {
   const USER_ID = 1; // TODO: get this from the user's session
   const isDriver = trip.driver.id === USER_ID;
+  const isRequested = true; // This should be taken from the backend, if the user has already requested this trip
 
   return (
     <Link
@@ -25,7 +26,7 @@ export default function UpcomingCard({
         (isDriver ? 'bg-turquoise ' : 'bg-green ') +
         className
       }
-      href={NEXT_ROUTES.RIDE_DETAILS_ONE(trip.id)}
+      href={NEXT_ROUTES.RIDE_DETAILS_ONE(trip.id, isRequested)}
     >
       {isDriver ? (
         <DriverCardHeader trip={trip} />

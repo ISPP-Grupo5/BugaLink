@@ -1,5 +1,6 @@
 import TripCard from '@/components/cards/recommendation';
 import TripCardSkeleton from '@/components/skeletons/TripCard';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 import useHistoryTrips from '@/hooks/useHistoryTrips';
 import TripI from '@/interfaces/trip';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -81,6 +82,8 @@ const HistoryList = ({ trips }) => {
               destination={trip.destination}
               date={trip.date}
               price={trip.price}
+              href={NEXT_ROUTES.RATING_RIDE(USER_ID)}
+              isHistory
             />
           ))}
     </div>

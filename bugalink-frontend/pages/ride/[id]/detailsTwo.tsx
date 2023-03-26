@@ -94,7 +94,7 @@ export default function DetailsTwo() {
         <OptionButton
           text="SOLICITAR"
           Option1="Recurentemente"
-          Option2="De manera Individual"
+          Option2="De manera individual"
           className="w-2/3"
           isLink={false}
         />

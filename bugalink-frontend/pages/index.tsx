@@ -44,10 +44,10 @@ export default function Home() {
         </span>
 
         <OptionButton
-          text="Crear Viaje"
+          text="Crear viaje"
           className="mx-auto h-1/6 w-full mb-6 px-4"
-          Option1="Como Pasajero"
-          Option2="Como Conductor"
+          Option1="Como pasajero"
+          Option2="Como conductor"
           isLink={true}
           linkOption1="/users/273932t8437/routines/passenger/new"
           linkOption2="/users/273932t8437/routines/driver/new"

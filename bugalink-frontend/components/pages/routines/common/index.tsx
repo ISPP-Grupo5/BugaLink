@@ -1,13 +1,15 @@
 import { BackButton } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import PlusMinusCounter from '@/components/buttons/PlusMinusCounter';
+import TextAreaField from '@/components/forms/TextAreaField';
 import TimePicker from '@/components/forms/TimePicker';
 import AnimatedLayout from '@/components/layouts/animated';
 import PlacesAutocomplete from '@/components/maps/placesAutocomplete';
 import { useLoadScript } from '@react-google-maps/api';
 import dynamic from 'next/dynamic';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { getGeocode, getLatLng } from 'use-places-autocomplete';
+import TextField from '@/components/forms/TextField';
 
 const MIN_FREE_SEATS = 1;
 const MAX_FREE_SEATS = 8;
@@ -29,6 +31,14 @@ export const EmptyLeafletMap = dynamic(
   { ssr: false }
 );
 
+interface FormErrors {
+  price?: string;
+}
+
+interface FormValues {
+  price: number;
+}
+
 export default function NewRoutine({
   userType,
   freeSeatsNumber,
@@ -43,8 +53,34 @@ export default function NewRoutine({
 
   const [originCoords, setOriginCoords] = useState(undefined);
   const [destinationCoords, setDestinationCoords] = useState(undefined);
+  const [totalDistance, setTotalDistance] = useState<number>(0);
+  const [price, setPrice] = useState('');
+  const [errors, setErrors] = useState<FormErrors>({});
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const validateForm = (values: FormValues) => {
+    const errors: FormErrors = {};
+    let isValid = true;
+
+    
+    if (values.price < 0) {
+      errors.price = 'El precio no debe ser un valor negativo';
+      isValid = false;
+    } else if(!values.price) {
+      errors.price = 'Por favor, ingrese un precio';
+      isValid = false;
+    } else if (values.price > (totalDistance * 0.1)*2) {
+      errors.price = 'El precio no puede ser mayor que el doble del precio recomendado';
+      isValid = false;
+    }
+    
+    setErrors(errors);
+
+    return errors;
+  };
 
   const libraries = useMemo(() => ['places'], []);
+  const [note, setNote] = useState('');
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
@@ -54,6 +90,24 @@ export default function NewRoutine({
   if (!isLoaded) {
     return <p>Loading...</p>;
   }
+
+  const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    if (formRef.current) {
+      const formData = new FormData(formRef.current);
+      const values: FormValues = {
+        price: formData.get('price') as unknown as number,
+      };
+      const errors = validateForm(values);
+      setErrors(errors);
+      if (Object.keys(errors).length === 0) {
+        // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites
+        console.log(
+          'Los datos del formulario son válidos. ¡Enviando formulario!'
+        );
+      }
+    }
+  };
 
   return (
     <AnimatedLayout className="bg-white">
@@ -65,12 +119,16 @@ export default function NewRoutine({
               key={`${origin},${destination}`}
               originCoords={originCoords}
               destinationCoords={destinationCoords}
+              setTotalDistance={setTotalDistance}
             />
           ) : (
             <EmptyLeafletMap />
           )}
         </div>
-        <form className="flex w-full flex-none flex-col rounded-t-3xl bg-white px-10 pb-4 pt-8">
+        <form
+          ref={formRef}
+          className="flex w-full flex-none flex-col rounded-t-3xl bg-white px-10 pb-4 pt-8"
+        >
           <PlacesAutocomplete
             onAddressSelect={(address) => {
               getGeocode({ address: address }).then((results) => {
@@ -140,15 +198,53 @@ export default function NewRoutine({
                   )
                 }
               />
+
               <div className='flex flex-row space-x-4 items-center place-content-center mt-2'>
                 <input type="checkbox" className='w-5 h-5'/>
                 <label className='text-xl font-bold'>No repetir el viaje</label>
               </div>
+             <label className="mt-4 text-xl font-bold">
+                Establece un precio por pasajero
+              </label>
+              <p>
+                El precio recomendado para este trayecto (0.10€/km) es de{' '}
+                {Math.round((totalDistance * 0.1 + Number.EPSILON) * 1000) /
+                  1000}
+                €
+              </p>
+              <div className="my-3 mt-4 flex flex-col">
+                <TextField
+                  type={'number'}
+                  content={price}
+                  name="price"
+                  fieldName={'Introduce un precio'}
+                  inputClassName="w-full"
+                  setContent={setPrice}
+                  error={errors.price}
+                  parentClassName="w-full flex flex-col items-center"
+                />
+              </div>
 
+              <label className="mt-4 mb-2 text-xl font-bold">
+                ¿Quieres dejar alguna nota a tus pasajeros?
+              </label>
+              <div className="my-2 flex flex-col">
+                <TextAreaField
+                  fieldName="¿Qué le quieres decir al pasajero?"
+                  content={note}
+                  setContent={setNote}
+                  inputClassName="w-full"
+                  rows={8}
+                />
+              </div>
             </div>
             
           )}
-          <CTAButton className="mt-3 w-full" text="CREAR" />
+          <CTAButton
+            className="mt-4 w-full"
+            text="CREAR"
+            onClick={handleButtonClick}
+          />
         </form>
       </div>
     </AnimatedLayout>

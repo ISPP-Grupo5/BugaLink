@@ -19,6 +19,10 @@ ACTIVE_STR = ", active="
 def get_file_path(instance, filename):
     return 'passenger{0}/{1}'.format(instance.get_passenger().pk, filename)
 
+class User(User):
+    class Meta:
+        proxy = True
+        ordering = ('username', )
 
 class DocumentValidationStatus(Enum):
     none = 'None'
@@ -161,10 +165,10 @@ class DriverRoutine(models.Model):
     start_date_0 = models.TimeField()
     start_date_1 = models.TimeField()
     end_date = models.TimeField()
-    start_longitude = models.DecimalField(max_digits=15, decimal_places=10, null=True)
-    start_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
-    end_longitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
-    end_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
+    start_longitude = models.DecimalField(max_digits=15, decimal_places=10, null=True, blank=True)
+    start_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True, blank=True)
+    end_longitude = models.DecimalField(max_digits=15, decimal_places=10,null=True, blank=True)
+    end_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True, blank=True)
     start_location = models.CharField(max_length=512)
     end_location = models.CharField(max_length=512)
     day = models.CharField(max_length=26, choices=Days.choices(), default=Days.Mon)
@@ -203,6 +207,12 @@ class Ride(models.Model):
         verbose_name = "Ride"
         verbose_name_plural = "Rides"
 
+    def get_available_seats(self):
+        accepted_individual_rides = IndividualRide.objects.filter(ride=self, acceptation_status="Accepted")
+        available_seats = self.num_seats
+        for ind_ride in accepted_individual_rides:
+            available_seats = available_seats - ind_ride.n_seats
+        return available_seats
 
 class PassengerRoutine(models.Model):
     passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)

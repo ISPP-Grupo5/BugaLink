@@ -1,8 +1,24 @@
 import AvatarWithRating from '@/components/avatarWithRating';
 import Entry from '@/components/cards/common/entry';
+import Link from 'next/link';
 import Calendar from '/public/assets/calendar.svg';
 import MapPin from '/public/assets/map-pin.svg';
 import OrigenPin from '/public/assets/origen-pin.svg';
+import NEXT_ROUTES from '@/constants/nextRoutes';
+
+type Params = {
+  type?: string;
+  rating: number;
+  name: string;
+  avatar: string;
+  gender?: string;
+  origin: string;
+  destination: string;
+  date: string;
+  price: number;
+  className?: string;
+  isHistory: boolean;
+};
 
 export default function TripCard({
   type,
@@ -15,9 +31,11 @@ export default function TripCard({
   date,
   price = 0,
   className = '',
-}) {
+  isHistory,
+}: Params) {
   const isDriver = type === 'driver';
   const isMale = gender === 'M';
+  const USER_ID = 1;
 
   // Role depending on isDriver and gender
   const role = isDriver
@@ -28,18 +46,16 @@ export default function TripCard({
     ? 'Pasajero'
     : 'Pasajera';
 
-  return (
-    <div
-      className={
-        'grid w-full grid-cols-2 grid-rows-4 gap-y-2 gap-x-4 p-4 pt-1 ' +
-        className
-      }
-    >
+  const content = (
+    <>
       <span className="col-span-2 row-span-2 flex items-center space-x-4">
         <AvatarWithRating avatar={avatar} rating={rating} />
-        <Entry title={role}>
-          <p className="text-lg font-semibold leading-5">{name}</p>
-        </Entry>
+        {isHistory && <p className="text-lg font-semibold leading-5">{name}</p>}
+        {isHistory === false && (
+          <Entry title={role}>
+            <p className="text-lg font-semibold leading-5">{name}</p>
+          </Entry>
+        )}
       </span>
       <Entry title="Origen">
         <OrigenPin className="flex-none" />
@@ -50,12 +66,42 @@ export default function TripCard({
         <p className="truncate">{destination}</p>
       </Entry>
       <Entry title="Precio por asiento">
-        {price.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}
+        {price.toLocaleString('es-ES', {
+          style: 'currency',
+          currency: 'EUR',
+        })}
       </Entry>
       <Entry title="Fecha y hora">
         <Calendar />
         <p className="truncate">{date}</p>
       </Entry>
-    </div>
+    </>
+  );
+
+  return (
+    <>
+      {isHistory ? (
+        <Link
+          className={
+            'grid w-full grid-cols-2 grid-rows-4 gap-y-2 gap-x-4 p-4 pt-1 ' +
+            className
+          }
+          href={NEXT_ROUTES.RATING_RIDE(USER_ID)}
+        >
+          {' '}
+          {content}{' '}
+        </Link>
+      ) : (
+        <div
+          className={
+            'grid w-full grid-cols-2 grid-rows-4 gap-y-2 gap-x-4 p-4 pt-1 ' +
+            className
+          }
+        >
+          {' '}
+          {content}
+        </div>
+      )}
+    </>
   );
 }

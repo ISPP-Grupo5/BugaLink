@@ -202,6 +202,7 @@ export default function SearchResults() {
               date={trip.date}
               price={trip.price}
               className="rounded-md bg-white outline outline-1 outline-light-gray"
+              isHistory={false}
             />
           </Link>
         ))}

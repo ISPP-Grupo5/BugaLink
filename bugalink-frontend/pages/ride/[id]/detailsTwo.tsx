@@ -7,6 +7,9 @@ import TripDetails from '@/components/TripDetails';
 import useMapCoordinates from '@/hooks/useMapCoordinates';
 import { useState } from 'react';
 import OptionButton from '@/components/buttons/Option';
+import { Drawer } from '@mui/material';
+import NoteToDriver from './note';
+
 
 const MIN_RESERVED_SEATS = 1;
 const MAX_RESERVED_SEATS = 8; // TODO: Get max free seats the driver offers from the backend
@@ -20,6 +23,7 @@ export default function DetailsTwo() {
   const [time, setTime] = useState<number>(0);
   const originCoords = useMapCoordinates(origin);
   const destinationCoords = useMapCoordinates(destination);
+  const [drawerNote, setDrawerNote] = useState(false);
 
   // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
   const startTime = new Date('2021-05-01T21:00:00');
@@ -30,6 +34,14 @@ export default function DetailsTwo() {
     <AnimatedLayout className="flex flex-col justify-between">
       <BackButtonText text="Detalles del viaje" />
       <div className="flex h-full flex-col overflow-y-scroll bg-white px-4 pb-4">
+        {/* Profile header */}
+        <ProfileHeader
+          name="Jesús Marchena"
+          rating="4.8"
+          numberOfRatings="14"
+          photo="/assets/avatar.png"
+          className='mb-2'
+        />
         {/* Map preview */}
         <MapPreview
           originCoords={originCoords?.coordinates}
@@ -70,17 +82,11 @@ export default function DetailsTwo() {
         <div className="grid justify-items-center">
           <hr className="mt-4 mb-4 w-full text-border-color" />
         </div>
-
-        {/* Profile header */}
-        <ProfileHeader
-          name="Jesús Marchena"
-          rating="4.8"
-          numberOfRatings="14"
-          photo="/assets/avatar.png"
-        />
         <div className="flex flex-row">
-          <p className="font-normal text-dark-turquoise">
-            {/* TODO: make this button work */}
+          <p
+            className="font-normal text-dark-turquoise"
+            onClick={() => setDrawerNote(true)}
+          >
             Añade una nota al conductor
           </p>
         </div>
@@ -99,6 +105,22 @@ export default function DetailsTwo() {
           isLink={false}
         />
       </div>
+      <Drawer
+        anchor="bottom"
+        open={drawerNote}
+        onClose={() => setDrawerNote(false)}
+        SlideProps={{
+          style: {
+            minWidth: '320px',
+            maxWidth: '480px',
+            width: '100%',
+            margin: '0 auto',
+            backgroundColor: 'transparent',
+          },
+        }}
+      >
+        <NoteToDriver />
+      </Drawer>
     </AnimatedLayout>
   );
 }

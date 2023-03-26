@@ -16,7 +16,11 @@ export default function PendingRequests() {
       <BackButtonText text={'Solicitudes pendientes'} />
       <div className="mx-6 space-y-4">
         {pendingRequests.map((request: TripRequestI) => (
-          <Link key={request.id} href={NEXT_ROUTES.ACCEPT_RIDE(request.id)}>
+          <Link
+            data-cy="request-accept"
+            key={request.id}
+            href={NEXT_ROUTES.ACCEPT_RIDE(request.id)}
+          >
             <RequestCard key={request.id} request={request} className="mb-4" />
           </Link>
         ))}

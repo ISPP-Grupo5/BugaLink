@@ -31,6 +31,11 @@ SECRET_KEY = 'django-insecure-br8yvhx^^w#x0e3i03qy($-^q49(xk-9uhf^=vj8igoa-8g#75
 
 DEBUG = env['DEBUG']
 
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000/',
+#     'http://127.0.0.1:3000/',
+# ]
+
 if os.environ.get("IS_APP_ENGINE"):
     print("The app is being run in App Engine")
     #####
@@ -67,6 +72,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'newsletter',
     'bugalinkapp',
+    'corsheaders',
+
+
 ]
 
 MIDDLEWARE = [
@@ -85,6 +93,8 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 31536000
 
 ROOT_URLCONF = 'BugaLink.urls'
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 
 TEMPLATES = [
@@ -163,7 +173,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

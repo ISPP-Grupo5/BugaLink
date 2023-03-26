@@ -12,9 +12,8 @@ export const LeafletMap = dynamic(() => import('@/components/maps/map'), {
 });
 
 export default function RideMap() {
-  const origin =
-    'Escuela Técnica Superior de Ingeniería Informática, 41002 Sevilla';
-  const destination = 'Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla';
+  const origin = 'Calle Concha Vargas, Lebrija, Spain';
+  const destination = 'Calle Fuengirola, 18, Dos Hermanas, 41702 Sevilla';
   const [time, setTime] = useState<number>(0);
   const originCoords = useMapCoordinates(origin);
   const destinationCoords = useMapCoordinates(destination);

@@ -1,11 +1,14 @@
-import Address from 'public/assets/address.svg';
-import Preferences from 'public/assets/preferences.svg';
-import Help from 'public/assets/help.svg';
-import Wallet from 'public/assets/wallet.svg';
-import Logout from 'public/assets/log-out.svg';
-import React, { useState } from 'react';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 import { Drawer } from '@mui/material';
+import Link from 'next/link';
+import Address from 'public/assets/address.svg';
 import ArrowHead from 'public/assets/arrow-head.svg';
+import Carkey from 'public/assets/car-key.svg';
+import Help from 'public/assets/help.svg';
+import Logout from 'public/assets/log-out.svg';
+import Preferences from 'public/assets/preferences.svg';
+import Wallet from 'public/assets/wallet.svg';
+import { useState } from 'react';
 
 const preferences = {
   smoke: {
@@ -56,6 +59,7 @@ export default function ProfileItems() {
   const [allowPets, setAllowPets] = useState(false);
   const [preferMusic, setPreferMusic] = useState(false);
   const [preferTalk, setPreferTalk] = useState(false);
+  const USER_ID = 1;
 
   return (
     <div className="flex h-full w-full flex-col items-start justify-between gap-y-4 rounded-t-3xl bg-white px-6 py-8 text-start text-xl">
@@ -67,6 +71,9 @@ export default function ProfileItems() {
       </Entry>
       <Entry onClick={() => setDrawerPreferences(true)} Icon={<Preferences />}>
         <span>Preferencias</span>
+      </Entry>
+      <Entry Icon={<Carkey className="h-10 w-10" />}>
+        <Link href={NEXT_ROUTES.CHECK_DRIVER(USER_ID)}>Hazte Conductor</Link>
       </Entry>
       <hr className="w-full text-light-gray" />
       <Entry Icon={<Help />}>
@@ -144,7 +151,7 @@ function PreferenceBox({ checked, setChecked, item }) {
   return (
     <div
       className={
-        'grid min-h-full grid-rows-2 flex-col place-items-center rounded-lg border border-light-gray p-1 transition-colors duration-200 ' +
+        'grid min-h-full w-full grid-rows-2 flex-col place-items-center rounded-lg border border-light-gray p-1 transition-colors duration-200 ' +
         (checked ? 'bg-white' : 'bg-light-gray')
       }
       onClick={() => {

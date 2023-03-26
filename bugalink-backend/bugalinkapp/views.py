@@ -145,7 +145,7 @@ class Ratings(APIView):
             user = m.User.objects.get(id=user_id)
 
             json_data = {}
-            json_data['rating'] = rating / total_ratings
+            json_data['rating'] = rating / total_ratings if total_ratings > 0 else 0.0
             json_data['total_ratings'] = total_ratings
             json_data['profile_photo'] = str(passenger.photo)  # Mirar si esta bien así
             json_data['username'] = user.username

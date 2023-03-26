@@ -12,6 +12,7 @@ const NEXT_ROUTES = {
   NEW_ROUTINE_DRIVER: (userId) => `/users/${userId}/routines/driver/new`,
   NEW_ROUTINE_PASSENGER: (userId) => `/users/${userId}/routines/passenger/new`,
   ACCEPT_RIDE: (rideId) => `/request/${rideId}/accept`,
+  CHECK_DRIVER: (userId) => `/users/${userId}/driverCheck`,
   SEARCH_RESULTS: '/search/result',
   PENDING_REQUESTS: (userId) => `/users/${userId}/requests/pending`,
 };

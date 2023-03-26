@@ -19,6 +19,7 @@ export default function UpcomingCard({
 
   return (
     <Link
+      data-cy="ride-details"
       className={
         'flex flex-col rounded-2xl shadow-md ' +
         (isDriver ? 'bg-turquoise ' : 'bg-green ') +

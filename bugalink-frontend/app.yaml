@@ -2,11 +2,14 @@ runtime: nodejs16
 
 env: standard
 service: default
+env_variables:
+  NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
+  NODE_ENV: production
 handlers:
-- url: /static
-  static_dir: static
-  secure: always
+  - url: /static
+    static_dir: static
+    secure: always
 
-- url: /.*
-  script: auto
-  secure: always   
+  - url: /.*
+    script: auto
+    secure: always

@@ -162,7 +162,7 @@ export default function NewRoutine({
 
           <label className="text-xl font-bold">Días de la semana</label>
           <span className="mt-2 grid min-h-[3rem] grid-cols-7 items-center divide-x divide-light-gray overflow-hidden rounded-xl border border-light-gray bg-white text-center text-xl">
-            {days.map((day) => (
+            {days.map((day: string) => (
               <p
                 key={day}
                 className={`h-full w-full py-2 transition-colors duration-300 ${

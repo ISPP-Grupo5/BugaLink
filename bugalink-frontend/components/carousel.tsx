@@ -1,9 +1,11 @@
 import useUpcomingTrips from '@/hooks/useUpcomingTrips';
 import TripI from '@/interfaces/trip';
+import cn from 'classnames';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback, useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 import UpcomingCard from './cards/upcoming';
+import UpcomingCardSkeleton from './skeletons/Upcoming';
 
 const TWEEN_FACTOR = 0.3;
 
@@ -14,7 +16,7 @@ const numberWithinRange = (number: number, min: number, max: number): number =>
 export default function UpcomingTripsCarousel(props) {
   const { options } = props;
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
-  const [tweenValues, setTweenValues] = useState<number[]>([]);
+  const [tweenValues, setTweenValues] = useState<number[]>([1, 0.85, 0]);
   const { upcomingTrips, isLoading, isError } = useUpcomingTrips();
 
   const onScroll = useCallback(() => {
@@ -44,46 +46,53 @@ export default function UpcomingTripsCarousel(props) {
   }, [emblaApi, setTweenValues]);
 
   useEffect(() => {
-    if (!emblaApi) return;
+    if (!emblaApi || !upcomingTrips) return;
 
     onScroll();
     emblaApi.on('scroll', () => {
       flushSync(() => onScroll());
     });
     emblaApi.on('reInit', onScroll);
-  }, [emblaApi, onScroll]);
+  }, [emblaApi, onScroll, upcomingTrips]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error</div>;
+  // They are used for both skeleton and real cards so we can extract them to a variable here
+  // cn is a library that allows you to conditionally concat classNames safely (avoid undefined, etc.)
+  const cardClassnames = (tweenValues) =>
+    cn('embla__slide__img', {
+      // Center first card to the left
+      '-translate-x-4': tweenValues[0] > 0.95,
+      // Center last card to the right so there is no white space
+      // Also center the cards when trips are not loaded yet
+      'translate-x-4':
+        tweenValues[tweenValues.length - 1] > 0.95 || !upcomingTrips,
+    });
+
+  const mockCards = [{ id: 'card1' }, { id: 'card2' }, { id: 'card3' }];
 
   return (
     <div className="embla">
-      <div className="embla__viewport" ref={emblaRef}>
+      <div className="embla__viewport" ref={upcomingTrips && emblaRef}>
         <div className="embla__container">
-          {upcomingTrips.map((trip: TripI, index) => (
+          {/* If upcomingTrips is undefined, iterate over mockCards */}
+          {(upcomingTrips || mockCards).map((trip: TripI, index) => (
             <div
               className="embla__slide"
               key={trip.id}
               style={{
                 ...(tweenValues.length && {
-                  scale: `${Math.max(90, tweenValues[index] * 100)}%`,
-                  opacity: tweenValues[index] ** 2,
+                  scale: `${Math.max(0.9, tweenValues[index])}`,
+                  opacity: `${tweenValues[index] ** 2}`,
                 }),
               }}
             >
-              <UpcomingCard
-                trip={trip}
-                key={trip.id}
-                className={
-                  'embla__slide__img transition-transform duration-200 ' +
-                  // Center first card to the left
-                  (tweenValues[0] > 0.95 ? '-translate-x-4 ' : '') +
-                  // Center last card to the right so there is no white space
-                  (tweenValues[tweenValues.length - 1] > 0.95
-                    ? 'translate-x-4'
-                    : '')
-                }
-              />
+              {isLoading || isError ? (
+                <UpcomingCardSkeleton className={cardClassnames(tweenValues)} />
+              ) : (
+                <UpcomingCard
+                  trip={trip}
+                  className={cardClassnames(tweenValues)}
+                />
+              )}
             </div>
           ))}
         </div>

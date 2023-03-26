@@ -1,4 +1,6 @@
 import TripCard from '@/components/cards/recommendation';
+import TripCardSkeleton from '@/components/skeletons/TripCard';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 import useHistoryTrips from '@/hooks/useHistoryTrips';
 import TripI from '@/interfaces/trip';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -64,24 +66,26 @@ const HistoryList = ({ trips }) => {
   const { historyTrips, isLoading, isError } = trips;
   const USER_ID = 1; // TODO: Get user id from context
 
-  if (isLoading) return <p>Loading...</p>; // TODO: make skeleton
-  if (isError) return <p>Error</p>; // TODO: make error message
-
   return (
     <div className="absolute w-full divide-y-2 divide-light-gray px-4">
-      {historyTrips.map((trip: TripI) => (
-        <TripCard
-          key={trip.id}
-          rating={0.0}
-          name={trip.driver.name}
-          avatar={trip.driver.photo}
-          origin={trip.origin}
-          destination={trip.destination}
-          date={trip.date}
-          price={trip.price}
-          isHistory={true}          
-        />
-      ))}
+      {isLoading || isError
+        ? [1, 2, 3, 4].map((i) => <TripCardSkeleton key={i} />)
+        : historyTrips.map((trip: TripI) => (
+            <TripCard
+              key={trip.id}
+              type={trip.driver.id === USER_ID ? 'driver' : 'passenger'}
+              rating={0.0}
+              name={trip.driver.name}
+              avatar={trip.driver.photo}
+              gender={'M'}
+              origin={trip.origin}
+              destination={trip.destination}
+              date={trip.date}
+              price={trip.price}
+              href={NEXT_ROUTES.RATING_RIDE(USER_ID)}
+              isHistory
+            />
+          ))}
     </div>
   );
 };

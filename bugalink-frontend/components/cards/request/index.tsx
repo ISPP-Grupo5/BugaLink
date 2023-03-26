@@ -1,3 +1,4 @@
+import NEXT_ROUTES from '@/constants/nextRoutes';
 import TripRequestI from '@/interfaces/tripRequest';
 import TripCard from '../recommendation';
 
@@ -34,7 +35,7 @@ export default function RequestCard({ request, className = '' }: Props) {
         price={request.price}
         date={request.date}
         avatar={request.requestedBy.avatar}
-        isHistory={false}
+        href={NEXT_ROUTES.ACCEPT_RIDE(request.id)}
       />
     </div>
   );

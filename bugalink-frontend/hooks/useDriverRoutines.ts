@@ -7,8 +7,11 @@ export default function useDriverRoutines(user_id) {
     fetcher
   );
 
+  const routines = data ? Object.values(data.driver_routines) : undefined;
+  if (routines) routines.forEach((routine: any) => (routine.type = 'driver'));
+
   return {
-    routines: data,
+    routines,
     isLoading,
     isError: error,
   };

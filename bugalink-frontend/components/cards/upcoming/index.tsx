@@ -16,6 +16,7 @@ export default function UpcomingCard({
 }) {
   const USER_ID = 1; // TODO: get this from the user's session
   const isDriver = trip.driver.id === USER_ID;
+  const isRequested = true; // This should be taken from the backend, if the user has already requested this trip
 
   return (
     <Link
@@ -25,7 +26,7 @@ export default function UpcomingCard({
         (isDriver ? 'bg-turquoise ' : 'bg-green ') +
         className
       }
-      href={NEXT_ROUTES.RIDE_DETAILS_ONE(trip.id)}
+      href={NEXT_ROUTES.RIDE_DETAILS_ONE(trip.id, isRequested)}
     >
       {isDriver ? (
         <DriverCardHeader trip={trip} />
@@ -106,7 +107,6 @@ const PassengerCardHeader = ({ trip }: { trip: TripI }) => (
     </span>
     <WomanSeated className="absolute -right-2.5 top-[2.35rem] z-20 w-24" />
     <span className="flex h-full items-center space-x-3 px-3">
-      {/* TODO: handle driver case (multiple photos) */}
       <img className="object-scale-down" src={trip.driver.photo} />
       <div className="flex flex-col -space-y-1">
         <p className="text-lg font-extrabold leading-5 tracking-wide">

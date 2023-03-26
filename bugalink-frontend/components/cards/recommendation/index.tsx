@@ -17,7 +17,8 @@ type Params = {
   date: string;
   price: number;
   className?: string;
-  isHistory: boolean;
+  isHistory?: boolean;
+  href?: string;
 };
 
 export default function TripCard({
@@ -31,11 +32,11 @@ export default function TripCard({
   date,
   price = 0,
   className = '',
-  isHistory,
+  isHistory = false,
+  href = '#',
 }: Params) {
   const isDriver = type === 'driver';
   const isMale = gender === 'M';
-  const USER_ID = 1;
 
   // Role depending on isDriver and gender
   const role = isDriver
@@ -46,12 +47,18 @@ export default function TripCard({
     ? 'Pasajero'
     : 'Pasajera';
 
-  const content = (
-    <>
+  return (
+    <Link
+      className={
+        'unstyle-link grid w-full grid-cols-2 grid-rows-4 gap-y-2 gap-x-4 p-4 pt-1 ' +
+        className
+      }
+      href={href}
+    >
       <span className="col-span-2 row-span-2 flex items-center space-x-4">
         <AvatarWithRating avatar={avatar} rating={rating} />
         {isHistory && <p className="text-lg font-semibold leading-5">{name}</p>}
-        {isHistory === false && (
+        {!isHistory && (
           <Entry title={role}>
             <p className="text-lg font-semibold leading-5">{name}</p>
           </Entry>
@@ -75,33 +82,6 @@ export default function TripCard({
         <Calendar />
         <p className="truncate">{date}</p>
       </Entry>
-    </>
-  );
-
-  return (
-    <>
-      {isHistory ? (
-        <Link
-          className={
-            'grid w-full grid-cols-2 grid-rows-4 gap-y-2 gap-x-4 p-4 pt-1 ' +
-            className
-          }
-          href={NEXT_ROUTES.RATING_RIDE(USER_ID)}
-        >
-          {' '}
-          {content}{' '}
-        </Link>
-      ) : (
-        <div
-          className={
-            'grid w-full grid-cols-2 grid-rows-4 gap-y-2 gap-x-4 p-4 pt-1 ' +
-            className
-          }
-        >
-          {' '}
-          {content}
-        </div>
-      )}
-    </>
+    </Link>
   );
 }

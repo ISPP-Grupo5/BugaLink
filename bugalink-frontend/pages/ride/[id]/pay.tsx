@@ -13,7 +13,7 @@ export default function Pay() {
       <div className="flex h-full flex-col overflow-y-scroll bg-white px-4 pb-4">
         <div className="flex flex-col">
           <span className="text-2xl font-bold">Tus tarjetas</span>
-          <div className="my-3 flex flex-col items-center justify-center">
+          <div className="my-2 flex flex-col items-center justify-center">
             <div className="my-2 flex w-full flex-col items-center justify-center rounded-xl border border-dashed border-gray p-12">
               <p className="text-lg">Saldo disponible</p>
               <p className="text-5xl font-bold">13,30€</p>

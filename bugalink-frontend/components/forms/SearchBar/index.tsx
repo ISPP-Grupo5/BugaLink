@@ -9,8 +9,8 @@ export default function SearchBar() {
         type="search"
         placeholder="Dónde quieres ir?"
         className="ml-2 w-full rounded-full text-sm"
-      ></input>
-      <button type="submit" className="">
+      />
+      <button type="submit" data-cy="search-btn">
         <Glass />
       </button>
     </form>

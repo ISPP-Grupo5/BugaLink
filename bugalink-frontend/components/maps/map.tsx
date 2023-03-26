@@ -5,6 +5,7 @@ export default function LeafletMap({
   originCoords,
   destinationCoords,
   setTime = null,
+  setTotalDistance = null,
 }) {
   return (
     <MapContainer
@@ -21,6 +22,7 @@ export default function LeafletMap({
           origin={originCoords}
           destination={destinationCoords}
           setTime={setTime}
+          setTotalDistance={setTotalDistance}
         />
       )}
     </MapContainer>

@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from .models import Passenger, Ride, Driver, DriverRating, PassengerRating, Vehicle, IndividualRide,PassengerRoutine, DriverRoutine, CreditCard, Paypal,DiscountCode,IndividualDiscountCode,PassengerDiscountCode,RoutineRequest,Report, Transaction
-from django.contrib.auth.models import User
+from .models import User, Passenger, Ride, Driver, DriverRating, PassengerRating, Vehicle, IndividualRide,PassengerRoutine, DriverRoutine, CreditCard, Paypal,DiscountCode,IndividualDiscountCode,PassengerDiscountCode,RoutineRequest,Report, Transaction
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,9 +22,17 @@ class VehicleSerializer(serializers.ModelSerializer):
         fields    = '__all__'
 
 class DriverRoutineSerializer(serializers.ModelSerializer):
+    driver = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = DriverRoutine
         fields = '__all__'
+
+    def create(self, validated_data):
+        user_id = self.context['user_id']
+        driver = Driver.objects.get(pk=user_id)
+        routine = DriverRoutine.objects.create(driver=driver, **validated_data)
+        return routine
 
 class ListDriverRoutineSerializer(serializers.Serializer):
     driver_routines = DriverRoutineSerializer(many=True)
@@ -42,12 +49,16 @@ class ListRideSerializer(serializers.Serializer):
 class PassengerRoutineSerializer(serializers.ModelSerializer):
     class Meta:
         model = PassengerRoutine
-        fields = '__all__'
+        fields = ['start_longitude', 'start_latitude', 'end_longitude', 'end_latitude', 'start_location', 'end_location', 'day', 'end_date', 'start_time_initial', 'start_time_final']
+
+    def create(self, validated_data):
+        user_id = self.context['user_id']
+        passenger = Passenger.objects.get(pk=user_id)
+        routine = PassengerRoutine.objects.create(passenger=passenger, **validated_data)
+        return routine
 
 class ListPassengerRoutineSerializer(serializers.Serializer):
     passenger_routines = PassengerRoutineSerializer(many=True)
-
-
 
 class IndividualRideSerializer(serializers.ModelSerializer):
     class Meta:
@@ -65,8 +76,11 @@ class RoutineRequestSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ListRoutineRequestSerializer(serializers.Serializer):
-    routinesRequests = RoutineRequestSerializer(many=True)
+    routines_requests = RoutineRequestSerializer(many=True)
 
+class ListIndividualRideAndRoutineRquestSerializer(serializers.Serializer):
+    individual_rides = IndividualRideSerializer(many=True)
+    routine_requests = RoutineRequestSerializer(many=True)
 
 class DriverRatingSerializer(serializers.ModelSerializer):
     class Meta:
@@ -124,3 +138,7 @@ class IndividualDiscountCodeSerializer(serializers.ModelSerializer):
         model = IndividualDiscountCode
         fields = '__all__'
 
+class DriverPreferencesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Driver
+        fields = ['preference_0', 'preference_1', 'preference_2', 'preference_3']

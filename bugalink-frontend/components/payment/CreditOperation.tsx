@@ -2,7 +2,7 @@ import { BackButtonText } from '../buttons/Back';
 import AnimatedLayout from '../layouts/animated';
 import AddMethod from './AddMethod';
 import PayMethod from './PayMethod';
-import VisaMastercard from '/public/assets/visa_mastercard 1.svg';
+import VisaMastercard from '/public/assets/visa-mastercard.svg';
 import Paypal from '/public/assets/paypal.svg';
 
 type CreditOperationProps = {

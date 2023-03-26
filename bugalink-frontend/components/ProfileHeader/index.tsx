@@ -1,3 +1,5 @@
+import NEXT_ROUTES from '@/constants/nextRoutes';
+import Link from 'next/link';
 import Chat from '/public/assets/chat.svg';
 
 type Params = {
@@ -6,6 +8,7 @@ type Params = {
   numberOfRatings: string;
   className?: string;
   photo: string;
+  id?: number;
 };
 
 export default function ProfileHeader({
@@ -14,6 +17,7 @@ export default function ProfileHeader({
   numberOfRatings,
   className = '',
   photo,
+  id = 1,
 }: Params) {
   return (
     <div
@@ -35,9 +39,9 @@ export default function ProfileHeader({
         <button className="flex h-7 w-7 items-center justify-center rounded-full border border-turquoise">
           <Chat className="h-3 w-3" />
         </button>
-        <button className="flex h-7 w-20 items-center justify-center rounded-full border border-turquoise">
+        <Link href={NEXT_ROUTES.PROFILE(id)} className="flex h-7 w-20 items-center justify-center rounded-full border border-turquoise">
           <p className="text-xs font-bold text-turquoise">Ver perfil</p>
-        </button>
+        </Link>
       </div>
     </div>
   );

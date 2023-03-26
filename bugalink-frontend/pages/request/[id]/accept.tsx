@@ -10,40 +10,61 @@ import TripDetails from '@/components/TripDetails';
 import useMapCoordinates from '@/hooks/useMapCoordinates';
 import { Drawer } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { GetServerSideProps } from 'next';
+import useRideDetails from '@/hooks/useRideDetails';
 
-export default function AcceptRequest() {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { id } = context.query;
+
+  const data = {
+    id: id,
+  }
+
+  return {
+    props: { data },
+  };
+};
+
+
+
+
+
+export default function AcceptRequest({data}) {
   const [time, setTime] = useState<number>(0);
   const [drawerDecline, setDrawerDecline] = useState(false);
   const [reason, setReason] = useState('');
-  const { individualRide, isLoading, isError } = useIndividualRides(2);
   const [origin, setOrigin] = useState();
   const [destination, setDestination] = useState();
   const originCoords = useMapCoordinates(origin);
   const destinationCoords = useMapCoordinates(destination);
-  const { reviews, isLoadingReviews, isErrorReviews } = useReviews(1);
+  const individualRide_id = data.id;
+  const { individualRide, isLoading, isError } = useIndividualRides(individualRide_id);
+  let passengerId = individualRide? individualRide.passenger : 'Loading...';
+  let rideId = individualRide? individualRide.ride : 'Loading...';
+  const { reviews, isLoadingReviews, isErrorReviews } = useReviews(passengerId);
+  const { rideData } = useRideDetails(rideId);
 
   useEffect(() => {
-    if (individualRide && individualRide.length > 0) {
-      setOrigin(individualRide[0].start_location);
-      setDestination(individualRide[0].end_location);
+    if (rideData) {
+      setOrigin(rideData.ride.start_location);
+      console.log(rideData.ride.start_location)
+      setDestination(rideData.ride.end_location);
     }
-  }, [individualRide]);
+  }, [rideData]);
 
   if (isLoading || isLoadingReviews) return <p>Loading...</p>; // TODO: make skeleton
   if (isError || isErrorReviews) return <p>Error</p>; // TODO: make error message
 
-  const ride = individualRide[0];
-  const dateText = `Cada ${ride.passenger_routine.days} a partir del ${ride.start_date}`;
+  
+  const dateText = `Cada ${rideData ? rideData.day : ''} a partir del ${rideData ? rideData.ride.start_date.substr(0, 10) : ''}`;
 
-  let sum = 0;
-  for (const element of reviews) {
-    sum += element.rating;
-  }
-  const meanReviews = (sum / reviews.length).toFixed(2);
   // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
-  const startTime = new Date(ride.passenger_routine.start_time_initial);
-  const endTime = new Date(ride.passenger_routine.start_time_initial);
-  endTime.setMinutes(endTime.getMinutes() + time);
+  let startTime = rideData ? rideData.start_time_0 : 'Loading...';
+  startTime = startTime.substr(0, 8);
+
+  let endTime = rideData ? rideData.ride.end_date : 'Loading...';
+  
+  
 
   return (
     <AnimatedLayout className="flex flex-col justify-between">
@@ -51,16 +72,17 @@ export default function AcceptRequest() {
       <div className="flex h-full flex-col justify-between overflow-y-scroll bg-white px-6 pb-4 pt-2">
         {/* Profile header */}
         <ProfileHeader
-          name={ride.passenger.user.username}
-          rating={meanReviews.toString()}
-          numberOfRatings={reviews.length}
-          photo={ride.passenger.user.photo}
+          name={reviews.username}
+          rating={reviews.rating}
+          numberOfRatings={reviews.total_ratings}
+          photo={reviews.profile_photo ? reviews.profile_photo : '/assets/avatar.png'}
+          id = {passengerId}
         />
         <p className="mt-4 text-justify text-sm font-normal text-dark-gray">
           Nota del pasajero
         </p>
         <div className="flex flex-row">
-          <p className="text-justify leading-5">✏️ {ride.message}</p>
+          <p className="text-justify leading-5">✏️ {individualRide.passenger_note ? individualRide.passenger_note : "No hay ningún comentario"}</p>
         </div>
 
         {/* Details */}
@@ -79,14 +101,8 @@ export default function AcceptRequest() {
         )}
         <TripDetails
           date={dateText}
-          originHour={startTime.toLocaleTimeString('es-ES', {
-            hour: '2-digit',
-            minute: '2-digit',
-          })}
-          destinationHour={endTime.toLocaleTimeString('es-ES', {
-            hour: '2-digit',
-            minute: '2-digit',
-          })}
+          originHour={startTime}
+          destinationHour={endTime.substr(11,12)}
           origin={origin}
           destination={destination}
         />
@@ -144,3 +160,4 @@ export default function AcceptRequest() {
     </AnimatedLayout>
   );
 }
+

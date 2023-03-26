@@ -743,7 +743,7 @@ class RatingsGetTest(TestCase):
     def test_get_user_by_id(self):
         url = "/api/users/" + str(self.user1.pk) + "/reviews/rating" 
         response = self.client.get(url)
-        print("Respuesta : ")
+        # print("Respuesta : ")
         data = json.loads(response.content)
 
         self.assertEqual(data['total_ratings'],2)
@@ -1112,7 +1112,8 @@ class RideRequestTest(TestCase):
         body={
             "user_id" : self.passenger2.user.pk,
             "n_seats" : 1,
-            "passenger_note":"Helooo"
+            "passenger_note":"Helooo",
+            "recurrent" : "False",
         }
         response = self.client.post(url, data=body)
         data =json.loads(response.content)

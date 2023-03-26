@@ -1113,127 +1113,79 @@ class UploadDocsDriver(APIView):
 
 class RideRequest(APIView):
     def post(self, request, ride_id):
+        #obtener valores del body y comprobar que son buenos
         try:
             user_id = int(request.data['user_id'])
-        except Exception:
-            return JsonResponse({"error":"user_id is mandatory and must be int"}, status=400)
-        
-        try:
             n_seats= int(request.data['n_seats'])
+            recurrent = request.data.get('recurrent', False) == 'True'
             passenger_note = request.data.get('passenger_note')
-            passenger_routine = request.data.get('passenger_routine') #opcional, se especifica si el viaje satisface
+            passenger_routine_id = request.data.get('passenger_routine_id') #opcional, se especifica si el viaje satisface
                                                                       #una rutina para no recomendar viajes de dicha rutina
             if int(n_seats) <= 0:
-                raise Exception 
+                raise Exception
+            if passenger_routine_id:
+                passenger_routine_id = int(passenger_routine_id)
         except Exception:
-             return JsonResponse({"error":"data not valid. body must contain: n_seats>0, passenger_note(opt), passenger_routine\
-                                  (opt: if the individualRide satisfies any passengerRoutine or not)"}, status=400)
+             return JsonResponse({"error":"data not valid. body must contain: user_id(int. User that requests the ride),\
+                                   n_seats>0, recurrent(opt: True/False. This means he wants to request recurrently the routine thus the ride),\
+                                   passenger_note(opt), passenger_routine_id\
+                                  (opt: if the individualRide satisfies any passengerRoutine or not. Not optional if\
+                                   recurrent is set to True)"}, status=400)
         
+        # Verificaciones de que los ids existen
         try:
-            user = m.User.objects.get(pk=user_id)
+            passenger = m.Passenger.objects.get(user_id=user_id)
             ride = m.Ride.objects.get(pk=ride_id)
-            passenger = m.Passenger.objects.get(user=user)
-        except m.User.DoesNotExist:
-             return JsonResponse({"error":"user not found"}, status=404)
+            if passenger_routine_id:
+                passenger_routine = m.PassengerRoutine.objects.get(pk = passenger_routine_id)
         except m.Passenger.DoesNotExist:
              return JsonResponse({"error":"user not found"}, status=404)
         except m.Ride.DoesNotExist:
              return JsonResponse({"error":"ride not found"}, status=404)
+        except m.PassengerRoutine.DoesNotExist:
+            return JsonResponse({"error":"passenger_routine not found"}, status=404)
 
         # Verificar que no es el driver quien solicita el viaje
         if ride.driver_routine.driver.passenger == passenger:
             return JsonResponse({"error":"The driver cannot request his own ride"}, status=400)
 
-        # Verificar que no se ha solicitado ya ese viaje
-        individual_rides = m.IndividualRide.objects.filter(ride=ride)
-        for ind_ride in individual_rides:
-            if ind_ride.passenger==passenger:
-                return JsonResponse({"error":"user already requested this ride"}, status=400)
+        # Si existe PassengerRoutine, verificar que es del user_id que solicita
+        if passenger_routine and (passenger_routine.passenger.user.pk != user_id):
+             return JsonResponse({"error":"PassengerRoutine does not belong to user_id given"}, status=400)
         
+        # Verificar que el user no ha solicitado ya ese viaje
+        individual_rides = m.IndividualRide.objects.filter(ride=ride, passenger=passenger)
+        if len(individual_rides)>0:
+            return JsonResponse({"error":"user already requested this ride"}, status=400)
+       
+       # Verificar que quedan plazas libres
         available_seats = ride.get_available_seats()
-        # Verificar que quedan plazas libres
         if  available_seats <= 0:
             return JsonResponse({"error":"no available seats for this ride"}, status=400)
-        
         if available_seats - n_seats < 0:
             return JsonResponse({"error":"Not enough available seats for this ride. Only {} seats left".format(available_seats)}, status=400)
         
+        # Crear la routine Request si el viaje se solicita de manera recurrente
+        if recurrent:
+            if  not passenger_routine_id:
+                return JsonResponse({"error":"passenger_routine cannot be null when setting recurrent to true"},status = 400)
+            # Verificar que no la ha solicitado todavia
+            routine_requests = m.RoutineRequest.objects.filter(passenger_routine_id = passenger_routine_id, driver_routine_id = ride.driver_routine.pk)
+            if len(routine_requests) > 0:
+                return JsonResponse({"error":"The user has already requested this routine recurrently."}, status=400)
+            m.RoutineRequest.objects.create(passenger_routine_id = passenger_routine.pk, driver_routine_id = ride.driver_routine.pk)
+
+        # Creación de IndividualRide y respuesta
         data = {
             "ride":ride.pk,
             "passenger":passenger,
             "n_seats": n_seats,
             "price": ride.driver_routine.price * n_seats,
-            "passenger_routine": passenger_routine,
+            "passenger_routine": passenger_routine_id,
             "passenger_note": passenger_note,
             "decline_note": None,
             "acceptation_status": "Pending Confirmation"
         }
-
-        serializer = IndividualRideSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        else:
-            return JsonResponse(serializer.errors, status=400)
-
-class RideRequest(APIView):
-    def post(self, request, ride_id):
-        try:
-            user_id = int(request.data['user_id'])
-        except Exception:
-            return JsonResponse({"error":"user_id is mandatory and must be int"}, status=400)
-        
-        try:
-            n_seats= int(request.data['n_seats'])
-            passenger_note = request.data.get('passenger_note')
-            passenger_routine = request.data.get('passenger_routine') #opcional, se especifica si el viaje satisface
-                                                                      #una rutina para no recomendar viajes de dicha rutina
-            if int(n_seats) <= 0:
-                raise Exception 
-        except Exception:
-             return JsonResponse({"error":"data not valid. body must contain: n_seats>0, passenger_note(opt), passenger_routine\
-                                  (opt: if the individualRide satisfies any passengerRoutine or not)"}, status=400)
-        
-        try:
-            user = m.User.objects.get(pk=user_id)
-            ride = m.Ride.objects.get(pk=ride_id)
-            passenger = m.Passenger.objects.get(user=user)
-        except m.User.DoesNotExist:
-             return JsonResponse({"error":"user not found"}, status=404)
-        except m.Passenger.DoesNotExist:
-             return JsonResponse({"error":"user not found"}, status=404)
-        except m.Ride.DoesNotExist:
-             return JsonResponse({"error":"ride not found"}, status=404)
-
-        # Verificar que no es el driver quien solicita el viaje
-        if ride.driver_routine.driver.passenger == passenger:
-            return JsonResponse({"error":"The driver cannot request his own ride"}, status=400)
-
-        # Verificar que no se ha solicitado ya ese viaje
-        individual_rides = m.IndividualRide.objects.filter(ride=ride)
-        for ind_ride in individual_rides:
-            if ind_ride.passenger==passenger:
-                return JsonResponse({"error":"user already requested this ride"}, status=400)
-        
-        available_seats = ride.get_available_seats()
-        # Verificar que quedan plazas libres
-        if  available_seats <= 0:
-            return JsonResponse({"error":"no available seats for this ride"}, status=400)
-        
-        if available_seats - n_seats < 0:
-            return JsonResponse({"error":"Not enough available seats for this ride. Only {} seats left".format(available_seats)}, status=400)
-        
-        data = {
-            "ride":ride.pk,
-            "passenger":passenger,
-            "n_seats": n_seats,
-            "price": ride.driver_routine.price * n_seats,
-            "passenger_routine": passenger_routine,
-            "passenger_note": passenger_note,
-            "decline_note": None,
-            "acceptation_status": "Pending Confirmation"
-        }
-
         serializer = IndividualRideSerializer(data=data)
         if serializer.is_valid():
             serializer.save()

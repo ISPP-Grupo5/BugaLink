@@ -199,7 +199,11 @@ export default function NewRoutine({
                 }
               />
 
-              <label className="mt-4 text-xl font-bold">
+              <div className='flex flex-row space-x-4 items-center place-content-center mt-2'>
+                <input type="checkbox" className='w-5 h-5'/>
+                <label className='text-xl font-bold'>No repetir el viaje</label>
+              </div>
+             <label className="mt-4 text-xl font-bold">
                 Establece un precio por pasajero
               </label>
               <p>
@@ -234,6 +238,7 @@ export default function NewRoutine({
                 />
               </div>
             </div>
+            
           )}
           <CTAButton
             className="mt-4 w-full"

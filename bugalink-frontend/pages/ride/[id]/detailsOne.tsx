@@ -74,6 +74,8 @@ export default function DetailsOne({ data }) {
   let startTime = rideData ? rideData.start_time_0 : 'Loading...';
   startTime = startTime.substr(0, 5);
 
+  let nextUrl = "/ride/" + ride_id +"/detailsTwo";
+
   return (
     <AnimatedLayout>
       <div className="flex h-screen flex-col items-center justify-center">
@@ -166,10 +168,10 @@ export default function DetailsOne({ data }) {
               <p className="text-xl font-bold">{rideData ? rideData.available_seats : 'Loading...'}</p>
             </div>
           </div>
-          {requested === 'false' && (
+          {(
             <div className="flex justify-center">
               <Link
-                href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsTwo"
+                href={nextUrl}
                 className="flex w-11/12 justify-center"
               >
                 <CTAButton className="my-4 w-11/12" text="CONTINUAR" />

@@ -10,14 +10,14 @@ export default function DriverCCheck() {
       <BackButtonText text="Hazte conductor" className="bg-white" />
       <CityDriver className="mx-auto" />
       <p className="py-1 text-base">
-        Gana dinero levando a pasajeros en tu coche que van a tu mismo destino.
+        Gana dinero llevando a pasajeros en tu coche que van a tu mismo destino.
         Los pasos a seguir son:
       </p>
       <div className="mt-4 flex flex-col space-y-4">
         <div className="text-base">
           <p className="mb-4 font-bold">1. Sube los documentos necesarios: </p>
           <span className="space-y-2 ">
-            <FileButton text="Carnet de Conducir" />
+            <FileButton text="Carnet de conducir" />
             <FileButton text="Documento de identidad (anverso)" />
             <FileButton text="Documento de identidad (reverso)" />
             <FileButton text="Declaración jurada" />
@@ -31,7 +31,7 @@ export default function DriverCCheck() {
           <Check className="mx-auto" />
         </div>
         <p className="text-base font-bold">
-          3. Una vez validad tu información podrás empezar a publicar viajes
+          3. Una vez validada tu información podrás empezar a publicar viajes
           como conductor.
         </p>
       </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import cn from 'classnames';
 
-export default function UpcomingCardSkeleton() {
+export default function UpcomingCardSkeleton({ className = '' }) {
   // For some reason, the content of the carousel isn't aligned until some miliseconds after the page loads.
   // We are hiding this with opacity: 0 and then setting it to 1 after a moment.
   const [firstLoad, setFirstLoad] = useState(true);
@@ -20,11 +21,15 @@ export default function UpcomingCardSkeleton() {
 
   return (
     <div
-      className={
-        'flex flex-col rounded-2xl bg-light-gray transition-all duration-500 ' +
-        (firstLoad ? 'opacity-0 ' : 'opacity-100 ') +
-        (opacityDone ? 'animate-pulse' : '')
-      }
+      className={cn(
+        'flex flex-col rounded-2xl bg-light-gray transition-all duration-200',
+        {
+          'opacity-0': firstLoad,
+          'opacity-100': !firstLoad,
+          'animate-pulse': opacityDone,
+        },
+        className
+      )}
     >
       <SkeletonHeader />
       <div className="flex w-full flex-col space-y-2 p-3">

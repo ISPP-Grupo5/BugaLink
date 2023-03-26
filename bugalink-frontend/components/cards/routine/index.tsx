@@ -1,10 +1,9 @@
+import { ThreeDotsMenu } from '@/components/buttons/ThreeDots';
 import Entry from '@/components/cards/common/entry';
-import { Menu, MenuItem } from '@mui/material';
-import { useState } from 'react';
+import { MenuItem } from '@mui/material';
 import MapPin from '/public/assets/map-pin.svg';
 import OrigenPin from '/public/assets/origen-pin.svg';
 import SteeringWheel from '/public/assets/steering-wheel.svg';
-import ThreeDots from '/public/assets/three-dots.svg';
 
 export default function RoutineCard({
   departureHourStart,
@@ -52,47 +51,15 @@ export default function RoutineCard({
           />
           <p className="truncate">{destination}</p>
         </Entry>
-        <ThreeDotsMenu />
+        <ThreeDotsMenu>
+          <MenuItem>
+            <p>Editar</p>
+          </MenuItem>
+          <MenuItem>
+            <p className="text-red">Eliminar</p>
+          </MenuItem>
+        </ThreeDotsMenu>
       </div>
     </span>
   );
 }
-
-const ThreeDotsMenu = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  return (
-    <div>
-      <ThreeDots
-        className="absolute top-5 right-1 h-4 cursor-pointer"
-        aria-label="more"
-        aria-controls={open ? 'long-menu' : undefined}
-        aria-expanded={open ? 'true' : undefined}
-        aria-haspopup="true"
-        onClick={handleClick}
-      />
-      <Menu
-        transformOrigin={{ horizontal: 'left', vertical: 'top' }}
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          'aria-labelledby': 'basic-button',
-        }}
-      >
-        <MenuItem onClick={handleClose}>
-          <p>Editar</p>
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <p className="text-red">Eliminar</p>
-        </MenuItem>
-      </Menu>
-    </div>
-  );
-};

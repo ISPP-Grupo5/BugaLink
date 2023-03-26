@@ -6,16 +6,16 @@ import FileButton from '@/components/buttons/File';
 
 export default function DriverCCheck() {
   return (
-    <AnimatedLayout className="overflow-y-scroll bg-white">
+    <AnimatedLayout className="overflow-y-scroll bg-white px-4">
       <BackButtonText text="Hazte conductor" className="bg-white" />
       <CityDriver className="mx-auto" />
-      <p className="mr-4 ml-4 py-1 text-base font-bold">
+      <p className="py-1 text-base">
         Gana dinero levando a pasajeros en tu coche que van a tu mismo destino.
-        Los poasos a seguir son:
+        Los pasos a seguir son:
       </p>
-      <div className="mt-2 flex flex-col space-y-4">
-        <div className="mr-4 ml-4 text-base ">
-          <p className='font-bold mb-2'>1. Sube los documentos necesarrios: </p>
+      <div className="mt-4 flex flex-col space-y-4">
+        <div className="text-base">
+          <p className="mb-4 font-bold">1. Sube los documentos necesarios: </p>
           <span className="space-y-2 ">
             <FileButton text="Carnet de Conducir" />
             <FileButton text="Documento de identidad (anverso)" />
@@ -23,14 +23,14 @@ export default function DriverCCheck() {
             <FileButton text="Declaración jurada" />
           </span>
         </div>
-        <div className="mr-4 ml-4 text-base font-bold">
+        <div className="text-base">
           <p>
             2. Espera a la validación por parte de nuestro equipo. Puede tardar
             hasta 48 horas laborales.
           </p>
           <Check className="mx-auto" />
         </div>
-        <p className="mr-4 ml-4 text-base font-bold">
+        <p className="text-base font-bold">
           3. Una vez validad tu información podrás empezar a publicar viajes
           como conductor.
         </p>

@@ -1102,6 +1102,7 @@ class RideRequest(APIView):
         try:
             passenger = m.Passenger.objects.get(user_id=user_id)
             ride = m.Ride.objects.get(pk=ride_id)
+            passenger_routine = None
             if passenger_routine_id:
                 passenger_routine = m.PassengerRoutine.objects.get(pk = passenger_routine_id)
         except m.Passenger.DoesNotExist:

@@ -1013,3 +1013,27 @@ class UserRideListTest(TestCase):
         data = response.json()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(data['rides'][0]['start_date'], '2020-04-07T14:00:00')
+
+
+
+class RideRequestTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        load_data(self)
+        self.individual_ride1.delete()
+
+    def test_post_ride_request(self):
+        url = "/api/rides/{}/request".format(self.ride1.pk)
+        
+        body={
+            "user_id" : self.passenger2.user.pk,
+            "n_seats" : 1,
+            "passenger_note":"Helooo",
+            "recurrent" : "False",
+        }
+        response = self.client.post(url, data=body)
+        data =json.loads(response.content)
+        self.assertEqual(data['ride'], self.ride1.pk)
+        self.assertEqual(data['passenger'],self.passenger2.pk)
+        self.assertEqual(data['passenger_note'],"Helooo")
+        self.assertEqual(data['n_seats'],1)

@@ -24,11 +24,8 @@ urlpatterns = [
     path('register', views.Register.as_view()),
     path('rides/individual/<int:individual_ride_id>/accept', views.AcceptPassengerIndividualRide.as_view()),
     path('rides/individual/<int:individual_ride_id>', views.IndividualRides.as_view()),
-    
-    #RIDES
     path('rides/<int:ride_id>/detail',views.RideDetail.as_view()),
     path('users/<int:user_id>/rides', views.UserRideList.as_view()),
-
     path('rides/<int:ride_id>/request',views.RideRequest.as_view()),
 
     # DriverRoutines

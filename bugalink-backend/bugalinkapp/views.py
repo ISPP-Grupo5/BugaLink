@@ -268,9 +268,9 @@ class AcceptedIndividualRide(APIView):
 
 
 class IndividualRides(APIView):
-    def get(self, request, individualRideId):
+    def get(self, request, individual_ride_id):
         try:
-            individual_ride = m.IndividualRide.objects.get(id=individualRideId)
+            individual_ride = m.IndividualRide.objects.get(id=individual_ride_id)
             serializer = IndividualRideSerializer(individual_ride)
             return JsonResponse(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -280,7 +280,7 @@ class IndividualRides(APIView):
 class UserIndividualRides(APIView):
     def get(self, request):
         try:
-            individualRides = []
+            individual_rides = []
             user = m.User.objects.get(id=request.data['userId'])
             passenger = m.Passenger.objects.get(user=user)
             driver = m.Driver.objects.get(passenger=passenger)
@@ -288,8 +288,8 @@ class UserIndividualRides(APIView):
             for driverRoutine in driverRoutines:
                 rides = list(m.Ride.objects.filter(driver_routine_id=driverRoutine.id))
                 for ride in rides:
-                    individualRides += list(m.IndividualRide.objects.filter(ride_id=ride.id))
-            return individualRides
+                    individual_rides += list(m.IndividualRide.objects.filter(ride_id=ride.id))
+            return individual_rides
         except m.IndividualRide.DoesNotExist:
             raise Http404
 
@@ -381,9 +381,9 @@ class FilteredIndividualRides(APIView):
 
 
 class AcceptPassengerIndividualRide(APIView):
-    def patch(self, request, individualRideId):
+    def patch(self, request, individual_ride_id):
         try:
-            individualRide = m.IndividualRide.objects.get(id=individualRideId)
+            individualRide = m.IndividualRide.objects.get(id=individual_ride_id)
             individualRide.acceptation_status = m.AcceptationStatus.Accepted
             individualRide.save()
             return JsonResponse({"message": "Viaje aceptado"}, status=status.HTTP_200_OK)
@@ -585,41 +585,6 @@ class CanceledRoutineRequests(APIView):
             return JsonResponse(serializer.data)
         except m.IndividualRide.DoesNotExist:
             raise Http404
-
-
-class Rating(APIView):
-    def get(self, request, user_id):
-        if not user_id:
-            return JsonResponse({'error': 'user_id not provided'}, status=status.HTTP_400_BAD_REQUEST)
-
-        driver_rating_list = []
-        passenger_rating_list = []
-        try:
-            driver_rating_list = list(m.DriverRating.objects.filter(
-                individual_ride__ride__driver_routine__driver__passenger__user__pk=user_id))
-        except Exception:
-            pass
-        try:
-            passenger_rating_list = list(m.PassengerRating.objects.filter(individual_ride__passenger__user__pk=user_id))
-        except Exception:
-            pass
-        numeric_driver_rating_list = [rating.rating for rating in driver_rating_list]
-        numeric_passenger_rating_list = [rating.rating for rating in passenger_rating_list]
-        try:
-            passenger = m.Passenger.objects.get(user_id=user_id)
-            passenger_serializer = PassengerSerializer(passenger)
-        except m.Passenger.DoesNotExist:
-            return JsonResponse({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
-        if len(numeric_driver_rating_list) > 0 or len(numeric_passenger_rating_list) > 0:
-            rating = (sum(numeric_driver_rating_list) + sum(numeric_passenger_rating_list)) / (
-                    len(numeric_passenger_rating_list) + len(numeric_driver_rating_list))
-        else:
-            rating = 0
-        data = {
-            "passenger": passenger_serializer.data,
-            "rating": rating
-        }
-        return JsonResponse(data)
 
 
 class PendingRatings(APIView):
@@ -841,6 +806,7 @@ class DriverRoutine(APIView):
             return JsonResponse({'error': 'DriverRoutine does not exist with id {}'.format(driver_routine_id)},
 
                                 status=status.HTTP_404_NOT_FOUND)
+    
     def post(self, request, user_id):
 
         try:

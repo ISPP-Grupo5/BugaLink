@@ -371,12 +371,12 @@ class RoutineRecommendationTest(TestCase):
         self.ride2 = Ride.objects.create(driver_routine=self.driverRoutine2, num_seats=1, start_date='2023-03-11 8:00', end_date='2023-03-11 8:15')
 
     def test_get_routine_recommendation_by_user_id(self):
-        url = "/api/test/users/" + str(self.user1.pk) + "/rideRecommendation"
+        url = "/api/users/" + str(self.user1.pk) + "/routineFilter"
         response = self.client.get(url)
         data = json.loads(response.content)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data['rides'][0]['id'], 1) #Busca el viaje de id 1 ya que los datos introducidos en la rutina del driver son muy similares a los de la rutina del passenger definida
+        self.assertEqual(data['rides'][0]['id'], self.ride2.pk) #Busca el viaje de id 1 ya que los datos introducidos en la rutina del driver son muy similares a los de la rutina del passenger definida
 
 # api/users/<int:user_id>/reviews/rating
 class RatingTest(TestCase):

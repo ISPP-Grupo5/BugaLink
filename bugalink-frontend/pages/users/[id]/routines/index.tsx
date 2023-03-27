@@ -1,4 +1,5 @@
 import { BackButtonText } from '@/components/buttons/Back';
+import RoutineCard from '@/components/cards/routine';
 import AnimatedLayout from '@/components/layouts/animated';
 import RoutineCardSkeleton from '@/components/skeletons/Routine';
 import useDriverRoutines from '@/hooks/useDriverRoutines';

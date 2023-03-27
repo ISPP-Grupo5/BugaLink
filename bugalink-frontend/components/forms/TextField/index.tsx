@@ -28,12 +28,9 @@ export default function TextField({
   inputClassName,
   disabled,
   onClick,
-<<<<<<< HEAD
-=======
   showPassword,
   setShowPassword,
   error,
->>>>>>> develop
 }: props) {
   return (
     <div

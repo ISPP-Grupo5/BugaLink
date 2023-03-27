@@ -938,9 +938,9 @@ class AcceptPassengerIndividualRideTest(TestCase):
         self.passenger1.delete()
         self.user1.delete()
 
-    def test_patch_accept_passenger_individual_ride(self):
+    def test_post_accept_passenger_individual_ride(self):
         url = "/api/rides/individual/" + str(self.individualRide1.pk) + "/accept"
-        response = self.client.patch(url)
+        response = self.client.post(url)
         
         self.assertEqual(response.status_code, 200)
 
@@ -1074,9 +1074,9 @@ class CancelPassengerIndividualRideTest(TestCase):
         self.passenger1.delete()
         self.user1.delete()
 
-    def test_patch_cancel_passenger_individual_ride(self):
+    def test_post_cancel_passenger_individual_ride(self):
         url = "/api/rides/individual/" + str(self.individualRide1.pk) + "/decline"
-        response = self.client.patch(url)
+        response = self.client.post(url)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(IndividualRide.objects.get(id=self.individualRide1.pk).acceptation_status, AcceptationStatus.Cancelled) #Parece rara la llamada pero 

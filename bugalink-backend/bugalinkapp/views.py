@@ -381,7 +381,7 @@ class FilteredIndividualRides(APIView):
 
 
 class AcceptPassengerIndividualRide(APIView):
-    def patch(self, request, individual_ride_id):
+    def post(self, request, individual_ride_id):
         try:
             individualRide = m.IndividualRide.objects.get(id=individual_ride_id)
             individualRide.acceptation_status = m.AcceptationStatus.Accepted
@@ -391,7 +391,7 @@ class AcceptPassengerIndividualRide(APIView):
             return JsonResponse({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
 class CancelPassengerIndividualRide(APIView):
-    def patch(self, request, individualRideId):
+    def post(self, request, individualRideId):
         try:
             individualRide = m.IndividualRide.objects.get(id=individualRideId)
             individualRide.acceptation_status = m.AcceptationStatus.Cancelled

@@ -397,6 +397,7 @@ class CancelPassengerIndividualRide(APIView):
             individualRide.acceptation_status = m.AcceptationStatus.Cancelled
             individualRide.save()
             return JsonResponse({"message": "Solicitud rechazada"}, status = status.HTTP_200_OK)
+        
         except Exception as e:
             return JsonResponse({"message": str(e)}, status = status.HTTP_400_BAD_REQUEST)
 

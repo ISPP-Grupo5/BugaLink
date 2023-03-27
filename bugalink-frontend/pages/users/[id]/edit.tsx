@@ -49,7 +49,8 @@ export default function EditProfile() {
       errors.email = 'Por favor, ingrese un correo electrónico válido';
     }
 
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
     if (!values.password) {
       errors.password = 'La contraseña es obligatoria';
     } else if (values.password.length < 8) {

@@ -8,7 +8,7 @@ interface Props {
 
 export default function SquareRoutinesButton({ userId }: Props) {
   return (
-    <SquareButton    
+    <SquareButton
       text="Mi horario"
       link={NEXT_ROUTES.MY_ROUTINES(userId)}
       Icon={<Calendar />}

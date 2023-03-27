@@ -4,6 +4,8 @@ import TransparentButton from '@/components/buttons/Transparent';
 import Recargar from '/public/assets/recargar.svg';
 import Retirar from '/public/assets/retirar.svg';
 import Transaction from '@/components/cards/transactions';
+import Link from 'next/link';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 
 export default function Wallet() {
   return (
@@ -20,9 +22,17 @@ export default function Wallet() {
           <p className="text-xl font-bold text-black">3,75€</p>
         </div>
       </div>
-      <div className="my-5 flex justify-between space-x-2 px-4">
-        <TransparentButton text="Recargar cuenta" Icon={<Recargar />} />
-        <TransparentButton text="Retirar saldo" Icon={<Retirar />} />
+      <div className="justify-between my-5 flex space-x-2 px-4">
+        <div className="flex-1">
+          <Link href={NEXT_ROUTES.RECHARGE_CREDIT(1)}>
+            <TransparentButton text="Recargar cuenta" Icon={<Recargar />} />
+          </Link>
+        </div>
+        <div className="flex-1">
+          <Link href={NEXT_ROUTES.WITHDRAW_CREDIT(1)}>
+            <TransparentButton text="Retirar saldo" Icon={<Retirar />} />
+          </Link>
+        </div>
       </div>
 
       <p className="rounded-t-3xl bg-white py-5 pl-5 text-left text-3xl text-black">

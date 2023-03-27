@@ -26,7 +26,7 @@ const createRoutineMachineLayer = (props) => {
       styles: [{ color: '#38a3a5', weight: 4 }],
       extendToWaypoints: false,
       missingRouteTolerance: 0,
-      addWaypoints: false
+      addWaypoints: false,
     },
     alternativeClassName: 'hidden',
     plan: L.Routing.plan(

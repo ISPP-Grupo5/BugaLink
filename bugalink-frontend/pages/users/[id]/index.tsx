@@ -17,15 +17,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const data = {
     id: id,
-  }
+  };
 
   return {
     props: { data },
   };
 };
 
-
-export default function Profile({data}) {
+export default function Profile({ data }) {
   const user_id = data.id;
   const { user } = useUser(user_id);
 
@@ -35,7 +34,6 @@ export default function Profile({data}) {
   const year = dateString.substr(0, 4);
 
   const { userTotalRatings } = useUserTotalRatings(user_id);
-
 
   return (
     <AnimatedLayout className="flex h-full flex-col overflow-y-scroll">
@@ -50,8 +48,10 @@ export default function Profile({data}) {
               </div>
             </div>
           </div>
-          
-          <p className="pt-2 text-3xl ">{user ? user.first_name : 'Loading...'}</p>
+
+          <p className="pt-2 text-3xl ">
+            {user ? user.first_name : 'Loading...'}
+          </p>
           <Link href={NEXT_ROUTES.EDIT_PROFILE(user_id)}>
             <p className="text-md text-gray ">Editar perfil</p>
           </Link>
@@ -60,15 +60,21 @@ export default function Profile({data}) {
           </div>
           <div className="mx-4 mb-6 flex justify-evenly space-x-4 ">
             <div className="w-full -space-y-1 rounded-lg bg-white p-2 shadow-lg">
-              <p className="text-xl font-bold">{year ? `Desde ${year} ` : 'Loading...'}</p>
+              <p className="text-xl font-bold">
+                {year ? `Desde ${year} ` : 'Loading...'}
+              </p>
               <p className="text-sm text-gray">Experiencia</p>
             </div>
             <div className="w-full -space-y-1 rounded-lg bg-white p-2 shadow-lg">
-              <p className="text-xl font-bold">{userTotalRides ? userTotalRides.total_rides : 'Ninguno'}</p>
+              <p className="text-xl font-bold">
+                {userTotalRides ? userTotalRides.total_rides : 'Ninguno'}
+              </p>
               <p className="text-sm text-gray">Viajes</p>
             </div>
             <div className="w-full -space-y-1 rounded-lg bg-white p-2 shadow-lg">
-              <p className="text-xl font-bold">{userTotalRatings ? `${userTotalRatings.rating}⭐` : 'Ninguna'}</p>
+              <p className="text-xl font-bold">
+                {userTotalRatings ? `${userTotalRatings.rating}⭐` : 'Ninguna'}
+              </p>
 
               <p className="text-sm text-gray">Valoraciones</p>
             </div>

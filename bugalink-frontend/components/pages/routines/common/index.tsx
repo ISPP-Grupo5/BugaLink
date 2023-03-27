@@ -62,18 +62,18 @@ export default function NewRoutine({
     const errors: FormErrors = {};
     let isValid = true;
 
-    
     if (values.price < 0) {
       errors.price = 'El precio no debe ser un valor negativo';
       isValid = false;
-    } else if(!values.price) {
+    } else if (!values.price) {
       errors.price = 'Por favor, ingrese un precio';
       isValid = false;
-    } else if (values.price > (totalDistance * 0.1)*2) {
-      errors.price = 'El precio no puede ser mayor que el doble del precio recomendado';
+    } else if (values.price > totalDistance * 0.1 * 2) {
+      errors.price =
+        'El precio no puede ser mayor que el doble del precio recomendado';
       isValid = false;
     }
-    
+
     setErrors(errors);
 
     return errors;
@@ -199,11 +199,11 @@ export default function NewRoutine({
                 }
               />
 
-              <div className='flex flex-row space-x-4 items-center place-content-center mt-2'>
-                <input type="checkbox" className='w-5 h-5'/>
-                <label className='text-xl font-bold'>No repetir el viaje</label>
+              <div className="mt-2 flex flex-row place-content-center items-center space-x-4">
+                <input type="checkbox" className="h-5 w-5" />
+                <label className="text-xl font-bold">No repetir el viaje</label>
               </div>
-             <label className="mt-4 text-xl font-bold">
+              <label className="mt-4 text-xl font-bold">
                 Establece un precio por pasajero
               </label>
               <p>
@@ -238,7 +238,6 @@ export default function NewRoutine({
                 />
               </div>
             </div>
-            
           )}
           <CTAButton
             className="mt-4 w-full"

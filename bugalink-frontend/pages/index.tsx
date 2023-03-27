@@ -51,7 +51,7 @@ export default function Home() {
 
         <OptionButton
           text="Crear viaje"
-          className="mx-auto h-1/6 w-full mb-6 px-4"
+          className="mx-auto mb-6 h-1/6 w-full px-4"
           Option1="Como pasajero"
           Option2="Como conductor"
           isLink={true}
@@ -83,7 +83,6 @@ export default function Home() {
             ¡Guárdalo y aparecerá aquí!
           </div>
         </span>
-
       </div>
       <RecommendationsDrawer open={drawerOpen} setOpen={setDrawerOpen} />
     </AnimatedLayout>

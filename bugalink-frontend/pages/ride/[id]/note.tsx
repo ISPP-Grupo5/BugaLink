@@ -7,7 +7,7 @@ export default function NoteToDriver() {
 
   return (
     <div className="flex h-full flex-col overflow-y-scroll rounded-t-lg bg-white px-4 pb-4 pt-3">
-      <p className="text-3xl font-semibold mb-2">Añadir nota al conductor</p>
+      <p className="mb-2 text-3xl font-semibold">Añadir nota al conductor</p>
       <div className="my-3 flex flex-col">
         <TextAreaField
           fieldName="¿Qué le quieres decir al conductor?"

@@ -10,7 +10,6 @@ import OptionButton from '@/components/buttons/Option';
 import { Drawer } from '@mui/material';
 import NoteToDriver from './note';
 
-
 const MIN_RESERVED_SEATS = 1;
 const MAX_RESERVED_SEATS = 8; // TODO: Get max free seats the driver offers from the backend
 
@@ -40,7 +39,7 @@ export default function DetailsTwo() {
           rating="4.8"
           numberOfRatings="14"
           photo="/assets/avatar.png"
-          className='mb-2'
+          className="mb-2"
         />
         {/* Map preview */}
         <MapPreview
@@ -92,7 +91,7 @@ export default function DetailsTwo() {
         </div>
       </div>
       {/* Trip request */}
-      <div className="flex w-full flex-row items-center justify-between rounded-t-lg bg-white py-6 px-4 shadow-t-md">
+      <div className="flex w-full flex-row items-center justify-around rounded-t-lg bg-white py-6 px-4 shadow-t-md">
         <div className="flex flex-col">
           <p className="text-md font-normal">Precio total</p>
           <p className="text-3xl font-bold">4,00€</p>
@@ -102,7 +101,9 @@ export default function DetailsTwo() {
           Option1="Recurentemente"
           Option2="De manera individual"
           className="w-2/3"
-          isLink={false}
+          isLink={true}
+          linkOption1="/ride/V1StGXR8_Z5jdHi6B-myT/pay"
+          linkOption2="/ride/V1StGXR8_Z5jdHi6B-myT/pay"
         />
       </div>
       <Drawer

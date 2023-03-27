@@ -19,7 +19,7 @@ export default function PendingRequests() {
           : pendingRequests.map((request: TripRequestI) => (
               <Link key={request.id} href={NEXT_ROUTES.ACCEPT_RIDE(request.id)}>
                 <RequestCard
-                data-cy="request-accept"
+                  data-cy="request-accept"
                   key={request.id}
                   request={request}
                   className="mb-4"

@@ -201,7 +201,7 @@ class Ride(models.Model):
 
     def __str__(self):
         return "Ride " + str(self.pk) + ": driverRoutine=" + str(self.driver_routine.pk) + DATE_STR + str(
-            self.start_date.date())
+            self.start_date.date()) + ", available seats: " + str(self.get_available_seats())
 
     class Meta:
         verbose_name = "Ride"

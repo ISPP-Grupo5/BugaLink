@@ -268,9 +268,9 @@ class AcceptedIndividualRide(APIView):
 
 
 class IndividualRides(APIView):
-    def get(self, request, individualRideId):
+    def get(self, request, individual_ride_id):
         try:
-            individual_ride = m.IndividualRide.objects.get(id=individualRideId)
+            individual_ride = m.IndividualRide.objects.get(id=individual_ride_id)
             serializer = IndividualRideSerializer(individual_ride)
             return JsonResponse(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -280,7 +280,7 @@ class IndividualRides(APIView):
 class UserIndividualRides(APIView):
     def get(self, request):
         try:
-            individualRides = []
+            individual_rides = []
             user = m.User.objects.get(id=request.data['userId'])
             passenger = m.Passenger.objects.get(user=user)
             driver = m.Driver.objects.get(passenger=passenger)
@@ -288,8 +288,8 @@ class UserIndividualRides(APIView):
             for driverRoutine in driverRoutines:
                 rides = list(m.Ride.objects.filter(driver_routine_id=driverRoutine.id))
                 for ride in rides:
-                    individualRides += list(m.IndividualRide.objects.filter(ride_id=ride.id))
-            return individualRides
+                    individual_rides += list(m.IndividualRide.objects.filter(ride_id=ride.id))
+            return individual_rides
         except m.IndividualRide.DoesNotExist:
             raise Http404
 
@@ -381,9 +381,9 @@ class FilteredIndividualRides(APIView):
 
 
 class AcceptPassengerIndividualRide(APIView):
-    def patch(self, request, individualRideId):
+    def patch(self, request, individual_ride_id):
         try:
-            individualRide = m.IndividualRide.objects.get(id=individualRideId)
+            individualRide = m.IndividualRide.objects.get(id=individual_ride_id)
             individualRide.acceptation_status = m.AcceptationStatus.Accepted
             individualRide.save()
             return JsonResponse({"message": "Viaje aceptado"}, status=status.HTTP_200_OK)
@@ -585,41 +585,6 @@ class CanceledRoutineRequests(APIView):
             return JsonResponse(serializer.data)
         except m.IndividualRide.DoesNotExist:
             raise Http404
-
-
-class Rating(APIView):
-    def get(self, request, user_id):
-        if not user_id:
-            return JsonResponse({'error': 'user_id not provided'}, status=status.HTTP_400_BAD_REQUEST)
-
-        driver_rating_list = []
-        passenger_rating_list = []
-        try:
-            driver_rating_list = list(m.DriverRating.objects.filter(
-                individual_ride__ride__driver_routine__driver__passenger__user__pk=user_id))
-        except Exception:
-            pass
-        try:
-            passenger_rating_list = list(m.PassengerRating.objects.filter(individual_ride__passenger__user__pk=user_id))
-        except Exception:
-            pass
-        numeric_driver_rating_list = [rating.rating for rating in driver_rating_list]
-        numeric_passenger_rating_list = [rating.rating for rating in passenger_rating_list]
-        try:
-            passenger = m.Passenger.objects.get(user_id=user_id)
-            passenger_serializer = PassengerSerializer(passenger)
-        except m.Passenger.DoesNotExist:
-            return JsonResponse({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
-        if len(numeric_driver_rating_list) > 0 or len(numeric_passenger_rating_list) > 0:
-            rating = (sum(numeric_driver_rating_list) + sum(numeric_passenger_rating_list)) / (
-                    len(numeric_passenger_rating_list) + len(numeric_driver_rating_list))
-        else:
-            rating = 0
-        data = {
-            "passenger": passenger_serializer.data,
-            "rating": rating
-        }
-        return JsonResponse(data)
 
 
 class PendingRatings(APIView):
@@ -841,6 +806,7 @@ class DriverRoutine(APIView):
             return JsonResponse({'error': 'DriverRoutine does not exist with id {}'.format(driver_routine_id)},
 
                                 status=status.HTTP_404_NOT_FOUND)
+    
     def post(self, request, user_id):
 
         try:
@@ -1110,3 +1076,86 @@ class UploadDocsDriver(APIView):
 
         except Exception as e:
             return JsonResponse({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class RideRequest(APIView):
+    def post(self, request, ride_id):
+        #obtener valores del body y comprobar que son buenos
+        try:
+            user_id = int(request.data['user_id'])
+            n_seats= int(request.data['n_seats'])
+            recurrent = request.data.get('recurrent', False) == 'True'
+            passenger_note = request.data.get('passenger_note')
+            passenger_routine_id = request.data.get('passenger_routine_id') #opcional, se especifica si el viaje satisface
+                                                                      #una rutina para no recomendar viajes de dicha rutina
+            if int(n_seats) <= 0:
+                raise Exception
+            if passenger_routine_id:
+                passenger_routine_id = int(passenger_routine_id)
+        except Exception:
+             return JsonResponse({"error":"data not valid. body must contain: user_id(int. User that requests the ride),\
+                                   n_seats>0, recurrent(opt: True/False. This means he wants to request recurrently the routine thus the ride),\
+                                   passenger_note(opt), passenger_routine_id\
+                                  (opt: if the individualRide satisfies any passengerRoutine or not. Not optional if\
+                                   recurrent is set to True)"}, status=400)
+        
+        # Verificaciones de que los ids existen
+        try:
+            passenger = m.Passenger.objects.get(user_id=user_id)
+            ride = m.Ride.objects.get(pk=ride_id)
+            passenger_routine = None
+            if passenger_routine_id:
+                passenger_routine = m.PassengerRoutine.objects.get(pk = passenger_routine_id)
+        except m.Passenger.DoesNotExist:
+             return JsonResponse({"error":"user not found"}, status=404)
+        except m.Ride.DoesNotExist:
+             return JsonResponse({"error":"ride not found"}, status=404)
+        except m.PassengerRoutine.DoesNotExist:
+            return JsonResponse({"error":"passenger_routine not found"}, status=404)
+
+        # Verificar que no es el driver quien solicita el viaje
+        if ride.driver_routine.driver.passenger == passenger:
+            return JsonResponse({"error":"The driver cannot request his own ride"}, status=400)
+
+        # Si existe PassengerRoutine, verificar que es del user_id que solicita
+        if passenger_routine and (passenger_routine.passenger.user.pk != user_id):
+             return JsonResponse({"error":"PassengerRoutine does not belong to user_id given"}, status=400)
+        
+        # Verificar que el user no ha solicitado ya ese viaje
+        individual_rides = m.IndividualRide.objects.filter(ride=ride, passenger=passenger)
+        if len(individual_rides)>0:
+            return JsonResponse({"error":"user already requested this ride"}, status=400)
+       
+       # Verificar que quedan plazas libres
+        available_seats = ride.get_available_seats()
+        if  available_seats <= 0:
+            return JsonResponse({"error":"no available seats for this ride"}, status=400)
+        if available_seats - n_seats < 0:
+            return JsonResponse({"error":"Not enough available seats for this ride. Only {} seats left".format(available_seats)}, status=400)
+        
+        # Crear la routine Request si el viaje se solicita de manera recurrente
+        if recurrent:
+            if  not passenger_routine_id:
+                return JsonResponse({"error":"passenger_routine cannot be null when setting recurrent to true"},status = 400)
+            # Verificar que no la ha solicitado todavia
+            routine_requests = m.RoutineRequest.objects.filter(passenger_routine_id = passenger_routine_id, driver_routine_id = ride.driver_routine.pk)
+            if len(routine_requests) > 0:
+                return JsonResponse({"error":"The user has already requested this routine recurrently."}, status=400)
+            m.RoutineRequest.objects.create(passenger_routine_id = passenger_routine.pk, driver_routine_id = ride.driver_routine.pk)
+
+        # Creación de IndividualRide y respuesta
+        data = {
+            "ride":ride.pk,
+            "passenger":passenger,
+            "n_seats": n_seats,
+            "price": ride.driver_routine.price * n_seats,
+            "passenger_routine": passenger_routine_id,
+            "passenger_note": passenger_note,
+            "decline_note": None,
+            "acceptation_status": "Pending Confirmation"
+        }
+        serializer = IndividualRideSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        else:
+            return JsonResponse(serializer.errors, status=400)

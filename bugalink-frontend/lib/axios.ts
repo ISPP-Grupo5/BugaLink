@@ -20,7 +20,7 @@ axiosCustom.interceptors.request.use((config) => {
     url.includes('localhost')
   ) {
     const token = localStorage.getItem('accessToken');
-    config.headers.Authorization = `Bearer ${token}`;
+    if (token) config.headers.Authorization = `Bearer ${token}`;
   }
 
   return config;

@@ -8,10 +8,14 @@ import ExternalLogin from '@/components/externalLogin';
 
 import CityDriver from '/public/assets/CityDriver.svg';
 import TextField from '@/components/forms/TextField';
+import useAuth from '@/hooks/useAuth';
+import { useRouter } from 'next/router';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { login } = useAuth();
+  const router = useRouter();
 
   return (
     <AnimatedLayout className="bg-white">
@@ -31,7 +35,7 @@ export default function Login() {
             <form className="mt-5">
               <div className="mr-8 ml-8 flex flex-col space-y-5">
                 <TextField
-                  type={'text'}
+                  type="email"
                   content={email}
                   fieldName={'Correo electrónico'}
                   inputClassName="w-full"
@@ -39,7 +43,7 @@ export default function Login() {
                   setContent={setEmail}
                 />
                 <TextField
-                  type={'password'}
+                  type="password"
                   content={password}
                   fieldName={'Contraseña'}
                   inputClassName="w-full"
@@ -48,7 +52,7 @@ export default function Login() {
                 />
               </div>
 
-              <div className="mr-8 ml-8 flex flex-row items-center justify-between py-3">
+              <div className="justify-between mr-8 ml-8 flex flex-row items-center py-3">
                 <span className="flex flex-row items-center -justify-between space-x-7">
                   <Switch />
                   <p className="-translate-x-5 text-base font-bold text-light-gray">
@@ -64,7 +68,16 @@ export default function Login() {
                 </Link>
               </div>
 
-              <CTAButton text="INICIAR SESIÓN" className="mt-4 w-5/6" />
+              <CTAButton
+                text="INICIAR SESIÓN"
+                className="mt-4 w-5/6"
+                onClick={async (e) => {
+                  e.preventDefault();
+                  const { status, data } = await login(email, password);
+                  if (status === 200) router.push('/');
+                  else console.log(data);
+                }}
+              />
 
               <span className="flex translate-y-7 -translate-x-2 flex-row justify-center -justify-between">
                 <p className="font-bold text-light-gray">

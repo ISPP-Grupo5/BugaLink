@@ -172,6 +172,8 @@ class RoutineRecommendation(APIView):
 
                 for routine in driver_routines:
                     driver_day = routine.day
+                    if driver_day != passenger_day:
+                        continue
 
                     # Definir las horas de inicio y fin de la rutina del pasajero
                     drivers_beggining_of_ride_0 = routine.start_date_0
@@ -188,25 +190,31 @@ class RoutineRecommendation(APIView):
                     lon_source_passenger = passenger_routine.start_longitude
                     lat_end_passenger = passenger_routine.end_latitude
                     lon_end_passenger = passenger_routine.end_longitude
-                    d_lat_source = lat_source_driver - lat_source_passenger
-                    d_lon_source = lon_source_driver - lon_source_passenger
-                    a = sin(d_lat_source / 2) ** 2 + cos(lat_source_passenger) * cos(lat_source_driver) * sin(
-                        d_lon_source / 2) ** 2
-                    c = 2 * atan2(sqrt(a), sqrt(1 - a))
-                    source_distance = 6371 * c
+                    
+                    try:
+                        d_lat_source = lat_source_driver - lat_source_passenger
+                        d_lon_source = lon_source_driver - lon_source_passenger
+                        a = sin(d_lat_source / 2) ** 2 + cos(lat_source_passenger) * cos(lat_source_driver) * sin(
+                            d_lon_source / 2) ** 2
+                        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+                        source_distance = 6371 * c
+                    except Exception:
+                        source_distance = 0
 
                     # Obtener en kilometros la diferencia de distancia entre los lugares destino
-                    d_lat_destination = lat_end_driver - lat_end_passenger
-                    d_lon_destination = lon_end_driver - lon_end_passenger
-                    a = sin(d_lat_destination / 2) ** 2 + cos(lat_end_passenger) * cos(lat_end_driver) * sin(
-                        d_lon_destination / 2) ** 2
-                    c = 2 * atan2(sqrt(a), sqrt(1 - a))
-                    destination_distance = 6371 * c
-
+                    try:
+                        d_lat_destination = lat_end_driver - lat_end_passenger
+                        d_lon_destination = lon_end_driver - lon_end_passenger
+                        a = sin(d_lat_destination / 2) ** 2 + cos(lat_end_passenger) * cos(lat_end_driver) * sin(
+                            d_lon_destination / 2) ** 2
+                        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+                        destination_distance = 6371 * c
+                    except Exception:
+                        destination_distance = 0
+                
                     # Uso de todos los datos obtenidos para crear un filtro que compruebe si la rutina es valida
                     # Si es valida se guarda en una lista
-                    if driver_day == passenger_day and (
-                            drivers_beggining_of_ride_0 <= max_time and drivers_beggining_of_ride_1 >= min_time) and destination_distance <= 1 and source_distance <= 1:
+                    if drivers_beggining_of_ride_0 <= max_time and drivers_beggining_of_ride_1 >= min_time and destination_distance <= 1 and source_distance <= 1:
                         valid_routines.append(routine)
 
                 # Se obtienen los viajes asociados a las rutinas marcadas como validas y se guardan a una lista que las devolvera como respuesta
@@ -214,7 +222,7 @@ class RoutineRecommendation(APIView):
                 for routine in valid_routines:
                     ride = m.Ride.objects.filter(driver_routine=routine)
                     for r in ride:    
-                        if r.num_seats > 0 and r.status == m.RideStatus.Pending_start and r.start_date > datetime.now:
+                        if r.get_available_seats() > 0 and r.status == m.RideStatus.Pending_start and r.start_date > datetime.now():
                             rides.append(r)
 
                 # Llamada al serializer para devolver todos los viajes que han sido seleccionados

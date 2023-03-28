@@ -25,15 +25,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default function Profile({ data }) {
-  const user_id = data.id;
-  const { user } = useUser(user_id);
+  const userId = data.id;
+  const { user } = useUser(userId);
 
-  const { userTotalRides } = useUserTotalRides(user_id);
+  const { userTotalRides } = useUserTotalRides(userId);
 
   const dateString = user && user.date_joined ? user.date_joined : 'Loading...';
   const year = dateString.substr(0, 4);
 
-  const { userTotalRatings } = useUserTotalRatings(user_id);
+  const { userTotalRatings } = useUserTotalRatings(userId);
 
   return (
     <AnimatedLayout className="flex h-full flex-col overflow-y-scroll">
@@ -52,7 +52,7 @@ export default function Profile({ data }) {
           <p className="pt-2 text-3xl ">
             {user ? user.first_name : 'Loading...'}
           </p>
-          <Link href={NEXT_ROUTES.EDIT_PROFILE(user_id)}>
+          <Link href={NEXT_ROUTES.EDIT_PROFILE(userId)}>
             <p className="text-md text-gray ">Editar perfil</p>
           </Link>
           <div className="py-4 text-light-gray">

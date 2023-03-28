@@ -22,7 +22,7 @@ axiosCustom.interceptors.request.use(
 axiosCustom.interceptors.request.use((config) => {
   // Add a "/" to the end of the URL if it doesn't already end with one
   // Django won't process the request otherwise
-  if (!config.url.endsWith('/')) config.url += '/';
+  if (!config.url.endsWith('/') && !config.url.includes('?')) config.url += '/';
   return config;
 });
 

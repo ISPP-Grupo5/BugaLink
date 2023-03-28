@@ -1,6 +1,7 @@
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import TripI from '@/interfaces/trip';
 import TripRequestI from '@/interfaces/tripRequest';
+import { formatDatetime } from '@/utils/formatters';
 import Link from 'next/link';
 import Calendar from 'public/assets/calendar.svg';
 import Destino from 'public/assets/destination.svg';
@@ -51,7 +52,7 @@ export default function UpcomingCard({
         </div>
         <div className="flex items-center space-x-2 truncate text-white">
           <Calendar className="h-min w-4 flex-none" />
-          <p className="truncate">{trip.departure_datetime}</p>
+          <p className="truncate">{formatDatetime(trip.departure_datetime)}</p>
         </div>
       </div>
     </Link>
@@ -68,11 +69,11 @@ const DriverCardHeader = ({ trip }: { trip: TripI }) => (
       <span className="flex items-start -space-x-10">
         {trip.passengers.slice(0, 3).map((passenger, index) => (
           <img
-            className="rounded-full border-2 border-white object-scale-down"
+            className="aspect-square w-14 rounded-full border-2 border-white object-scale-down"
             style={{ zIndex: 3 - index }} // for reverse stacking
             key={`passenger-${index}`}
             id={`passenger-${index}`}
-            src={passenger.user.photo}
+            src={passenger.user.photo ?? '/assets/avatar.png'}
           />
         ))}
       </span>
@@ -113,7 +114,10 @@ const PassengerCardHeader = ({ trip }: { trip: TripI }) => (
     </span>
     <WomanSeated className="absolute -right-2.5 top-[2.35rem] z-20 w-24" />
     <span className="flex h-full items-center space-x-3 px-3">
-      <img className="object-scale-down" src={trip.driver.user.photo} />
+      <img
+        className="aspect-square w-14 rounded-full object-scale-down"
+        src={trip.driver.user.photo ?? '/assets/avatar.png'}
+      />
       <div className="flex flex-col -space-y-1">
         <p className="text-lg font-extrabold leading-5 tracking-wide">
           {/* TODO: license plate not present in API response */}

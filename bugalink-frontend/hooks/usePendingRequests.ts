@@ -7,7 +7,7 @@ export default function usependingRequests() {
   const USER_ID = 1;
 
   const { data, error, isLoading } = useSWR(
-    `/users/${USER_ID}/trips?status=pending`,
+    `/users/${USER_ID}/trip-requests?status=PENDING`,
     fetcher
   );
 

@@ -12,7 +12,7 @@ export default function useNumPendingRequests() {
   //   isError: error,
   // };
   return {
-    useNumPendingRequests: 0,
+    numPendingRequests: 0,
     isLoading: false,
     isError: false,
   };

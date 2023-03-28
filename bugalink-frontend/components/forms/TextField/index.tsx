@@ -10,33 +10,35 @@ type props = {
   setContent: (value: string) => void;
   parentClassName?: string;
   inputClassName?: string;
-  disabled?: boolean;
-  onClick?: () => void;
   showPassword?: boolean;
   setShowPassword?: (value: boolean) => void;
   error?: string;
+  disabled?: boolean;
+  onClick?: () => void;
+  props?: any;
 };
 
 // Adapted from https://tailwind-elements.com/docs/standard/forms/inputs/
 export default function TextField({
   type,
   fieldName,
-  name,
   content,
   setContent,
   parentClassName,
   inputClassName,
-  disabled,
-  onClick,
   showPassword,
   setShowPassword,
   error,
+  disabled,
+  onClick,
+  ...props
 }: props) {
   return (
     <div
       className={`relative flex ${parentClassName}`}
       data-te-input-wrapper-init
     >
+      {/* TODO: extract showPassword logic to a different component that encapsulates TextField and adds the icon and functionality on top */}
       <input
         type={showPassword ? 'text' : type}
         className={`peer block min-h-[auto] rounded-lg border-none bg-transparent py-3 px-4 text-lg outline outline-1 transition-all duration-200 ease-linear motion-reduce:transition-none ${inputClassName} ${
@@ -49,7 +51,7 @@ export default function TextField({
         id={fieldName}
         disabled={disabled}
         onClick={onClick}
-        name={name}
+        {...props}
       />
       {type === 'password' && (
         <div

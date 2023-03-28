@@ -371,10 +371,9 @@ class RoutineRecommendationTest(TestCase):
         self.ride2 = Ride.objects.create(driver_routine=self.driverRoutine2, num_seats=1, start_date='2023-03-11 8:00', end_date='2023-03-11 8:15')
 
     def test_get_routine_recommendation_by_user_id(self):
-        url = "/api/test/users/" + str(self.user1.pk) + "/rideRecommendation"
+        url = "/api/users/" + str(self.user1.pk) + "/routineFilter"
         response = self.client.get(url)
         data = json.loads(response.content)
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data['rides'][0]['id'], 1) #Busca el viaje de id 1 ya que los datos introducidos en la rutina del driver son muy similares a los de la rutina del passenger definida
 
@@ -938,9 +937,9 @@ class AcceptPassengerIndividualRideTest(TestCase):
         self.passenger1.delete()
         self.user1.delete()
 
-    def test_patch_accept_passenger_individual_ride(self):
+    def test_post_accept_passenger_individual_ride(self):
         url = "/api/rides/individual/" + str(self.individualRide1.pk) + "/accept"
-        response = self.client.patch(url)
+        response = self.client.post(url)
         
         self.assertEqual(response.status_code, 200)
 
@@ -1037,3 +1036,48 @@ class RideRequestTest(TestCase):
         self.assertEqual(data['passenger'],self.passenger2.pk)
         self.assertEqual(data['passenger_note'],"Helooo")
         self.assertEqual(data['n_seats'],1)
+
+class CancelPassengerIndividualRideTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user1 = User.objects.create(username="TEST USER", email="test@test.es")
+        self.passenger1 = Passenger.objects.create(user=self.user1, balance=0.0)
+        self.passengerRoutine1 = PassengerRoutine.objects.create(passenger=self.passenger1, start_time_initial='8:01', start_time_final='8:15', end_date='9:00', start_latitude=10.0, end_latitude=11.0, start_longitude=10.0, end_longitude=11.0, day='Mon')
+
+
+        self.user2 = User.objects.create(username="TEST USER 2", email="test2@test.es")
+        self.passenger2 = Passenger.objects.create(user=self.user2, balance=0.0)
+        self.driver2 = Driver.objects.create(passenger=self.passenger2)
+        self.driverRoutine2 = DriverRoutine.objects.create(driver=self.driver2, default_num_seats=1, start_date_0='8:00', start_date_1='8:15', end_date='9:00', start_latitude=10.0, end_latitude=11.0, start_longitude=10.0, end_longitude=11.0,day='Mon', price=10.0)
+        self.ride2 = Ride.objects.create(driver_routine=self.driverRoutine2, num_seats=1, start_date='2023-03-11 8:00', end_date='2023-03-11 8:15')
+
+        self.individualRide1 = IndividualRide.objects.create(ride=self.ride2, passenger=self.passenger1, passenger_routine=self.passengerRoutine1)
+        self.passengerRating1 = PassengerRating.objects.create(individual_ride=self.individualRide1, rating = 2.5)
+
+        self.individualRide2 = IndividualRide.objects.create(ride=self.ride2, passenger=self.passenger2, passenger_routine=self.passengerRoutine1)
+        self.driverRating1 = DriverRating.objects.create(individual_ride=self.individualRide2, rating = 2.5)
+
+    def tearDown(self):
+        self.driverRating1.delete()
+        self.individualRide2.delete()
+        self.passengerRating1.delete()
+        self.individualRide1.delete()
+
+        self.ride2.delete()
+        self.driverRoutine2.delete()
+        self.driver2.delete()
+        self.passenger2.delete()
+        self.user2.delete()
+
+        self.passengerRoutine1.delete()
+        self.passenger1.delete()
+        self.user1.delete()
+
+    def test_post_cancel_passenger_individual_ride(self):
+        url = "/api/rides/individual/" + str(self.individualRide1.pk) + "/decline"
+        response = self.client.post(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(IndividualRide.objects.get(id=self.individualRide1.pk).acceptation_status, AcceptationStatus.Cancelled) #Parece rara la llamada pero 
+                                                                                                                                 #tiene que hacerse asi para que coja 
+                                                                                                                                 #el IndividualRide modificado

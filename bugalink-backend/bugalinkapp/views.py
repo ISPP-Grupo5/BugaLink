@@ -381,7 +381,7 @@ class FilteredIndividualRides(APIView):
 
 
 class AcceptPassengerIndividualRide(APIView):
-    def patch(self, request, individual_ride_id):
+    def post(self, request, individual_ride_id):
         try:
             individualRide = m.IndividualRide.objects.get(id=individual_ride_id)
             individualRide.acceptation_status = m.AcceptationStatus.Accepted
@@ -389,17 +389,18 @@ class AcceptPassengerIndividualRide(APIView):
             return JsonResponse({"message": "Viaje aceptado"}, status=status.HTTP_200_OK)
         except Exception as e:
             return JsonResponse({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class CancelPassengerIndividualRide:
-    def put(self, request):
+        
+class CancelPassengerIndividualRide(APIView):
+    def post(self, request, individualRideId):
         try:
-            individualRide = m.IndividualRide.objects.get(id=request.data['individualRideId'])
+            individualRide = m.IndividualRide.objects.get(id=individualRideId)
+            individualRide.decline_note = request.data.get('decline_note')
             individualRide.acceptation_status = m.AcceptationStatus.Cancelled
-            m.IndividualRide.objects.put(individualRide)
-        except m.IndividualRide.DoesNotExist:
-            raise Http404
-
+            individualRide.save()
+            return JsonResponse({"message": "Solicitud rechazada"}, status = status.HTTP_200_OK)
+        
+        except Exception as e:
+            return JsonResponse({"message": str(e)}, status = status.HTTP_400_BAD_REQUEST)
 
 class AcceptRoutineRequest(APIView):
 
@@ -535,7 +536,7 @@ class PendingIndividualRidesAndRoutineRequests(APIView):
             rides = m.IndividualRide.objects.filter(ride__driver_routine__driver__passenger=passenger,
                                                     acceptation_status="Pending Confirmation")
             routine_requests = m.RoutineRequest.objects.filter(driver_routine__driver__passenger=passenger,
-                                                               acceptation_status="Pending Confirmation")
+                                                               acceptation_status=m.AcceptationStatus.Pending_Confirmation)
             serializer = ListIndividualRideAndRoutineRquestSerializer({
                 'individual_rides': rides,
                 'routine_requests': routine_requests,

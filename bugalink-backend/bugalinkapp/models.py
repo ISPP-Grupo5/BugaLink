@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-from enum import Enum
 
 EMAIL_STR = ", email="
 DRIVER_STR = ": driver="
@@ -24,7 +23,7 @@ class User(User):
         proxy = True
         ordering = ('username', )
 
-class DocumentValidationStatus(Enum):
+class DocumentValidationStatus(models.TextChoices):
     none = 'None'
     Waiting_Validation = 'Waiting Validation'
     Validated = 'Validated'
@@ -35,7 +34,7 @@ class DocumentValidationStatus(Enum):
         return [(key.value, key.name) for key in cls]
 
 
-class RideStatus(Enum):
+class RideStatus(models.TextChoices):
     Pending_start = 'Pending start'
     Finished = 'Finished'
 
@@ -44,7 +43,7 @@ class RideStatus(Enum):
         return [(key.value, key.name) for key in cls]
 
 
-class TransactionStatus(Enum):
+class TransactionStatus(models.TextChoices):
     Accepted = 'Accepted'
     Declined = 'Declined'
     Pending = 'Pending'
@@ -54,7 +53,7 @@ class TransactionStatus(Enum):
         return [(key.value, key.name) for key in cls]
 
 
-class AcceptationStatus(Enum):
+class AcceptationStatus(models.TextChoices):
     Accepted = 'Accepted'
     Cancelled = 'Cancelled'
     Pending_Confirmation = 'Pending Confirmation'
@@ -64,7 +63,7 @@ class AcceptationStatus(Enum):
         return [(key.value, key.name) for key in cls]
 
 
-class Days(Enum):
+class Days(models.TextChoices):
     Mon = 'Mon'
     Tue = 'Tue'
     Wed = 'Wed'
@@ -115,12 +114,12 @@ class Driver(models.Model):
     preference_1 = models.BooleanField(default=False)
     preference_2 = models.BooleanField(default=False)
     preference_3 = models.BooleanField(default=False)
-    dni_status = models.CharField(max_length=32, choices=DocumentValidationStatus.choices(),
+    dni_status = models.CharField(max_length=32, choices=DocumentValidationStatus.choices,
                                   default=DocumentValidationStatus.none)
     entry_date = models.DateField(default=timezone.now)
-    driver_license_status = models.CharField(max_length=32, choices=DocumentValidationStatus.choices(),
+    driver_license_status = models.CharField(max_length=32, choices=DocumentValidationStatus.choices,
                                              default=DocumentValidationStatus.none)
-    sworn_declaration_status = models.CharField(max_length=32, choices=DocumentValidationStatus.choices(),
+    sworn_declaration_status = models.CharField(max_length=32, choices=DocumentValidationStatus.choices,
                                                 default=DocumentValidationStatus.none)
     sworn_declaration = models.FileField(null=True, blank=True, upload_to=get_file_path)
     driver_license = models.FileField(null=True, blank=True, upload_to=get_file_path)
@@ -143,7 +142,7 @@ class Vehicle(models.Model):
     driver = models.ForeignKey(Driver, on_delete=models.CASCADE)
     model = models.CharField(max_length=256, null=True)
     plate = models.CharField(max_length=256, null=True)
-    insurance_status = models.CharField(max_length=32, choices=DocumentValidationStatus.choices(),
+    insurance_status = models.CharField(max_length=32, choices=DocumentValidationStatus.choices,
                                         default=DocumentValidationStatus.none)
     insurance = models.FileField(null=True, blank=True)
 
@@ -171,7 +170,7 @@ class DriverRoutine(models.Model):
     end_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True, blank=True)
     start_location = models.CharField(max_length=512)
     end_location = models.CharField(max_length=512)
-    day = models.CharField(max_length=26, choices=Days.choices(), default=Days.Mon)
+    day = models.CharField(max_length=26, choices=Days.choices, default=Days.Mon)
     one_ride = models.BooleanField(default=False)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     driver_note = models.CharField(max_length=1024, null=True, blank=True)
@@ -189,7 +188,7 @@ class Ride(models.Model):
 
     vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, null=True, blank=True)
     num_seats = models.IntegerField()  # Relacionarlo con default_num_seats
-    status = models.CharField(max_length=256, choices=RideStatus.choices(), default=RideStatus.Pending_start)
+    status = models.CharField(max_length=256, choices=RideStatus.choices, default=RideStatus.Pending_start)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     start_longitude = models.DecimalField(max_digits=15, decimal_places=10, null=True)
@@ -222,7 +221,7 @@ class PassengerRoutine(models.Model):
     end_latitude = models.DecimalField(max_digits=15, decimal_places=10,null=True)
     start_location = models.CharField(max_length=512)
     end_location = models.CharField(max_length=512)
-    day = models.CharField(max_length=26, choices=Days.choices(), default=Days.Mon)
+    day = models.CharField(max_length=26, choices=Days.choices, default=Days.Mon)
     end_date = models.TimeField()
     start_time_initial = models.TimeField()
     start_time_final = models.TimeField()
@@ -239,7 +238,7 @@ class IndividualRide(models.Model):
     ride = models.ForeignKey(Ride, on_delete=models.CASCADE)
     passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
     passenger_routine = models.ForeignKey(PassengerRoutine, on_delete=models.CASCADE, null=True, blank=True)
-    acceptation_status = models.CharField(max_length=256, choices=AcceptationStatus.choices(),
+    acceptation_status = models.CharField(max_length=256, choices=AcceptationStatus.choices,
                                           default=AcceptationStatus.Pending_Confirmation)
     passenger_note = models.CharField(max_length=1024, null=True, blank=True)
     decline_note = models.CharField(max_length=1024, null=True, blank=True)
@@ -311,7 +310,7 @@ class Report(models.Model):
 class RoutineRequest(models.Model):
     passenger_routine = models.ForeignKey(PassengerRoutine, on_delete=models.CASCADE)
     driver_routine = models.ForeignKey(DriverRoutine, on_delete=models.CASCADE)
-    acceptation_status = models.CharField(max_length=256, choices=AcceptationStatus.choices(),
+    acceptation_status = models.CharField(max_length=256, choices=AcceptationStatus.choices,
                                           default=AcceptationStatus.Pending_Confirmation)
 
     def __str__(self):
@@ -407,6 +406,6 @@ class IndividualDiscountCode(models.Model):
 class Transaction(models.Model):
     sender = models.ForeignKey(Passenger, on_delete=models.CASCADE, related_name='sender')
     receiver = models.ForeignKey(Passenger, on_delete=models.CASCADE, related_name='receiver')
-    status = models.CharField(max_length=16, choices=TransactionStatus.choices(), default=TransactionStatus.Pending)
+    status = models.CharField(max_length=16, choices=TransactionStatus.choices, default=TransactionStatus.Pending)
     is_refund = models.BooleanField(default=False)
     amount = models.FloatField()

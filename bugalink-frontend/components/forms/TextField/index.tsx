@@ -13,6 +13,8 @@ type props = {
   showPassword?: boolean;
   setShowPassword?: (value: boolean) => void;
   error?: string;
+  disabled?: boolean;
+  onClick?: () => void;
   props?: any;
 };
 
@@ -20,7 +22,6 @@ type props = {
 export default function TextField({
   type,
   fieldName,
-  name,
   content,
   setContent,
   parentClassName,
@@ -28,6 +29,8 @@ export default function TextField({
   showPassword,
   setShowPassword,
   error,
+  disabled,
+  onClick,
   ...props
 }: props) {
   return (
@@ -44,7 +47,10 @@ export default function TextField({
             : 'outline-light-gray focus:outline-turquoise'
         }`}
         onChange={(e) => setContent(e.target.value)}
-        name={name}
+        value={content}
+        id={fieldName}
+        disabled={disabled}
+        onClick={onClick}
         {...props}
       />
       {type === 'password' && (

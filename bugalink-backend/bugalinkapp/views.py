@@ -212,9 +212,10 @@ class RoutineRecommendation(APIView):
                 # Se obtienen los viajes asociados a las rutinas marcadas como validas y se guardan a una lista que las devolvera como respuesta
                 rides = []
                 for routine in valid_routines:
-                    ride = m.Ride.objects.filter(driver_routine=routine).first()
-                    if ride.num_seats > 0:
-                        rides.append(ride)
+                    ride = m.Ride.objects.filter(driver_routine=routine)
+                    for r in ride:    
+                        if r.num_seats > 0 and r.status == m.RideStatus.Pending_start and r.start_date > datetime.now:
+                            rides.append(r)
 
                 # Llamada al serializer para devolver todos los viajes que han sido seleccionados
                 serializer = ListRideSerializer({"rides": rides})

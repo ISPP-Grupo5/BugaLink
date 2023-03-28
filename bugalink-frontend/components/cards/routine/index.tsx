@@ -12,7 +12,7 @@ export default function RoutineCard({
   origin,
   destination,
 }) {
-  const isDriver = type === 'driver';
+  const isDriver = type === 'driverRoutine';
 
   return (
     <span className="flex w-full rounded-lg border border-border-color">

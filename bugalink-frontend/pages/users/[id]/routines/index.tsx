@@ -2,8 +2,11 @@ import { BackButtonText } from '@/components/buttons/Back';
 import RoutineCard from '@/components/cards/routine';
 import AnimatedLayout from '@/components/layouts/animated';
 import RoutineCardSkeleton from '@/components/skeletons/Routine';
-import useDriverRoutines from '@/hooks/useDriverRoutines';
-import usePassengerRoutines from '@/hooks/usePassengerRoutines';
+import useDriver from '@/hooks/useDriver';
+import usePassenger from '@/hooks/usePassenger';
+import DriverRoutineI from '@/interfaces/driverRoutine';
+import GenericRoutineI from '@/interfaces/genericRoutine';
+import PassengerRoutineI from '@/interfaces/passengerRoutine';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { GetServerSideProps } from 'next';
@@ -11,38 +14,74 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 const WEEK_DAYS = {
-  Mon: 'Lunes',
-  Tue: 'Martes',
-  Wed: 'Miércoles',
-  Thu: 'Jueves',
-  Fri: 'Viernes',
-  Sat: 'Sábado',
-  Sun: 'Domingo',
+  '0': 'Lunes',
+  '1': 'Martes',
+  '2': 'Miércoles',
+  '3': 'Jueves',
+  '4': 'Viernes',
+  '5': 'Sábado',
+  '6': 'Domingo',
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   return { props: { data: { id: query.id } } };
 };
 
+const mergeRoutines = (
+  passengerRoutines: PassengerRoutineI[],
+  driverRoutines: DriverRoutineI[]
+): GenericRoutineI[] => {
+  const allRoutines = [];
+
+  // Iterate over each passenger routine
+  for (const routine of [...passengerRoutines, ...driverRoutines]) {
+    // We add a card for each day of the week the routine is repeated
+    for (const day of routine.days_of_week) {
+      allRoutines.push({
+        id: routine.id,
+        origin: routine.origin,
+        destination: routine.destination,
+        day: day.toString(),
+        departure_time_start: routine.departure_time_start.substring(0, 5), // 18:00:00 -> 18:00
+        departure_time_end: routine.departure_time_end.substring(0, 5), // 18:00:00 -> 18:00
+        // Ugly hack to determine if the routine is a passenger or driver routine
+        // We take advantage of the fact that days_of_week is an array of numbers
+        // for passenger routines and an array of strings for driver routines
+        // which has to be fixed anyways
+        type:
+          typeof routine.days_of_week[0] === 'number'
+            ? 'passengerRoutine'
+            : 'driverRoutine',
+      });
+    }
+  }
+  return allRoutines;
+};
+
 export default function MyRoutines({ data }) {
   const userId = data.id;
+  const passengerId = 1; // TODO: get this from the user's session
+  const driverId = 1; // TODO: get this from the user's session
 
   const {
-    routines: passengerRoutines = [],
+    passenger,
     isLoading: isLoadingPassenger,
     isError: isErrorPassenger,
-  } = usePassengerRoutines(userId);
+  } = usePassenger(passengerId);
+
   const {
-    routines: driverRoutines = [],
+    driver,
     isLoading: isLoadingDriver,
     isError: isErrorDriver,
-  } = useDriverRoutines(userId);
+  } = useDriver(driverId);
 
   const isLoading = isLoadingPassenger || isLoadingDriver;
   const isError = isErrorPassenger || isErrorDriver;
 
-  // Show driver and passenger routines together on the screen
-  const allRoutines = [...passengerRoutines, ...driverRoutines];
+  const passengerRoutines = passenger?.routines || [];
+  const driverRoutines = driver?.routines || [];
+
+  const allRoutines = mergeRoutines(passengerRoutines, driverRoutines);
 
   return (
     <AnimatedLayout className="flex flex-col bg-white">
@@ -54,26 +93,23 @@ export default function MyRoutines({ data }) {
             {isLoading || isError
               ? [1, 2].map((id) => <RoutineCardSkeleton key={id} />)
               : allRoutines
-                  .filter((routine: any) => routine.day === day)
-                  .map((routine: any) => (
+                  .filter((routine: GenericRoutineI) => routine.day === day)
+                  .map((routine: GenericRoutineI) => (
                     <RoutineCard
-                      key={routine.start_date_0 + routine.start_location}
-                      departureHourStart={
-                        routine.start_time_initial || routine.start_date_0
-                      }
-                      departureHourEnd={
-                        routine.start_time_final || routine.start_date_1
-                      }
+                      key={routine.id + routine.origin.address}
+                      departureHourStart={routine.departure_time_start}
+                      departureHourEnd={routine.departure_time_end}
                       // TODO: bad practice, use meaningful names instead of type 21 and type 2 (remeber DP1)
                       type={routine.type}
-                      origin={routine.start_location}
-                      destination={routine.end_location}
+                      origin={routine.origin.address}
+                      destination={routine.destination.address}
                     />
                   ))}
             {!isLoading &&
               !isError &&
-              allRoutines.filter((routine: any) => routine.day === day)
-                .length === 0 && (
+              allRoutines.filter(
+                (routine: GenericRoutineI) => routine.day === day
+              ).length === 0 && (
                 <div className="w-full rounded-md border border-border-color py-2 text-center font-light text-gray">
                   No tienes horario para este día
                 </div>

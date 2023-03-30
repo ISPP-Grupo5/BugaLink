@@ -7,22 +7,22 @@ const axiosCustom = axios.create({
       : `http://localhost:${process.env.PORT || 8000}/api/v1`,
 });
 
-axiosCustom.interceptors.request.use(
-  (config) => {
-    // Add bearerToken if it exists
-    const token = localStorage.getItem('accessToken');
-    if (token) config.headers.Authorization = `Bearer ${token}`;
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
 axiosCustom.interceptors.request.use((config) => {
   // Add a "/" to the end of the URL if it doesn't already end with one
   // Django won't process the request otherwise
-  if (!config.url.endsWith('/')) config.url += '/';
+  if (!config.url.endsWith('/') && !config.url.includes('?')) config.url += '/';
+
+  // Add the token to the header if it's not a request to the local API
+  const url = config.url;
+  if (
+    !url.includes('http') ||
+    url.includes('bugalink.es') ||
+    url.includes('localhost')
+  ) {
+    const token = localStorage.getItem('accessToken');
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+  }
+
   return config;
 });
 

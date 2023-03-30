@@ -1,15 +1,14 @@
 import fetcher from '@/utils/fetcher';
 import useSWR from 'swr';
 
-export default function useUpcomingTrips() {
-  const USER_ID = 1;
+export default function usePassenger(passengerId) {
   const { data, error, isLoading } = useSWR(
-    `/users/${USER_ID}/trip-requests?status=PENDING,ACCEPTED`,
+    `/passengers/${passengerId}`,
     fetcher
   );
 
   return {
-    upcomingTrips: data,
+    passenger: data,
     isLoading,
     isError: error,
   };

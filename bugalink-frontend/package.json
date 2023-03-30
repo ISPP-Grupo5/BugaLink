@@ -24,6 +24,7 @@
     "classnames": "^2.3.2",
     "embla-carousel-react": "^7.1.0",
     "framer-motion": "^9.0.4",
+    "jwt-decode": "^3.1.2",
     "leaflet": "^1.9.3",
     "leaflet-control-geocoder": "^2.4.0",
     "leaflet-geosearch": "^3.7.0",

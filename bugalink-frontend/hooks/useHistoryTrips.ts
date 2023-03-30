@@ -1,10 +1,10 @@
 import fetcher from '@/utils/fetcher';
 import useSWR from 'swr';
 
-export default function useHistoryTrips(type) {
+export default function useHistoryTrips() {
   const USER_ID = 1;
   const { data, error, isLoading } = useSWR(
-    `/users/${USER_ID}/trips/history?type=${type}`, // Driver or passenger
+    `/users/${USER_ID}/trip-requests?status=FINISHED`,
     fetcher
   );
 

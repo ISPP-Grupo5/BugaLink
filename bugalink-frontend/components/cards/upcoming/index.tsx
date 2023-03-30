@@ -1,5 +1,7 @@
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import TripI from '@/interfaces/trip';
+import TripRequestI from '@/interfaces/tripRequest';
+import { formatDatetime } from '@/utils/formatters';
 import Link from 'next/link';
 import Calendar from 'public/assets/calendar.svg';
 import Destino from 'public/assets/destination.svg';
@@ -8,14 +10,15 @@ import WomanSeated from 'public/assets/woman-seated.svg';
 import Tesla from 'public/icons/Vista-Principal/car.svg';
 
 export default function UpcomingCard({
-  trip,
+  trip: tripRequest,
   className = '',
 }: {
-  trip: TripI;
+  trip: TripRequestI;
   className?: string;
 }) {
   const USER_ID = 1; // TODO: get this from the user's session
-  const isDriver = trip.driver.id === USER_ID;
+  const trip = tripRequest.trip; // Shorthand for not having to write tripRequest.trip all the time
+  const isDriver = trip.driver.user.id === USER_ID;
   const isRequested = true; // This should be taken from the backend, if the user has already requested this trip
 
   return (
@@ -26,7 +29,7 @@ export default function UpcomingCard({
         (isDriver ? 'bg-turquoise ' : 'bg-green ') +
         className
       }
-      href={NEXT_ROUTES.RIDE_DETAILS_ONE(trip.id, isRequested)}
+      href={NEXT_ROUTES.RIDE_DETAILS_ONE(tripRequest.id, isRequested)}
     >
       {isDriver ? (
         <DriverCardHeader trip={trip} />
@@ -36,7 +39,7 @@ export default function UpcomingCard({
       <div className="space-y-0.5 p-3 text-lg">
         <div className="flex flex-row items-center space-x-2 text-white">
           <Origen className="h-min w-4 flex-none" />
-          <p className="truncate">{trip.origin}</p>
+          <p className="truncate">{trip.driver_routine.origin.address}</p>
         </div>
         <div className="flex items-center space-x-2 truncate text-white">
           <Destino
@@ -45,11 +48,11 @@ export default function UpcomingCard({
               (isDriver ? 'text-light-turquoise' : 'text-pale-green')
             }
           />
-          <p className="truncate">{trip.destination}</p>
+          <p className="truncate">{trip.driver_routine.destination.address}</p>
         </div>
         <div className="flex items-center space-x-2 truncate text-white">
           <Calendar className="h-min w-4 flex-none" />
-          <p className="truncate">{trip.date}</p>
+          <p className="truncate">{formatDatetime(trip.departure_datetime)}</p>
         </div>
       </div>
     </Link>
@@ -66,11 +69,11 @@ const DriverCardHeader = ({ trip }: { trip: TripI }) => (
       <span className="flex items-start -space-x-10">
         {trip.passengers.slice(0, 3).map((passenger, index) => (
           <img
-            className="rounded-full border-2 border-white object-scale-down"
+            className="aspect-square w-14 rounded-full border-2 border-white object-scale-down"
             style={{ zIndex: 3 - index }} // for reverse stacking
-            key={passenger.id}
+            key={`passenger-${index}`}
             id={`passenger-${index}`}
-            src={passenger.photo}
+            src={passenger.user.photo ?? '/assets/avatar.png'}
           />
         ))}
       </span>
@@ -78,9 +81,13 @@ const DriverCardHeader = ({ trip }: { trip: TripI }) => (
         <p className="text-xs text-gray">Pasajeros</p>
         {trip.passengers
           .slice(0, trip.passengers.length === 3 ? 3 : 2)
-          .map((passenger) => (
-            <p key={passenger.id} className="text-md truncate leading-5">
-              {passenger.name} {passenger.lastName.split(' ')[0]}
+          .map((passenger, index) => (
+            <p
+              key={`passenger-${index}`}
+              className="text-md truncate leading-5"
+            >
+              {passenger.user.first_name}{' '}
+              {passenger.user.last_name.split(' ')[0]}
             </p>
           ))}
         {trip.passengers.length > 3 && (
@@ -96,7 +103,7 @@ const DriverCardHeader = ({ trip }: { trip: TripI }) => (
 const PassengerCardHeader = ({ trip }: { trip: TripI }) => (
   <div className="relative flex h-28 flex-none flex-col overflow-clip rounded-2xl rounded-br-3xl bg-white shadow-xl">
     <span className="flex justify-end -space-x-7">
-      {trip.requestStatus === 'pending' && (
+      {trip.status === 'PENDING' && (
         <Flag
           text="PENDIENTE"
           color="bg-orange"
@@ -107,7 +114,10 @@ const PassengerCardHeader = ({ trip }: { trip: TripI }) => (
     </span>
     <WomanSeated className="absolute -right-2.5 top-[2.35rem] z-20 w-24" />
     <span className="flex h-full items-center space-x-3 px-3">
-      <img className="object-scale-down" src={trip.driver.photo} />
+      <img
+        className="aspect-square w-14 rounded-full object-scale-down"
+        src={trip.driver.user.photo ?? '/assets/avatar.png'}
+      />
       <div className="flex flex-col -space-y-1">
         <p className="text-lg font-extrabold leading-5 tracking-wide">
           {/* TODO: license plate not present in API response */}
@@ -118,7 +128,8 @@ const PassengerCardHeader = ({ trip }: { trip: TripI }) => (
           Tesla Model S
         </p>
         <p className="truncate">
-          {trip.driver.name} {trip.driver.lastName.split(' ')[0]}
+          {trip.driver.user.first_name}{' '}
+          {trip.driver.user.last_name.split(' ')[0]}
         </p>
       </div>
     </span>
@@ -126,7 +137,7 @@ const PassengerCardHeader = ({ trip }: { trip: TripI }) => (
 );
 
 const Flag = ({
-  text, // PENDiENTE, COMO PASAJERO, COMO CONDUCTOR...
+  text, // PENDIENTE, COMO PASAJERO, COMO CONDUCTOR...
   color, // bg-green, bg-turquoise, bg-orange
   className = '',
 }: {

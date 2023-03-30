@@ -1,5 +1,5 @@
 import useUpcomingTrips from '@/hooks/useUpcomingTrips';
-import TripI from '@/interfaces/trip';
+import TripRequestI from '@/interfaces/tripRequest';
 import cn from 'classnames';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback, useEffect, useState } from 'react';
@@ -74,7 +74,7 @@ export default function UpcomingTripsCarousel(props) {
       <div className="embla__viewport" ref={upcomingTrips && emblaRef}>
         <div className="embla__container">
           {/* If upcomingTrips is undefined, iterate over mockCards */}
-          {(upcomingTrips || mockCards).map((trip: TripI, index) => (
+          {(upcomingTrips || mockCards).map((trip: TripRequestI, index) => (
             <div
               className="embla__slide"
               key={trip.id}

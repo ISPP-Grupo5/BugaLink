@@ -1,62 +1,36 @@
-import UserI from '@/interfaces/user';
-import axios from '@/lib/axios';
-import { getUserToken } from '@/utils/jwt';
+import { decodeJWT } from '@/utils/jwt';
+import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import useAxiosAuth from './useAxiosAuth';
 
 const useAuth = () => {
-  const [accessToken, setAccessToken] = useState('');
-  const [user, setUser] = useState<UserI>();
+  // Using the useSession hook from next-auth/react
+  // bring the information about the authenticated user
+  const [user, setUser] = useState(undefined);
+
+  // status: enum mapping to three possible session states: "loading" | "authenticated" | "unauthenticated"
+  // https://next-auth.js.org/getting-started/client
+  const { data, status } = useSession();
+  const axiosAuth = useAxiosAuth();
 
   useEffect(() => {
-    // Retrieve the access token from local storage
-    const storedAccessToken = localStorage.getItem('accessToken');
-    if (storedAccessToken) {
-      fetchUser();
-      setAccessToken(storedAccessToken);
-    }
-  }, []);
+    if (!data) return;
+    const token = data?.user?.access;
+    const { userId } = decodeJWT(token);
 
-  const fetchUser = async () => {
-    try {
-      const { userId } = getUserToken();
-      const response = await axios.get('/users/' + userId);
-      setUser(response.data);
-    } catch (error) {
-      setUser({
-        id: 0,
-        email: '',
-        first_name: '',
-        last_name: '',
-        photo: null,
-        passenger: 1,
-        driver: null,
-      });
-    }
-  };
+    if (!userId) return;
 
-  const login = async (email, password) => {
-    // Make a POST request to obtain the access token and refresh token
-    try {
-      const { data } = await axios.post('/auth/login/', {
-        email,
-        password,
-      });
-      setAccessToken(data.access);
-      localStorage.setItem('accessToken', data.access);
-      localStorage.setItem('refreshToken', data.refresh);
-      return { status: 200, data: { message: 'Login successful' } };
-    } catch (error) {
-      return { status: error.response.status, data: error.response.data };
-    }
-  };
+    const fetchUser = async () => {
+      const { data: session, status } = await axiosAuth.get(
+        `/users/${userId}/`
+      );
+      setUser(session);
+    };
 
-  const logout = () => {
-    setAccessToken('');
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-  };
+    fetchUser();
+  }, [data]);
 
-  return { accessToken, login, logout, user };
+  return { user, status };
 };
 
 export default useAuth;

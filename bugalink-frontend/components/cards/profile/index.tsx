@@ -8,7 +8,10 @@ import Help from 'public/assets/help.svg';
 import Logout from 'public/assets/log-out.svg';
 import Preferences from 'public/assets/preferences.svg';
 import Wallet from 'public/assets/wallet.svg';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { signOut } from 'next-auth/react';
+import useAuth from '@/hooks/useAuth';
+import { useRouter } from 'next/router';
 
 const preferences = {
   smoke: {
@@ -59,10 +62,15 @@ export default function ProfileItems() {
   const [allowPets, setAllowPets] = useState(false);
   const [preferMusic, setPreferMusic] = useState(false);
   const [preferTalk, setPreferTalk] = useState(false);
-  const USER_ID = 1;
+
+  const { user, status } = useAuth();
+  const router = useRouter();
+  useEffect(() => {
+    if (status === 'unauthenticated') router.push(NEXT_ROUTES.LOGIN);
+  }, [status]);
 
   return (
-    <div className="flex h-full w-full flex-col items-start justify-between gap-y-4 rounded-t-3xl bg-white px-6 py-8 text-start text-xl">
+    <div className="justify-between flex h-full w-full flex-col items-start gap-y-4 rounded-t-3xl bg-white px-6 py-8 text-start text-xl">
       <Entry Icon={<Address />}>
         <span>Direcciones</span>
       </Entry>
@@ -73,13 +81,13 @@ export default function ProfileItems() {
         <span>Preferencias</span>
       </Entry>
       <Entry Icon={<Carkey className="h-10 w-10" />}>
-        <Link href={NEXT_ROUTES.CHECK_DRIVER(USER_ID)}>Hazte Conductor</Link>
+        <Link href={NEXT_ROUTES.CHECK_DRIVER(user?.id)}>Hazte Conductor</Link>
       </Entry>
       <hr className="w-full text-light-gray" />
       <Entry Icon={<Help />}>
         <a href="mailto:soporte@bugalink.es">Ayuda</a>
       </Entry>
-      <Entry Icon={<Logout />}>
+      <Entry className="cursor-pointer" onClick={signOut} Icon={<Logout />}>
         <span>Cerrar sesión</span>
       </Entry>
 
@@ -132,12 +140,16 @@ export default function ProfileItems() {
 function Entry({
   children,
   Icon,
+  className = '',
   onClick = () => {
     return;
   },
 }) {
   return (
-    <div className="flex w-full items-center justify-between" onClick={onClick}>
+    <div
+      className={'justify-between flex w-full items-center ' + className}
+      onClick={onClick}
+    >
       <span className="flex items-center gap-x-2">
         <span className="text-white">{Icon}</span>
         {children}

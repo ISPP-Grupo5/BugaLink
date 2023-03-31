@@ -1,7 +1,7 @@
 const NEXT_ROUTES = {
   HOME: '/',
-  LOGIN: '/login',
-  REGISTER: '/register',
+  LOGIN: '/session/login',
+  REGISTER: '/session/register',
   PROFILE: (userId) => `/users/${userId}`,
   EDIT_PROFILE: (userId) => `/users/${userId}/edit`,
   RECHARGE_CREDIT: (userId) => `/users/${userId}/wallet/recharge`,

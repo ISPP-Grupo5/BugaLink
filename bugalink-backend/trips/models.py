@@ -8,7 +8,6 @@ class Trip(models.Model):
     driver_routine = models.ForeignKey(
         DriverRoutine, on_delete=models.CASCADE, related_name="trips"
     )
-    passengers = models.ManyToManyField(Passenger, related_name="trips")
     departure_datetime = models.DateTimeField()
     status = models.CharField(
         choices=(
@@ -18,6 +17,7 @@ class Trip(models.Model):
         default="PENDING",
         max_length=10,
     )
+
     def __str__(self):
         return f"{self.driver_routine} on {self.departure_datetime}"
 
@@ -40,6 +40,8 @@ class TripRequest(models.Model):
     )
     note = models.CharField(max_length=2000, blank=True)
     reject_note = models.CharField(max_length=2048, blank=True)
+    passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE, related_name='passenger')
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
         return f"{self.passenger} requests to join {self.trip} on {self.trip.departure_datetime}"

@@ -18,17 +18,22 @@ class User(AbstractBaseUser):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=150)
-    # birth_date = models.DateField(null=True, blank=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     verified = models.BooleanField(default=False)
     photo = models.ImageField(upload_to="users/profile_pictures/", blank=True)
     is_passenger = models.BooleanField(default=True)
     is_driver = models.BooleanField(default=False)
-
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=True)
     USERNAME_FIELD = "email"
-    # REQUIRED_FIELDS = []
 
     objects = UserManager()
+
+    def has_perm(self, perm, obj=None):
+        return self.is_superuser
+
+    def has_module_perms(self, app_label):
+        return self.is_superuser
 
     def __str__(self):
         return self.email

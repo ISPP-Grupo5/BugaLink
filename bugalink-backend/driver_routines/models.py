@@ -32,6 +32,7 @@ class DriverRoutine(models.Model):
             verbose_name=_("Day of week"),
         )
     )
+    driver_note = models.CharField(max_length=2048, null=True)
 
     def __str__(self):
         return f"{self.passenger_routine} - {self.days} - {self.departure_time_start} to {self.departure_time_end}"

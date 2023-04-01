@@ -2,9 +2,10 @@ from allauth.account.utils import setup_user_email
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from passengers.models import Passenger
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+from passengers.models import Passenger
 
 
 # https://dj-rest-auth.readthedocs.io/en/latest/configuration.html#register-serializer

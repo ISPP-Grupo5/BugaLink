@@ -3,6 +3,7 @@ from rest_framework import serializers
 from locations.models import Location
 from locations.serializers import LocationSerializer
 from passenger_routines.models import PassengerRoutine
+from passengers.models import Passenger
 
 
 class PassengerRoutineSerializer(serializers.Serializer):

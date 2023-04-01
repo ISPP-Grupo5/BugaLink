@@ -1,5 +1,3 @@
-from authentication.serializers import CustomRegisterSerializer
-from authentication.views import EnrichedObtainTokenPairView
 from dj_rest_auth.registration.views import RegisterView
 from django.conf.urls import include
 from django.urls import path
@@ -8,6 +6,9 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
+
+from authentication.serializers import CustomRegisterSerializer
+from authentication.views import EnrichedObtainTokenPairView
 
 urlpatterns = [
     path("login/", EnrichedObtainTokenPairView.as_view(), name="token_obtain_pair"),

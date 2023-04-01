@@ -1,13 +1,19 @@
-import fetcher from '@/utils/fetcher';
+import { fetcherAuth } from '@/utils/fetcher';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
 import useSWR from 'swr';
 
 export default function useHistoryTrips() {
-  const USER_ID = 1;
-  const { data, error, isLoading } = useSWR(
-    `/users/${USER_ID}/trip-requests?status=FINISHED`,
-    fetcher
-  );
+  const { data: userData } = useSession();
+  const user = userData?.user as User;
 
+  const { data, error, isLoading } = useSWR(
+    user && [
+      `/users/${user.user_id}/trip-requests?status=FINISHED`,
+      user?.access,
+    ],
+    fetcherAuth
+  );
   return {
     historyTrips: data,
     isLoading,

@@ -1,17 +1,23 @@
 import { BackButton } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import ExternalLogin from '@/components/externalLogin';
-import Switch from '@/components/forms/Switch';
 import AnimatedLayout from '@/components/layouts/animated';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TextField from '@/components/forms/TextField';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import CityDriver from '/public/assets/CityDriver.svg';
+import NEXT_ROUTES from '@/constants/nextRoutes';
+import router from 'next/router';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const { status } = useSession();
+  useEffect(() => {
+    if (status === 'authenticated') router.push(NEXT_ROUTES.HOME);
+  }, [status]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -65,7 +71,7 @@ export default function Login() {
                 <p className="font-light text-gray opacity-70">
                   ¿No tienes una cuenta?
                 </p>
-                <Link href="/session/register" className="translate-x-2">
+                <Link href={NEXT_ROUTES.SIGN_UP} className="translate-x-2">
                   <p className="text-dark-turquoise"> Regístrate </p>
                 </Link>
               </span>

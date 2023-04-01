@@ -9,9 +9,9 @@ import Logout from 'public/assets/log-out.svg';
 import Preferences from 'public/assets/preferences.svg';
 import Wallet from 'public/assets/wallet.svg';
 import { useEffect, useState } from 'react';
-import { signOut } from 'next-auth/react';
-import useAuth from '@/hooks/useAuth';
+import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { User } from 'next-auth';
 
 const preferences = {
   smoke: {
@@ -63,11 +63,19 @@ export default function ProfileItems() {
   const [preferMusic, setPreferMusic] = useState(false);
   const [preferTalk, setPreferTalk] = useState(false);
 
-  const { user, status } = useAuth();
+  const { data, status } = useSession();
+  const user = data?.user as User;
+
   const router = useRouter();
   useEffect(() => {
     if (status === 'unauthenticated') router.push(NEXT_ROUTES.LOGIN);
   }, [status]);
+
+  const handleSignOut = async () => {
+    await signOut({
+      callbackUrl: NEXT_ROUTES.LOGIN,
+    });
+  };
 
   return (
     <div className="justify-between flex h-full w-full flex-col items-start gap-y-4 rounded-t-3xl bg-white px-6 py-8 text-start text-xl">
@@ -81,13 +89,19 @@ export default function ProfileItems() {
         <span>Preferencias</span>
       </Entry>
       <Entry Icon={<Carkey className="h-10 w-10" />}>
-        <Link href={NEXT_ROUTES.CHECK_DRIVER(user?.id)}>Hazte Conductor</Link>
+        <Link href={NEXT_ROUTES.CHECK_DRIVER(user?.user_id)}>
+          Hazte Conductor
+        </Link>
       </Entry>
       <hr className="w-full text-light-gray" />
       <Entry Icon={<Help />}>
         <a href="mailto:soporte@bugalink.es">Ayuda</a>
       </Entry>
-      <Entry className="cursor-pointer" onClick={signOut} Icon={<Logout />}>
+      <Entry
+        className="cursor-pointer"
+        onClick={handleSignOut}
+        Icon={<Logout />}
+      >
         <span>Cerrar sesión</span>
       </Entry>
 

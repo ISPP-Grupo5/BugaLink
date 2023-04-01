@@ -2,6 +2,7 @@ import { BackButtonText } from '@/components/buttons/Back';
 import RoutineCard from '@/components/cards/routine';
 import AnimatedLayout from '@/components/layouts/animated';
 import RoutineCardSkeleton from '@/components/skeletons/Routine';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 import useDriver from '@/hooks/useDriver';
 import usePassenger from '@/hooks/usePassenger';
 import DriverRoutineI from '@/interfaces/driverRoutine';
@@ -9,7 +10,8 @@ import GenericRoutineI from '@/interfaces/genericRoutine';
 import PassengerRoutineI from '@/interfaces/passengerRoutine';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { GetServerSideProps } from 'next';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -21,10 +23,6 @@ const WEEK_DAYS = {
   '4': 'Viernes',
   '5': 'Sábado',
   '6': 'Domingo',
-};
-
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  return { props: { data: { id: query.id } } };
 };
 
 const mergeRoutines = (
@@ -58,10 +56,11 @@ const mergeRoutines = (
   return allRoutines;
 };
 
-export default function MyRoutines({ data }) {
-  const userId = data.id;
-  const passengerId = 1; // TODO: get this from the user's session
-  const driverId = 1; // TODO: get this from the user's session
+export default function MyRoutines() {
+  const { data, status } = useSession();
+  const user = data?.user as User;
+  const passengerId = user?.passenger_id; // TODO: get this from the user's session
+  const driverId = user?.driver_id; // TODO: get this from the user's session
 
   const {
     passenger,
@@ -152,13 +151,13 @@ const AddRoutineMenu = () => {
       >
         <Link
           data-cy="new-passenger-routine"
-          href="/users/273932t8437/routines/passenger/new"
+          href={NEXT_ROUTES.NEW_ROUTINE_PASSENGER}
         >
           <MenuItem onClick={handleClose}>Como pasajero</MenuItem>
         </Link>
         <Link
           data-cy="new-driver-routine"
-          href="/users/273932t8437/routines/driver/new"
+          href={NEXT_ROUTES.NEW_ROUTINE_DRIVER}
         >
           <MenuItem onClick={handleClose}>Como conductor</MenuItem>
         </Link>

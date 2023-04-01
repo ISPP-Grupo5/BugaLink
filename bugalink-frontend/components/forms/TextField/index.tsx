@@ -35,7 +35,7 @@ export default function TextField({
 }: props) {
   return (
     <div
-      className={`relative flex ${parentClassName}`}
+      className={`relative flex ${parentClassName || ''}`}
       data-te-input-wrapper-init
     >
       {/* TODO: extract showPassword logic to a different component that encapsulates TextField and adds the icon and functionality on top */}

@@ -7,21 +7,17 @@ import RecommendationsDrawer from '@/components/drawers/Recommendations';
 import AnimatedLayout from '@/components/layouts/animated';
 import AvatarSkeleton from '@/components/skeletons/Avatar';
 import NEXT_ROUTES from '@/constants/nextRoutes';
-import useAuth from '@/hooks/useAuth';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import Destino from 'public/icons/Vista-Principal/destino.svg';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Glass from '/public/icons/Vista-Principal/glass.svg';
 
 export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
-
-  const { user, status } = useAuth();
-  const router = useRouter();
-  useEffect(() => {
-    if (status === 'unauthenticated') router.push(NEXT_ROUTES.LOGIN);
-  }, [status]);
+  const { data } = useSession();
+  const user = data?.user as User;
 
   return (
     <AnimatedLayout className="max-h-full overflow-y-scroll">
@@ -43,7 +39,7 @@ export default function Home() {
           <Link
             data-cy="profile-link"
             className="aspect-square h-14"
-            href={NEXT_ROUTES.PROFILE(user?.id)}
+            href={NEXT_ROUTES.PROFILE(user?.user_id)}
           >
             {user?.photo ? (
               <img className="rounded-full" src={user?.photo} />
@@ -64,17 +60,14 @@ export default function Home() {
         />
 
         <span className="justify-between flex w-full space-x-5 px-4 md:px-5">
-          <SquareRoutinesButton userId={user?.id} />
+          <SquareRoutinesButton userId={user?.user_id} />
           <SquareChatsButton />
           <SquareRequestsButton />
         </span>
 
         <span className="justify-between mt-4 mb-2 flex px-4 md:px-5">
           <p className="text-left text-xl font-semibold">Mis próximos viajes</p>
-          <Link
-            data-cy="history-link"
-            href={NEXT_ROUTES.RIDE_HISTORY(user?.id)}
-          >
+          <Link data-cy="history-link" href={NEXT_ROUTES.RIDE_HISTORY}>
             <p className="text-right text-xl text-turquoise">Historial</p>
           </Link>
         </span>

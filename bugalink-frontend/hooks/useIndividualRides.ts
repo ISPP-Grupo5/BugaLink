@@ -1,12 +1,15 @@
-import fetcher from '@/utils/fetcher';
+import { fetcherAuth } from '@/utils/fetcher';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
 import useSWR from 'swr';
 
 export default function useIndividualRides(individualRideId) {
-  // TODO: once we have local sessions, we can extract the user id from the session
+  const { data: userData } = useSession();
+  const user = userData?.user as User;
 
   const { data, error, isLoading } = useSWR(
-    `/individualRides/${individualRideId}`,
-    fetcher
+    user && [`/individualRides/${individualRideId}`, user?.access],
+    fetcherAuth
   );
 
   return {

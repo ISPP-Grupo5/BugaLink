@@ -1,11 +1,18 @@
-import fetcher from '@/utils/fetcher';
+import { fetcherAuth } from '@/utils/fetcher';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
 import useSWR from 'swr';
 
 export default function useUpcomingTrips() {
-  const USER_ID = 1;
+  const { data: userData } = useSession();
+  const user = userData?.user as User;
+
   const { data, error, isLoading } = useSWR(
-    `/users/${USER_ID}/trip-requests?status=PENDING,ACCEPTED`,
-    fetcher
+    user && [
+      `/users/${user?.user_id}/trip-requests?status=PENDING,ACCEPTED`,
+      user?.access,
+    ],
+    fetcherAuth
   );
 
   return {

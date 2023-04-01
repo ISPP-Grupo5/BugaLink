@@ -1,16 +1,14 @@
-import AnimatedLayout from '../../../components/layouts/animated';
-import { BackButtonText } from '../../../components/buttons/Back';
-import Avatar from 'public/assets/avatar.svg';
 import ProfileItems from '@/components/cards/profile';
-import Check from 'public/assets/check.svg';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import useUser from '@/hooks/useUser';
-import { GetServerSideProps } from 'next';
-import useUserTotalRides from '@/hooks/useUserTotalRides';
-import useUserTotalRatings from '@/hooks/useUserTotalRatings';
-import Link from 'next/link';
 import NEXT_ROUTES from '@/constants/nextRoutes';
+import useUser from '@/hooks/useUser';
+import useUserTotalRatings from '@/hooks/useUserTotalRatings';
+import useUserTotalRides from '@/hooks/useUserTotalRides';
+import { GetServerSideProps } from 'next';
+import Link from 'next/link';
+import Avatar from 'public/assets/avatar.svg';
+import Check from 'public/assets/check.svg';
+import { BackButtonText } from '@/components/buttons/Back';
+import AnimatedLayout from '@/components/layouts/animated';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
@@ -30,8 +28,9 @@ export default function Profile({ data }) {
 
   const { userTotalRides } = useUserTotalRides(userId);
 
-  const dateString = user && user.date_joined ? user.date_joined : 'Loading...';
-  const year = dateString.substr(0, 4);
+  // const dateString = user && user.date_joined ? user.date_joined : '';
+  const dateString = '2021-09-01T00:00:00.000Z';
+  const year = dateString.substring(0, 4);
 
   const { userTotalRatings } = useUserTotalRatings(userId);
 

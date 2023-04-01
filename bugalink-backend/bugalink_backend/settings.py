@@ -149,8 +149,8 @@ SIMPLE_JWT = {
     # TODO: make access token expire after 60 minutes once we have the frontend
     # asking for a new token when the old one expires. We are doing this because
     # we need the auth mechanism to work for now.
-    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=14),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=14),
 }
 
 # drf_spectacular config

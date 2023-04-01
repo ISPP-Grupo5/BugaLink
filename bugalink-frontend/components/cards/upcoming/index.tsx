@@ -1,7 +1,10 @@
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import TripI from '@/interfaces/trip';
 import TripRequestI from '@/interfaces/tripRequest';
+import UserI from '@/interfaces/user';
 import { formatDatetime } from '@/utils/formatters';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Calendar from 'public/assets/calendar.svg';
 import Destino from 'public/assets/destination.svg';
@@ -16,9 +19,9 @@ export default function UpcomingCard({
   trip: TripRequestI;
   className?: string;
 }) {
-  const USER_ID = 1; // TODO: get this from the user's session
+  const user = useSession().data?.user as User;
   const trip = tripRequest.trip; // Shorthand for not having to write tripRequest.trip all the time
-  const isDriver = trip.driver.user.id === USER_ID;
+  const isDriver = trip.driver.user.id === user?.user_id;
   const isRequested = true; // This should be taken from the backend, if the user has already requested this trip
 
   return (

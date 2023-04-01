@@ -10,7 +10,7 @@ export default function SquareRoutinesButton({ userId }: Props) {
   return (
     <SquareButton
       text="Mi horario"
-      link={NEXT_ROUTES.MY_ROUTINES(userId)}
+      link={NEXT_ROUTES.MY_ROUTINES}
       Icon={<Calendar />}
     />
   );

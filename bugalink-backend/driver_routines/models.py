@@ -17,7 +17,6 @@ class DriverRoutine(models.Model):
     available_seats = models.IntegerField(default=1)
     departure_time_start = models.TimeField(_("Departure time window begin"))
     departure_time_end = models.TimeField(_("Departure time window end"))
-    # TODO: CASCADE or SET_NULL?
     origin = models.ForeignKey(
         Location, on_delete=models.SET_NULL, related_name="origin", null=True
     )

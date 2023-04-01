@@ -1,19 +1,21 @@
-import fetcher from '@/utils/fetcher';
-import useSWR from 'swr';
-
 export default function useNumPendingChats() {
-  // TODO: once we have local sessions, we can extract the user id from the session
-  // We will use the hardcoded USER_ID=1 for now
-  const USER_ID = 1;
+  // const userId = useAuth().userId;
 
-  const { data, error, isLoading } = useSWR(
-    `/users/${USER_ID}/chats/pending/count`,
-    fetcher
-  );
+  // TODO: implement when we have the backend endpoint
+  // const { data, error, isLoading } = useSWR(
+  //   `/users/${userId}/chats/pending/count`,
+  //   fetcher
+  // );
+
+  // return {
+  //   numPendingChats: data,
+  //   isLoading,
+  //   isError: error,
+  // };
 
   return {
-    numPendingChats: data,
-    isLoading,
-    isError: error,
+    numPendingChats: 0,
+    isLoading: false,
+    isError: false,
   };
 }

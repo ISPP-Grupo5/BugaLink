@@ -3,6 +3,7 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from passengers.models import Passenger
 
@@ -41,3 +42,22 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.passenger = passenger
         setup_user_email(request, user, [])
         return user
+
+
+# https://medium.com/django-rest/django-rest-framework-jwt-authentication-94bee36f2af8
+class EnrichedTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super(EnrichedTokenObtainPairSerializer, cls).get_token(user)
+
+        # Add custom claims
+        # NOTE: we add more data to the JWT so that we can use it in the frontend
+        # Without retrieving driver, passenger and user IDs all the time
+        token["user_id"] = user.id
+        token["passenger_id"] = user.passenger.id
+        token["driver_id"] = user.driver.id if user.is_driver else None
+        token["first_name"] = user.first_name
+        token["last_name"] = user.last_name
+        token["photo"] = user.photo.url if user.photo else None
+        token["verified"] = user.verified
+        return token

@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("driver_routines", "0002_driverroutine_driver"),
     ]

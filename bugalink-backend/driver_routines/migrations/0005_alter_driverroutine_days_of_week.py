@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("driver_routines", "0004_alter_driverroutine_days_of_week"),
     ]

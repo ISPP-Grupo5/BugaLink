@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("passenger_routines", "0003_alter_passengerroutine_days_of_week"),
     ]

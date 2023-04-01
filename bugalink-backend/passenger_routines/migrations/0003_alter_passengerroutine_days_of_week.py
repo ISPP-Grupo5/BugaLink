@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("passenger_routines", "0002_passengerroutine_passenger"),
     ]

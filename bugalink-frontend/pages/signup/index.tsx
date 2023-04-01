@@ -7,7 +7,10 @@ import ExternalLogin from '@/components/externalLogin';
 import TextField from '@/components/forms/TextField';
 import RegisterImg from '/public/assets/register.svg';
 import axios from '@/lib/axios';
-import useAuth from '@/hooks/useAuth';
+
+import { signIn, useSession } from 'next-auth/react';
+import NEXT_ROUTES from '@/constants/nextRoutes';
+import router from 'next/router';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -15,29 +18,37 @@ export default function Register() {
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [registerStatus, setRegisterStatus] = useState();
+  const [registerStatus, setRegisterStatus] = useState<number>();
 
-  const { login } = useAuth();
+  const { status } = useSession();
+  useEffect(() => {
+    if (status === 'authenticated') router.push(NEXT_ROUTES.HOME);
+  }, [status]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const { data } = await axios.post('/auth/registration', {
+    const response = await axios.post('/auth/registration', {
       email,
       password1: password,
       password2: password,
       first_name: name,
       last_name: surname,
     });
-    setRegisterStatus(data.status);
+    setRegisterStatus(response.status);
   };
 
   useEffect(() => {
     if (!registerStatus) return;
     const handleRegisterRedirect = async () => {
-      await login(email, password);
+      await signIn('credentials', {
+        email,
+        password,
+        redirect: true,
+        callbackUrl: '/',
+      });
     };
 
-    if (registerStatus === 201) handleRegisterRedirect();
+    if (registerStatus === 204) handleRegisterRedirect();
     else alert('Error al registrarse');
   }, [registerStatus]);
 
@@ -102,7 +113,7 @@ export default function Register() {
 
               <span className="flex flex-row justify-center -justify-between py-8">
                 <p className="font-light text-gray">¿Ya tienes una cuenta?</p>
-                <Link href="/session/login" className="translate-x-2">
+                <Link href={NEXT_ROUTES.LOGIN} className="translate-x-2">
                   <p className="text-dark-turquoise"> Iniciar sesión </p>
                 </Link>
               </span>

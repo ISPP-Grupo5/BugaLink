@@ -38,11 +38,16 @@ docker-compose exec web python manage.py migrate
 
 Notése que el último comando solo debe ejecutarse una vez para crear las tablas de las bases de datos. Si se borraran los contenedores se debería ejecutar de nuevo.
 
-Para borrar los contenedores podemos ejecutar el siguiente comando:
+#### Reseto de la base de datos
+
+Para resetear la base de datos podemos ejecutar los siguientes comandos:
 
 ```
 docker-compose down
+docker volume rm bugalink-backend_postgres_data
 ```
+
+Y ejecutando de nuevo el backend tendríamos una base de datos completeamente vacía.
 
 ### Ejecución del frontend
 Se debe tener acceso al comando npm. Para ejecutar el frontend debemos ejecutar el script "frontend-startup.cmd".

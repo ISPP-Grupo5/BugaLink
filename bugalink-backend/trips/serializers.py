@@ -1,6 +1,5 @@
-from rest_framework import serializers
-
 from driver_routines.serializers import DriverRoutineSerializer
+from rest_framework import serializers
 from trips.models import Trip, TripRequest
 from users.serializers import DriverAsUserSerializer, PassengerAsUserSerializer
 
@@ -24,13 +23,13 @@ class TripRequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TripRequest
-        fields = ("id", "trip", "is_recurrent", "status", "note")
+        fields = ("id", "trip", "status", "note")
 
 
 class TripRequestCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = TripRequest
-        fields = ("id", "is_recurrent", "note")
+        fields = ("id", "note")
 
     def create(self, validated_data):
         # Get the trip from the URL path

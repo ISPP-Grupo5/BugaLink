@@ -1,15 +1,15 @@
 # Serializer of Passenger model that contains only its routine object
 
-from rest_framework import serializers
-
 from passenger_routines.models import Passenger
 from passenger_routines.serializers import PassengerRoutineSerializer
+from rest_framework import serializers
 from trips.models import Trip
 from trips.serializers import TripSerializer
 
 
 class PassengerSerializer(serializers.ModelSerializer):
     routines = serializers.SerializerMethodField()
+    trips = serializers.SerializerMethodField()
 
     class Meta:
         model = Passenger

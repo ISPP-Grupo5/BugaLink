@@ -8,10 +8,7 @@ export default function useHistoryTrips() {
   const user = userData?.user as User;
 
   const { data, error, isLoading } = useSWR(
-    user && [
-      `/users/${user.user_id}/trip-requests?status=FINISHED`,
-      user?.access,
-    ],
+    user && `/users/${user.user_id}/trip-requests?status=FINISHED`,
     fetcherAuth
   );
   return {

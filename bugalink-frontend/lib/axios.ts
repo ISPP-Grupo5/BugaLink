@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { User } from 'next-auth';
+import { getSession } from 'next-auth/react';
 
 const baseURL =
   process.env.NODE_ENV === 'production' // TODO: untested. THIS IS NOT THE CORRECT API URL YET!!
@@ -20,10 +22,13 @@ axiosCustom.interceptors.request.use(async (config) => {
 });
 
 axiosAuth.interceptors.request.use(async (config) => {
+  const session = await getSession();
+  const user = session?.user as User;
+
   // Add a "/" to the end of the URL if it doesn't already end with one
   // Django won't process the request otherwise
   if (!config.url.endsWith('/') && !config.url.includes('?')) config.url += '/';
-  // TODO: handle JWT token here with async getSession()
+  if (session) config.headers.Authorization = `Bearer ${user.access}`;
   return config;
 });
 

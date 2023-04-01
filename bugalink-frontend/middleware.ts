@@ -3,14 +3,14 @@ import { NextResponse } from 'next/server';
 import NEXT_ROUTES from './constants/nextRoutes';
 
 export async function middleware(req) {
-  // TODO: redirect to login page if not authenticated
-  // in all pages except /login and /signup
-  // This is tricky because internally next.js uses some
-  // patnhames like /workbox-*.js.map and /_next/data/...
-  // so we have to consider al those cases, probably
-  // in some sort of regex. Currently we are only checking
-  // for redirecting in the main "/" page
-  if ([NEXT_ROUTES.HOME].includes(req.nextUrl.pathname)) {
+  if (
+    // Redirect to login page when visiting without a session
+    // any page except /api, /signup, /login, and many more that
+    // are used internally by Next.js
+    !/(api|signup|login|sw.js|workbox|icons|_next\/static|_next\/image|manifest.json|\/favicon.ico).*/.test(
+      req.nextUrl.pathname
+    )
+  ) {
     const token = await getToken({ req });
     if (!token) {
       const url = req.nextUrl.clone();

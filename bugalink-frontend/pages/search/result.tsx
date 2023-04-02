@@ -4,10 +4,13 @@ import TagsButton from '@/components/buttons/Tags';
 import TripCard from '@/components/cards/recommendation';
 import TimePicker from '@/components/forms/TimePicker';
 import AnimatedLayout from '@/components/layouts/animated';
+import PreferenceBox from '@/components/preferences/box';
 import TripCardSkeleton from '@/components/skeletons/TripCard';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import { Drawer } from '@mui/material';
 import Slider from '@mui/material/Slider';
+import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Link from 'next/link';
 import FilterIcon from 'public/assets/filter-icon.svg';
 import React, { useEffect, useState } from 'react';
@@ -15,12 +18,13 @@ import Arrows from '/public/assets/arrows.svg';
 import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
 import ThreeDots from '/public/assets/three-dots.svg';
+import MagnifyingGlass from '/public/icons/Vista-Principal/glass.svg';
 
 const filters = [
   {
     name: 'Precio',
     selected: false,
-    selectedValue: '2,00€ - 5,00€',
+    selectedValue: '2,00€ — 5,00€',
   },
   {
     name: 'Valoración',
@@ -31,6 +35,16 @@ const filters = [
     name: 'Hora',
     selected: false,
     selectedValue: '9:00 AM',
+  },
+  {
+    name: 'Preferencias',
+    selected: false,
+    selectedValue: '',
+  },
+  {
+    name: 'Día',
+    selected: true,
+    selectedValue: '5/4 — 8/4',
   },
 ];
 
@@ -82,6 +96,49 @@ const searchResultsMock = [
   },
 ];
 
+const preferences = {
+  smoke: {
+    checked: {
+      icon: '🚬',
+      text: 'Puedes fumar en mi coche',
+    },
+    unchecked: {
+      icon: '🚭',
+      text: 'Mi coche es libre de humos',
+    },
+  },
+  music: {
+    checked: {
+      icon: '🔉',
+      text: 'Conduzco con música',
+    },
+    unchecked: {
+      icon: '🔇',
+      text: 'Prefiero ir sin música',
+    },
+  },
+  pets: {
+    checked: {
+      icon: '🐾',
+      text: 'Puedes traer a tu mascota',
+    },
+    unchecked: {
+      icon: '😿',
+      text: 'No acepto mascotas',
+    },
+  },
+  talk: {
+    checked: {
+      icon: '🗣️',
+      text: 'Prefiero hablar durante el camino',
+    },
+    unchecked: {
+      icon: '🤐',
+      text: 'Prefiero no hablar durante el camino',
+    },
+  },
+};
+
 function valuetext(value: number) {
   return `${value}°C`;
 }
@@ -91,9 +148,15 @@ export default function SearchResults() {
   const [drawerHour, setDrawerHour] = useState(false);
   const [drawerRating, setDrawerRating] = useState(false);
   const [drawerPrice, setDrawerPrice] = useState(false);
+  const [drawerPreferences, setDrawerPreferences] = useState(false);
+  const [drawerDay, setDrawerDay] = useState(false);
   const [pickTimeFrom, setPickTimeFrom] = useState('16:00');
   const [pickTimeTo, setPickTimeTo] = useState('16:15');
   const [values, setValues] = React.useState<number[]>([0, 2]);
+  const [allowSmoke, setAllowSmoke] = useState(false);
+  const [allowPets, setAllowPets] = useState(false);
+  const [preferMusic, setPreferMusic] = useState(false);
+  const [preferTalk, setPreferTalk] = useState(false);
 
   // TODO: remove this block once the API is integrated, it's to simulate the loading of the results
   ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -140,7 +203,7 @@ export default function SearchResults() {
               className="ml-2 mr-2 w-full rounded-full bg-base-origin p-4 text-sm"
             ></input>
           </div>
-          <div></div>
+          <Arrows className="text-gray" />
           <div></div>
           <div className="col-span-6 w-full pr-4">
             <input
@@ -150,7 +213,7 @@ export default function SearchResults() {
               className="ml-2 mr-2 w-full rounded-full bg-base-origin p-4 text-sm"
             ></input>
           </div>
-          <Arrows />
+          <MagnifyingGlass className="text-gray" />
         </div>
         <hr className="mt-4 w-full text-border-color" />
       </div>
@@ -160,17 +223,42 @@ export default function SearchResults() {
           {selectedFilters.map(
             (filter) =>
               (filter.name === 'Precio' && (
-                <div onClick={() => setDrawerPrice(true)}>
+                <div
+                  onClick={() => setDrawerPrice(true)}
+                  className="flex-grow-1 flex-shrink-0"
+                >
                   <TagsButton text={filter.selectedValue} selected />
                 </div>
               )) ||
               (filter.name === 'Hora' && (
-                <div onClick={() => setDrawerHour(true)}>
+                <div
+                  onClick={() => setDrawerHour(true)}
+                  className="flex-grow-1 flex-shrink-0"
+                >
                   <TagsButton text={filter.selectedValue} selected />
                 </div>
               )) ||
               (filter.name === 'Valoración' && (
-                <div onClick={() => setDrawerRating(true)}>
+                <div
+                  onClick={() => setDrawerRating(true)}
+                  className="flex-grow-1 flex-shrink-0"
+                >
+                  <TagsButton text={filter.selectedValue} selected />
+                </div>
+              )) ||
+              (filter.name === 'Preferencias' && (
+                <div
+                  onClick={() => setDrawerPreferences(true)}
+                  className="flex-grow-1 flex-shrink-0"
+                >
+                  <TagsButton text="Preferencias" selected />
+                </div>
+              )) ||
+              (filter.name === 'Día' && (
+                <div
+                  onClick={() => setDrawerDay(true)}
+                  className="flex-grow-1 flex-shrink-0"
+                >
                   <TagsButton text={filter.selectedValue} selected />
                 </div>
               ))
@@ -179,17 +267,42 @@ export default function SearchResults() {
           {unselectedFilters.map(
             (filter) =>
               (filter.name === 'Precio' && (
-                <div onClick={() => setDrawerPrice(true)}>
+                <div
+                  onClick={() => setDrawerPrice(true)}
+                  className="flex-grow-1 flex-shrink-0"
+                >
                   <TagsButton text={filter.name} />
                 </div>
               )) ||
               (filter.name === 'Hora' && (
-                <div onClick={() => setDrawerHour(true)}>
+                <div
+                  onClick={() => setDrawerHour(true)}
+                  className="flex-grow-1 flex-shrink-0"
+                >
                   <TagsButton text={filter.name} />
                 </div>
               )) ||
               (filter.name === 'Valoración' && (
-                <div onClick={() => setDrawerRating(true)}>
+                <div
+                  onClick={() => setDrawerRating(true)}
+                  className="flex-grow-1 flex-shrink-0"
+                >
+                  <TagsButton text={filter.name} />
+                </div>
+              )) ||
+              (filter.name === 'Preferencias' && (
+                <div
+                  onClick={() => setDrawerPreferences(true)}
+                  className="flex-grow-1 flex-shrink-0"
+                >
+                  <TagsButton text={filter.name} />
+                </div>
+              )) ||
+              (filter.name === 'Día' && (
+                <div
+                  onClick={() => setDrawerDay(true)}
+                  className="flex-grow-1 flex-shrink-0"
+                >
                   <TagsButton text={filter.name} />
                 </div>
               ))
@@ -232,7 +345,6 @@ export default function SearchResults() {
               </Link>
             ))}
       </div>
-
       <Drawer
         anchor="bottom"
         open={drawerHour}
@@ -253,7 +365,7 @@ export default function SearchResults() {
             <p className="text-xs">Define el rango de hora de salida</p>
             <span className="mt-4 flex items-center justify-center space-x-2 text-xl font-bold">
               <TimePicker time={pickTimeFrom} setTime={setPickTimeFrom} />
-              <p> - </p>
+              <p> — </p>
               <TimePicker time={pickTimeTo} setTime={setPickTimeTo} />
             </span>
           </div>
@@ -262,7 +374,6 @@ export default function SearchResults() {
           </div>
         </div>
       </Drawer>
-
       <Drawer
         id="drawerPrice"
         anchor="bottom"
@@ -283,7 +394,7 @@ export default function SearchResults() {
             <p className="font-lato text-xl font-bold">Precio</p>
             <p className="text-xs">Define tu presupuesto por trayecto</p>
             <p className="mt-4 font-lato font-bold">
-              {values[0]}€ - {values[1]}€{' '}
+              {values[0]}€ — {values[1]}€{' '}
             </p>
             <div className="mt-2 flex items-center justify-center space-x-2 text-xl">
               <Slider
@@ -293,7 +404,7 @@ export default function SearchResults() {
                 valueLabelDisplay="auto"
                 getAriaValueText={valuetext}
                 min={0}
-                max={15}
+                max={50}
                 sx={{
                   width: 300,
                   color: '#38a3a5',
@@ -330,6 +441,111 @@ export default function SearchResults() {
               <TagsButton text="Más de 3 ⭐️" ratingOptions={true} />
               <TagsButton text="Más de 2 ⭐️" ratingOptions={true} />
               <TagsButton text="Más de 1 ⭐️" ratingOptions={true} />
+            </span>
+          </div>
+          <div className="my-5 flex flex-col items-center">
+            <CTAButton className="w-11/12" text={'FILTRAR'} />
+          </div>
+        </div>
+      </Drawer>
+
+      {/* TODO: Abstract this drawer and the state variables that are also used in the profile view (a very similar drawer) */}
+      <Drawer
+        anchor="bottom"
+        open={drawerPreferences}
+        onClose={() => setDrawerPreferences(false)}
+        SlideProps={{
+          style: {
+            minWidth: '320px',
+            maxWidth: '480px',
+            width: '100%',
+            margin: '0 auto',
+            backgroundColor: 'transparent',
+          },
+        }}
+      >
+        <div className="rounded-t-lg bg-white">
+          <div className="ml-6 mt-2 mr-5">
+            <p className="font-lato text-xl font-bold">Preferencias y normas</p>
+            <p className="text-xs">
+              En base a las preferencias y normas de los conductores
+            </p>
+            <div className="my-4 grid grid-cols-2 grid-rows-2 place-items-center gap-3">
+              <PreferenceBox
+                checked={allowSmoke}
+                setChecked={setAllowSmoke}
+                item={preferences.smoke}
+              />
+              <PreferenceBox
+                checked={preferMusic}
+                setChecked={setPreferMusic}
+                item={preferences.music}
+              />
+              <PreferenceBox
+                checked={allowPets}
+                setChecked={setAllowPets}
+                item={preferences.pets}
+              />
+              <PreferenceBox
+                checked={preferTalk}
+                setChecked={setPreferTalk}
+                item={preferences.talk}
+              />
+            </div>
+          </div>
+          <div className="my-5 flex flex-col items-center">
+            <CTAButton className="w-11/12" text={'FILTRAR'} />
+          </div>
+        </div>
+      </Drawer>
+
+      <Drawer
+        anchor="bottom"
+        open={drawerDay}
+        onClose={() => setDrawerDay(false)}
+        SlideProps={{
+          style: {
+            minWidth: '320px',
+            maxWidth: '480px',
+            width: '100%',
+            margin: '0 auto',
+            backgroundColor: 'transparent',
+          },
+        }}
+      >
+        <div className="rounded-t-lg bg-white">
+          <div className="ml-6 mt-2 mr-5">
+            <p className="font-lato text-xl font-bold">Día</p>
+            <p className="text-xs">En base al día en el que deseas viajar</p>
+            <span className="mt-4 grid grid-cols-2 items-center justify-center gap-y-3 gap-x-3 text-xl">
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <MobileDatePicker
+                  label="Desde"
+                  sx={{
+                    fontFamily: 'Lato, sans-serif',
+                    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
+                      {
+                        borderColor: '#7cc3c4',
+                      },
+                    '& .MuiFormLabel-root.Mui-focused': {
+                      color: '#7cc3c4',
+                    },
+                  }}
+                />
+                <MobileDatePicker
+                  label="Hasta"
+                  sx={{
+                    fontFamily: 'Lato, sans-serif',
+                    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
+                      {
+                        borderColor: '#7cc3c4',
+                      },
+                    '& .MuiFormLabel-root.Mui-focused': {
+                      color: '#7cc3c4',
+                    },
+                  }}
+                />
+              </LocalizationProvider>
             </span>
           </div>
           <div className="my-5 flex flex-col items-center">

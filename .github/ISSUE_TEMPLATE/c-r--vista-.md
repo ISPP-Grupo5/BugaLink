@@ -1,7 +1,7 @@
 ---
 name: C&R [VISTA]
 about: Conectar y revisar la vista mencionada
-title: "[VISTA]"
+title: 'C&R [VISTA]: '
 labels: ''
 assignees: ''
 

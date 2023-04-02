@@ -16,7 +16,7 @@ export default function PendingRequests() {
       <div className="mx-6 space-y-4">
         {isLoading || isError
           ? [1, 2, 3].map((i) => <RequestCardSkeleton key={i} />)
-          : pendingRequests.map((request: TripRequestI) => (
+          : pendingRequests?.map((request: TripRequestI) => (
               <Link key={request.id} href={NEXT_ROUTES.ACCEPT_RIDE(request.id)}>
                 <RequestCard
                   data-cy="request-accept"

@@ -87,7 +87,6 @@ WSGI_APPLICATION = "bugalink_backend.wsgi.application"
 # If you wish to use some other database other than the default sqlite
 # Make sure to update the value of DATABASE_URL in your .env file
 if os.environ.get("IS_APP_ENGINE"):
-
     DATABASES = {
         "default": {
             "ENGINE": config("ENGINE"),

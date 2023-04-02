@@ -1,5 +1,5 @@
 import useUpcomingTrips from '@/hooks/useUpcomingTrips';
-import TripI from '@/interfaces/trip';
+import TripRequestI from '@/interfaces/tripRequest';
 import cn from 'classnames';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback, useEffect, useState } from 'react';
@@ -67,17 +67,15 @@ export default function UpcomingTripsCarousel(props) {
         tweenValues[tweenValues.length - 1] > 0.95 || !upcomingTrips,
     });
 
-  const mockCards = [{ id: 'card1' }, { id: 'card2' }, { id: 'card3' }];
-
   return (
     <div className="embla">
       <div className="embla__viewport" ref={upcomingTrips && emblaRef}>
         <div className="embla__container">
           {/* If upcomingTrips is undefined, iterate over mockCards */}
-          {(upcomingTrips || mockCards).map((trip: TripI, index) => (
+          {(upcomingTrips || [1, 2, 3]).map((trip: TripRequestI, index) => (
             <div
               className="embla__slide"
-              key={trip.id}
+              key={trip.id || index}
               style={{
                 ...(tweenValues.length && {
                   scale: `${Math.max(0.9, tweenValues[index])}`,
@@ -85,9 +83,10 @@ export default function UpcomingTripsCarousel(props) {
                 }),
               }}
             >
-              {isLoading || isError ? (
+              {(isLoading || isError) && (
                 <UpcomingCardSkeleton className={cardClassnames(tweenValues)} />
-              ) : (
+              )}
+              {upcomingTrips && upcomingTrips.length > 0 && (
                 <UpcomingCard
                   trip={trip}
                   className={cardClassnames(tweenValues)}
@@ -95,6 +94,11 @@ export default function UpcomingTripsCarousel(props) {
               )}
             </div>
           ))}
+          {upcomingTrips && upcomingTrips.length === 0 && (
+            <div className="mx-4 mt-4 w-full rounded-md border border-border-color py-3 text-center text-lg font-light text-gray md:mx-5">
+              No tienes ningún viaje para los próximos días.
+            </div>
+          )}
         </div>
       </div>
     </div>

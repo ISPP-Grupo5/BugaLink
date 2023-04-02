@@ -3,6 +3,7 @@ import TripCardSkeleton from '@/components/skeletons/TripCard';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import useRecommendedTrips from '@/hooks/useRecommendedTrips';
 import TripI from '@/interfaces/trip';
+import { formatDatetime } from '@/utils/formatters';
 import { SwipeableDrawer } from '@mui/material';
 import { useEffect, useState } from 'react';
 
@@ -79,13 +80,13 @@ const RecommendationsList = () => {
               key={trip.id}
               type={'recurring'}
               rating={0}
-              name={trip.driver.name}
+              name={trip.driver.user.first_name}
               gender={'M'}
-              avatar={trip.driver.photo}
-              origin={trip.origin}
-              destination={trip.destination}
-              date={trip.date}
-              price={trip.price}
+              avatar={trip.driver.user.photo}
+              origin={trip.driver_routine.origin.address}
+              destination={trip.driver_routine.destination.address}
+              date={formatDatetime(trip.departure_datetime)}
+              price={Number.parseFloat(trip.driver_routine.price)}
               href={NEXT_ROUTES.RIDE_DETAILS_ONE(trip.id)}
               className="w-full rounded-md bg-white outline outline-1 outline-light-gray"
             />

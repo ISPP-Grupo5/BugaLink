@@ -4,7 +4,6 @@ import Link from 'next/link';
 import Calendar from '/public/assets/calendar.svg';
 import MapPin from '/public/assets/map-pin.svg';
 import OrigenPin from '/public/assets/origen-pin.svg';
-import NEXT_ROUTES from '@/constants/nextRoutes';
 
 type Params = {
   type?: string;

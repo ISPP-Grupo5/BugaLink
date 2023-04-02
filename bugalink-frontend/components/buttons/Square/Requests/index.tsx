@@ -5,12 +5,11 @@ import SquareButton from '..';
 
 export default function SquareRequestsButton() {
   const { numPendingRequests } = useNumPendingRequests();
-  const USER_ID = 1; // TODO: remove this hardcoded value
 
   return (
     <SquareButton
       text="Solicitudes"
-      link={NEXT_ROUTES.PENDING_REQUESTS(USER_ID)}
+      link={NEXT_ROUTES.PENDING_REQUESTS}
       Icon={<Solicitud className="translate-x-0.5 translate-y-0.5" />}
       numNotifications={numPendingRequests || 0}
     />

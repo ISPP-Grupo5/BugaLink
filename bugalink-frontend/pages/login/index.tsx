@@ -1,35 +1,46 @@
-import AnimatedLayout from '@/components/layouts/animated';
 import { BackButton } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
-import Link from 'next/link';
-import { useState } from 'react';
-import Switch from '@/components/forms/Switch';
 import ExternalLogin from '@/components/externalLogin';
-
-import CityDriver from '/public/assets/CityDriver.svg';
+import AnimatedLayout from '@/components/layouts/animated';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import TextField from '@/components/forms/TextField';
-import useAuth from '@/hooks/useAuth';
-import { useRouter } from 'next/router';
+import { signIn, useSession } from 'next-auth/react';
+import CityDriver from '/public/assets/CityDriver.svg';
+import NEXT_ROUTES from '@/constants/nextRoutes';
+import router from 'next/router';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useAuth();
-  const router = useRouter();
+
+  const { status } = useSession();
+  useEffect(() => {
+    if (status === 'authenticated') router.push(NEXT_ROUTES.HOME);
+  }, [status]);
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    await signIn('credentials', {
+      email,
+      password,
+      redirect: true,
+      callbackUrl: '/',
+    });
+  };
 
   return (
-    <AnimatedLayout className="bg-white">
+    <AnimatedLayout className="bg-background-turquoise">
       <BackButton className="absolute left-2 top-2 bg-base-origin py-3 pr-2 shadow-xl" />
-      <div className="flex flex-col -space-y-10 ">
-        <span className="flex w-full justify-center bg-background-turquoise">
-          <CityDriver />
+      <div className="flex h-full flex-col justify-end -space-y-10 bg-background-turquoise">
+        <span className="flex w-full justify-center ">
+          <CityDriver className="origin-bottom translate-y-4 scale-125" />
         </span>
-
         <div className="z-10 rounded-t-3xl bg-base-origin text-center">
           <p className=" py-5 text-3xl text-gray ">Iniciar sesión</p>
-          <div className="rounded-t-xl bg-white py-5">
+          <div className="rounded-t-xl bg-white pt-5 pb-16">
             <ExternalLogin />
-            <p className="font-bold text-light-gray">
+            <p className="font-light text-gray opacity-70">
               o usa tu cuenta de correo
             </p>
             <form className="mt-5">
@@ -39,7 +50,6 @@ export default function Login() {
                   content={email}
                   fieldName={'Correo electrónico'}
                   inputClassName="w-full"
-                  parentClassName=""
                   setContent={setEmail}
                 />
                 <TextField
@@ -47,43 +57,21 @@ export default function Login() {
                   content={password}
                   fieldName={'Contraseña'}
                   inputClassName="w-full"
-                  parentClassName=""
                   setContent={setPassword}
                 />
-              </div>
-
-              <div className="justify-between mr-8 ml-8 flex flex-row items-center py-3">
-                <span className="flex flex-row items-center -justify-between space-x-7">
-                  <Switch />
-                  <p className="-translate-x-5 text-base font-bold text-light-gray">
-                    {' '}
-                    Recuérdame{' '}
-                  </p>
-                </span>
-                <Link href="#">
-                  <p className="text-base text-light-turquoise">
-                    {' '}
-                    ¿Has olvidado tu Contraseña?{' '}
-                  </p>
-                </Link>
               </div>
 
               <CTAButton
                 text="INICIAR SESIÓN"
                 className="mt-4 w-5/6"
-                onClick={async (e) => {
-                  e.preventDefault();
-                  const { status, data } = await login(email, password);
-                  if (status === 200) router.push('/');
-                  else console.log(data);
-                }}
+                onClick={onSubmit}
               />
 
               <span className="flex translate-y-7 -translate-x-2 flex-row justify-center -justify-between">
-                <p className="font-bold text-light-gray">
+                <p className="font-light text-gray opacity-70">
                   ¿No tienes una cuenta?
                 </p>
-                <Link href="/session/register" className="translate-x-2">
+                <Link href={NEXT_ROUTES.SIGN_UP} className="translate-x-2">
                   <p className="text-dark-turquoise"> Regístrate </p>
                 </Link>
               </span>

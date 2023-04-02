@@ -24,12 +24,12 @@ export default function Wallet() {
       </div>
       <div className="justify-between my-5 flex space-x-2 px-4">
         <div className="flex-1">
-          <Link href={NEXT_ROUTES.RECHARGE_CREDIT(1)}>
+          <Link href={NEXT_ROUTES.RECHARGE_CREDIT}>
             <TransparentButton text="Recargar cuenta" Icon={<Recargar />} />
           </Link>
         </div>
         <div className="flex-1">
-          <Link href={NEXT_ROUTES.WITHDRAW_CREDIT(1)}>
+          <Link href={NEXT_ROUTES.WITHDRAW_CREDIT}>
             <TransparentButton text="Retirar saldo" Icon={<Retirar />} />
           </Link>
         </div>

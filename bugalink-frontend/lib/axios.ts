@@ -1,28 +1,34 @@
 import axios from 'axios';
+import { User } from 'next-auth';
+import { getSession } from 'next-auth/react';
 
-const axiosCustom = axios.create({
-  baseURL:
-    process.env.NODE_ENV === 'production' // TODO: untested. THIS IS NOT THE CORRECT API URL YET!!
-      ? process.env.PRODUCTION_API_URL || 'https://app.bugalink.es/api/v1'
-      : `http://localhost:${process.env.PORT || 8000}/api/v1`,
+const baseURL =
+  process.env.NODE_ENV === 'production' // TODO: untested. THIS IS NOT THE CORRECT API URL YET!!
+    ? process.env.PRODUCTION_API_URL || 'https://app.bugalink.es/api/v1'
+    : `http://localhost:${process.env.PORT || 8000}/api/v1`;
+
+export const axiosCustom = axios.create({
+  baseURL,
 });
 
-axiosCustom.interceptors.request.use(
-  (config) => {
-    // Add bearerToken if it exists
-    const token = localStorage.getItem('accessToken');
-    if (token) config.headers.Authorization = `Bearer ${token}`;
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+// NOTE: use this axios instance for requests that NEED authentication in our API
+export const axiosAuth = axios.create({
+  baseURL,
+});
 
-axiosCustom.interceptors.request.use((config) => {
+axiosCustom.interceptors.request.use(async (config) => {
+  if (!config.url.endsWith('/') && !config.url.includes('?')) config.url += '/';
+  return config;
+});
+
+axiosAuth.interceptors.request.use(async (config) => {
+  const session = await getSession();
+  const user = session?.user as User;
+
   // Add a "/" to the end of the URL if it doesn't already end with one
   // Django won't process the request otherwise
-  if (!config.url.endsWith('/')) config.url += '/';
+  if (!config.url.endsWith('/') && !config.url.includes('?')) config.url += '/';
+  if (session) config.headers.Authorization = `Bearer ${user.access}`;
   return config;
 });
 

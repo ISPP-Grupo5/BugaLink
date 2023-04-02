@@ -6,14 +6,20 @@ from users.serializers import DriverAsUserSerializer, PassengerAsUserSerializer
 
 class TripSerializer(serializers.ModelSerializer):
     driver_routine = DriverRoutineSerializer()
-    passengers = PassengerAsUserSerializer(many=True)
+    passengers = serializers.SerializerMethodField()
     driver = serializers.SerializerMethodField()
 
     class Meta:
         model = Trip
         fields = ("id", "driver_routine", "passengers", "driver", "departure_datetime")
 
-    def get_driver(self, obj):
+    def get_passengers(self, obj) -> PassengerAsUserSerializer(many=True):
+        trip_requests = TripRequest.objects.filter(trip=obj)
+        return PassengerAsUserSerializer(
+            [trip_request.passenger for trip_request in trip_requests]
+        ).data
+
+    def get_driver(self, obj) -> DriverAsUserSerializer():
         driver_routine = obj.driver_routine
         return DriverAsUserSerializer(driver_routine.driver).data
 

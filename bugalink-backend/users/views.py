@@ -1,10 +1,9 @@
 from django.db import transaction
+from drivers.models import Driver
+from drivers.serializers import DriverSerializer
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from drivers.models import Driver
-from drivers.serializers import DriverSerializer
 from trips.models import TripRequest
 from trips.serializers import TripRequestSerializer
 from users.models import User
@@ -27,7 +26,13 @@ class BecomeDriverView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         # Create a driver profile for the user
-        driver = Driver.objects.create(user=request.user)
+        driver = Driver.objects.create(
+            user=request.user,
+            preference_0=False,
+            preference_1=False,
+            preference_2=False,
+            preference_3=False,
+        )
         request.user.is_driver = True
         request.user.save()
 
@@ -60,9 +65,11 @@ class UserTripsView(APIView):
         # Get the trips from the user. Those are the trips in which the user is a passenger
         # A trip has a many-to-many relationship with passengers, and we want to see if the
         # user's passenger id from request.user.id is in that list of passengers
-        trips_where_user_is_passenger = TripRequest.objects.filter(
-            trip__passengers__user=user
-        )
+        # trip_requests_where_user_is_passenger = TripRequest.objects.filter(
+        #     passenger__user=user
+        # )
+
+        trips_where_user_is_passenger = TripRequest.objects.filter(passenger__user=user)
 
         trips_where_user_is_driver = TripRequest.objects.filter(
             trip__driver_routine__driver__user=user

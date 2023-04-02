@@ -4,12 +4,12 @@ import TagsButton from '@/components/buttons/Tags';
 import TripCard from '@/components/cards/recommendation';
 import TimePicker from '@/components/forms/TimePicker';
 import AnimatedLayout from '@/components/layouts/animated';
-import TripCardSkeleton from '@/components/skeletons/TripCard';
 import PreferenceBox from '@/components/preferences/box';
+import TripCardSkeleton from '@/components/skeletons/TripCard';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import { Drawer } from '@mui/material';
 import Slider from '@mui/material/Slider';
-import { DatePicker, LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Link from 'next/link';
 import FilterIcon from 'public/assets/filter-icon.svg';
@@ -18,12 +18,13 @@ import Arrows from '/public/assets/arrows.svg';
 import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
 import ThreeDots from '/public/assets/three-dots.svg';
+import MagnifyingGlass from '/public/icons/Vista-Principal/glass.svg';
 
 const filters = [
   {
     name: 'Precio',
     selected: false,
-    selectedValue: '2,00€ - 5,00€',
+    selectedValue: '2,00€ — 5,00€',
   },
   {
     name: 'Valoración',
@@ -43,7 +44,7 @@ const filters = [
   {
     name: 'Día',
     selected: true,
-    selectedValue: '5/4 - 8/4',
+    selectedValue: '5/4 — 8/4',
   },
 ];
 
@@ -202,7 +203,7 @@ export default function SearchResults() {
               className="ml-2 mr-2 w-full rounded-full bg-base-origin p-4 text-sm"
             ></input>
           </div>
-          <div></div>
+          <Arrows className="text-gray" />
           <div></div>
           <div className="col-span-6 w-full pr-4">
             <input
@@ -212,7 +213,7 @@ export default function SearchResults() {
               className="ml-2 mr-2 w-full rounded-full bg-base-origin p-4 text-sm"
             ></input>
           </div>
-          <Arrows />
+          <MagnifyingGlass className="text-gray" />
         </div>
         <hr className="mt-4 w-full text-border-color" />
       </div>
@@ -364,7 +365,7 @@ export default function SearchResults() {
             <p className="text-xs">Define el rango de hora de salida</p>
             <span className="mt-4 flex items-center justify-center space-x-2 text-xl font-bold">
               <TimePicker time={pickTimeFrom} setTime={setPickTimeFrom} />
-              <p> - </p>
+              <p> — </p>
               <TimePicker time={pickTimeTo} setTime={setPickTimeTo} />
             </span>
           </div>
@@ -393,7 +394,7 @@ export default function SearchResults() {
             <p className="font-lato text-xl font-bold">Precio</p>
             <p className="text-xs">Define tu presupuesto por trayecto</p>
             <p className="mt-4 font-lato font-bold">
-              {values[0]}€ - {values[1]}€{' '}
+              {values[0]}€ — {values[1]}€{' '}
             </p>
             <div className="mt-2 flex items-center justify-center space-x-2 text-xl">
               <Slider
@@ -467,7 +468,7 @@ export default function SearchResults() {
           <div className="ml-6 mt-2 mr-5">
             <p className="font-lato text-xl font-bold">Preferencias y normas</p>
             <p className="text-xs">
-              En base a las preferencias y normas de los usuarios
+              En base a las preferencias y normas de los conductores
             </p>
             <div className="my-4 grid grid-cols-2 grid-rows-2 place-items-center gap-3">
               <PreferenceBox

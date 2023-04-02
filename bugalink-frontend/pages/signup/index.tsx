@@ -117,6 +117,18 @@ export default function Register() {
                   <p className="text-dark-turquoise"> Iniciar sesión </p>
                 </Link>
               </span>
+
+              <span className="flex flex-row justify-center -justify-between py-4">
+                <p className="font-light text-gray">
+                  Al registrarte se considera que aceptas los
+                  <Link href="https://www.bugalink.es/terms" className="translate-x-2">
+                    <p className="text-dark-turquoise font-bold">
+                      {' '}
+                      Términos y condiciones{' '}
+                    </p>
+                  </Link>
+                </p>
+              </span>
             </form>
           </div>
         </div>

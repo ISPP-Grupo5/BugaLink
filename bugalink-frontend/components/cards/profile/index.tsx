@@ -7,6 +7,7 @@ import Carkey from 'public/assets/car-key.svg';
 import Help from 'public/assets/help.svg';
 import Logout from 'public/assets/log-out.svg';
 import Preferences from 'public/assets/preferences.svg';
+import PreferenceBox from '@/components/preferences/box';
 import Wallet from 'public/assets/wallet.svg';
 import { useEffect, useState } from 'react';
 import { signOut, useSession } from 'next-auth/react';
@@ -169,25 +170,6 @@ function Entry({
         {children}
       </span>
       <ArrowHead className="text-gray" />
-    </div>
-  );
-}
-
-function PreferenceBox({ checked, setChecked, item }) {
-  return (
-    <div
-      className={
-        'grid min-h-full w-full grid-rows-2 flex-col place-items-center rounded-lg border border-light-gray p-1 transition-colors duration-200 ' +
-        (checked ? 'bg-white' : 'bg-light-gray')
-      }
-      onClick={() => {
-        setChecked(!checked);
-      }}
-    >
-      <p className="text-3xl">{item[checked ? 'checked' : 'unchecked'].icon}</p>
-      <p className="text-center leading-5">
-        {item[checked ? 'checked' : 'unchecked'].text}
-      </p>
     </div>
   );
 }

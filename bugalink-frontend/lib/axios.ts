@@ -2,19 +2,12 @@ import axios from 'axios';
 import { User } from 'next-auth';
 import { getSession } from 'next-auth/react';
 
-const baseURL =
-  process.env.NODE_ENV === 'production' // TODO: untested. THIS IS NOT THE CORRECT API URL YET!!
-    ? process.env.PRODUCTION_API_URL || 'https://app.bugalink.es/api/v1'
-    : `http://localhost:${process.env.PORT || 8000}/api/v1`;
+const baseURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1`;
 
-export const axiosCustom = axios.create({
-  baseURL,
-});
+export const axiosCustom = axios.create({ baseURL });
 
 // NOTE: use this axios instance for requests that NEED authentication in our API
-export const axiosAuth = axios.create({
-  baseURL,
-});
+export const axiosAuth = axios.create({ baseURL });
 
 axiosCustom.interceptors.request.use(async (config) => {
   if (!config.url.endsWith('/') && !config.url.includes('?')) config.url += '/';

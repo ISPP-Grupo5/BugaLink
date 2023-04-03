@@ -58,7 +58,7 @@ const providers = [
     async authorize(credentials, req) {
       const { email, password } = credentials as any;
       const res = await fetch(
-        `${process?.env?.BACKEND_URL}/api/v1/auth/login/`,
+        `${process?.env?.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/login/`,
         {
           method: 'POST',
           headers: {
@@ -140,6 +140,7 @@ export const authOptions: NextAuthOptions = {
   },
 
   pages: {
+    error: NEXT_ROUTES.LOGIN,
     signIn: NEXT_ROUTES.LOGIN,
     signUp: NEXT_ROUTES.SIGN_UP,
   },

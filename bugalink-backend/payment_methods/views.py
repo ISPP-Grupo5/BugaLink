@@ -21,7 +21,7 @@ class BalanceViewSet(
                 user = User.objects.get(id=user_id)
             except User.DoesNotExist:
                 return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-            balance = user.balance  # assuming the User model has a `balance` field
+            balance = self.queryset.get(user = user)
             serializer = self.serializer_class({'user_id': user_id, 'balance': balance})
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:

@@ -94,7 +94,7 @@ class UserTripsView(APIView):
 # GET /users/<user_id>/trip-requests/count?status=pending
 # GET /users/<user_id>/trip-requests/count?status=accepted
 # GET /users/<user_id>/trip-requests/count?status=finished # HISTORIAL
-class UserTripsCountView(APIView):
+class UserTripCountView(APIView):
     def get(self, request, id):
         # If the user is not the same as the one in the URL, return a 403 status code
         if request.user.id != int(id):
@@ -141,7 +141,7 @@ class UserTripsCountView(APIView):
         )
         
 # GET /users/<user_id>/trips/upcoming
-class UserTripsCountView(APIView):
+class UserUpcomingTripsView(APIView):
     def get(self, request, id):
         # If the user is not the same as the one in the URL, return a 403 status code
         if request.user.id != int(id):
@@ -170,7 +170,7 @@ class UserTripsCountView(APIView):
 
         # Filter the trips based on the status values
         upcoming_trips = trips_by_user.filter(
-            trip__departure_datetime__range=[datetime.now() - timedelta(hours=48), datetime.now()])
+            trip__departure_datetime__range=[datetime.now(), datetime.now() + timedelta(hours=48)])
 
         # Return the trips with a 200 status code
         return Response(

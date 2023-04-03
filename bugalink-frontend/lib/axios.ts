@@ -2,7 +2,7 @@ import axios from 'axios';
 import { User } from 'next-auth';
 import { getSession } from 'next-auth/react';
 
-const baseURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1`;
+const baseURL = `${process.env.NEXT_PUBLIC_BACKEND_URL || ""}/api/v1`;
 
 export const axiosCustom = axios.create({ baseURL });
 

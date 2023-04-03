@@ -6,28 +6,6 @@ import { CookiesOptions } from 'next-auth/core/types';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-const cookiesOptions = {
-  httpOnly: true,
-  sameSite: 'none',
-  path: '/',
-  domain: process.env.NEXT_PUBLIC_DOMAIN,
-  secure: true,
-};
-
-const cookies: Partial<CookiesOptions> = {
-  sessionToken: {
-    name: `next-auth.session-token`,
-    options: cookiesOptions,
-  },
-  callbackUrl: {
-    name: `next-auth.callback-url`,
-    options: cookiesOptions,
-  },
-  csrfToken: {
-    name: 'next-auth.csrf-token',
-    options: cookiesOptions,
-  },
-};
 
 const refreshAccessToken = async (refresh) => {
   const res = await axios.post('/auth/token/refresh/', { refresh });
@@ -58,7 +36,7 @@ const providers = [
     async authorize(credentials, req) {
       const { email, password } = credentials as any;
       const res = await fetch(
-        `${process?.env?.NEXT_PUBLIC_BACKEND_URL}/api/v1/auth/login/`,
+        `${process?.env?.NEXT_PUBLIC_BACKEND_URL || ""}/api/v1/auth/login/`,
         {
           method: 'POST',
           headers: {
@@ -82,11 +60,9 @@ const providers = [
 
 export const authOptions: NextAuthOptions = {
   providers: providers,
-  secret: process.env.NEXT_PUBLIC_SECRET,
   session: {
     strategy: 'jwt',
   },
-  cookies: cookies,
   callbacks: {
     async jwt({ token, user }: { token?: JWT; user?: User }) {
       // first call of jwt function just user object is provided

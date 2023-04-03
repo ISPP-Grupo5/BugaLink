@@ -1,6 +1,7 @@
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from passengers.models import Passenger
 
 from trips.models import Trip, TripRequest
 from trips.serializers import (
@@ -79,5 +80,18 @@ class TripRequestViewSet(
     def reject(self, request, *args, **kwargs):
         trip_request = self.get_object()
         trip_request.status = "REJECTED"
+        trip_request.save()
+        return Response(self.get_serializer(trip_request).data)
+    
+    # POST /trips/<pk>/pay (For a passenger to pay a trip request)
+    @action(detail=True, methods=["post"])
+    def pay(self, request, *args, **kwargs):
+        trip = self.get_object()
+        passenger = Passenger.objects.get(user=request.user)
+        driver = trip.driver_routine.driver
+        # Make here the payment with Stripe
+
+
+        trip_request = TripRequest.objects.get(trip=trip, passenger=passenger, price = trip.driver_routine.price)
         trip_request.save()
         return Response(self.get_serializer(trip_request).data)

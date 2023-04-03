@@ -17,6 +17,7 @@
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/material": "^5.11.12",
+    "@mui/x-date-pickers": "^6.0.4",
     "@react-google-maps/api": "^2.18.1",
     "@types/leaflet-routing-machine": "^3.2.4",
     "@vercel/og": "^0.1.0",

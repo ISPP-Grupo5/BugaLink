@@ -1,5 +1,4 @@
 import { BackButtonText } from '@/components/buttons/Back';
-import CTAButton from '@/components/buttons/CTA';
 import PlusMinusCounter from '@/components/buttons/PlusMinusCounter';
 import AnimatedLayout from '@/components/layouts/animated';
 import MapPreview from '@/components/maps/mapPreview';
@@ -7,6 +6,9 @@ import ProfileHeader from '@/components/ProfileHeader';
 import TripDetails from '@/components/TripDetails';
 import useMapCoordinates from '@/hooks/useMapCoordinates';
 import { useState } from 'react';
+import OptionButton from '@/components/buttons/Option';
+import { Drawer } from '@mui/material';
+import NoteToDriver from './note';
 
 const MIN_RESERVED_SEATS = 1;
 const MAX_RESERVED_SEATS = 8; // TODO: Get max free seats the driver offers from the backend
@@ -20,6 +22,7 @@ export default function DetailsTwo() {
   const [time, setTime] = useState<number>(0);
   const originCoords = useMapCoordinates(origin);
   const destinationCoords = useMapCoordinates(destination);
+  const [drawerNote, setDrawerNote] = useState(false);
 
   // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
   const startTime = new Date('2021-05-01T21:00:00');
@@ -30,6 +33,14 @@ export default function DetailsTwo() {
     <AnimatedLayout className="flex flex-col justify-between">
       <BackButtonText text="Detalles del viaje" />
       <div className="flex h-full flex-col overflow-y-scroll bg-white px-4 pb-4">
+        {/* Profile header */}
+        <ProfileHeader
+          name="Jesús Marchena"
+          rating="4.8"
+          numberOfRatings="14"
+          photo="/assets/avatar.png"
+          className="mb-2"
+        />
         {/* Map preview */}
         <MapPreview
           originCoords={originCoords?.coordinates}
@@ -70,29 +81,47 @@ export default function DetailsTwo() {
         <div className="grid justify-items-center">
           <hr className="mt-4 mb-4 w-full text-border-color" />
         </div>
-
-        {/* Profile header */}
-        <ProfileHeader
-          name="Jesús Marchena"
-          rating="4.8"
-          numberOfRatings="14"
-          photo='/assets/avatar.png'
-        />
         <div className="flex flex-row">
-          <p className="font-normal text-dark-turquoise">
-            {/* TODO: make this button work */}
+          <p
+            className="font-normal text-dark-turquoise"
+            onClick={() => setDrawerNote(true)}
+          >
             Añade una nota al conductor
           </p>
         </div>
       </div>
       {/* Trip request */}
-      <div className="flex w-full flex-row items-center justify-between rounded-t-lg bg-white py-6 px-4 shadow-t-md">
+      <div className="flex w-full flex-row items-center justify-around rounded-t-lg bg-white py-6 px-4 shadow-t-md">
         <div className="flex flex-col">
           <p className="text-md font-normal">Precio total</p>
           <p className="text-3xl font-bold">4,00€</p>
         </div>
-        <CTAButton className="w-2/3" text={'SOLICITAR'} />
+        <OptionButton
+          text="SOLICITAR"
+          Option1="Recurentemente"
+          Option2="De manera individual"
+          className="w-2/3"
+          isLink={true}
+          linkOption1="/ride/V1StGXR8_Z5jdHi6B-myT/pay"
+          linkOption2="/ride/V1StGXR8_Z5jdHi6B-myT/pay"
+        />
       </div>
+      <Drawer
+        anchor="bottom"
+        open={drawerNote}
+        onClose={() => setDrawerNote(false)}
+        SlideProps={{
+          style: {
+            minWidth: '320px',
+            maxWidth: '480px',
+            width: '100%',
+            margin: '0 auto',
+            backgroundColor: 'transparent',
+          },
+        }}
+      >
+        <NoteToDriver />
+      </Drawer>
     </AnimatedLayout>
   );
 }

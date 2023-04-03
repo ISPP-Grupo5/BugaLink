@@ -1,8 +1,11 @@
 type UserI = {
   id: number;
-  name: string;
-  lastName: string;
-  photo: string; // URL
+  email: string;
+  first_name: string;
+  last_name: string;
+  photo: string | null;
+  passenger: number;
+  driver: number | null;
 };
 
 export default UserI;

@@ -1,8 +1,11 @@
-import fetcher from '@/utils/fetcher';
+import { fetcherAuth } from '@/utils/fetcher';
 import useSWR from 'swr';
 
 export default function useRecommendedTrips() {
-  const { data, error, isLoading } = useSWR('/trips/recommendations', fetcher);
+  const { data, error, isLoading } = useSWR(
+    '/trips/recommendations',
+    fetcherAuth
+  );
 
   return {
     trips: data,

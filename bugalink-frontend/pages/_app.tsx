@@ -1,11 +1,15 @@
 import MobileLayout from '@/components/layouts/mobile';
 import '@/styles/carousel.css';
 import '@/styles/globals.css';
-import { AnimatePresence } from 'framer-motion';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
+import { SessionProvider } from 'next-auth/react';
 
-export default function MyApp({ Component, pageProps, router }: AppProps) {
+export default function MyApp({
+  Component,
+  router,
+  pageProps: { session, ...pageProps },
+}: AppProps) {
   return (
     <>
       <Head>
@@ -64,12 +68,11 @@ export default function MyApp({ Component, pageProps, router }: AppProps) {
         <meta property="og:locale" content="es_ES" />
       </Head>
       {/* Base layout for new pages */}
-      <AnimatePresence mode="wait" initial={false}>
+      <SessionProvider session={session}>
         <MobileLayout key={router.asPath}>
-          {/* TODO: AnimatedLayout won't work unless it's re-rendered every time a new page is mounted */}
           <Component {...pageProps} />
         </MobileLayout>
-      </AnimatePresence>
+      </SessionProvider>
     </>
   );
 }

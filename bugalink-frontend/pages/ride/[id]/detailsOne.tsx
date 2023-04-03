@@ -38,7 +38,7 @@ export default function DetailsOne() {
             name="Jesús Marchena"
             rating="4.8"
             numberOfRatings="14"
-            photo='/assets/avatar.png'
+            photo="/assets/avatar.png"
           />
           {/* Origin and target destinations */}
           <div className="grid grid-cols-2 gap-2 py-2 text-sm">
@@ -94,7 +94,7 @@ export default function DetailsOne() {
           </div>
           <div className="py-2">
             <p className="text-sm font-normal text-gray">Nota del conductor</p>
-            <p className="text-md text-justify font-lato font-medium leading-5">
+            <p className="text-md text-justify font-medium leading-5">
               ✏️ También puedo recoger pasajeros en otro punto si me pilla de
               camino. Mejor pregúntame por chat antes de reservar asiento
             </p>

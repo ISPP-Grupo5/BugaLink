@@ -1,16 +1,35 @@
 import TripCard from '@/components/cards/recommendation';
+import TripCardSkeleton from '@/components/skeletons/TripCard';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 import useHistoryTrips from '@/hooks/useHistoryTrips';
-import TripI from '@/interfaces/trip';
+import TripRequestI from '@/interfaces/tripRequest';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 
+const separateTrips = (historyTrips: TripRequestI[], userId: number) => {
+  return historyTrips.reduce(
+    (acc, tripRequest) => {
+      if (tripRequest.trip.driver.user.id === userId) {
+        acc.driverTrips.push(tripRequest);
+      } else {
+        acc.passengerTrips.push(tripRequest);
+      }
+      return acc;
+    },
+    { driverTrips: [], passengerTrips: [] }
+  );
+};
+
 export default function HistoryTabs() {
+  const USER_ID = 1;
   const [tabIndex, setTabIndex] = useState(0);
-  const passengerTrips = useHistoryTrips('passenger');
-  const driverTrips = useHistoryTrips('driver');
   const handleTabClick = (index) => {
     setTabIndex(index);
   };
+
+  const { historyTrips = [], isLoading, isError } = useHistoryTrips();
+
+  const { driverTrips, passengerTrips } = separateTrips(historyTrips, USER_ID);
 
   return (
     <div className="h-full w-full space-y-2">
@@ -42,7 +61,12 @@ export default function HistoryTabs() {
             exit={{ x: '-100%' }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
           >
-            <HistoryList trips={passengerTrips} />
+            <HistoryList
+              trips={passengerTrips}
+              type="passenger"
+              isLoading={isLoading}
+              isError={isError}
+            />
           </motion.div>
         ) : (
           <motion.div
@@ -53,36 +77,40 @@ export default function HistoryTabs() {
             exit={{ x: '100%' }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
           >
-            <HistoryList trips={driverTrips} />
+            <HistoryList
+              trips={driverTrips}
+              type="passenger"
+              isLoading={isLoading}
+              isError={isError}
+            />
           </motion.div>
         )}
       </AnimatePresence>
     </div>
   );
 }
-const HistoryList = ({ trips }) => {
-  const { historyTrips, isLoading, isError } = trips;
+const HistoryList = ({ trips, type, isLoading, isError }) => {
   const USER_ID = 1; // TODO: Get user id from context
-
-  if (isLoading) return <p>Loading...</p>; // TODO: make skeleton
-  if (isError) return <p>Error</p>; // TODO: make error message
 
   return (
     <div className="absolute w-full divide-y-2 divide-light-gray px-4">
-      {historyTrips.map((trip: TripI) => (
-        <TripCard
-          key={trip.id}
-          type={trip.driver.id === USER_ID ? 'driver' : 'passenger'}
-          rating={0.0}
-          name={trip.driver.name}
-          avatar={trip.driver.photo}
-          gender={'M'}
-          origin={trip.origin}
-          destination={trip.destination}
-          date={trip.date}
-          price={trip.price}
-        />
-      ))}
+      {isLoading || isError
+        ? [1, 2, 3, 4].map((i) => <TripCardSkeleton key={i} />)
+        : trips.map((tripRequest: TripRequestI) => (
+            <TripCard
+              key={tripRequest.id}
+              type={type}
+              rating={0.0}
+              name={`${tripRequest.trip.driver.user.first_name} ${tripRequest.trip.driver.user.last_name}`}
+              avatar={tripRequest.trip.driver.user.photo}
+              origin={tripRequest.trip.driver_routine.origin.address}
+              destination={tripRequest.trip.driver_routine.destination.address}
+              date={tripRequest.trip.departure_datetime}
+              price={Number.parseFloat(tripRequest.trip.driver_routine.price)}
+              href={NEXT_ROUTES.RATING_RIDE(USER_ID)}
+              isHistory
+            />
+          ))}
     </div>
   );
 };

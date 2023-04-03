@@ -1,5 +1,6 @@
-import axios from '@/lib/axios';
+import { axiosAuth, axiosCustom } from '@/lib/axios';
 
-const fetcher = (url) => axios.get(url).then((res) => res.data);
+const fetcher = (url) => axiosCustom.get(url).then((res) => res.data);
+const fetcherAuth = (url) => axiosAuth.get(url).then((res) => res.data);
 
-export default fetcher;
+export { fetcher, fetcherAuth };

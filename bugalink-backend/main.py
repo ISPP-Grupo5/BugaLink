@@ -7,6 +7,6 @@ For more information on this file, see
 https://docs.djangoproject.com/en/4.1/howto/deployment/wsgi/
 """
 
-from BugaLink.wsgi import application
+from bugalink_backend.wsgi import application
 
 app = application

@@ -1,25 +1,16 @@
+// "id": 1,
+// "is_recurrent": false,
+// "status": "PENDING",
+// "note": "Esto es una nota de trip request"
+
+import TripI from './trip';
+
 type TripRequestI = {
   id: number;
-  type: 'recurring' | 'onetime';
-  driver: {
-    id: number;
-    name: string;
-    rating: number;
-    avatar: string;
-    gender: 'M' | 'F';
-  };
-  requestedBy: {
-    id: number;
-    name: string;
-    rating: number;
-    avatar: string;
-    gender: 'M' | 'F';
-  };
-  requestStatus: 'pending';
-  origin: string;
-  destination: string;
-  date: string;
-  price: number;
+  trip: TripI;
+  is_recurrent: boolean;
+  status: string;
+  note: string;
 };
 
 export default TripRequestI;

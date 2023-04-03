@@ -3,7 +3,7 @@ import L from 'leaflet';
 import 'leaflet-routing-machine';
 
 const createRoutineMachineLayer = (props) => {
-  const { origin, destination, setTime } = props;
+  const { origin, destination, setTime, setTotalDistance } = props;
 
   const originIcon = L.icon({
     iconUrl:
@@ -26,6 +26,7 @@ const createRoutineMachineLayer = (props) => {
       styles: [{ color: '#38a3a5', weight: 4 }],
       extendToWaypoints: false,
       missingRouteTolerance: 0,
+      addWaypoints: false,
     },
     alternativeClassName: 'hidden',
     plan: L.Routing.plan(
@@ -49,6 +50,14 @@ const createRoutineMachineLayer = (props) => {
       const routes = e.routes;
       const summary = routes[0].summary;
       setTime(Math.round((summary.totalTime % 3600) / 60));
+    });
+  }
+
+  if (setTotalDistance) {
+    instance.on('routesfound', (e) => {
+      const routes = e.routes;
+      const summary = routes[0].summary;
+      setTotalDistance(Math.round(summary.totalDistance / 1000));
     });
   }
 

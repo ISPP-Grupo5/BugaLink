@@ -1,14 +1,13 @@
-import fetcher from '@/utils/fetcher';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
 import useSWR from 'swr';
 
 export default function usependingRequests() {
-  // TODO: once we have local sessions, we can extract the user id from the session
-  // We will use the hardcoded USER_ID=1 for now
-  const USER_ID = 1;
+  const { data: userData } = useSession();
+  const user = userData?.user as User;
 
   const { data, error, isLoading } = useSWR(
-    `/users/${USER_ID}/trips?status=pending`,
-    fetcher
+    user && `/users/${user.user_id}/trip-requests?status=PENDING`
   );
 
   return {

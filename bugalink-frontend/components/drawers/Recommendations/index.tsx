@@ -1,8 +1,11 @@
 import TripCard from '@/components/cards/recommendation';
+import TripCardSkeleton from '@/components/skeletons/TripCard';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 import useRecommendedTrips from '@/hooks/useRecommendedTrips';
 import TripI from '@/interfaces/trip';
-import { Link, SwipeableDrawer } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { formatDatetime } from '@/utils/formatters';
+import { SwipeableDrawer } from '@mui/material';
+import { useEffect, useState } from 'react';
 
 type Props = {
   open: boolean;
@@ -63,32 +66,31 @@ export default function RecommendationsDrawer({ open, setOpen }: Props) {
 const RecommendationsList = () => {
   const { trips, isLoading, isError } = useRecommendedTrips();
 
-  if (isLoading) return <p>Loading...</p>; // TODO: make skeleton
-  if (isError) return <p>Error</p>; // TODO: make error message
-
   return (
     <div className="trip-list mt-1 grid h-full justify-items-center overflow-auto">
-      {trips.map((trip: TripI) => (
-        <Link
-          key={trip.id}
-          href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne?requested=false"
-          className="unstyle-link w-full"
-        >
-          <TripCard
-            key={trip.id}
-            type={'recurring'}
-            rating={0}
-            name={trip.driver.name}
-            gender={'M'}
-            avatar={trip.driver.photo}
-            origin={trip.origin}
-            destination={trip.destination}
-            date={trip.date}
-            price={trip.price}
-            className="rounded-md bg-white outline outline-1 outline-light-gray"
-          />
-        </Link>
-      ))}
+      {isLoading || isError
+        ? [1, 2, 3, 4].map((i) => (
+            <TripCardSkeleton
+              key={i}
+              className="rounded-md bg-white outline outline-1 outline-light-gray"
+            />
+          ))
+        : trips.map((trip: TripI) => (
+            <TripCard
+              key={trip.id}
+              type={'recurring'}
+              rating={0}
+              name={trip.driver.user.first_name}
+              gender={'M'}
+              avatar={trip.driver.user.photo}
+              origin={trip.driver_routine.origin.address}
+              destination={trip.driver_routine.destination.address}
+              date={formatDatetime(trip.departure_datetime)}
+              price={Number.parseFloat(trip.driver_routine.price)}
+              href={NEXT_ROUTES.RIDE_DETAILS_ONE(trip.id)}
+              className="w-full rounded-md bg-white outline outline-1 outline-light-gray"
+            />
+          ))}
     </div>
   );
 };

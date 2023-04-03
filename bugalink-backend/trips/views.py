@@ -50,7 +50,7 @@ class TripRequestViewSet(
             )
         return super().get_serializer_class()
 
-    # POST /trips/<id>/request (For a passenger to request a trip)
+    # POST /trips/<id>/request/ (For a passenger to request a trip)
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -66,7 +66,7 @@ class TripRequestViewSet(
             headers=headers,
         )
 
-    # PUT /trip-requests/<pk>/accept (For a driver to accept a trip request)
+    # PUT /trip-requests/<pk>/accept/ (For a driver to accept a trip request)
     @action(detail=True, methods=["put"])
     def accept(self, request, *args, **kwargs):
         trip_request = self.get_object()
@@ -74,7 +74,7 @@ class TripRequestViewSet(
         trip_request.save()
         return Response(self.get_serializer(trip_request).data)
 
-    # PUT /trip-requests/<pk>/reject (For a driver to reject a trip request)
+    # PUT /trip-requests/<pk>/reject/ (For a driver to reject a trip request)
     @action(detail=True, methods=["put"])
     def reject(self, request, *args, **kwargs):
         trip_request = self.get_object()

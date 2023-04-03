@@ -24,7 +24,7 @@ export default function RideMap() {
   endTime.setMinutes(endTime.getMinutes() + time);
 
   return (
-    <AnimatedLayout className="flex flex-col justify-between">
+    <AnimatedLayout className="justify-between flex flex-col">
       <BackButton className="absolute left-2 top-2 bg-base-origin py-3 pr-2 shadow-xl" />
       <div className="-mb-8 h-full w-full">
         <LeafletMap

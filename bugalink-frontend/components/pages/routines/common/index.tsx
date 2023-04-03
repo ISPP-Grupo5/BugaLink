@@ -32,10 +32,19 @@ export const EmptyLeafletMap = dynamic(
 );
 
 interface FormErrors {
+  origin?: string;
+  destination?: string;
+  pickTimeFrom?: string;
+  pickTimeTo?: string;
+  selectedDays?: string;
   price?: string;
 }
 
 interface FormValues {
+  origin: string;
+  destination: string;
+  pickTimeFrom: string;
+  pickTimeTo: string;
   price: number;
 }
 
@@ -60,18 +69,56 @@ export default function NewRoutine({
 
   const validateForm = (values: FormValues) => {
     const errors: FormErrors = {};
-    let isValid = true;
+
+    if (!values.origin) {
+      errors.origin = 'Por favor, ingrese una dirección de origen';
+    }
+
+    if (!values.destination) {
+      errors.destination = 'Por favor, ingrese una dirección de destino';
+    }
+
+    if (values.origin && values.destination) {
+      if (values.origin === values.destination) {
+        errors.origin = 'El origen y el destino no pueden ser iguales';
+      }
+    }
+
+    if (!values.pickTimeFrom) {
+      errors.pickTimeFrom = 'Por favor, ingrese una hora de inicio';
+    }
+
+    if (!values.pickTimeTo) {
+      errors.pickTimeTo = 'Por favor, ingrese una hora de fin';
+    }
+
+    if (values.pickTimeFrom && values.pickTimeTo) {
+      const pickTimeFromHour = parseInt(values.pickTimeFrom.split(':')[0]);
+      const pickTimeFromMinutes = parseInt(values.pickTimeFrom.split(':')[1]);
+      const pickTimeToHour = parseInt(values.pickTimeTo.split(':')[0]);
+      const pickTimeToMinutes = parseInt(values.pickTimeTo.split(':')[1]);
+
+      if (
+        pickTimeFromHour > pickTimeToHour ||
+        (pickTimeFromHour === pickTimeToHour &&
+          pickTimeFromMinutes >= pickTimeToMinutes)
+      ) {
+        errors.pickTimeTo =
+          'La hora de fin debe ser mayor que la hora de inicio';
+      }
+    }
+
+    if (!selectedDays || selectedDays.length === 0) {
+      errors.selectedDays = 'Por favor, seleccione al menos un día';
+    }
 
     if (values.price < 0) {
       errors.price = 'El precio no debe ser un valor negativo';
-      isValid = false;
     } else if (!values.price) {
       errors.price = 'Por favor, ingrese un precio';
-      isValid = false;
     } else if (values.price > totalDistance * 0.1 * 2) {
       errors.price =
         'El precio no puede ser mayor que el doble del precio recomendado';
-      isValid = false;
     }
 
     setErrors(errors);
@@ -96,8 +143,13 @@ export default function NewRoutine({
     if (formRef.current) {
       const formData = new FormData(formRef.current);
       const values: FormValues = {
+        origin: formData.get('origin') as string,
+        destination: formData.get('destination') as string,
+        pickTimeFrom: formData.get('pickTimeFrom') as string,
+        pickTimeTo: formData.get('pickTimeTo') as string,
         price: formData.get('price') as unknown as number,
       };
+
       const errors = validateForm(values);
       setErrors(errors);
       if (Object.keys(errors).length === 0) {
@@ -137,6 +189,8 @@ export default function NewRoutine({
               });
             }}
             placeholder="Desde"
+            name="origin"
+            error={errors.origin}
           />
 
           <PlacesAutocomplete
@@ -147,6 +201,8 @@ export default function NewRoutine({
               });
             }}
             placeholder="Hasta"
+            name="destination"
+            error={errors.destination}
           />
           <div className="mb-4 flex flex-col">
             <label className="text-xl font-bold">
@@ -154,14 +210,36 @@ export default function NewRoutine({
             </label>
             <span className="mt-2 flex items-center space-x-2 text-xl">
               <p>Entre las</p>{' '}
-              <TimePicker time={pickTimeFrom} setTime={setPickTimeFrom} />
+              <TimePicker
+                time={pickTimeFrom}
+                setTime={setPickTimeFrom}
+                name="pickTimeFrom"
+                error={errors.pickTimeFrom}
+              />
               <p>y las</p>{' '}
-              <TimePicker time={pickTimeTo} setTime={setPickTimeTo} />
+              <TimePicker
+                time={pickTimeTo}
+                setTime={setPickTimeTo}
+                name="pickTimeTo"
+                error={errors.pickTimeTo}
+              />
             </span>
+            {errors.pickTimeFrom ||
+              (errors.pickTimeTo && (
+                <div className="mt-1 text-xs font-medium text-red">
+                  {errors.pickTimeFrom} <br /> {errors.pickTimeTo}
+                </div>
+              ))}
           </div>
 
           <label className="text-xl font-bold">Días de la semana</label>
-          <span className="mt-2 grid min-h-[3rem] grid-cols-7 items-center divide-x divide-light-gray overflow-hidden rounded-xl border border-light-gray bg-white text-center text-xl">
+          <span
+            className={`mt-2 grid min-h-[3rem] grid-cols-7 items-center divide-x overflow-hidden rounded-xl border  bg-white text-center text-xl ${
+              errors.selectedDays
+                ? 'divide-red border-red text-red'
+                : 'divide-light-gray border-light-gray'
+            }`}
+          >
             {days.map((day: string) => (
               <p
                 key={day}
@@ -180,6 +258,11 @@ export default function NewRoutine({
               </p>
             ))}
           </span>
+          {errors.selectedDays && (
+            <div className="mt-1 text-xs font-medium text-red">
+              {errors.selectedDays}
+            </div>
+          )}
           {userType === 'driver' && (
             <div className="mt-4 flex w-full flex-col justify-center">
               <p className="mb-2 text-xl font-bold">

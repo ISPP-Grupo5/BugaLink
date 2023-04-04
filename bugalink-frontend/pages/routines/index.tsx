@@ -42,14 +42,7 @@ const mergeRoutines = (
         day: day.toString(),
         departure_time_start: routine.departure_time_start.substring(0, 5), // 18:00:00 -> 18:00
         departure_time_end: routine.departure_time_end.substring(0, 5), // 18:00:00 -> 18:00
-        // Ugly hack to determine if the routine is a passenger or driver routine
-        // We take advantage of the fact that days_of_week is an array of numbers
-        // for passenger routines and an array of strings for driver routines
-        // which has to be fixed anyways
-        type:
-          typeof routine.days_of_week[0] === 'number'
-            ? 'passengerRoutine'
-            : 'driverRoutine',
+        type: routine.type
       });
     }
   }
@@ -81,7 +74,6 @@ export default function MyRoutines() {
   const driverRoutines = driver?.routines || [];
 
   const allRoutines = mergeRoutines(passengerRoutines, driverRoutines);
-
   return (
     <AnimatedLayout className="flex flex-col bg-white">
       <BackButtonText text={'Mi horario'} />

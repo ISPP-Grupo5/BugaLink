@@ -11,6 +11,7 @@ type DriverRoutineI = {
   note: string;
   is_recurrent: boolean;
   available_seats: number;
+  type: string;
 };
 
 export default DriverRoutineI;

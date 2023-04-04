@@ -7,6 +7,6 @@ dj-rest-auth
 djangorestframework-simplejwt==4.7.1
 django-allauth>=0.24.1
 drf_spectacular
-psycopg2-binary
+psycopg2-binary==2.9.6
 Pillow>=9.3
 django-cors-headers==3.9.0

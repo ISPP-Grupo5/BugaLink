@@ -30,25 +30,47 @@ export default function Details({ data }) {
 
   //const { reviews, isLoadingReviews, isErrorReviews } = useReviews(data.id);
   const { trip, isLoading, isError } = useTrip(data.id);
-
-  console.log(trip);
   const router = useRouter();
   const { requested } = router.query;
   const [time, setTime] = useState<number>(0);
-  // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
-  const startTime = new Date('2021-05-01T21:00:00');
-  const endTime = new Date('2021-05-01T21:00:00');
-  endTime.setMinutes(endTime.getMinutes() + time);
+  const daysOfWeek = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabados', 'domingos'];
 
+  // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
+  const startTime = new Date(trip?.departure_datetime);
+  const endTime = new Date(trip?.departure_datetime);
+  endTime.setMinutes(endTime.getMinutes() + time);
   const origin = trip?.driver_routine.origin;
   const destination = trip?.driver_routine.destination;
   const fullName = `${trip?.driver.user.first_name} ${trip?.driver.user.last_name}`;
 
-  if (isLoading) return <p>Loading...</p>; // TODO: make skeleton
-  if (isError) return <p>Error</p>; // TODO: make error message
   /*
   if (isLoading || isLoadingReviews) return <p>Loading...</p>; // TODO: make skeleton
   if (isError || isErrorReviews) return <p>Error</p>; // TODO: make error message
+  */
+  if (isLoading) return <p>Loading...</p>; // TODO: make skeleton
+  if (isError) return <p>Error</p>; // TODO: make error message
+  let daysRoutine = [];
+  for (const day of trip?.driver_routine.days_of_week) {
+    daysRoutine.push(daysOfWeek[day]);
+  }
+  let daysRoutineText = "";
+
+  // Genera texto de los dias de la semana, es decir, por ejemplo: "lunes, martes y miercoles"
+  if (daysRoutine.length > 1) {
+    for (let i = 0; i < daysRoutine.length; i++) {
+      if (i === daysRoutine.length - 2) {
+        daysRoutineText += `${daysRoutine[i]} y `;
+      } else if (i < daysRoutine.length - 2) {
+        daysRoutineText += `${daysRoutine[i]}, `;
+      } else {
+        daysRoutineText += `${daysRoutine[i]}`;
+      }
+    }
+  } else {
+    daysRoutineText = daysRoutine[0];
+  }
+  const recurrentOrUnique = trip?.driver_routine.is_recurrent ? 'Recurrente' : 'Único';
+  /*
   let sum = 0;
   
   for (const element of reviews) {
@@ -98,7 +120,7 @@ export default function Details({ data }) {
           <div className="py-2">
             <p className="text-sm text-gray">Fecha y hora</p>
             <p className="text-md text-justify font-medium">
-              📅 Todos los viernes a las{' '}
+              📅 Todos los {daysRoutineText} a las{' '}
               {startTime.toLocaleString('es-ES', {
                 hour: '2-digit',
                 minute: '2-digit',
@@ -132,7 +154,7 @@ export default function Details({ data }) {
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-col">
               <p className="text-xs font-normal">Tipo de viaje</p>
-              <p className="text-xl font-bold">Recurrente</p>
+              <p className="text-xl font-bold">{recurrentOrUnique}</p>
             </div>
             <div className="flex flex-col">
               <p className="text-xs font-normal">Precio por asiento</p>

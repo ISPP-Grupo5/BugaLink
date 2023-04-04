@@ -6,7 +6,7 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, password):
         return self._create_user(email, password)
 
-    def _create_superuser(self, email, password):
+    def _create_user(self, email, password):
         email = self.normalize_email(email)
         user = AdminUser(email=email)
         user.set_password(password)

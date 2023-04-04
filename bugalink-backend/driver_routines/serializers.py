@@ -18,6 +18,7 @@ class DriverRoutineSerializer(serializers.ModelSerializer):
             "day_of_week",
             "departure_time_start",
             "departure_time_end",
+            "arrival_time",
             "price",
             "note",
             "is_recurrent",

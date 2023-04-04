@@ -1,5 +1,4 @@
 from django.db import models
-
 from driver_routines.models import DriverRoutine
 from passengers.models import Passenger
 
@@ -9,6 +8,7 @@ class Trip(models.Model):
         DriverRoutine, on_delete=models.CASCADE, related_name="trips"
     )
     departure_datetime = models.DateTimeField()
+    arrival_datetime = models.DateTimeField()
     status = models.CharField(
         choices=(
             ("PENDING", "PENDING"),
@@ -40,7 +40,9 @@ class TripRequest(models.Model):
     )
     note = models.CharField(max_length=2000, blank=True)
     reject_note = models.CharField(max_length=2048, blank=True)
-    passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE, related_name='passenger')
+    passenger = models.ForeignKey(
+        Passenger, on_delete=models.CASCADE, related_name="passenger"
+    )
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):

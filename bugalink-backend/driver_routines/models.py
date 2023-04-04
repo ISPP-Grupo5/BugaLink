@@ -1,10 +1,10 @@
+import datetime
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
 from drivers.models import Driver
 from locations.models import Location
 from utils import DAYS_OF_WEEK
-import datetime
 
 
 class DriverRoutine(models.Model):
@@ -25,7 +25,9 @@ class DriverRoutine(models.Model):
         Location, on_delete=models.SET_NULL, related_name="destination", null=True
     )
 
-    day_of_week = models.CharField(choices=DAYS_OF_WEEK, max_length=7, verbose_name=_("Day of week"))
+    day_of_week = models.CharField(
+        choices=DAYS_OF_WEEK, max_length=7, verbose_name=_("Day of week")
+    )
 
     def __str__(self):
-        return f"{self.passenger_routine} - {self.days} - {self.departure_time_start} to {self.departure_time_end}"
+        return f"{self.driver} - {self.day_of_week} - {self.departure_time_start} to {self.arrival_time}"

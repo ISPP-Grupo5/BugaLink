@@ -8,11 +8,14 @@ import TextField from '@/components/forms/TextField';
 import { signIn, useSession } from 'next-auth/react';
 import CityDriver from '/public/assets/CityDriver.svg';
 import NEXT_ROUTES from '@/constants/nextRoutes';
-import router from 'next/router';
+import { useRouter } from 'next/router';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
+
+  const error = router.query.error;
 
   const { status } = useSession();
   useEffect(() => {
@@ -60,7 +63,7 @@ export default function Login() {
                   setContent={setPassword}
                 />
               </div>
-
+              {error && <p className="mt-2 text-center text-red">{error}</p>}
               <CTAButton
                 text="INICIAR SESIÓN"
                 className="mt-4 w-5/6"

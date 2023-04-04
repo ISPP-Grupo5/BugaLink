@@ -85,8 +85,8 @@ class PreferencesTest(TestCase):
 # users/<int:user_id>/trip-requests/count/
 class TripRequestsTest(TestCase):
     def setUp(self):
-        load_data(self);
-        self.client = APIClient();
+        load_data(self)
+        self.client = APIClient()
         self.client.force_authenticate(user=self.user1)
 
     def test_get_trip_request_count(self):
@@ -98,16 +98,14 @@ class TripRequestsTest(TestCase):
 
 class UpcomingTrips(TestCase):
     def setUp(self):
-        self.client = APIClient();
-        load_data(self);
+        self.client = APIClient()
+        load_data(self)
         self.client.force_authenticate(user=self.user1)
         
     def test_get_upcoming_trips(self):
         url = "/api/v1/users/" + str(self.user1.pk) + "/trip/upcoming/"
         response = self.client.get(url)
-        data = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
-        #self.assertEqual(data['numTrips'], 1)
 
 class UserUpdateViewTest(TestCase):
     def setUp(self):
@@ -124,6 +122,6 @@ class UserUpdateViewTest(TestCase):
             "first_name": new_first_name,
             "last_name": new_last_name,
             }
-        response = self.client.put(url, data=body)
+        self.client.put(url, data=body)
         self.assertEqual(self.user.first_name, new_first_name)
         self.assertEqual(self.user.last_name, new_last_name)

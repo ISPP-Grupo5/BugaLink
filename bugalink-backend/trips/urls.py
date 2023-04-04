@@ -1,7 +1,6 @@
 from django.urls import include, path
 from rest_framework import routers
-
-from trips.views import TripRequestViewSet, TripViewSet
+from trips.views import TripRecommendationViewSet, TripRequestViewSet, TripViewSet
 
 router = routers.DefaultRouter()
 router.register(r"trips", TripViewSet)
@@ -9,6 +8,8 @@ router.register(r"trips", TripViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path("trips/<int:id>/request", TripRequestViewSet.as_view({"post": "create"})),
+    path("trips/<int:user_id>/recommendation", TripRecommendationViewSet.as_view()),
+    path("trips/<int:trip_id>/individualRides", TripViewSet().as_view()),
     path(
         "trip-requests/<int:pk>/accept", TripRequestViewSet.as_view({"put": "accept"})
     ),

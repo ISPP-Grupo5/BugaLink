@@ -1,7 +1,14 @@
+import datetime
+import math
+
+from driver_routines.models import DriverRoutine
+from drivers.models import Driver
+from passenger_routines.models import PassengerRoutine
+from passenger_routines.serializers import PassengerRoutineSerializer
+from passengers.models import Passenger, User
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
 from trips.models import Trip, TripRequest
 from trips.serializers import (
     TripRequestCreateSerializer,
@@ -81,3 +88,44 @@ class TripRequestViewSet(
         trip_request.status = "REJECTED"
         trip_request.save()
         return Response(self.get_serializer(trip_request).data)
+
+
+class TripRecommendationViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = Trip.objects.all()
+    serializer_class = TripSerializer
+
+    def get(self, request, user_id, *args, **kwargs):
+        try:
+            data = {}
+            for passenger_routine in PassengerRoutine.objects.filter(
+                passenger__user_id=user_id
+            ):
+                data = {
+                    **PassengerRoutineSerializer(
+                        passenger_routine
+                    ).get_recommendations(),
+                    **data,
+                }
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"msg": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TripByIdViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = Trip.objects.all()
+    serializer_class = TripSerializer
+
+    def get(self, request, trip_id, *args, **kwargs):
+        try:
+            trip = Trip.objects.get(id=trip_id)
+            return Response(TripSerializer(trip).data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)

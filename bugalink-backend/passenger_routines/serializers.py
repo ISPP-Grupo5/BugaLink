@@ -1,8 +1,12 @@
+from django.db.models import Q
+from driver_routines.models import DriverRoutine
+from drivers.models import Driver
 from locations.models import Location
 from locations.serializers import LocationSerializer
 from passenger_routines.models import PassengerRoutine
 from passengers.models import Passenger
 from rest_framework import serializers
+from trips.serializers import TripSerializer
 
 
 class PassengerRoutineSerializer(serializers.Serializer):
@@ -33,3 +37,30 @@ class PassengerRoutineSerializer(serializers.Serializer):
             destination=destination,
             **validated_data
         )
+
+    def get_recommendations(self, obj) -> TripSerializer(many=True):
+        driver_routines = DriverRoutine.objects.filter(
+            day_of_week=obj.day_of_week, available_seats__gt=0
+        )
+        driver_routines = driver_routines.filter(
+            Q(
+                departure_time_start__range=[
+                    obj.departure_time_start,
+                    obj.departure_time_end,
+                ]
+            )
+            | Q(
+                departure_time_end__range=[
+                    obj.departure_time_start,
+                    obj.departure_time_end,
+                ]
+            )
+        )
+        recommendable_trips = []
+        for driver_routine in driver_routines:
+            if (
+                driver_routine.origin.get_distance_to(obj.origin) <= 1.0
+                and driver_routine.destination.get_distance_to(obj.destination) <= 1.0
+            ):
+                recommendable_trips.append(driver_routine)
+        return TripSerializer(recommendable_trips, many=True)

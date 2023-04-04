@@ -1,13 +1,13 @@
 from django.db import transaction
 from drivers.models import Driver
 from drivers.serializers import DriverSerializer
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, mixins
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from trips.models import TripRequest
 from trips.serializers import TripRequestSerializer
 from users.models import User
-from users.serializers import UserSerializer
+from users.serializers import UserSerializer, UserStatsSerializer
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -88,3 +88,11 @@ class UserTripsView(APIView):
         return Response(
             data=TripRequestSerializer(trips_matching_status, many=True).data
         )
+
+class UserStatsView(viewsets.GenericViewSet,
+                    mixins.RetrieveModelMixin):
+    queryset = User.objects.all()
+    serializer_class = UserStatsSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)

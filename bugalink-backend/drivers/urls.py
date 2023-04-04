@@ -8,5 +8,5 @@ router.register(r"drivers", DriverViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("users/<int:user_id>/driver/docs", DriverViewSet.as_view({"put": "post_docs"}))
+    path("users/<int:user_id>/driver/docs", DriverViewSet.as_view({"put": "post_docs"}), name="driver-post-docs")
 ]

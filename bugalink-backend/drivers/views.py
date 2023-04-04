@@ -40,19 +40,14 @@ class DriverViewSet(
                 driver.driver_license = request.data["driver_license"]
                 driver.driver_license_status = status
             
-            if "dni" in request.data:
-                driver.dni = request.data["dni"]
-                driver.dni_status = status
-
-            ''' FUTURE VERSION
             if "dni_front" in request.data:
                 driver.dni_front = request.data["dni_front"]
-                driver.dni_front_status = status
+                driver.dni_status = status
 
             if "dni_back" in request.data:
                 driver.dni_back = request.data["dni_back"]
-                driver.dni_back_status = status
-            '''
+                driver.dni_status = status
+
             driver.save()
 
             return Response(self.get_serializer(driver).data)

@@ -13,6 +13,7 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
+
 class User(AbstractBaseUser):
     username = None  # We don't use username in the app, the unique ID is email
     email = models.EmailField(unique=True)
@@ -24,7 +25,7 @@ class User(AbstractBaseUser):
     is_passenger = models.BooleanField(default=True)
     is_driver = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=True)
+    is_superuser = models.BooleanField(default=False)
     USERNAME_FIELD = "email"
 
     objects = UserManager()

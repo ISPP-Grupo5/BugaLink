@@ -24,7 +24,8 @@ class Driver(models.Model):
     driver_license_status = models.CharField(
         choices=document_validation_choices, default="Waiting validation", max_length=20
     )
-    dni = models.ImageField(upload_to="drivers/dnis/", null=True, blank=True)
+    dni_front = models.ImageField(upload_to="drivers/dnis/", null=True, blank=True)
+    dni_back = models.ImageField(upload_to="drivers/dnis/", null=True, blank=True)
     sworn_declaration = models.ImageField(
         upload_to="drivers/sworn_declarations/", null=True, blank=True
     )

@@ -1,3 +1,4 @@
+from ratings.models import DriverRating
 from trips.models import TripRequest, Trip
 from rest_framework import serializers
 
@@ -51,3 +52,22 @@ class UserStatsSerializer(serializers.ModelSerializer):
         ).count()
         total_rides = trips_where_user_is_driver + trips_requests_where_user_is_passenger
         return total_rides
+    
+class UserRatingSerializer(serializers.ModelSerializer):
+    rating = serializers.SerializerMethodField()
+    number_ratings = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = User
+        fields = ["pk", "number_ratings", "rating"]
+
+    def get_rating(self,obj):
+        ratings = DriverRating.objects.filter(trip_request__trip__driver_routine__driver__user=obj)
+        if len(ratings) == 0:
+            return 0
+        values = [r.rating for r in ratings]
+        return  sum(values)/len(ratings)
+    
+    def get_number_ratings(self,obj):
+        count = DriverRating.objects.filter(trip_request__trip__driver_routine__driver__user=obj).count()
+        return count

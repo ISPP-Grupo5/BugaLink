@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from trips.models import TripRequest
 from trips.serializers import TripRequestSerializer
 from users.models import User
-from users.serializers import UserSerializer, UserStatsSerializer
+from users.serializers import UserSerializer, UserStatsSerializer, UserRatingSerializer
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -93,6 +93,14 @@ class UserStatsView(viewsets.GenericViewSet,
                     mixins.RetrieveModelMixin):
     queryset = User.objects.all()
     serializer_class = UserStatsSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+    
+class UserRatingView(viewsets.GenericViewSet,
+                    mixins.RetrieveModelMixin):
+    queryset = User.objects.all()
+    serializer_class = UserRatingSerializer
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)

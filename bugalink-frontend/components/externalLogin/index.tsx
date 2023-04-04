@@ -5,7 +5,7 @@ import Google from '/public/icons/Login/google.svg';
 
 export default function ExternalLogin() {
   return (
-    <div className="flex flex-row items-center justify-center space-x-5">
+    <div className="flex flex-row items-center justify-center space-x-5 grayscale">
       <RoundedButton
         href=""
         Icon={<Facebook className="ml-1 h-8 w-8 scale-125" />}

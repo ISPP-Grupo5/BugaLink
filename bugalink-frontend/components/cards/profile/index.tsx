@@ -79,12 +79,12 @@ export default function ProfileItems() {
   };
 
   return (
-    <div className="justify-between flex h-full w-full flex-col items-start gap-y-4 rounded-t-3xl bg-white px-6 py-8 text-start text-xl">
+    <div className="flex h-full w-full flex-col items-start justify-between gap-y-4 rounded-t-3xl bg-white px-6 py-8 text-start text-xl">
       <Entry Icon={<Address />}>
         <span>Direcciones</span>
       </Entry>
       <Entry Icon={<Wallet />}>
-        <span>Mi cartera</span>
+        <Link href={NEXT_ROUTES.WALLET}>Mi cartera</Link>
       </Entry>
       <Entry onClick={() => setDrawerPreferences(true)} Icon={<Preferences />}>
         <span>Preferencias</span>
@@ -162,7 +162,7 @@ function Entry({
 }) {
   return (
     <div
-      className={'justify-between flex w-full items-center ' + className}
+      className={'flex w-full items-center justify-between ' + className}
       onClick={onClick}
     >
       <span className="flex items-center gap-x-2">

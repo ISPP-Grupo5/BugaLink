@@ -59,9 +59,9 @@ export default function TextField({
           onClick={() => setShowPassword(!showPassword)}
         >
           {showPassword ? (
-            <EyeOffIcon className="h-5 w-5 text-gray" />
-          ) : (
             <EyeIcon className="h-5 w-5 text-gray" />
+          ) : (
+            <EyeOffIcon className="h-5 w-5 text-gray" />
           )}
         </div>
       )}

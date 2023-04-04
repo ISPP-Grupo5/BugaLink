@@ -4,6 +4,7 @@ const NEXT_ROUTES = {
   SIGN_UP: '/signup',
   PROFILE: (userId) => `/users/${userId}`,
   EDIT_PROFILE: (userId) => `/users/${userId}/edit`, // TODO: replace with /profile/edit to avoid people guessing other user's ids
+  WALLET: '/wallet',
   RECHARGE_CREDIT: '/wallet/recharge',
   WITHDRAW_CREDIT: '/wallet/withdraw',
   MY_ROUTINES: `/routines`,

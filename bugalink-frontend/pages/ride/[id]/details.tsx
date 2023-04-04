@@ -42,7 +42,6 @@ export default function Details({ data }) {
   const origin = trip?.driver_routine.origin;
   const destination = trip?.driver_routine.destination;
   const fullName = `${trip?.driver.user.first_name} ${trip?.driver.user.last_name}`;
-
   /*
   if (isLoading || isLoadingReviews) return <p>Loading...</p>; // TODO: make skeleton
   if (isError || isErrorReviews) return <p>Error</p>; // TODO: make error message

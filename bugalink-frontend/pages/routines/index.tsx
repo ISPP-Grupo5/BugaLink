@@ -92,18 +92,19 @@ export default function MyRoutines() {
             {isLoading || isError
               ? [1, 2].map((id) => <RoutineCardSkeleton key={id} />)
               : allRoutines
-                  .filter((routine: GenericRoutineI) => routine.day === day)
-                  .map((routine: GenericRoutineI) => (
-                    <RoutineCard
-                      key={routine.id + routine.origin.address}
-                      departureHourStart={routine.departure_time_start}
-                      departureHourEnd={routine.departure_time_end}
-                      // TODO: bad practice, use meaningful names instead of type 21 and type 2 (remeber DP1)
-                      type={routine.type}
-                      origin={routine.origin.address}
-                      destination={routine.destination.address}
-                    />
-                  ))}
+                .filter((routine: GenericRoutineI) => routine.day === day)
+                .map((routine: GenericRoutineI) => (
+                  <RoutineCard
+                    key={routine.id + routine.origin.address}
+                    id={routine.id}
+                    departureHourStart={routine.departure_time_start}
+                    departureHourEnd={routine.departure_time_end}
+                    // TODO: bad practice, use meaningful names instead of type 21 and type 2 (remeber DP1)
+                    type={routine.type}
+                    origin={routine.origin.address}
+                    destination={routine.destination.address}
+                  />
+                ))}
             {!isLoading &&
               !isError &&
               allRoutines.filter(

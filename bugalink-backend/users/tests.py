@@ -19,7 +19,7 @@ def load_data(self):
     self.passenger2 = Passenger.objects.create(user=self.user2)
     self.driver2 = Driver.objects.create(user=self.user2, preference_0 = False, preference_1 = False, preference_2 = False, preference_3 = False, )
     
-    self.driver_routine = DriverRoutine.objects.create(driver=self.driver1,
+    self.driver_routine = DriverRoutine.objects.create(driver=self.driver,
                                                        departure_time_start = time(10 , 0 , 0),
                                                        departure_time_end = time(11 , 0 , 0),
                                                        arrival_time = time(11, 0 , 0),
@@ -31,7 +31,13 @@ def load_data(self):
 
 class PreferencesTest(TestCase):
     def setUp(self):
-        load_data(self);
+        self.user = User.objects.create(email="test@test.com", first_name="nameTest", last_name="lastNameTest", is_passenger = True, is_driver=True)
+        self.passenger = Passenger.objects.create(user=self.user)
+        self.driver = Driver.objects.create(user=self.user, preference_0 = False, preference_1 = False, preference_2 = False, preference_3 = False, )
+        
+        self.user2 = User.objects.create(email="test2@test.com", first_name="nameTest", last_name="lastNameTest", is_passenger = True, is_driver=True)
+        self.passenger2 = Passenger.objects.create(user=self.user2)
+        self.driver2 = Driver.objects.create(user=self.user2, preference_0 = False, preference_1 = False, preference_2 = False, preference_3 = False, )
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
@@ -102,3 +108,22 @@ class UpcomingTrips(TestCase):
         data = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
         #self.assertEqual(data['numTrips'], 1)
+
+class UserUpdateViewTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create(email="test@test.com", first_name="nameTest", last_name="lastNameTest", is_passenger = True, is_driver=True)
+        self.passenger = Passenger.objects.create(user=self.user)
+        self.client.force_authenticate(user=self.user)
+
+    def test_put_edit_profile(self):
+        url = "/api/v1/users/"+ str(self.user.pk) + "/edit/"
+        new_first_name = "New first name"
+        new_last_name = "New lastName"
+        body={
+            "first_name": new_first_name,
+            "last_name": new_last_name,
+            }
+        response = self.client.put(url, data=body)
+        self.assertEqual(self.user.first_name, new_first_name)
+        self.assertEqual(self.user.last_name, new_last_name)

@@ -154,27 +154,32 @@
     {
       "driver_routine_id": 1,
       "departure_datetime": "2023-03-09 8:00",
+      "arrival_datetime": "2023-03-09 9:00",
       "status": "PENDING"
     },
     {
       "driver_routine_id": 2,
       "status": "PENDING",
-      "departure_datetime": "2023-03-09 8:00"
+      "departure_datetime": "2023-03-09 8:00",
+      "arrival_datetime": "2023-03-09 9:00"
     },
     {
       "driver_routine_id": 3,
       "status": "PENDING",
-      "departure_datetime": "2023-03-09 8:00"
+      "departure_datetime": "2023-03-09 8:00",
+      "arrival_datetime": "2023-03-09 9:00"
     },
     {
       "driver_routine_id": 4,
       "status": "PENDING",
-      "departure_datetime": "2023-03-09 8:00"
+      "departure_datetime": "2023-03-09 8:00",
+      "arrival_datetime": "2023-03-09 9:00"
     },
     {
       "driver_routine_id": 5,
       "status": "PENDING",
-      "departure_datetime": "2023-03-09 8:00"
+      "departure_datetime": "2023-03-09 8:00",
+      "arrival_datetime": "2023-03-09 9:00"
     }
   ],
   "TripRequest": [
@@ -296,52 +301,42 @@
     {
       "trip_id": 1,
       "rating": 5.0,
-      "preferences": [
-        true,
-        false,
-        false,
-        false
-      ]
+      "preference_0": true,
+      "preference_1": false,
+      "preference_2": false,
+      "preference_3": false
     },
     {
       "trip_id": 2,
       "rating": 4.5,
-      "preferences": [
-        false,
-        true,
-        false,
-        false
-      ]
+      "preference_0": false,
+      "preference_1": true,
+      "preference_2": false,
+      "preference_3": false
     },
     {
       "trip_id": 3,
       "rating": 3.5,
-      "preferences": [
-        false,
-        false,
-        false,
-        true
-      ]
+      "preference_0": false,
+      "preference_1": false,
+      "preference_2": false,
+      "preference_3": true
     },
     {
       "trip_id": 4,
       "rating": 4.2,
-      "preferences": [
-        true,
-        false,
-        false,
-        false
-      ]
+      "preference_0": true,
+      "preference_1": false,
+      "preference_2": false,
+      "preference_3": false
     },
     {
       "trip_id": 5,
       "rating": 4.8,
-      "preferences": [
-        true,
-        false,
-        false,
-        false
-      ]
+      "preference_0": true,
+      "preference_1": false,
+      "preference_2": false,
+      "preference_3": false
     }
   ],
   "Report": [

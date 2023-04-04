@@ -10,6 +10,7 @@ import dynamic from 'next/dynamic';
 import { useMemo, useRef, useState } from 'react';
 import { getGeocode, getLatLng } from 'use-places-autocomplete';
 import TextField from '@/components/forms/TextField';
+import { axiosAuth } from '@/lib/axios';
 
 const MIN_FREE_SEATS = 1;
 const MAX_FREE_SEATS = 8;
@@ -94,6 +95,7 @@ export default function NewRoutine({
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (formRef.current) {
+
       const formData = new FormData(formRef.current);
       const values: FormValues = {
         price: formData.get('price') as unknown as number,
@@ -102,6 +104,34 @@ export default function NewRoutine({
       setErrors(errors);
       if (Object.keys(errors).length === 0) {
         // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites
+        const data = {
+          "origin": {
+            "address": "Calle prueba, 123",
+            "latitude": "38.298551",
+            "longitude": "-6.210799"
+          },
+          "destination": {
+            "address": "Avenida del testing, 5",
+            "latitude": "38.249738",
+            "longitude": "-6.297629"
+          },
+          "days_of_week": [0, 3],
+          "departure_time_start": "19:20",
+          "departure_time_end": "19:30",
+          "price": values.price,
+          "note": "This is a note, wohoo!",
+          "is_recurrent": false,
+          "available_seats": 4
+        };
+
+        axiosAuth.post('driver-routines/', data)
+          .then(response => {
+            console.log('Data:', response.data);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+
         console.log(
           'Los datos del formulario son válidos. ¡Enviando formulario!'
         );
@@ -165,9 +195,8 @@ export default function NewRoutine({
             {days.map((day: string) => (
               <p
                 key={day}
-                className={`h-full w-full py-2 transition-colors duration-300 ${
-                  selectedDays.includes(day) ? 'bg-turquoise text-white' : ''
-                }`}
+                className={`h-full w-full py-2 transition-colors duration-300 ${selectedDays.includes(day) ? 'bg-turquoise text-white' : ''
+                  }`}
                 onClick={() => {
                   if (selectedDays.includes(day)) {
                     setSeletedDays(selectedDays.filter((d) => d !== day));

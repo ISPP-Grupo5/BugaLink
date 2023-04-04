@@ -1,13 +1,13 @@
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from trips.models import Trip
+from trips.models import Trip, TripRequest
 from users.models import User
 
 
 class DriverRating(models.Model):
-    trip = models.ForeignKey(
-        Trip, on_delete=models.CASCADE, related_name="rating_trip"
+    trip_request = models.OneToOneField(
+        TripRequest, on_delete=models.CASCADE, related_name="driver_rating"
     )  # Validar que sólo se pueda hacer una vez por viaje
     rating = models.FloatField(
         validators=[MinValueValidator(1.0), MaxValueValidator(5.0)]
@@ -18,7 +18,7 @@ class DriverRating(models.Model):
     preference_3 = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.trip} - {self.rating}"
+        return f"{self.trip_request.trip.driver_routine.driver.user} - {self.rating}"
 
 
 class Report(models.Model):

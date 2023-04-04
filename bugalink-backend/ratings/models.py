@@ -18,7 +18,7 @@ class DriverRating(models.Model):
     preference_3 = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.trip} - {self.rating} - {self.preferences}"
+        return f"{self.trip} - {self.rating}"
 
 
 class Report(models.Model):
@@ -32,3 +32,6 @@ class Report(models.Model):
     reporter_is_driver = models.BooleanField(default=False)
     reported_is_driver = models.BooleanField(default=False)
     note = models.CharField(max_length=2048)
+    
+    def __str__(self):
+            return f"{self.trip} - {self.rating}"

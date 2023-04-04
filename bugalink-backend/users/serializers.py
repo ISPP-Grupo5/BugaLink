@@ -36,3 +36,9 @@ class DriverAsUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Driver
         fields = ("user",)
+
+
+class PreferencesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Driver
+        fields=("preference_0", "preference_1", "preference_2", "preference_3")

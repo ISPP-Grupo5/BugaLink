@@ -1,13 +1,15 @@
+
+from http.client import BAD_REQUEST
 from django.db import transaction
 from drivers.models import Driver
 from drivers.serializers import DriverSerializer
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, mixins
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from trips.models import TripRequest
 from trips.serializers import TripRequestSerializer
 from users.models import User
-from users.serializers import UserSerializer
+from users.serializers import UserSerializer, PreferencesSerializer
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -88,3 +90,25 @@ class UserTripsView(APIView):
         return Response(
             data=TripRequestSerializer(trips_matching_status, many=True).data
         )
+
+#GET /users/<id>/preferences/
+class UserPreferencesView(mixins.UpdateModelMixin,
+                          mixins.RetrieveModelMixin,
+                          viewsets.GenericViewSet):
+    queryset= Driver.objects.all()
+    serializer_class=PreferencesSerializer
+    
+    def obtener(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+    
+    def actualizar(self, request, *args, **kwargs):
+        user_id = kwargs.get("pk")
+        if self.request.user.id != user_id:
+            return Response(
+                data={
+                    "error": "No tienes permiso para editar esta información"
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        else:
+            return self.update(request, *args, **kwargs)

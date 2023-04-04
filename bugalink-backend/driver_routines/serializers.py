@@ -8,6 +8,7 @@ from locations.serializers import LocationSerializer
 class DriverRoutineSerializer(serializers.ModelSerializer):
     origin = LocationSerializer()
     destination = LocationSerializer()
+    type = serializers.ReadOnlyField(default='driverRoutine')
 
     class Meta:
         model = DriverRoutine
@@ -22,6 +23,7 @@ class DriverRoutineSerializer(serializers.ModelSerializer):
             "note",
             "is_recurrent",
             "available_seats",
+            "type",
         )
 
     def create(self, validated_data):

@@ -49,23 +49,23 @@ describe('Navigation tests', () => {
     cy.location('pathname').should('match', /^\/request\/[\w-]+\/accept$/);
   });
 
-  // /ride/<rideId>/detailsOne
+  // /ride/<rideId>/details
   it('should navigate to ride details one page', () => {
     cy.visit('/');
     cy.get('[data-cy="ride-details"]').first().click();
-    cy.location('pathname').should('match', /^\/ride\/[\w-]+\/detailsOne$/);
+    cy.location('pathname').should('match', /^\/ride\/[\w-]+\/details$/);
   });
 
   // /ride/<rideId>/detailsTwo
   it('should navigate to ride details two page', () => {
-    cy.visit('/ride/1/detailsOne?requested=false');
+    cy.visit('/ride/1/details?requested=false');
     cy.get('button').contains('CONTINUAR').click();
     cy.location('pathname').should('match', /^\/ride\/[\w-]+\/detailsTwo$/);
   });
 
   // /ride/<rideId>/map
   it('should navigate to ride map page', () => {
-    cy.visit('/ride/1/detailsOne?requested=false');
+    cy.visit('/ride/1/details?requested=false');
     cy.get('[data-cy="map-link"]').click();
     cy.location('pathname').should('match', /^\/ride\/[-\w]+\/map$/);
   });
@@ -111,4 +111,4 @@ describe('Navigation tests', () => {
   });
 });
 
-export {};
+export { };

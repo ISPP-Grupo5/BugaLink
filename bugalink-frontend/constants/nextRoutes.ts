@@ -9,7 +9,7 @@ const NEXT_ROUTES = {
   MY_ROUTINES: `/routines`,
   RIDE_HISTORY: '/history',
   RIDE_DETAILS_ONE: (rideId, requested = false) =>
-    `/ride/${rideId}/detailsOne?requested=${requested}`,
+    `/ride/${rideId}/details?requested=${requested}`,
   RIDE_DETAILS_TWO: (rideId) => `/ride/${rideId}/detailsTwo`,
   RIDE_MAP: (rideId) => `/ride/${rideId}/map`,
   RATING_RIDE: (userId) => `/users/${userId}/rating/new`,

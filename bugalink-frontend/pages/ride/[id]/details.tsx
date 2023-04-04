@@ -6,36 +6,64 @@ import ProfileHeader from '@/components/ProfileHeader';
 import useMapCoordinates from '@/hooks/useMapCoordinates';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
+import { GetServerSideProps } from 'next';
+import useTrip from '@/hooks/useTrip';
+import LocationI from '@/interfaces/location';
+import useReviews from '@/hooks/useReviews';
 
-export default function DetailsOne() {
-  const origin =
-    'Escuela Técnica Superior de Ingeniería Informática, 41002 Sevilla';
-  const destination = 'Avenida de Andalucía, 35, Dos Hermanas, 41002 Sevilla';
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { id } = context.query;
 
+  const data = {
+    id: id,
+  };
+
+  return {
+    props: { data },
+  };
+};
+
+export default function Details({ data }) {
+
+  //const { reviews, isLoadingReviews, isErrorReviews } = useReviews(data.id);
+  const { trip, isLoading, isError } = useTrip(data.id);
+
+  console.log(trip);
   const router = useRouter();
   const { requested } = router.query;
-
-  const originCoords = useMapCoordinates(origin);
-  const destinationCoords = useMapCoordinates(destination);
-
   const [time, setTime] = useState<number>(0);
-
   // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
   const startTime = new Date('2021-05-01T21:00:00');
   const endTime = new Date('2021-05-01T21:00:00');
   endTime.setMinutes(endTime.getMinutes() + time);
 
+  const origin = trip?.driver_routine.origin;
+  const destination = trip?.driver_routine.destination;
+  const fullName = `${trip?.driver.user.first_name} ${trip?.driver.user.last_name}`;
+
+  if (isLoading) return <p>Loading...</p>; // TODO: make skeleton
+  if (isError) return <p>Error</p>; // TODO: make error message
+  /*
+  if (isLoading || isLoadingReviews) return <p>Loading...</p>; // TODO: make skeleton
+  if (isError || isErrorReviews) return <p>Error</p>; // TODO: make error message
+  let sum = 0;
+  
+  for (const element of reviews) {
+    sum += element.rating;
+  }
+  const meanReviews = (sum / reviews.length).toFixed(2);
+  */
   return (
     <AnimatedLayout>
       <div className="flex h-screen flex-col items-center justify-center">
         <BackButtonText text="Detalles del viaje" />
-        <div className="h-full overflow-y-scroll bg-white px-5 py-2">
+        <div className="h-full overflow-y-scroll bg-white px-5 py-2 w-full">
           {/* Profile header */}
           <ProfileHeader
-            name="Jesús Marchena"
+            name={fullName}
             rating="4.8"
             numberOfRatings="14"
             photo="/assets/avatar.png"
@@ -46,22 +74,22 @@ export default function DetailsOne() {
               <p className="text-gray">Origen</p>
               <p className="font-bold">
                 <SourcePin className="mr-2 inline" />
-                {origin}
+                {origin.address}
               </p>
             </div>
             <div>
               <p>Destino</p>
               <p className="font-bold">
                 <TargetPin className="mr-2 inline" />
-                {destination}
+                {destination.address}
               </p>
             </div>
           </div>
           {/* Map preview */}
-          {!originCoords.isLoading && !destinationCoords.isLoading && (
+          {origin && destination && (
             <MapPreview
-              originCoords={originCoords.coordinates}
-              destinationCoords={destinationCoords.coordinates}
+              originCoords={[origin.latitude, origin.longitude]}
+              destinationCoords={[destination.latitude, destination.longitude]}
               setTime={setTime}
               className="h-2/5"
             />
@@ -95,8 +123,7 @@ export default function DetailsOne() {
           <div className="py-2">
             <p className="text-sm font-normal text-gray">Nota del conductor</p>
             <p className="text-md text-justify font-medium leading-5">
-              ✏️ También puedo recoger pasajeros en otro punto si me pilla de
-              camino. Mejor pregúntame por chat antes de reservar asiento
+              ✏️ {trip.driver_routine.note}
             </p>
           </div>
         </div>
@@ -109,11 +136,11 @@ export default function DetailsOne() {
             </div>
             <div className="flex flex-col">
               <p className="text-xs font-normal">Precio por asiento</p>
-              <p className="text-xl font-bold">2,00€</p>
+              <p className="text-xl font-bold">{trip.driver_routine.price}€</p>
             </div>
             <div className="flex flex-col">
               <p className="text-xs font-normal">Plazas libres</p>
-              <p className="text-xl font-bold">2</p>
+              <p className="text-xl font-bold">{trip.driver_routine.available_seats}</p>
             </div>
           </div>
           {requested === 'false' && (

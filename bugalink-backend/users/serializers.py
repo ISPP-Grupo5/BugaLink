@@ -20,6 +20,13 @@ class UserSerializer(serializers.ModelSerializer):
             "driver",
         )
 
+class UserUpdateSerializer(serializers.ModelSerializer):
+    photo = serializers.ImageField(required=False)
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
+    class Meta:
+        model = User
+        fields = ['first_name','last_name','photo']
 
 # Given a passenger, return its user object
 class PassengerAsUserSerializer(serializers.ModelSerializer):

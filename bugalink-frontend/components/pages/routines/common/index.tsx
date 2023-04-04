@@ -104,26 +104,30 @@ export default function NewRoutine({
       setErrors(errors);
       if (Object.keys(errors).length === 0) {
         // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites
+        let daysOfWeek = [];
+        for (const day in selectedDays) {
+          daysOfWeek.push(day);
+        }
         const data = {
           "origin": {
-            "address": "Calle prueba, 123",
-            "latitude": "38.298551",
-            "longitude": "-6.210799"
+            "address": origin,
+            "latitude": originCoords.lat.toString(),
+            "longitude": originCoords.lng.toString()
           },
           "destination": {
-            "address": "Avenida del testing, 5",
-            "latitude": "38.249738",
-            "longitude": "-6.297629"
+            "address": destination,
+            "latitude": destinationCoords.lat.toString(),
+            "longitude": destinationCoords.lng.toString()
           },
-          "days_of_week": [0, 3],
-          "departure_time_start": "19:20",
-          "departure_time_end": "19:30",
-          "price": values.price,
-          "note": "This is a note, wohoo!",
+          "days_of_week": daysOfWeek,
+          "departure_time_start": pickTimeFrom,
+          "departure_time_end": pickTimeTo,
+          "price": price,
+          "note": note,
           "is_recurrent": false,
-          "available_seats": 4
+          "available_seats": freeSeatsNumber
         };
-
+        console.log(data);
         axiosAuth.post('driver-routines/', data)
           .then(response => {
             console.log('Data:', response.data);

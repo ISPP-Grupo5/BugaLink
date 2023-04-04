@@ -6,12 +6,13 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, password):
         return self._create_user(email, password)
 
-    def _create_user(self, email, password):
+    def _create_superuser(self, email, password):
         email = self.normalize_email(email)
         user = AdminUser(email=email)
         user.set_password(password)
         user.save()
         return user
+
 
 class User(AbstractBaseUser):
     username = None  # We don't use username in the app, the unique ID is email
@@ -24,7 +25,7 @@ class User(AbstractBaseUser):
     is_passenger = models.BooleanField(default=True)
     is_driver = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=True)
+    is_superuser = models.BooleanField(default=False)
     USERNAME_FIELD = "email"
 
     objects = UserManager()

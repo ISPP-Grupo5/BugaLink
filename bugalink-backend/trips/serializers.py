@@ -38,7 +38,7 @@ class TripRequestSerializer(serializers.ModelSerializer):
 class TripRequestCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = TripRequest
-        fields = ("id", "note", "price")
+        fields = ("id", "note")
 
     # TODO: Verificar que no se solicita un viaje a si mismo y que no lo ha solicitado ya
     def create(self, validated_data):
@@ -46,7 +46,7 @@ class TripRequestCreateSerializer(serializers.ModelSerializer):
         trip_id = self.context["view"].kwargs["id"]
         trip = Trip.objects.get(id=trip_id)
         passenger = self.context["request"].user.passenger
-        price = validated_data.pop("price")       
+        price = trip.driver_routine.price
         note = validated_data.pop("note")
         return TripRequest.objects.create(
             passenger=passenger, trip=trip, note=note, price=price

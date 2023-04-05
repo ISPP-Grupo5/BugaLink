@@ -23,6 +23,13 @@ class UserSerializer(serializers.ModelSerializer):
             "driver",
         )
 
+class UserUpdateSerializer(serializers.ModelSerializer):
+    photo = serializers.ImageField(required=False)
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
+    class Meta:
+        model = User
+        fields = ['first_name','last_name','photo']
 
 # Given a passenger, return its user object
 class PassengerAsUserSerializer(serializers.ModelSerializer):
@@ -72,3 +79,8 @@ class UserRatingSerializer(serializers.ModelSerializer):
     def get_number_ratings(self,obj) -> serializers.IntegerField:
         count = DriverRating.objects.filter(trip_request__trip__driver_routine__driver__user=obj).count()
         return count
+
+class PreferencesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Driver
+        fields=("preference_0", "preference_1", "preference_2", "preference_3")

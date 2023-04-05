@@ -13,6 +13,7 @@ class PassengerRoutineSerializer(serializers.Serializer):
     day_of_week = serializers.CharField()
     departure_time_start = serializers.TimeField()
     departure_time_end = serializers.TimeField()
+    arrival_time = serializers.TimeField()
     type = serializers.ReadOnlyField(default='passengerRoutine')
 
     class Meta:

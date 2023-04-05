@@ -8,6 +8,9 @@ class DriverRoutineSerializer(serializers.ModelSerializer):
     origin = LocationSerializer()
     destination = LocationSerializer()
     type = serializers.ReadOnlyField(default='driverRoutine')
+    departure_time_start = serializers.TimeField()
+    departure_time_end = serializers.TimeField()
+    arrival_time = serializers.TimeField()
 
     class Meta:
         model = DriverRoutine

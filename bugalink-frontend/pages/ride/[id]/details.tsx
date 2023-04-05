@@ -110,7 +110,7 @@ export default function Details({ data }) {
               {preferences?.prefers_music ? '🎶 Prefiero ir escuchando música' : '🔇 Prefiero ir sin música'}
             </p>
             <p className="text-md text-justify font-medium">
-              {preferences?.allows_pets ? '🐾 Acepto mascotas' : '🚫 No acepto mascotas'}
+              {preferences?.allows_pets ? '🐾 Acepto mascotas' : '😿 No acepto mascotas'}
 
             </p>
             <p className="text-md text-justify font-medium">

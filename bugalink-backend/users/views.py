@@ -28,10 +28,6 @@ class BecomeDriverView(APIView):
         # Create a driver profile for the user
         driver = Driver.objects.create(
             user=request.user,
-            preference_0=False,
-            preference_1=False,
-            preference_2=False,
-            preference_3=False,
         )
         request.user.is_driver = True
         request.user.save()

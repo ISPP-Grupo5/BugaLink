@@ -17,11 +17,11 @@ class DriverSerializer(serializers.ModelSerializer):
         model = Driver
         fields = ("id", "routines", "trips")
 
-    def get_routines(self, obj):
+    def get_routines(self, obj) -> DriverRoutineSerializer(many=True):
         routines = obj.routines.all()
         return DriverRoutineSerializer(routines, many=True).data
 
-    def get_trips(self, obj):
+    def get_trips(self, obj) -> TripSerializer(many=True):
         # Get the trips where the driver is the driver
         trips = Trip.objects.filter(driver_routine__driver=obj)
         return TripSerializer(trips, many=True).data

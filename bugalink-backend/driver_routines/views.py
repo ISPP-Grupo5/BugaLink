@@ -48,18 +48,21 @@ class DriverRoutineViewSet(
         serializer.save()
 
         # When creating a driver_routine, we also need to create a Trip
-        days_of_week = serializer.instance.days_of_week
-        first_day = days_of_week[0]
+        day = serializer.instance.day_of_week
         # Create a datetime object with the first day of the week, next closest date
         # The time will be the departure_time_start
 
         departure_datetime = datetime.combine(
-            next_weekday(datetime.now(), first_day),
+            next_weekday(datetime.now(), day),
             serializer.instance.departure_time_start,
+        )
+        arrival_datetime = datetime.combine(
+            next_weekday(datetime.now(), day),
+            serializer.instance.arrival_time,
         )
 
         Trip.objects.create(
-            driver_routine=serializer.instance, departure_datetime=departure_datetime
+            driver_routine=serializer.instance, departure_datetime=departure_datetime, arrival_datetime = arrival_datetime
         )
 
         created_id = serializer.instance.id

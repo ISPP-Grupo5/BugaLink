@@ -4,31 +4,36 @@
       "password": "pbkdf2_sha256$600000$iAL8xlbTQ8fZyOJMR220ec$1Y6LBSQ2Xn82RH7fbQ3F2eXA1hYIB9mCf1+HJ9Tm2/k=",
       "first_name": "Federico",
       "last_name": "de los Palotes",
-      "email": "federico@bugalink.com"
+      "email": "federico@bugalink.com",
+      "is_driver": true
     },
     {
-      "password": "R4m0n",
+      "password": "pbkdf2_sha256$600000$LbkMRestsmHuPzQS98iiYD$471fl7AvnhcsfUvg6+ayeEl3zX+v7nTHh8LUQiy9RxI=",
       "first_name": "Ramón Antonio",
       "last_name": "Pérez González",
-      "email": "ramonantonio@bugalink.com"
+      "email": "ramonantonio@bugalink.com",
+      "is_driver": true
     },
     {
       "password": "M4r14",
       "first_name": "María Lucía",
       "last_name": "Hernández de la Roña",
-      "email": "marialucia@bugalink.com"
+      "email": "marialucia@bugalink.com",
+      "is_driver": true
     },
     {
       "password": "C0nch4",
       "first_name": "Concha Manuela",
       "last_name": "Sánchez del Río",
-      "email": "conchamanuela@bugalink.com"
+      "email": "conchamanuela@bugalink.com",
+      "is_driver": false
     },
     {
       "password": "Pr4d4",
       "first_name": "Ágata",
       "last_name": "Ruíz de la Prada",
-      "email": "prada@bugalink.com"
+      "email": "prada@bugalink.com",
+      "is_driver": false
     }
   ],
   "Passenger": [
@@ -69,20 +74,6 @@
       "prefers_music": false,
       "allows_smoke": false,
       "allows_pets": false
-    },
-    {
-      "user_id": 4,
-      "prefers_talk": true,
-      "prefers_music": true,
-      "allows_smoke": true,
-      "allows_pets": false
-    },
-    {
-      "user_id": 5,
-      "prefers_talk": true,
-      "prefers_music": false,
-      "allows_smoke": false,
-      "allows_pets": true
     }
   ],
   "Location": [
@@ -126,7 +117,7 @@
       "price": 2.5
     },
     {
-      "driver_id": 2,
+      "driver_id": 1,
       "available_seats": 1,
       "departure_time_start": "8:00",
       "departure_time_end": "8:15",
@@ -137,7 +128,7 @@
       "price": 3
     },
     {
-      "driver_id": 3,
+      "driver_id": 1,
       "available_seats": 1,
       "departure_time_start": "8:00",
       "departure_time_end": "8:15",
@@ -148,7 +139,7 @@
       "price": 5
     },
     {
-      "driver_id": 4,
+      "driver_id": 2,
       "available_seats": 2,
       "departure_time_start": "8:00",
       "departure_time_end": "8:15",
@@ -159,7 +150,7 @@
       "price": 1.8
     },
     {
-      "driver_id": 5,
+      "driver_id": 2,
       "available_seats": 1,
       "departure_time_start": "8:00",
       "departure_time_end": "8:15",

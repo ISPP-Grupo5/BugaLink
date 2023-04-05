@@ -108,7 +108,7 @@ export default function Register() {
               </div>
               <CTAButton
                 text={isLoading ? 'PROCESANDO...' : 'REGISTRARSE'}
-                className="mt-8 w-5/6"
+                className="mt-2 w-5/6"
                 onClick={handleRegister}
                 disabled={isLoading}
               />
@@ -121,11 +121,25 @@ export default function Register() {
                   );
                 })}
 
-              <span className="flex flex-row justify-center pt-4">
-                <p className="font-light text-gray">¿Ya tienes una cuenta?</p>
-                <Link href={NEXT_ROUTES.LOGIN} className="ml-1">
-                  <p className="text-dark-turquoise"> Iniciar sesión </p>
-                </Link>
+              <span className="flex flex-col items-center pt-2">
+                <p className="font-light text-gray">
+                  Al registrarte aceptas nuestros{' '}
+                  <a
+                    href="https://www.bugalink.es/terms"
+                    className="font-normal text-dark-turquoise"
+                  >
+                    Términos y condiciones
+                  </a>
+                </p>
+                <p className="font-light text-gray">
+                  ¿Ya tienes una cuenta?{' '}
+                  <Link
+                    href={NEXT_ROUTES.LOGIN}
+                    className="font-normal text-dark-turquoise"
+                  >
+                    Iniciar sesión
+                  </Link>
+                </p>
               </span>
             </form>
           </div>

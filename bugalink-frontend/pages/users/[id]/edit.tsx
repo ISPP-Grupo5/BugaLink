@@ -2,6 +2,10 @@ import { BackButtonText } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import TextField from '@/components/forms/TextField';
 import AnimatedLayout from '@/components/layouts/animated';
+import NEXT_ROUTES from '@/constants/nextRoutes';
+import { axiosAuth } from '@/lib/axios';
+import { User } from 'next-auth';
+import { signOut, useSession } from 'next-auth/react';
 import Avatar from 'public/assets/avatar.svg';
 import Pencil from 'public/assets/edit.svg';
 import { useRef, useState } from 'react';
@@ -21,6 +25,9 @@ interface FormValues {
 }
 
 export default function EditProfile() {
+  const { data } = useSession();
+  const user = data?.user as User;
+
   const [name, setName] = useState<string>('Pedro');
   const [surname, setSurname] = useState<string>('Pérez');
   const [email, setEmail] = useState<string>('pedroperez@mail.com');
@@ -70,7 +77,7 @@ export default function EditProfile() {
     return errors;
   };
 
-  const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (formRef.current) {
       const formData = new FormData(formRef.current);
@@ -92,10 +99,26 @@ export default function EditProfile() {
     }
   };
 
+  const handleDeleteAccount = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    try {
+      const response = await axiosAuth.delete(`/users/${user.user_id}`);
+      if (response.status === 204) {
+        await signOut({
+          callbackUrl: NEXT_ROUTES.LOGIN,
+        });
+      }
+    } catch (error) {
+      alert(error?.response?.data?.error || 'Error al eliminar la cuenta');
+    }
+  };
+
   return (
-    <AnimatedLayout className="flex h-screen flex-col items-center justify-center bg-white">
+    <AnimatedLayout className="flex h-screen flex-col items-center justify-between bg-white">
       <BackButtonText text="Mi perfil" />
-      <div className="flex h-full w-full flex-col items-center overflow-y-scroll pb-32">
+      <div className="flex h-full w-full flex-col items-center overflow-y-scroll">
         <div className="z-10 mb-5 rounded-t-3xl text-center">
           <div className="relative mx-auto w-min">
             <Avatar className="mx-auto my-2 h-24 w-24 rounded-full outline outline-8 outline-white" />
@@ -107,7 +130,10 @@ export default function EditProfile() {
           </div>
           <p className="pt-2 text-3xl ">Pedro Pérez</p>
         </div>
-        <form ref={formRef} className="flex w-full flex-col items-center">
+        <form
+          ref={formRef}
+          className="flex h-full w-full flex-col items-center justify-between"
+        >
           <div className="mt-5 flex w-full flex-col items-center space-y-6">
             <TextField
               fieldName="Nombre"
@@ -157,14 +183,17 @@ export default function EditProfile() {
               setShowPassword={setShowPassword}
             />
           </div>
-          <div className="absolute bottom-2 mt-5 flex w-full flex-col items-center justify-center space-y-6 bg-white pt-3">
-            <p className="text-sm font-semibold text-gray">
+          <div className="my-5 flex w-full flex-col items-center justify-center">
+            <button className="text-red" onClick={handleDeleteAccount}>
+              Solicita la eliminación de tu cuenta
+            </button>
+            <p className="mb-2 text-sm font-semibold text-gray">
               Usuario desde el 22 de marzo de 2023
             </p>
             <CTAButton
               className="w-11/12"
               text="GUARDAR"
-              onClick={handleButtonClick}
+              onClick={handleSubmit}
             />
           </div>
         </form>

@@ -16,7 +16,7 @@ const MIN_FREE_SEATS = 1;
 const MAX_FREE_SEATS = 8;
 
 const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-const daysToApi = ['Mon', 'tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const daysToApi = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 type Props = {
   userType: 'passenger' | 'driver';
@@ -111,7 +111,7 @@ export default function NewRoutine({
         // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites
         let daysOfWeek = [];
         for (const day in selectedDays) {
-          daysOfWeek.push();
+          daysOfWeek.push(daysToApi[days.indexOf(selectedDays[day])]);
         }
         const data = {
           "origin": {
@@ -124,7 +124,7 @@ export default function NewRoutine({
             "latitude": destinationCoords.lat.toString(),
             "longitude": destinationCoords.lng.toString()
           },
-          "day_of_week": "Mon",
+          "days_of_week": daysOfWeek,
           "departure_time_start": pickTimeFrom,
           "departure_time_end": pickTimeTo,
           "arrival_time": "" + arrivalTime.getHours() + ":" + arrivalTime.getMinutes(),

@@ -80,7 +80,3 @@ class UserRatingSerializer(serializers.ModelSerializer):
         count = DriverRating.objects.filter(trip_request__trip__driver_routine__driver__user=obj).count()
         return count
 
-class PreferencesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Driver
-        fields=("preference_0", "preference_1", "preference_2", "preference_3")

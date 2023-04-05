@@ -25,3 +25,8 @@ class DriverSerializer(serializers.ModelSerializer):
         # Get the trips where the driver is the driver
         trips = Trip.objects.filter(driver_routine__driver=obj)
         return TripSerializer(trips, many=True).data
+
+class PreferencesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Driver
+        fields=("prefers_talk", "prefers_music", "allows_pets", "allows_smoke")

@@ -19,7 +19,6 @@ class DriverRoutineViewSet(
     viewsets.GenericViewSet,
 ):
     queryset = DriverRoutine.objects.all()
-    # serializer_class = DriverRoutineSerializer
 
     def get_serializer_class(self):
         if self.action == "create":

@@ -3,15 +3,13 @@ import CTAButton from '@/components/buttons/CTA';
 import AnimatedLayout from '@/components/layouts/animated';
 import MapPreview from '@/components/maps/mapPreview';
 import ProfileHeader from '@/components/ProfileHeader';
-import useMapCoordinates from '@/hooks/useMapCoordinates';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
 import { GetServerSideProps } from 'next';
 import useTrip from '@/hooks/useTrip';
-import LocationI from '@/interfaces/location';
 import useReviews from '@/hooks/useReviews';
 import useDriverPreferences from '@/hooks/useDriverPreferences';
 

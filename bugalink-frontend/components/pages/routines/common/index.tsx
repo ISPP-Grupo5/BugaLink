@@ -11,8 +11,7 @@ import { useMemo, useRef, useState } from 'react';
 import { getGeocode, getLatLng } from 'use-places-autocomplete';
 import TextField from '@/components/forms/TextField';
 import { axiosAuth } from '@/lib/axios';
-import { mutate } from 'swr';
-import { Router, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 
 const MIN_FREE_SEATS = 1;
@@ -113,7 +112,7 @@ export default function NewRoutine({
       setErrors(errors);
       if (Object.keys(errors).length === 0) {
         // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites
-        let daysOfWeek = [];
+        const daysOfWeek = [];
         for (const day in selectedDays) {
           daysOfWeek.push(daysToApi[days.indexOf(selectedDays[day])]);
         }

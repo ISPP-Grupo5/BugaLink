@@ -11,6 +11,9 @@ import { useMemo, useRef, useState } from 'react';
 import { getGeocode, getLatLng } from 'use-places-autocomplete';
 import TextField from '@/components/forms/TextField';
 import { axiosAuth } from '@/lib/axios';
+import { mutate } from 'swr';
+import { Router, useRouter } from 'next/router';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 
 const MIN_FREE_SEATS = 1;
 const MAX_FREE_SEATS = 8;
@@ -62,6 +65,7 @@ export default function NewRoutine({
   const [price, setPrice] = useState('');
   const [errors, setErrors] = useState<FormErrors>({});
   const formRef = useRef<HTMLFormElement>(null);
+  const router = useRouter();
 
   //arrivalTime.setMinutes
   const validateForm = (values: FormValues) => {
@@ -137,14 +141,16 @@ export default function NewRoutine({
         axiosAuth.post('driver-routines/', data)
           .then(response => {
             console.log('Data:', response.data);
+            console.log(
+              'Los datos del formulario son válidos. ¡Enviando formulario!'
+            );
+            router.push(NEXT_ROUTES.MY_ROUTINES);
           })
           .catch(error => {
             console.error('Error:', error);
           });
 
-        console.log(
-          'Los datos del formulario son válidos. ¡Enviando formulario!'
-        );
+
       }
     }
   };

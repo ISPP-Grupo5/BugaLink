@@ -5,6 +5,10 @@ import MapPin from '/public/assets/map-pin.svg';
 import OrigenPin from '/public/assets/origen-pin.svg';
 import SteeringWheel from '/public/assets/steering-wheel.svg';
 import { axiosAuth } from '@/lib/axios';
+import { mutate } from 'swr';
+import { useSession } from 'next-auth/react';
+import { User } from 'next-auth';
+import { useState } from 'react';
 
 export default function RoutineCard({
   id,
@@ -15,6 +19,9 @@ export default function RoutineCard({
   destination,
 }) {
   const isDriver = type === 'driverRoutine';
+  const { data, status } = useSession();
+  const user = data?.user as User;
+  const [isDeleted, setIsDeleted] = useState(false)
 
   function deleteRoutine() {
 
@@ -22,6 +29,8 @@ export default function RoutineCard({
       axiosAuth.delete(`driver-routines/${id}`)
         .then(response => {
           console.log('Data:', response.data);
+          //TODO Recargar tarjetas de manera correcta en un futuro
+          setIsDeleted(true);
         })
         .catch(error => {
           console.error('Error:', error);
@@ -30,12 +39,17 @@ export default function RoutineCard({
       axiosAuth.delete(`passenger-routines/${id}`)
         .then(response => {
           console.log('Data:', response.data);
+          //TODO Recargar tarjetas de manera correcta en un futuro
+          setIsDeleted(true);
         })
         .catch(error => {
           console.error('Error:', error);
         });
     }
 
+  }
+  if (isDeleted) {
+    return (<></>);
   }
   return (
     <span className="flex w-full rounded-lg border border-border-color">

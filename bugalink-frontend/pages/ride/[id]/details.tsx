@@ -13,6 +13,7 @@ import { GetServerSideProps } from 'next';
 import useTrip from '@/hooks/useTrip';
 import LocationI from '@/interfaces/location';
 import useReviews from '@/hooks/useReviews';
+import useDriverPreferences from '@/hooks/useDriverPreferences';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
@@ -28,12 +29,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 export default function Details({ data }) {
 
-  //const { reviews, isLoadingReviews, isErrorReviews } = useReviews(data.id);
+  const { reviews, isLoadingReviews, isErrorReviews } = useReviews(data.id);
+  const { preferences, isLoadingPreferences, isErrorPreferences } = useDriverPreferences(data.id);
   const { trip, isLoading, isError } = useTrip(data.id);
   const router = useRouter();
   const { requested } = router.query;
   const [time, setTime] = useState<number>(0);
   const daysOfWeek = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabados', 'domingos'];
+  const daysOfWeekAPI = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
   const startTime = new Date(trip?.departure_datetime);
@@ -42,41 +45,12 @@ export default function Details({ data }) {
   const origin = trip?.driver_routine.origin;
   const destination = trip?.driver_routine.destination;
   const fullName = `${trip?.driver.user.first_name} ${trip?.driver.user.last_name}`;
-  /*
-  if (isLoading || isLoadingReviews) return <p>Loading...</p>; // TODO: make skeleton
-  if (isError || isErrorReviews) return <p>Error</p>; // TODO: make error message
-  */
-  if (isLoading) return <p>Loading...</p>; // TODO: make skeleton
-  if (isError) return <p>Error</p>; // TODO: make error message
-  let daysRoutine = [];
-  for (const day of trip?.driver_routine.days_of_week) {
-    daysRoutine.push(daysOfWeek[day]);
-  }
-  let daysRoutineText = "";
 
-  // Genera texto de los dias de la semana, es decir, por ejemplo: "lunes, martes y miercoles"
-  if (daysRoutine.length > 1) {
-    for (let i = 0; i < daysRoutine.length; i++) {
-      if (i === daysRoutine.length - 2) {
-        daysRoutineText += `${daysRoutine[i]} y `;
-      } else if (i < daysRoutine.length - 2) {
-        daysRoutineText += `${daysRoutine[i]}, `;
-      } else {
-        daysRoutineText += `${daysRoutine[i]}`;
-      }
-    }
-  } else {
-    daysRoutineText = daysRoutine[0];
-  }
+  if (isLoading || isLoadingReviews || isLoadingPreferences) return <p>Loading...</p>; // TODO: make skeleton
+  if (isError || isErrorReviews || isErrorPreferences) return <p>Error</p>; // TODO: make error message
+  const dayRoutineText = daysOfWeek[daysOfWeekAPI.indexOf(trip?.driver_routine.day_of_week)];
   const recurrentOrUnique = trip?.driver_routine.is_recurrent ? 'Recurrente' : 'Único';
-  /*
-  let sum = 0;
-  
-  for (const element of reviews) {
-    sum += element.rating;
-  }
-  const meanReviews = (sum / reviews.length).toFixed(2);
-  */
+
   return (
     <AnimatedLayout>
       <div className="flex h-screen flex-col items-center justify-center">
@@ -85,8 +59,8 @@ export default function Details({ data }) {
           {/* Profile header */}
           <ProfileHeader
             name={fullName}
-            rating="4.8"
-            numberOfRatings="14"
+            rating={reviews.rating}
+            numberOfRatings={reviews.number_ratings}
             photo="/assets/avatar.png"
           />
           {/* Origin and target destinations */}
@@ -119,7 +93,7 @@ export default function Details({ data }) {
           <div className="py-2">
             <p className="text-sm text-gray">Fecha y hora</p>
             <p className="text-md text-justify font-medium">
-              📅 Todos los {daysRoutineText} a las{' '}
+              📅 Todos los {dayRoutineText} a las{' '} {/*TODO El toLocaleString creo que está sumando dos horas REVISAR*/}
               {startTime.toLocaleString('es-ES', {
                 hour: '2-digit',
                 minute: '2-digit',
@@ -129,16 +103,18 @@ export default function Details({ data }) {
           <div className="py-2">
             <p className="text-sm text-gray">Sobre el conductor</p>
             <p className="text-md text-justify font-medium">
-              🗣 Prefiero hablar durante el viaje
+              {preferences?.prefers_talk ? '🗣 Prefiero hablar durante el viaje' : '🤫 Prefiero no hablar durante el viaje'}
+
             </p>
             <p className="text-md text-justify font-medium">
-              🎶 Prefiero ir escuchando música
+              {preferences?.prefers_music ? '🎶 Prefiero ir escuchando música' : '🔇 Prefiero ir sin música'}
             </p>
             <p className="text-md text-justify font-medium">
-              🐾 Acepto mascotas
+              {preferences?.allows_pets ? '🐾 Acepto mascotas' : '🚫 No acepto mascotas'}
+
             </p>
             <p className="text-md text-justify font-medium">
-              🚭 No fumar en el coche
+              {preferences?.allows_smoke ? '🚬 Se puede fumar en el coche' : '🚭 No fumar en el coche'}
             </p>
           </div>
           <div className="py-2">

@@ -5,7 +5,7 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
 
 from driver_routines.models import DriverRoutine
-from driver_routines.serializers import DriverRoutineSerializer
+from driver_routines.serializers import DriverRoutineSerializer, DriverRoutineCreateSerializer
 from trips.models import Trip
 from utils import next_weekday
 
@@ -19,12 +19,12 @@ class DriverRoutineViewSet(
     viewsets.GenericViewSet,
 ):
     queryset = DriverRoutine.objects.all()
-    serializer_class = DriverRoutineSerializer
+    # serializer_class = DriverRoutineSerializer
 
     def get_serializer_class(self):
         if self.action == "create":
-            return DriverRoutineSerializer  # TODO: use different serializer for GET?
-        return super().get_serializer_class()
+            return DriverRoutineCreateSerializer  # TODO: use different serializer for GET?
+        return DriverRoutineSerializer
 
     # Individual GET
     def retrieve(self, request, pk=None):
@@ -43,33 +43,33 @@ class DriverRoutineViewSet(
             )
 
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        # NOTE: this saves the entity in the DB and returns the created object
-        serializer.save()
+        # NOTE: this creates a routine for each day and return a list of them
+        routines = serializer.create()
+        for routine in routines:
+            # When creating a driver_routine, we also need to create a Trip
+            day = routine.day_of_week
+            # Create a datetime object with the first day of the week, next closest date
+            # The time will be the departure_time_start
 
-        # When creating a driver_routine, we also need to create a Trip
-        day = serializer.instance.day_of_week
-        # Create a datetime object with the first day of the week, next closest date
-        # The time will be the departure_time_start
+            departure_datetime = datetime.combine(
+                next_weekday(datetime.now(), day),
+                routine.departure_time_start,
+            )
+            arrival_datetime = datetime.combine(
+                next_weekday(datetime.now(), day),
+                routine.arrival_time,
+            )
 
-        departure_datetime = datetime.combine(
-            next_weekday(datetime.now(), day),
-            serializer.instance.departure_time_start,
-        )
-        arrival_datetime = datetime.combine(
-            next_weekday(datetime.now(), day),
-            serializer.instance.arrival_time,
-        )
+            Trip.objects.create(
+                driver_routine=routine, departure_datetime=departure_datetime, arrival_datetime = arrival_datetime
+            )
 
-        Trip.objects.create(
-            driver_routine=serializer.instance, departure_datetime=departure_datetime, arrival_datetime = arrival_datetime
-        )
-
-        created_id = serializer.instance.id
-        headers = self.get_success_headers(serializer.data)
+        response_serializer = DriverRoutineSerializer(routines,many=True)
+        headers = self.get_success_headers(response_serializer.data)
+        # We return the routines created
         return Response(
-            {"id": created_id, **serializer.data},
-            # self.get_serializer(driver_routine).data,
-            status=status.HTTP_201_CREATED,
+            response_serializer.data,
+            
             headers=headers,
+            status=status.HTTP_201_CREATED
         )

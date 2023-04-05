@@ -8,7 +8,7 @@ router.register(r"users", UserViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("users/become-driver/", BecomeDriverView.as_view()),
+    path("users/become-driver", BecomeDriverView.as_view()),
     path("users/<int:id>/trip-requests/", UserTripsView.as_view()),
     path("users/<int:id>/edit/", UserUpdateView.as_view()),
     path("users/<int:pk>/stats/", UserStatsView.as_view({"get":"get"})),

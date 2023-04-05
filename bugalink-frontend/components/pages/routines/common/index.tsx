@@ -47,8 +47,11 @@ export default function NewRoutine({
 }: Props) {
   const [pickTimeFrom, setPickTimeFrom] = useState('12:00');
   const [pickTimeTo, setPickTimeTo] = useState('12:10');
+  const [time, setTime] = useState<number>(0);
   const [selectedDays, setSeletedDays] = useState([]);
-
+  const arrivalTime = new Date(Date.now());
+  arrivalTime.setHours(Number(pickTimeFrom?.split(':')[0]));
+  arrivalTime.setMinutes(Number(pickTimeFrom?.split(':')[1]) + time);
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
 
@@ -59,6 +62,7 @@ export default function NewRoutine({
   const [errors, setErrors] = useState<FormErrors>({});
   const formRef = useRef<HTMLFormElement>(null);
 
+  //arrivalTime.setMinutes
   const validateForm = (values: FormValues) => {
     const errors: FormErrors = {};
     let isValid = true;
@@ -119,9 +123,10 @@ export default function NewRoutine({
             "latitude": destinationCoords.lat.toString(),
             "longitude": destinationCoords.lng.toString()
           },
-          "days_of_week": daysOfWeek,
+          "day_of_week": "Mon",
           "departure_time_start": pickTimeFrom,
           "departure_time_end": pickTimeTo,
+          "arrival_time": "" + arrivalTime.getHours() + ":" + arrivalTime.getMinutes(),
           "price": price,
           "note": note,
           "is_recurrent": false,
@@ -154,6 +159,7 @@ export default function NewRoutine({
               originCoords={originCoords}
               destinationCoords={destinationCoords}
               setTotalDistance={setTotalDistance}
+              setTime={setTime}
             />
           ) : (
             <EmptyLeafletMap />

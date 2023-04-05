@@ -1,13 +1,16 @@
-from rest_framework import serializers
-
 from driver_routines.models import DriverRoutine
 from locations.models import Location
 from locations.serializers import LocationSerializer
+from rest_framework import serializers
 
 
 class DriverRoutineSerializer(serializers.ModelSerializer):
     origin = LocationSerializer()
     destination = LocationSerializer()
+    type = serializers.ReadOnlyField(default='driverRoutine')
+    departure_time_start = serializers.TimeField()
+    departure_time_end = serializers.TimeField()
+    arrival_time = serializers.TimeField()
 
     class Meta:
         model = DriverRoutine
@@ -15,19 +18,22 @@ class DriverRoutineSerializer(serializers.ModelSerializer):
             "id",
             "origin",
             "destination",
-            "days_of_week",
+            "day_of_week",
             "departure_time_start",
             "departure_time_end",
+            "arrival_time",
             "price",
             "note",
             "is_recurrent",
             "available_seats",
+            "type",
         )
 
     def create(self, validated_data):
         origin_data = validated_data.pop("origin")
         destination_data = validated_data.pop("destination")
-        # If the origin and destination Location objects do not already exist, they will be created.
+        # If the origin and destination Location objects do not already
+        # exist, they will be created.
         origin = Location.objects.filter(**origin_data).first()
         destination = Location.objects.filter(**destination_data).first()
         if not origin:

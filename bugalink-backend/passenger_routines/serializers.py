@@ -1,9 +1,8 @@
-from rest_framework import serializers
-
 from locations.models import Location
 from locations.serializers import LocationSerializer
 from passenger_routines.models import PassengerRoutine
 from passengers.models import Passenger
+from rest_framework import serializers
 
 
 class PassengerRoutineSerializer(serializers.Serializer):
@@ -11,9 +10,11 @@ class PassengerRoutineSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     origin = LocationSerializer()
     destination = LocationSerializer()
-    days_of_week = serializers.ListField(child=serializers.CharField())
+    day_of_week = serializers.CharField()
     departure_time_start = serializers.TimeField()
     departure_time_end = serializers.TimeField()
+    arrival_time = serializers.TimeField()
+    type = serializers.ReadOnlyField(default='passengerRoutine')
 
     class Meta:
         model = PassengerRoutine

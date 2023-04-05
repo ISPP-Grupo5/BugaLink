@@ -1,0 +1,363 @@
+{
+  "User": [
+    {
+      "password": "pbkdf2_sha256$600000$iAL8xlbTQ8fZyOJMR220ec$1Y6LBSQ2Xn82RH7fbQ3F2eXA1hYIB9mCf1+HJ9Tm2/k=",
+      "first_name": "Federico",
+      "last_name": "de los Palotes",
+      "email": "federico@bugalink.com"
+    },
+    {
+      "password": "R4m0n",
+      "first_name": "Ramón Antonio",
+      "last_name": "Pérez González",
+      "email": "ramonantonio@bugalink.com"
+    },
+    {
+      "password": "M4r14",
+      "first_name": "María Lucía",
+      "last_name": "Hernández de la Roña",
+      "email": "marialucia@bugalink.com"
+    },
+    {
+      "password": "C0nch4",
+      "first_name": "Concha Manuela",
+      "last_name": "Sánchez del Río",
+      "email": "conchamanuela@bugalink.com"
+    },
+    {
+      "password": "Pr4d4",
+      "first_name": "Ágata",
+      "last_name": "Ruíz de la Prada",
+      "email": "prada@bugalink.com"
+    }
+  ],
+  "Passenger": [
+    {
+      "user_id": 1
+    },
+    {
+      "user_id": 2
+    },
+    {
+      "user_id": 3
+    },
+    {
+      "user_id": 4
+    },
+    {
+      "user_id": 5
+    }
+  ],
+  "Driver": [
+    {
+      "user_id": 1,
+      "prefers_talk": false,
+      "prefers_music": true,
+      "allows_smoke": false,
+      "allows_pets": false
+    },
+    {
+      "user_id": 2,
+      "prefers_talk": false,
+      "prefers_music": true,
+      "allows_smoke": false,
+      "allows_pets": true
+    },
+    {
+      "user_id": 3,
+      "prefers_talk": true,
+      "prefers_music": false,
+      "allows_smoke": false,
+      "allows_pets": false
+    },
+    {
+      "user_id": 4,
+      "prefers_talk": true,
+      "prefers_music": true,
+      "allows_smoke": true,
+      "allows_pets": false
+    },
+    {
+      "user_id": 5,
+      "prefers_talk": true,
+      "prefers_music": false,
+      "allows_smoke": false,
+      "allows_pets": true
+    }
+  ],
+  "Location": [
+    {
+      "address": "Escuela Politécnica Superior, Escuela Politécnica Superior de la Universidad de Sevilla, Calle Virgen de África, Sevilla",
+      "latitude": 37.37616816966094,
+      "longitude": -6.002696565873753
+    },
+    {
+      "address": "C. Austria, 6, 41012 Sevilla",
+      "latitude": 37.344752371048145,
+      "longitude": -5.978176701456456
+    },
+    {
+      "address": "C. Berlín, 41012 Sevilla",
+      "latitude": 37.34703350978871,
+      "longitude": -5.98063762476977
+    },
+    {
+      "latitude": 37.35083280973525,
+      "longitude": -5.982808443785652,
+      "address": "Av. de Italia, 41012 Sevilla"
+    },
+    {
+      "address": "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla",
+      "latitude": 37.362801027493276,
+      "longitude": -5.986301614950232
+    }
+  ],
+  "DriverRoutine": [
+    {
+      "driver_id": 1,
+      "available_seats": 3,
+      "is_recurrent": true,
+      "departure_time_start": "8:00",
+      "departure_time_end": "8:15",
+      "arrival_time": "9:00",
+      "origin_id": 1,
+      "destination_id": 2,
+      "day_of_week": "Mon",
+      "price": 2.5
+    },
+    {
+      "driver_id": 2,
+      "available_seats": 1,
+      "departure_time_start": "8:00",
+      "departure_time_end": "8:15",
+      "arrival_time": "9:00",
+      "origin_id": 2,
+      "destination_id": 1,
+      "day_of_week": "Tue",
+      "price": 3
+    },
+    {
+      "driver_id": 3,
+      "available_seats": 1,
+      "departure_time_start": "8:00",
+      "departure_time_end": "8:15",
+      "arrival_time": "9:00",
+      "origin_id": 2,
+      "destination_id": 1,
+      "day_of_week": "Wed",
+      "price": 5
+    },
+    {
+      "driver_id": 4,
+      "available_seats": 2,
+      "departure_time_start": "8:00",
+      "departure_time_end": "8:15",
+      "arrival_time": "9:00",
+      "origin_id": 3,
+      "destination_id": 1,
+      "day_of_week": "Thu",
+      "price": 1.8
+    },
+    {
+      "driver_id": 5,
+      "available_seats": 1,
+      "departure_time_start": "8:00",
+      "departure_time_end": "8:15",
+      "arrival_time": "9:00",
+      "origin_id": 1,
+      "destination_id": 3,
+      "day_of_week": "Fri",
+      "price": 2.25
+    }
+  ],
+  "Trip": [
+    {
+      "driver_routine_id": 1,
+      "departure_datetime": "2023-03-09 8:00",
+      "arrival_datetime": "2023-03-09 9:00",
+      "status": "PENDING"
+    },
+    {
+      "driver_routine_id": 2,
+      "status": "PENDING",
+      "departure_datetime": "2023-03-09 8:00",
+      "arrival_datetime": "2023-03-09 9:00"
+    },
+    {
+      "driver_routine_id": 3,
+      "status": "PENDING",
+      "departure_datetime": "2023-03-09 8:00",
+      "arrival_datetime": "2023-03-09 9:00"
+    },
+    {
+      "driver_routine_id": 4,
+      "status": "PENDING",
+      "departure_datetime": "2023-03-09 8:00",
+      "arrival_datetime": "2023-03-09 9:00"
+    },
+    {
+      "driver_routine_id": 5,
+      "status": "PENDING",
+      "departure_datetime": "2023-03-09 8:00",
+      "arrival_datetime": "2023-03-09 9:00"
+    }
+  ],
+  "TripRequest": [
+    {
+      "trip_id": 1,
+      "status": "PENDING",
+      "note": "Hola me gustaría ir en su vehículo.",
+      "reject_note": "",
+      "passenger_id": 3,
+      "price": 2.0
+    },
+    {
+      "trip_id": 1,
+      "status": "REJECTED",
+      "note": "Hola me gustaría ir en su vehículo.",
+      "reject_note": "Al final voy a tener que cancelar el viaje completo.",
+      "passenger_id": 2,
+      "price": 2.0
+    },
+    {
+      "trip_id": 1,
+      "status": "ACCEPTED",
+      "note": "Hola me gustaría ir en su vehículo.",
+      "reject_note": "Al final voy a tener que cancelar el viaje completo.",
+      "passenger_id": 5,
+      "price": 2.0
+    },
+    {
+      "trip_id": 1,
+      "status": "ACCEPTED",
+      "note": "Hola me gustaría ir en su vehículo.",
+      "reject_note": "Al final voy a tener que cancelar el viaje completo.",
+      "passenger_id": 4,
+      "price": 2.0
+    }
+  ],
+  "PassengerRoutine": [
+    {
+      "passenger_id": 1,
+      "departure_time_start": "8:00",
+      "departure_time_end": "8:30",
+      "arrival_time": "9:00",
+      "origin_id": 3,
+      "destination_id": 1,
+      "day_of_week": "Mon"
+    },
+    {
+      "passenger_id": 2,
+      "departure_time_start": "8:00",
+      "departure_time_end": "8:30",
+      "arrival_time": "9:00",
+      "origin_id": 4,
+      "destination_id": 5,
+      "day_of_week": "Tue"
+    },
+    {
+      "passenger_id": 3,
+      "departure_time_start": "8:00",
+      "departure_time_end": "8:30",
+      "arrival_time": "9:00",
+      "origin_id": 4,
+      "destination_id": 3,
+      "day_of_week": "Wed"
+    },
+    {
+      "passenger_id": 4,
+      "departure_time_start": "8:00",
+      "departure_time_end": "8:30",
+      "arrival_time": "9:00",
+      "origin_id": 2,
+      "destination_id": 3,
+      "day_of_week": "Thu"
+    },
+    {
+      "passenger_id": 5,
+      "departure_time_start": "8:00",
+      "departure_time_end": "8:30",
+      "arrival_time": "9:00",
+      "origin_id": 3,
+      "destination_id": 4,
+      "day_of_week": "Fri"
+    }
+  ],
+  "CreditCard": [
+    {
+      "user_id": 1,
+      "number": "1234567890123456",
+      "name": "FEDERICO DE LOS PALOTES",
+      "expiration_date": "2025-12-01",
+      "is_default": true
+    }
+  ],
+  "PaypalAccount": [
+    {
+      "user_id": 2,
+      "token": "378904289jd827u43194jd392j9823yu42913jd8239y98n329",
+      "is_default": true
+    },
+    {
+      "user_id": 3,
+      "token": "sfdgj4u3289fn3984fn38mf34903"
+    },
+    {
+      "user_id": 4,
+      "token": "asdfasdfasdf212312dfe"
+    },
+    {
+      "user_id": 5,
+      "token": "2412e11fasdf4fe"
+    }
+  ],
+  "Balance": [
+    {
+      "user_id": 1,
+      "amount": 5.05
+    },
+    {
+      "user_id": 2,
+      "amount": 10.0
+    },
+    {
+      "user_id": 3,
+      "amount": 6.82
+    },
+    {
+      "user_id": 4,
+      "amount": 4.3
+    },
+    {
+      "user_id": 5,
+      "amount": 0.0
+    }
+  ],
+  "DriverRating": [
+    {
+      "trip_request_id": 3,
+      "rating": 5.0,
+      "preference_0": true,
+      "preference_1": false,
+      "preference_2": false,
+      "preference_3": false
+    },
+    {
+      "trip_request_id": 4,
+      "rating": 4.5,
+      "preference_0": false,
+      "preference_1": true,
+      "preference_2": false,
+      "preference_3": false
+    }
+  ],
+  "Report": [
+    {
+      "trip_id": 1,
+      "reporter_user_id": 3,
+      "reported_user_id": 1,
+      "reported_is_driver": true,
+      "note": "El nota va to rapido tio"
+    }
+  ]
+}

@@ -84,19 +84,19 @@ export default function MyRoutines() {
               ? // || isError
                 [1, 2].map((id) => <RoutineCardSkeleton key={id} />)
               : allRoutines
-                .filter((routine: GenericRoutineI) => routine.day === day)
-                .map((routine: GenericRoutineI) => (
-                  <RoutineCard
-                    key={routine.id + routine.origin.address}
-                    id={routine.id}
-                    departureHourStart={routine.departure_time_start}
-                    departureHourEnd={routine.departure_time_end}
-                    // TODO: bad practice, use meaningful names instead of type 21 and type 2 (remeber DP1)
-                    type={routine.type}
-                    origin={routine.origin.address}
-                    destination={routine.destination.address}
-                  />
-                ))}
+                  .filter((routine: GenericRoutineI) => routine.day === day)
+                  .map((routine: GenericRoutineI) => (
+                    <RoutineCard
+                      key={routine.id + routine.origin.address}
+                      id={routine.id}
+                      departureHourStart={routine.departure_time_start}
+                      departureHourEnd={routine.departure_time_end}
+                      // TODO: bad practice, use meaningful names instead of type 21 and type 2 (remeber DP1)
+                      type={routine.type}
+                      origin={routine.origin.address}
+                      destination={routine.destination.address}
+                    />
+                  ))}
             {!isLoading &&
               // !isError &&
               allRoutines.filter(
@@ -109,12 +109,12 @@ export default function MyRoutines() {
           </div>
         ))}
       </div>
-      <AddRoutineMenu />
+      <AddRoutineMenu user={user} />
     </AnimatedLayout>
   );
 }
 
-const AddRoutineMenu = () => {
+const AddRoutineMenu = ({ user }: { user: User }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -148,12 +148,14 @@ const AddRoutineMenu = () => {
         >
           <MenuItem onClick={handleClose}>Como pasajero</MenuItem>
         </Link>
-        <Link
-          data-cy="new-driver-routine"
-          href={NEXT_ROUTES.NEW_ROUTINE_DRIVER}
-        >
-          <MenuItem onClick={handleClose}>Como conductor</MenuItem>
-        </Link>
+        {user?.driver_id && (
+          <Link
+            data-cy="new-driver-routine"
+            href={NEXT_ROUTES.NEW_ROUTINE_DRIVER}
+          >
+            <MenuItem onClick={handleClose}>Como conductor</MenuItem>
+          </Link>
+        )}
       </Menu>
     </div>
   );

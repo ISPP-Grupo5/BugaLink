@@ -1,10 +1,11 @@
+import CoordinatesI from '@/interfaces/coordinates';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 type Props = {
   className?: string;
-  originCoords: number[];
-  destinationCoords: number[];
+  originCoords: CoordinatesI;
+  destinationCoords: CoordinatesI;
   setTime?: (time: number) => void;
 };
 

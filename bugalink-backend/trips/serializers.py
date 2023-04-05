@@ -38,18 +38,16 @@ class TripRequestSerializer(serializers.ModelSerializer):
 class TripRequestCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = TripRequest
-        fields = ("id", "note")
+        fields = ("id", "note", "price")
 
+    # TODO: Verificar que no se solicita un viaje a si mismo y que no lo ha solicitado ya
     def create(self, validated_data):
         # Get the trip from the URL path
         trip_id = self.context["view"].kwargs["id"]
         trip = Trip.objects.get(id=trip_id)
         passenger = self.context["request"].user.passenger
-        # add the passenger to trip passengers list
-        trip.passengers.add(passenger)
+        price = validated_data.pop("price")       
         note = validated_data.pop("note")
-        is_recurrent = validated_data.pop("is_recurrent")
-
         return TripRequest.objects.create(
-            trip=trip, note=note, is_recurrent=is_recurrent
+            passenger=passenger, trip=trip, note=note, price=price
         )

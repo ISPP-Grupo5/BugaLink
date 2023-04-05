@@ -19,7 +19,7 @@ class PreferencesTest(TestCase):
 
     def test_get_preferences(self):
         
-        url = "/api/v1/drivers/"+ str(self.user.pk) + "/preferences/"
+        url = "/api/v1/drivers/"+ str(self.driver.pk) + "/preferences/"
         response = self.client.get(url)
         data = json.loads(response.content)
         self.assertEqual(data['prefers_talk'],self.driver.prefers_talk)
@@ -28,7 +28,7 @@ class PreferencesTest(TestCase):
         self.assertEqual(data['allows_smoke'],self.driver.allows_smoke)
 
     def test_put_preferences(self):
-        url = "/api/v1/drivers/"+ str(self.user.pk) + "/preferences/"
+        url = "/api/v1/drivers/"+ str(self.driver.pk) + "/preferences/"
         body={
             "prefers_talk": True,
             "prefers_music": False,
@@ -43,7 +43,7 @@ class PreferencesTest(TestCase):
         self.assertEqual(data['allows_smoke'],body['allows_smoke'])
 
     def test_invalid_put(self):
-        url = "/api/v1/drivers/"+ str(self.user2.pk) + "/preferences/"
+        url = "/api/v1/drivers/"+ str(self.driver2.pk) + "/preferences/"
         body={
             "prefers_talk": True,
             "prefers_music": False,

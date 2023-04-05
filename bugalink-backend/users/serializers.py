@@ -45,7 +45,7 @@ class UserStatsSerializer(serializers.ModelSerializer):
         model = User
         fields = ["pk","first_name", "total_rides"]
 
-    def get_total_rides(self,obj):
+    def get_total_rides(self,obj) -> serializers.IntegerField:
         trips_requests_where_user_is_passenger = TripRequest.objects.filter(passenger__user=obj, status="ACCEPTED", trip__status="FINISHED").count()
         trips_where_user_is_driver = Trip.objects.filter(
            driver_routine__driver__user=obj, status="FINISHED"
@@ -61,13 +61,13 @@ class UserRatingSerializer(serializers.ModelSerializer):
         model = User
         fields = ["pk", "number_ratings", "rating"]
 
-    def get_rating(self,obj):
+    def get_rating(self,obj) -> serializers.FloatField:
         ratings = DriverRating.objects.filter(trip_request__trip__driver_routine__driver__user=obj)
         if len(ratings) == 0:
             return 0
         values = [r.rating for r in ratings]
         return  sum(values)/len(ratings)
     
-    def get_number_ratings(self,obj):
+    def get_number_ratings(self,obj) -> serializers.IntegerField:
         count = DriverRating.objects.filter(trip_request__trip__driver_routine__driver__user=obj).count()
         return count

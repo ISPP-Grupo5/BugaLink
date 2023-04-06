@@ -127,3 +127,89 @@ class UserRatingView(viewsets.GenericViewSet,
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
+    
+# GET /users/<user_id>/trip-requests/count?status=pending
+# GET /users/<user_id>/trip-requests/count?status=accepted
+# GET /users/<user_id>/trip-requests/count?status=finished # HISTORIAL
+class UserTripCountView(APIView):
+    def get(self, request, id):
+        # If the user is not the same as the one in the URL, return a 403 status code
+        if request.user.id != int(id):
+            return Response(
+                data={
+                    "error": "No tienes permiso para ver los viajes de otro usuario."
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        # Get the status from the query params
+        # If the status is not in the query params, don't filter by it
+        status_param = request.query_params.get("status")
+        status_list = status_param.split(",") if status_param else []
+
+        user = User.objects.get(id=id)
+        # Get the trips from the user. Those are the trips in which the user is a passenger
+        # A trip has a many-to-many relationship with passengers, and we want to see if the
+        # user's passenger id from request.user.id is in that list of passengers
+        # trip_requests_where_user_is_passenger = TripRequest.objects.filter(
+        #     passenger__user=user
+        # )
+
+        trips_where_user_is_passenger = TripRequest.objects.filter(passenger__user=user)
+
+        trips_where_user_is_driver = TripRequest.objects.filter(
+            trip__driver_routine__driver__user=user
+        )
+
+        trips_by_user = trips_where_user_is_passenger | trips_where_user_is_driver
+
+        # Filter the trips based on the status values
+        trips_matching_status = (
+            trips_by_user.filter(status__in=status_list)
+            if status_list
+            else trips_by_user
+        )
+
+        # Return the number of trips with a 200 status code
+        return Response(
+            data= {
+                "numTrips": len(trips_matching_status),
+            }
+        )
+        
+# GET /users/<user_id>/trips/upcoming
+class UserUpcomingTripsView(APIView):
+    def get(self, request, id):
+        # If the user is not the same as the one in the URL, return a 403 status code
+        if request.user.id != int(id):
+            return Response(
+                data={
+                    "error": "No tienes permiso para ver los viajes de otro usuario."
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        user = User.objects.get(id=id)
+        # Get the trips from the user. Those are the trips in which the user is a passenger
+        # A trip has a many-to-many relationship with passengers, and we want to see if the
+        # user's passenger id from request.user.id is in that list of passengers
+        # trip_requests_where_user_is_passenger = TripRequest.objects.filter(
+        #     passenger__user=user
+        # )
+
+        trips_where_user_is_passenger = TripRequest.objects.filter(passenger__user=user)
+
+        trips_where_user_is_driver = TripRequest.objects.filter(
+            trip__driver_routine__driver__user=user
+        )
+
+        trips_by_user = trips_where_user_is_passenger | trips_where_user_is_driver
+
+        # Filter the trips based on the status values
+        upcoming_trips = trips_by_user.filter(
+            trip__departure_datetime__range=(datetime.now(), (datetime.now() + timedelta(days=2))))
+
+        # Return the trips with a 200 status code
+        return Response(
+            data=TripRequestSerializer(upcoming_trips, many=True).data
+        )

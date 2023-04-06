@@ -1,8 +1,6 @@
-from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase
 from users.models import User
-from rest_framework.authtoken.models import Token
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from django.test import TestCase
 from rest_framework.test import APIClient
@@ -60,21 +58,29 @@ class PreferencesTest(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertIsNotNone(data.get('error'))
 
-class DriverDocsTests(APITestCase):
+class DriverDocsTests(TestCase):
 
     def setUp(self):
-        self.user = User.objects.create(email='testuser@bugalink.es', password='testpass')        
-        self.token = Token.objects.create(user=self.user)        
-        self.headers = {"Authorization": f"Token {self.token.key}"}
+        self.user = User.objects.create(email="test@test.com", first_name="nameTest", last_name="lastNameTest", is_passenger = True, is_driver=True)
+        self.passenger = Passenger.objects.create(user=self.user)
+        self.driver = Driver.objects.create(user=self.user, prefers_talk = False, prefers_music = False, allows_pets = False, allows_smoke = False, )
     
-    #Not working
     def test_upload_driver_docs(self):
-        url = reverse("driver-post-docs", kwargs={"user_id": self.user.id})
+        
+        url = "api/v1/users/" + str(self.passenger.user.pk) + "/driver/docs/"
+
+        self.dni_front = SimpleUploadedFile(
+             name='dni_front.jpg',
+             content=open("drivers/dnis/dni_front.jpg", 'rb').read(),
+             content_type='image/jpeg'
+        )
+        
         data = {
-            "sworn_declaration": "https://example.com/sworn_declaration.pdf",
-            "driver_license": "https://example.com/driver_license.pdf",
-            "dni_front": "https://example.com/dni_front.pdf",
-            "dni_back": "https://example.com/dni_back.pdf"
+            "dni_front": self.dni_front,
+            "dni_back": self.dni_front,
         }
-        response = self.client.put(url, data, format="json", headers=self.headers)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.put(url, data=data)
+
+        self.assertEqual(self.driver.dni_back, self.dni_front)
+        self.assertEqual(self.driver.dni_front, self.dni_front)

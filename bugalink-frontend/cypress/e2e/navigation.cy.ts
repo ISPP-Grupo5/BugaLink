@@ -56,11 +56,11 @@ describe('Navigation tests', () => {
     cy.location('pathname').should('match', /^\/ride\/[\w-]+\/details$/);
   });
 
-  // /ride/<rideId>/detailsTwo
-  it('should navigate to ride details two page', () => {
+  // /ride/<rideId>/pay
+  it('should navigate to ride payment page', () => {
     cy.visit('/ride/1/details?requested=false');
-    cy.get('button').contains('CONTINUAR').click();
-    cy.location('pathname').should('match', /^\/ride\/[\w-]+\/detailsTwo$/);
+    cy.get('button').contains('PAGAR').click();
+    cy.location('pathname').should('match', /^\/ride\/[\w-]+\/pay$/);
   });
 
   // /ride/<rideId>/map

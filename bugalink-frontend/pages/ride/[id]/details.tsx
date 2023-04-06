@@ -170,10 +170,10 @@ export default function Details({ data }) {
           {requested === 'false' && (
             <div className="flex justify-center">
               <Link
-                href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsTwo"
+                href={`/ride/${data.id}/pay`}
                 className="flex w-11/12 justify-center"
               >
-                <CTAButton className="my-4 w-11/12" text="CONTINUAR" />
+                <CTAButton className="my-4 w-11/12" text="PAGAR" />
               </Link>
             </div>
           )}

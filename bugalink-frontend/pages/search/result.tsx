@@ -54,7 +54,7 @@ const searchResultsMock = [
     type: 'driver',
     rating: 4.6,
     name: 'Paco Perez',
-    avatar: '/assets/avatar.png',
+    avatar: '/assets/anonymous-avatar.png',
     gender: 'M',
     origin: 'Centro Comercial Way',
     destination: 'ETSII',
@@ -76,7 +76,7 @@ const searchResultsMock = [
     type: 'driver',
     rating: 4.7,
     name: 'Alberto Chicote',
-    avatar: '/assets/avatar.png',
+    avatar: '/assets/anonymous-avatar.png',
     gender: 'M',
     origin: 'Centro Comercial Lagoh',
     destination: 'Isla Mágica',
@@ -198,7 +198,7 @@ export default function SearchResults() {
           <div className="col-span-6 w-full pr-4">
             <input
               type="search"
-              placeholder="Desde dónde quieres ir?"
+              placeholder="¿Desde dónde quieres ir?"
               value="Casa"
               className="ml-2 mr-2 w-full rounded-full bg-base-origin p-4 text-sm"
             ></input>
@@ -317,33 +317,33 @@ export default function SearchResults() {
       <div className="divide-y-2 divide-light-gray">
         {isLoading || isError
           ? [1, 2, 3, 4, 5].map((i) => (
-              <TripCardSkeleton
-                key={i}
-                className="rounded-md bg-white outline outline-1 outline-light-gray"
-              />
-            ))
+            <TripCardSkeleton
+              key={i}
+              className="rounded-md bg-white outline outline-1 outline-light-gray"
+            />
+          ))
           : searchResults.map((trip) => (
-              <Link
+            <Link
+              key={trip.name}
+              href="/ride/V1StGXR8_Z5jdHi6B-myT/details?requested=false"
+              className="w-full"
+            >
+              <TripCard
                 key={trip.name}
-                href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne?requested=false"
-                className="w-full"
-              >
-                <TripCard
-                  key={trip.name}
-                  type={trip.type}
-                  rating={trip.rating}
-                  name={trip.name}
-                  gender={trip.gender}
-                  avatar={trip.avatar}
-                  origin={trip.origin}
-                  destination={trip.destination}
-                  date={trip.date}
-                  price={trip.price}
-                  className="rounded-md bg-white outline outline-1 outline-light-gray"
-                  href={NEXT_ROUTES.RIDE_DETAILS_ONE(trip.id)}
-                />
-              </Link>
-            ))}
+                type={trip.type}
+                rating={trip.rating}
+                name={trip.name}
+                gender={trip.gender}
+                avatar={trip.avatar}
+                origin={trip.origin}
+                destination={trip.destination}
+                date={trip.date}
+                price={trip.price}
+                className="rounded-md bg-white outline outline-1 outline-light-gray"
+                href={NEXT_ROUTES.RIDE_DETAILS(trip.id)}
+              />
+            </Link>
+          ))}
       </div>
       <Drawer
         anchor="bottom"
@@ -524,9 +524,9 @@ export default function SearchResults() {
                   sx={{
                     fontFamily: 'Lato, sans-serif',
                     '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
-                      {
-                        borderColor: '#7cc3c4',
-                      },
+                    {
+                      borderColor: '#7cc3c4',
+                    },
                     '& .MuiFormLabel-root.Mui-focused': {
                       color: '#7cc3c4',
                     },
@@ -537,9 +537,9 @@ export default function SearchResults() {
                   sx={{
                     fontFamily: 'Lato, sans-serif',
                     '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
-                      {
-                        borderColor: '#7cc3c4',
-                      },
+                    {
+                      borderColor: '#7cc3c4',
+                    },
                     '& .MuiFormLabel-root.Mui-focused': {
                       color: '#7cc3c4',
                     },

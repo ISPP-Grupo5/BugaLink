@@ -1,4 +1,4 @@
-import AvatarWithRating from '@/components/avatarWithRating';
+import AvatarWithRating from '@/components/avatar/withRating';
 import Entry from '@/components/cards/common/entry';
 import Link from 'next/link';
 import Calendar from '/public/assets/calendar.svg';

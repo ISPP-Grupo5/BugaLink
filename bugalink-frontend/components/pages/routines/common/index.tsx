@@ -10,11 +10,15 @@ import dynamic from 'next/dynamic';
 import { useMemo, useRef, useState } from 'react';
 import { getGeocode, getLatLng } from 'use-places-autocomplete';
 import TextField from '@/components/forms/TextField';
+import { axiosAuth } from '@/lib/axios';
+import { useRouter } from 'next/router';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 
 const MIN_FREE_SEATS = 1;
 const MAX_FREE_SEATS = 8;
 
 const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+const daysToApi = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 type Props = {
   userType: 'passenger' | 'driver';
@@ -55,8 +59,11 @@ export default function NewRoutine({
 }: Props) {
   const [pickTimeFrom, setPickTimeFrom] = useState('12:00');
   const [pickTimeTo, setPickTimeTo] = useState('12:10');
+  const [time, setTime] = useState<number>(0);
   const [selectedDays, setSeletedDays] = useState([]);
-
+  const arrivalTime = new Date(Date.now());
+  arrivalTime.setHours(Number(pickTimeFrom?.split(':')[0]));
+  arrivalTime.setMinutes(Number(pickTimeFrom?.split(':')[1]) + time);
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
 
@@ -66,7 +73,9 @@ export default function NewRoutine({
   const [price, setPrice] = useState('');
   const [errors, setErrors] = useState<FormErrors>({});
   const formRef = useRef<HTMLFormElement>(null);
+  const router = useRouter();
 
+  //arrivalTime.setMinutes
   const validateForm = (values: FormValues) => {
     const errors: FormErrors = {};
 
@@ -141,6 +150,7 @@ export default function NewRoutine({
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (formRef.current) {
+
       const formData = new FormData(formRef.current);
       const values: FormValues = {
         origin: formData.get('origin') as string,
@@ -154,9 +164,44 @@ export default function NewRoutine({
       setErrors(errors);
       if (Object.keys(errors).length === 0) {
         // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites
-        console.log(
-          'Los datos del formulario son válidos. ¡Enviando formulario!'
-        );
+        const daysOfWeek = [];
+        for (const day in selectedDays) {
+          daysOfWeek.push(daysToApi[days.indexOf(selectedDays[day])]);
+        }
+        const data = {
+          "origin": {
+            "address": origin,
+            "latitude": originCoords.lat.toString(),
+            "longitude": originCoords.lng.toString()
+          },
+          "destination": {
+            "address": destination,
+            "latitude": destinationCoords.lat.toString(),
+            "longitude": destinationCoords.lng.toString()
+          },
+          "days_of_week": daysOfWeek,
+          "departure_time_start": pickTimeFrom,
+          "departure_time_end": pickTimeTo,
+          "arrival_time": "" + arrivalTime.getHours() + ":" + arrivalTime.getMinutes(),
+          "price": price,
+          "note": note,
+          "is_recurrent": false,
+          "available_seats": freeSeatsNumber
+        };
+        console.log(data);
+        axiosAuth.post('driver-routines/', data)
+          .then(response => {
+            console.log('Data:', response.data);
+            console.log(
+              'Los datos del formulario son válidos. ¡Enviando formulario!'
+            );
+            router.push(NEXT_ROUTES.MY_ROUTINES);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+
+
       }
     }
   };
@@ -172,6 +217,7 @@ export default function NewRoutine({
               originCoords={originCoords}
               destinationCoords={destinationCoords}
               setTotalDistance={setTotalDistance}
+              setTime={setTime}
             />
           ) : (
             <EmptyLeafletMap />
@@ -243,9 +289,8 @@ export default function NewRoutine({
             {days.map((day: string) => (
               <p
                 key={day}
-                className={`h-full w-full py-2 transition-colors duration-300 ${
-                  selectedDays.includes(day) ? 'bg-turquoise text-white' : ''
-                }`}
+                className={`h-full w-full py-2 transition-colors duration-300 ${selectedDays.includes(day) ? 'bg-turquoise text-white' : ''
+                  }`}
                 onClick={() => {
                   if (selectedDays.includes(day)) {
                     setSeletedDays(selectedDays.filter((d) => d !== day));

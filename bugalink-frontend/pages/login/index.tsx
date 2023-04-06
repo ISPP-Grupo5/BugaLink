@@ -1,4 +1,3 @@
-import { BackButton } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import ExternalLogin from '@/components/externalLogin';
 import TextField from '@/components/forms/TextField';

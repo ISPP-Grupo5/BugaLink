@@ -13,6 +13,7 @@ import Link from 'next/link';
 import Destino from 'public/icons/Vista-Principal/destino.svg';
 import { useState } from 'react';
 import Glass from '/public/icons/Vista-Principal/glass.svg';
+import Avatar from '@/components/avatar';
 
 export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -41,11 +42,7 @@ export default function Home() {
             className="aspect-square h-14"
             href={NEXT_ROUTES.PROFILE(user?.user_id)}
           >
-            {user ? (
-              user?.photo ? <img className="rounded-full" src={user?.photo} /> : <img className='rounded-full ' src='/assets/anonymus-avatar.png' />
-            ) : (
-              <AvatarSkeleton />
-            )}
+            {user ? <Avatar src={user.photo} /> : <AvatarSkeleton />}
           </Link>
         </span>
 
@@ -53,7 +50,7 @@ export default function Home() {
           text="Crear viaje"
           className="mx-auto mb-6 h-1/6 w-full px-4"
           Option1="Como pasajero"
-          Option2="Como conductor"
+          Option2={user?.driver_id ? 'Como conductor' : null}
           isLink={true}
           linkOption1={NEXT_ROUTES.NEW_ROUTINE_PASSENGER}
           linkOption2={NEXT_ROUTES.NEW_ROUTINE_DRIVER}

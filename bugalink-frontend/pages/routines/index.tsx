@@ -8,6 +8,7 @@ import usePassenger from '@/hooks/usePassenger';
 import DriverRoutineI from '@/interfaces/driverRoutine';
 import GenericRoutineI from '@/interfaces/genericRoutine';
 import PassengerRoutineI from '@/interfaces/passengerRoutine';
+import { parseDate } from '@/utils/formatters';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { User } from 'next-auth';
@@ -39,8 +40,8 @@ const mergeRoutines = (
       origin: routine.origin,
       destination: routine.destination,
       day: routine.day_of_week,
-      departure_time_start: routine.departure_time_start.substring(0, 5), // 18:00:00 -> 18:00
-      departure_time_end: routine.departure_time_end.substring(0, 5), // 18:00:00 -> 18:00
+      departure_time_start: parseDate(routine.departure_time_start), // 18:00:00 -> 18:00
+      departure_time_end: parseDate(routine.departure_time_end), // 18:00:00 -> 18:00
       type: routine.type,
     });
   }
@@ -50,8 +51,8 @@ const mergeRoutines = (
 export default function MyRoutines() {
   const { data } = useSession();
   const user = data?.user as User;
-  const passengerId = user?.passenger_id; // TODO: get this from the user's session
-  const driverId = user?.driver_id; // TODO: get this from the user's session
+  const passengerId = user?.passenger_id;
+  const driverId = user?.driver_id;
 
   const {
     passenger,
@@ -148,7 +149,7 @@ const AddRoutineMenu = ({ user }: { user: User }) => {
         >
           <MenuItem onClick={handleClose}>Como pasajero</MenuItem>
         </Link>
-        {user?.driver_id && (
+        {user?.driver_id !== undefined && (
           <Link
             data-cy="new-driver-routine"
             href={NEXT_ROUTES.NEW_ROUTINE_DRIVER}

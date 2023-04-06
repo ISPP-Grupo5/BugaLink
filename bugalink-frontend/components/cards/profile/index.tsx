@@ -64,13 +64,8 @@ export default function ProfileItems() {
   const [preferMusic, setPreferMusic] = useState(false);
   const [preferTalk, setPreferTalk] = useState(false);
 
-  const { data, status } = useSession();
+  const { data } = useSession();
   const user = data?.user as User;
-
-  const router = useRouter();
-  useEffect(() => {
-    if (status === 'unauthenticated') router.push(NEXT_ROUTES.LOGIN);
-  }, [status]);
 
   const handleSignOut = async () => {
     await signOut({
@@ -79,7 +74,7 @@ export default function ProfileItems() {
   };
 
   return (
-    <div className="flex h-full w-full flex-col items-start justify-between gap-y-4 rounded-t-3xl bg-white px-6 py-8 text-start text-xl">
+    <div className="flex h-full w-full flex-col items-start justify-between gap-y-4 rounded-t-3xl bg-white p-6 text-start text-xl">
       <Entry Icon={<Address />}>
         <span>Direcciones</span>
       </Entry>

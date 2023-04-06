@@ -1,3 +1,4 @@
+import Avatar from '@/components/avatar';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import TripI from '@/interfaces/trip';
 import TripRequestI from '@/interfaces/tripRequest';
@@ -71,12 +72,12 @@ const DriverCardHeader = ({ trip }: { trip: TripI }) => (
     <span className="flex h-full items-center px-3">
       <span className="flex items-start -space-x-10">
         {trip.passengers.slice(0, 3).map((passenger, index) => (
-          <img
-            className="aspect-square w-14 rounded-full border-2 border-white object-scale-down"
+          <Avatar
+            className="w-14 border-2 border-white"
             style={{ zIndex: 3 - index }} // for reverse stacking
             key={`passenger-${index}`}
             id={`passenger-${index}`}
-            src={passenger.user.photo ?? '/assets/avatar.png'}
+            src={passenger.user.photo}
           />
         ))}
       </span>
@@ -89,7 +90,10 @@ const DriverCardHeader = ({ trip }: { trip: TripI }) => (
               key={`passenger-${index}`}
               className="text-md truncate leading-5"
             >
-              {passenger.user.first_name}{' '}
+              {passenger.user.first_name
+                .split(' ')
+                .map((name, idx) => (idx > 0 ? name.charAt(0) + '.' : name))
+                .join(' ')}{' '}
               {passenger.user.last_name.split(' ')[0]}
             </p>
           ))}
@@ -117,10 +121,7 @@ const PassengerCardHeader = ({ trip }: { trip: TripI }) => (
     </span>
     <WomanSeated className="absolute -right-2.5 top-[2.35rem] z-20 w-24" />
     <span className="flex h-full items-center space-x-3 px-3">
-      <img
-        className="aspect-square w-14 rounded-full object-scale-down"
-        src={trip.driver.user.photo ?? '/assets/avatar.png'}
-      />
+      <Avatar className="w-14" src={trip.driver.user.photo} />
       <div className="flex flex-col -space-y-1">
         <p className="text-lg font-extrabold leading-5 tracking-wide">
           {/* TODO: license plate not present in API response */}

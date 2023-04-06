@@ -1,10 +1,9 @@
-from datetime import datetime, timedelta
-from http.client import BAD_REQUEST
-
+from allauth.account.models import EmailAddress
 from django.db import transaction
-from django.shortcuts import get_object_or_404
+from driver_routines.models import DriverRoutine
 from drivers.models import Driver
 from drivers.serializers import DriverSerializer
+from passenger_routines.models import PassengerRoutine
 from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -27,6 +26,63 @@ class UserViewSet(
 ):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+        if user.is_driver:
+            if TripRequest.objects.filter(
+                trip__driver_routine__driver__user=user,
+                status="ACCEPTED",
+            ).exists():
+                return Response(
+                    data={
+                        "error": "No puedes eliminar tu cuenta si tienes viajes por hacer como conductor."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            # Delete the driver_routines that the driver has created
+            DriverRoutine.objects.filter(driver__user=user).delete()
+
+            # For the driver profile, reject any pending trip requests they may have
+            # coming from passengers
+            TripRequest.objects.filter(
+                trip__driver_routine__driver__user=user,
+                status="PENDING",
+            ).update(
+                status="REJECTED", reject_note="El conductor ha eliminado su cuenta."
+            )
+
+        if request.user.is_passenger:
+            PassengerRoutine.objects.filter(passenger__user=user).delete()
+
+            # For the passenger profile, delete the pending trip requests they
+            # have sent to other drivers
+            TripRequest.objects.filter(
+                passenger__user=user, status=TripRequest.status == "PENDING"
+            ).delete()
+
+        # Anonymize the user's email by adding a timestamp to it
+        new_email = f"anonymous_{int(user.date_joined.timestamp())}@bugalink.es"
+
+        # Modify the email in the table account_emailaddress (allauth, used for email authentication)
+        email = EmailAddress.objects.filter(user=user).first()
+        email.email = new_email
+        email.save()
+
+        # Do the same with the user entity fields
+        user.email = new_email
+        user.first_name = "Usuario eliminado"
+        user.last_name = ""
+        user.photo = ""
+        user.is_passenger = False
+        user.is_driver = False
+        user.is_active = False
+        user.set_unusable_password()
+        user.save()
+
+        # Get the email entry in the table account_emailaddress and anonymize that email too
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # /users/{id}/edit PUT. Recibe mediante un form-data: first_name, last_name y photo(file)
@@ -109,7 +165,7 @@ class UserTripsView(APIView):
             trips_by_user.filter(status__in=status_list)
             if status_list
             else trips_by_user
-        )
+        ).distinct("trip")
 
         # Return the trips with a 200 status code
         return Response(

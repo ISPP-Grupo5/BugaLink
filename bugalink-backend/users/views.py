@@ -20,6 +20,7 @@ from users.serializers import (
     UserStatsSerializer,
     UserUpdateSerializer,
 )
+from allauth.account.models import EmailAddress
 
 
 # users/{id}/ GET Y /users/ GET(list)
@@ -66,7 +67,15 @@ class UserViewSet(
             ).delete()
 
         # Anonymize the user's email by adding a timestamp to it
-        user.email = f"anonymous_{int(user.date_joined.timestamp())}@bugalink.es"
+        new_email = f"anonymous_{int(user.date_joined.timestamp())}@bugalink.es"
+
+        # Modify the email in the table account_emailaddress (allauth, used for email authentication)
+        email = EmailAddress.objects.filter(user=user).first()
+        email.email = new_email
+        email.save()
+
+        # Do the same with the user entity fields
+        user.email = new_email
         user.first_name = "Usuario eliminado"
         user.last_name = ""
         user.photo = ""
@@ -75,6 +84,8 @@ class UserViewSet(
         user.is_active = False
         user.set_unusable_password()
         user.save()
+
+        # Get the email entry in the table account_emailaddress and anonymize that email too
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 

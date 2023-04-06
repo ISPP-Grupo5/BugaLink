@@ -41,8 +41,8 @@ export default function Home() {
             className="aspect-square h-14"
             href={NEXT_ROUTES.PROFILE(user?.user_id)}
           >
-            {user?.photo ? (
-              <img className="rounded-full" src={user?.photo} />
+            {user ? (
+              user?.photo ? <img className="rounded-full" src={user?.photo} /> : <img className='rounded-full ' src='/assets/anonymus-avatar.png' />
             ) : (
               <AvatarSkeleton />
             )}

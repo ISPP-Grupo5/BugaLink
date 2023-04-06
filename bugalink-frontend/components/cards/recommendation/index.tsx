@@ -1,4 +1,4 @@
-import AvatarWithRating from '@/components/avatarWithRating';
+import AvatarWithRating from '@/components/avatar/withRating';
 import Entry from '@/components/cards/common/entry';
 import Link from 'next/link';
 import Calendar from '/public/assets/calendar.svg';
@@ -6,14 +6,14 @@ import MapPin from '/public/assets/map-pin.svg';
 import OrigenPin from '/public/assets/origen-pin.svg';
 
 type Params = {
-  type?: string;
+  type?: 'driver' | 'passenger';
   rating: number;
   name: string;
   avatar: string;
-  gender?: string;
   origin: string;
   destination: string;
   date: string;
+  note?: string;
   price: number;
   className?: string;
   isHistory?: boolean;
@@ -25,26 +25,17 @@ export default function TripCard({
   rating,
   name,
   avatar,
-  gender,
   origin,
   destination,
   date,
+  note,
   price = 0,
   className = '',
   isHistory = false,
   href = '#',
 }: Params) {
   const isDriver = type === 'driver';
-  const isMale = gender === 'M';
-
-  // Role depending on isDriver and gender
-  const role = isDriver
-    ? isMale
-      ? 'Conductor'
-      : 'Conductora'
-    : isMale
-    ? 'Pasajero'
-    : 'Pasajera';
+  const role = isDriver ? 'Conductor/a' : 'Pasajero/a';
 
   return (
     <Link
@@ -56,8 +47,9 @@ export default function TripCard({
     >
       <span className="col-span-2 row-span-2 flex items-center space-x-4">
         <AvatarWithRating avatar={avatar} rating={rating} />
-        {isHistory && <p className="text-lg font-semibold leading-5">{name}</p>}
-        {!isHistory && (
+        {isHistory ? (
+          <p className="text-lg font-semibold leading-5">{name}</p>
+        ) : (
           <Entry title={role}>
             <p className="text-lg font-semibold leading-5">{name}</p>
           </Entry>
@@ -81,6 +73,14 @@ export default function TripCard({
         <Calendar />
         <p className="truncate">{date}</p>
       </Entry>
+      {note && (
+        <div className="col-span-2 pt-2">
+          <hr className="-mx-4 border-light-gray pb-2" />
+          <Entry title="Nota">
+            <p className="">✏️ {note}</p>
+          </Entry>
+        </div>
+      )}
     </Link>
   );
 }

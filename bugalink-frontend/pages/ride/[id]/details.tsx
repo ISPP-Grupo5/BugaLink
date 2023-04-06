@@ -12,6 +12,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
@@ -57,6 +58,7 @@ export default function Details({ data }) {
   if (isLoading || isLoadingReviews || isLoadingPreferences)
     return <p>Loading...</p>; // TODO: make skeleton
   if (isError || isErrorReviews || isErrorPreferences) return <p>Error</p>; // TODO: make error message
+
   const dayRoutineText =
     daysOfWeek[daysOfWeekAPI.indexOf(trip?.driver_routine.day_of_week)];
 
@@ -70,21 +72,21 @@ export default function Details({ data }) {
             name={fullName}
             rating={reviews.rating}
             numberOfRatings={reviews.number_ratings}
-            photo="/assets/avatar.png"
+            photo={trip?.driver.user.photo}
           />
           {/* Origin and target destinations */}
           <div className="grid grid-cols-2 gap-2 py-2 text-sm">
             <div>
               <p className="text-gray">Origen</p>
-              <p className="font-bold">
-                <SourcePin className="mr-2 inline" />
+              <p>
+                <SourcePin className="mr-2 inline -translate-y-0.5" />
                 {origin.address}
               </p>
             </div>
             <div>
               <p>Destino</p>
-              <p className="font-bold">
-                <TargetPin className="mr-2 inline" />
+              <p>
+                <TargetPin className="mr-2 inline -translate-y-0.5" />
                 {destination.address}
               </p>
             </div>
@@ -106,7 +108,7 @@ export default function Details({ data }) {
             <p className="text-sm text-gray">Fecha y hora</p>
             <p className="text-md text-justify font-medium">
               📅 Todos los {dayRoutineText} a las{' '}
-              {/*TODO El toLocaleString creo que está sumando dos horas REVISAR*/}
+              {/*TODO: el toLocaleString creo que está sumando dos horas, REVISAR */}
               {startTime.toLocaleString('es-ES', {
                 hour: '2-digit',
                 minute: '2-digit',
@@ -158,11 +160,21 @@ export default function Details({ data }) {
             </div>
             <div className="flex flex-col">
               <p className="text-sm font-normal">Precio por asiento</p>
-              <p className="text-xl font-bold">{trip.driver_routine.price}€</p>
+              <p className="text-xl font-bold">
+                {/* TODO: price should come as a float */}
+                {Number.parseFloat(trip.driver_routine.price).toLocaleString(
+                  'es-ES',
+                  {
+                    style: 'currency',
+                    currency: 'EUR',
+                  }
+                )}
+              </p>
             </div>
             <div className="flex flex-col">
-              <p className="text-sm font-normal">Plazas libres</p>
+              <p className="text-sm font-normal">Plazas ocupadas</p>
               <p className="text-xl font-bold">
+                {trip.passengers.length} de{' '}
                 {trip.driver_routine.available_seats}
               </p>
             </div>
@@ -170,10 +182,10 @@ export default function Details({ data }) {
           {requested === 'false' && (
             <div className="flex justify-center">
               <Link
-                href={`/ride/${data.id}/pay`}
-                className="flex w-11/12 justify-center"
+                href={NEXT_ROUTES.RIDE_PAYMENT(data.id)}
+                className="flex w-full justify-center"
               >
-                <CTAButton className="my-4 w-11/12" text="PAGAR" />
+                <CTAButton className="mt-4 w-full" text="PAGAR" />
               </Link>
             </div>
           )}

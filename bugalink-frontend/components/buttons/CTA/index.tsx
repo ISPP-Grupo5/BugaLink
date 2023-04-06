@@ -13,7 +13,9 @@ export default function CTAButton({
 }: Params) {
   return (
     <button
-      className={`rounded-3xl bg-turquoise py-4 px-8 text-center text-xl tracking-wider text-white ${className}`}
+      className={`rounded-3xl py-4 px-8 text-center text-xl tracking-wider text-white ${
+        disabled ? 'bg-gray' : 'bg-turquoise'
+      } ${className}`}
       disabled={disabled}
       onClick={onClick}
     >

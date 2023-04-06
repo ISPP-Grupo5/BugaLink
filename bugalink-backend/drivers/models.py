@@ -11,10 +11,10 @@ document_validation_choices = (
 
 class Driver(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="driver")
-    preference_0 = models.BooleanField(default=False)
-    preference_1 = models.BooleanField(default=False)
-    preference_2 = models.BooleanField(default=False)
-    preference_3 = models.BooleanField(default=False)
+    prefers_talk= models.BooleanField(default=False)
+    prefers_music= models.BooleanField(default=False)
+    allows_pets= models.BooleanField(default=False)
+    allows_smoke= models.BooleanField(default=False)
     dni_status = models.CharField(
         choices=document_validation_choices, default="Waiting validation", max_length=20
     )
@@ -24,7 +24,8 @@ class Driver(models.Model):
     driver_license_status = models.CharField(
         choices=document_validation_choices, default="Waiting validation", max_length=20
     )
-    dni = models.ImageField(upload_to="drivers/dnis/", null=True, blank=True)
+    dni_front = models.ImageField(upload_to="drivers/dnis/", null=True, blank=True)
+    dni_back = models.ImageField(upload_to="drivers/dnis/", null=True, blank=True)
     sworn_declaration = models.ImageField(
         upload_to="drivers/sworn_declarations/", null=True, blank=True
     )

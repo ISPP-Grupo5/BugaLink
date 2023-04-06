@@ -23,6 +23,8 @@ export default function RideMap() {
   const endTime = new Date('2021-05-01T21:00:00');
   endTime.setMinutes(endTime.getMinutes() + time);
 
+  console.log('originCoords', originCoords?.coordinates);
+  console.log('destinationCoords', destinationCoords?.coordinates);
   return (
     <AnimatedLayout className="flex flex-col justify-between">
       <BackButton className="absolute left-2 top-2 bg-base-origin py-3 pr-2 shadow-xl" />

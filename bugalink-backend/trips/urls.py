@@ -7,13 +7,13 @@ router.register(r"trips", TripViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
-    path("trips/<int:id>/request", TripRequestViewSet.as_view({"post": "create"})),
+    path("trips/<int:id>/request/", TripRequestViewSet.as_view({"post": "create"})),
     path("trips/<int:user_id>/recommendation", TripRecommendationViewSet.as_view()),
     path("trips/<int:trip_id>/individualRides", TripViewSet().as_view()),
     path(
-        "trip-requests/<int:pk>/accept", TripRequestViewSet.as_view({"put": "accept"})
+        "trip-requests/<int:pk>/accept/", TripRequestViewSet.as_view({"put": "accept"})
     ),
     path(
-        "trip-requests/<int:pk>/reject", TripRequestViewSet.as_view({"put": "reject"})
+        "trip-requests/<int:pk>/reject/", TripRequestViewSet.as_view({"put": "reject"})
     ),
 ]

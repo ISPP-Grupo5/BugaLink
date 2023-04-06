@@ -21,6 +21,12 @@ service: api
 env_variables:
   APPENGINE_URL: https://api-dot-bugalink-379817.ew.r.appspot.com
   IS_APP_ENGINE: 1
+  ENGINE: django.db.backends.postgresql_psycopg2
+  NAME: bugalink
+  USER: bugalink_admin
+  PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+  PORT: 5432
+  HOST: /cloudsql/bugalink-379817:europe-west1:bugalink
 
   # This setting is used in settings.py to configure your ALLOWED_HOSTS
   # APPENGINE_URL: PROJECT_ID.uc.r.appspot.com

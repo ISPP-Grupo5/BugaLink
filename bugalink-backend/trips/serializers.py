@@ -8,15 +8,18 @@ class TripSerializer(serializers.ModelSerializer):
     driver_routine = DriverRoutineSerializer()
     passengers = serializers.SerializerMethodField()
     driver = serializers.SerializerMethodField()
+    departure_datetime = serializers.DateTimeField()
+    arrival_datetime = serializers.DateTimeField()
+    
 
     class Meta:
         model = Trip
-        fields = ("id", "driver_routine", "passengers", "driver", "departure_datetime")
+        fields = ("id", "driver_routine", "passengers", "driver", "departure_datetime", "arrival_datetime", "status")
 
     def get_passengers(self, obj) -> PassengerAsUserSerializer(many=True):
         trip_requests = TripRequest.objects.filter(trip=obj)
         return PassengerAsUserSerializer(
-            [trip_request.passenger for trip_request in trip_requests]
+            [trip_request.passenger for trip_request in trip_requests], many=True
         ).data
 
     def get_driver(self, obj) -> DriverAsUserSerializer():
@@ -37,16 +40,14 @@ class TripRequestCreateSerializer(serializers.ModelSerializer):
         model = TripRequest
         fields = ("id", "note")
 
+    # TODO: Verificar que no se solicita un viaje a si mismo y que no lo ha solicitado ya
     def create(self, validated_data):
         # Get the trip from the URL path
         trip_id = self.context["view"].kwargs["id"]
         trip = Trip.objects.get(id=trip_id)
         passenger = self.context["request"].user.passenger
-        # add the passenger to trip passengers list
-        trip.passengers.add(passenger)
+        price = trip.driver_routine.price
         note = validated_data.pop("note")
-        is_recurrent = validated_data.pop("is_recurrent")
-
         return TripRequest.objects.create(
-            trip=trip, note=note, is_recurrent=is_recurrent
+            passenger=passenger, trip=trip, note=note, price=price
         )

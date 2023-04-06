@@ -6,7 +6,6 @@ import { CookiesOptions } from 'next-auth/core/types';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-
 const refreshAccessToken = async (refresh) => {
   const res = await axios.post('/auth/token/refresh/', { refresh });
   return res.data.access;
@@ -36,7 +35,7 @@ const providers = [
     async authorize(credentials, req) {
       const { email, password } = credentials as any;
       const res = await fetch(
-        `${process?.env?.NEXT_PUBLIC_BACKEND_URL || ""}/api/v1/auth/login/`,
+        `${process?.env?.NEXT_PUBLIC_BACKEND_URL || ''}/api/v1/auth/login/`,
         {
           method: 'POST',
           headers: {

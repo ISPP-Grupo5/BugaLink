@@ -97,7 +97,7 @@ const HistoryList = ({ trips, type, isLoading, isError }) => {
       {trips && trips.length === 0 && (
         <div className="mx-4 mt-4 rounded-md border border-border-color py-5 text-center text-2xl font-light text-gray md:mx-5">
           No has realizado todavía ningún viaje.
-        </div>      
+        </div>
       )}
       {isLoading || isError
         ? [1, 2, 3, 4].map((i) => <TripCardSkeleton key={i} />)

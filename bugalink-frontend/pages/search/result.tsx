@@ -152,6 +152,7 @@ export default function SearchResults() {
   const [drawerDay, setDrawerDay] = useState(false);
   const [pickTimeFrom, setPickTimeFrom] = useState('16:00');
   const [pickTimeTo, setPickTimeTo] = useState('16:15');
+  const [errorPickTime, setErrorPickTime] = useState<string | null>();
   const [values, setValues] = React.useState<number[]>([0, 2]);
   const [allowSmoke, setAllowSmoke] = useState(false);
   const [allowPets, setAllowPets] = useState(false);
@@ -185,12 +186,38 @@ export default function SearchResults() {
   const selectedFilters = filters.filter((filter) => filter.selected);
   const unselectedFilters = filters.filter((filter) => !filter.selected);
 
+  useEffect(() => {
+    const pickTimeFromHour = parseInt(pickTimeFrom.split(':')[0]);
+    const pickTimeFromMinutes = parseInt(pickTimeFrom.split(':')[1]);
+    const pickTimeToHour = parseInt(pickTimeTo.split(':')[0]);
+    const pickTimeToMinutes = parseInt(pickTimeTo.split(':')[1]);
+
+    if (
+      pickTimeFromHour > pickTimeToHour ||
+      (pickTimeFromHour === pickTimeToHour &&
+        pickTimeFromMinutes >= pickTimeToMinutes)
+    ) {
+      setErrorPickTime('La hora de fin debe ser mayor que la hora de inicio');
+    } else {
+      setErrorPickTime(null);
+    }
+  }, [pickTimeFrom, pickTimeTo]);
+
+  const onCloseDrawerHour = () => {
+    if (errorPickTime) {
+      setPickTimeFrom('--:--');
+      setPickTimeTo('--:--');
+    }
+
+    setDrawerHour(false);
+  };
+
   return (
     <AnimatedLayout className="flex flex-col overflow-y-scroll bg-white">
       <div className="z-50 bg-white pt-4">
         <div className="grid grid-cols-9 grid-rows-2 place-content-center place-items-center gap-y-2 px-2">
           <BackButton className="bg-white" />
-          <div className="row-span-2 flex h-full w-full flex-col items-center justify-between py-4 text-turquoise">
+          <div className="justify-between row-span-2 flex h-full w-full flex-col items-center py-4 text-turquoise">
             <SourcePin className="h-5 w-5 flex-none" />
             <ThreeDots className="w-5 flex-none" />
             <TargetPin className="h-5 w-5 flex-none" />
@@ -348,7 +375,7 @@ export default function SearchResults() {
       <Drawer
         anchor="bottom"
         open={drawerHour}
-        onClose={() => setDrawerHour(false)}
+        onClose={onCloseDrawerHour}
         SlideProps={{
           style: {
             minWidth: '320px',
@@ -366,10 +393,18 @@ export default function SearchResults() {
             <span className="mt-4 flex items-center justify-center space-x-2 text-xl font-bold">
               <TimePicker time={pickTimeFrom} setTime={setPickTimeFrom} />
               <p> — </p>
-              <TimePicker time={pickTimeTo} setTime={setPickTimeTo} />
+              <TimePicker
+                time={pickTimeTo}
+                error={errorPickTime}
+                setTime={setPickTimeTo}
+              />
+            </span>
+            <span className="flex items-center justify-center text-xs text-red">
+              {errorPickTime}
             </span>
           </div>
           <div className="my-5 flex flex-col items-center">
+            {/* TODO: If there are errors, it should not let you filter */}
             <CTAButton className="w-11/12" text={'FILTRAR'} />
           </div>
         </div>

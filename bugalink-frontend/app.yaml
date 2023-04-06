@@ -10,7 +10,6 @@ env_variables:
   NEXTAUTH_URL: https://app.bugalink.es
   NEXTAUTH_SECRET: VeryverySecret
 
-
 handlers:
   - url: /static
     static_dir: static

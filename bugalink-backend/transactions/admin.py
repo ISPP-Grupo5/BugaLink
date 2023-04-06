@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from .models import DriverRating, Report
+from .models import Transaction
 
-admin.site.register(DriverRating)
-admin.site.register(Report)
+admin.site.register(Transaction)

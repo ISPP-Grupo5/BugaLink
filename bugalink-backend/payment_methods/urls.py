@@ -8,7 +8,7 @@ router.register(r"balance", BalanceViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
-    path('users/<int:user_id>/balance', BalanceViewSet.as_view(), name='balance'),
+    path('users/<int:user_id>/balance', BalanceViewSet.as_view({'get': 'retrieve'}), name='balance'),
 
 ]
 

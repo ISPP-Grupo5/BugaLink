@@ -5,7 +5,6 @@ from rest_framework import status
 from .models import Transaction, Passenger, TransactionStatus
 from .serializers import TransactionSerializer
 
-
 class TransactionViewSetTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -42,4 +41,5 @@ class TransactionViewSetTest(TestCase):
 
         serializer_data = TransactionSerializer([self.transaction2, self.transaction1, self.transaction3], many=True).data
         self.assertEqual(response.data, serializer_data)
+
 

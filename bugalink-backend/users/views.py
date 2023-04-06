@@ -172,6 +172,7 @@ class UserTripsView(APIView):
             )
             if trip_status_list
             else trips_by_user
+        )
                 
                 
         # Filter the trips based on the status values

@@ -94,7 +94,7 @@ if os.environ.get("IS_APP_ENGINE"):
             "USER": config("USER"),
             "PASSWORD": config("PASSWORD"),
             "HOST": config("HOST"),
-            "PORT": config("PORT"),
+            "PORT": 5432,
         }
     }
 elif os.environ.get("IS_DOCKER"):
@@ -192,6 +192,8 @@ USE_TZ = True
 STATIC_ROOT = "static"
 STATIC_URL = "/static/"
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'files')
+MEDIA_URL = '/media/'
 STATICFILES_DIRS = []
 
 

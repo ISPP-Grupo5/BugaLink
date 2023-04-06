@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   db:
-    image: "postgres:12"
+    image: "postgres:15"
     environment:
       - POSTGRES_DBNAME=bugalink
       - POSTGRES_USER=bugalink_admin

@@ -75,16 +75,18 @@ export default function NewRoutine({
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
 
+  const [isSendingForm, setIsSendingForm] = useState(false);
+
   //arrivalTime.setMinutes
   const validateForm = (values: FormValues) => {
     const errors: FormErrors = {};
 
     if (!values.origin) {
-      errors.origin = 'Por favor, ingrese una dirección de origen';
+      errors.origin = 'Por favor, ingresa una dirección de origen';
     }
 
     if (!values.destination) {
-      errors.destination = 'Por favor, ingrese una dirección de destino';
+      errors.destination = 'Por favor, ingresa una dirección de destino';
     }
 
     if (values.origin && values.destination) {
@@ -94,11 +96,11 @@ export default function NewRoutine({
     }
 
     if (!values.pickTimeFrom) {
-      errors.pickTimeFrom = 'Por favor, ingrese una hora de inicio';
+      errors.pickTimeFrom = 'Por favor, ingresa una hora de inicio';
     }
 
     if (!values.pickTimeTo) {
-      errors.pickTimeTo = 'Por favor, ingrese una hora de fin';
+      errors.pickTimeTo = 'Por favor, ingresa una hora de fin';
     }
 
     if (values.pickTimeFrom && values.pickTimeTo) {
@@ -110,10 +112,10 @@ export default function NewRoutine({
       if (
         pickTimeFromHour > pickTimeToHour ||
         (pickTimeFromHour === pickTimeToHour &&
-          pickTimeFromMinutes >= pickTimeToMinutes)
+          pickTimeFromMinutes > pickTimeToMinutes)
       ) {
         errors.pickTimeTo =
-          'La hora de fin debe ser mayor que la hora de inicio';
+          'La hora de fin debe ser posterior a la hora de inicio';
       }
     }
 
@@ -121,13 +123,15 @@ export default function NewRoutine({
       errors.selectedDays = 'Por favor, seleccione al menos un día';
     }
 
-    if (values.price < 0) {
-      errors.price = 'El precio no debe ser un valor negativo';
-    } else if (!values.price) {
-      errors.price = 'Por favor, ingrese un precio';
-    } else if (values.price > totalDistance * 0.1 * 2) {
-      errors.price =
-        'El precio no puede ser mayor que el doble del precio recomendado';
+    if (userType === 'driver') {
+      if (values.price < 0) {
+        errors.price = 'El precio no debe ser un valor negativo';
+      } else if (!values.price) {
+        errors.price = 'Por favor, ingrese un precio';
+      } else if (values.price > totalDistance * 0.1 * 2) {
+        errors.price =
+          'El precio no puede ser mayor que el doble del precio recomendado';
+      }
     }
 
     setErrors(errors);
@@ -148,9 +152,9 @@ export default function NewRoutine({
   }
 
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setIsSendingForm(true);
     event.preventDefault();
     if (formRef.current) {
-
       const formData = new FormData(formRef.current);
       const values: FormValues = {
         origin: formData.get('origin') as string,
@@ -169,39 +173,44 @@ export default function NewRoutine({
           daysOfWeek.push(daysToApi[days.indexOf(selectedDays[day])]);
         }
         const data = {
-          "origin": {
-            "address": origin,
-            "latitude": originCoords.lat.toString(),
-            "longitude": originCoords.lng.toString()
+          origin: {
+            address: origin,
+            latitude: originCoords.lat.toString(),
+            longitude: originCoords.lng.toString(),
           },
-          "destination": {
-            "address": destination,
-            "latitude": destinationCoords.lat.toString(),
-            "longitude": destinationCoords.lng.toString()
+          destination: {
+            address: destination,
+            latitude: destinationCoords.lat.toString(),
+            longitude: destinationCoords.lng.toString(),
           },
-          "days_of_week": daysOfWeek,
-          "departure_time_start": pickTimeFrom,
-          "departure_time_end": pickTimeTo,
-          "arrival_time": "" + arrivalTime.getHours() + ":" + arrivalTime.getMinutes(),
-          "price": price,
-          "note": note,
-          "is_recurrent": false,
-          "available_seats": freeSeatsNumber
+          days_of_week: daysOfWeek,
+          departure_time_start: pickTimeFrom,
+          departure_time_end: pickTimeTo,
+          arrival_time:
+            '' + arrivalTime.getHours() + ':' + arrivalTime.getMinutes(),
+          price: price,
+          note: note,
+          is_recurrent: false,
+          available_seats: freeSeatsNumber,
         };
-        console.log(data);
-        axiosAuth.post('driver-routines/', data)
-          .then(response => {
+
+        const url =
+          userType === 'driver' ? 'driver-routines/' : 'passenger-routines/';
+        axiosAuth
+          .post(url, data)
+          .then((response) => {
             console.log('Data:', response.data);
             console.log(
               'Los datos del formulario son válidos. ¡Enviando formulario!'
             );
             router.push(NEXT_ROUTES.MY_ROUTINES);
           })
-          .catch(error => {
+          .catch((error) => {
             console.error('Error:', error);
+            setIsSendingForm(false);
           });
-
-
+      } else {
+        setIsSendingForm(false);
       }
     }
   };
@@ -229,6 +238,7 @@ export default function NewRoutine({
         >
           <PlacesAutocomplete
             onAddressSelect={(address) => {
+              delete errors.origin;
               getGeocode({ address: address }).then((results) => {
                 setOrigin(results[0].formatted_address);
                 setOriginCoords(getLatLng(results[0]));
@@ -241,6 +251,7 @@ export default function NewRoutine({
 
           <PlacesAutocomplete
             onAddressSelect={(address) => {
+              delete errors.destination;
               getGeocode({ address: address }).then((results) => {
                 setDestination(results[0].formatted_address);
                 setDestinationCoords(getLatLng(results[0]));
@@ -272,7 +283,7 @@ export default function NewRoutine({
             </span>
             {errors.pickTimeFrom ||
               (errors.pickTimeTo && (
-                <div className="mt-1 text-xs font-medium text-red">
+                <div className="-mt-2 text-xs font-medium text-red">
                   {errors.pickTimeFrom} <br /> {errors.pickTimeTo}
                 </div>
               ))}
@@ -289,9 +300,11 @@ export default function NewRoutine({
             {days.map((day: string) => (
               <p
                 key={day}
-                className={`h-full w-full py-2 transition-colors duration-300 ${selectedDays.includes(day) ? 'bg-turquoise text-white' : ''
-                  }`}
+                className={`h-full w-full py-2 transition-colors duration-300 ${
+                  selectedDays.includes(day) ? 'bg-turquoise text-white' : ''
+                }`}
                 onClick={() => {
+                  delete errors.selectedDays;
                   if (selectedDays.includes(day)) {
                     setSeletedDays(selectedDays.filter((d) => d !== day));
                   } else {
@@ -368,8 +381,9 @@ export default function NewRoutine({
             </div>
           )}
           <CTAButton
+            text={isSendingForm ? 'PROCESANDO...' : 'CREAR'}
+            disabled={isSendingForm}
             className="mt-4 w-full"
-            text="CREAR"
             onClick={handleButtonClick}
           />
         </form>

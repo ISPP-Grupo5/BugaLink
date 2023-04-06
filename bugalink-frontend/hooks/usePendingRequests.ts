@@ -8,7 +8,7 @@ export default function usependingRequests() {
   const user = userData?.user as User;
 
   const { data, error, isLoading } = useSWR(
-    user && `/users/${user.user_id}/trip-requests?status=PENDING`,
+    user && `/users/${user.user_id}/trip-requests/?status=PENDING&role=driver`,
     fetcherAuth
   );
 

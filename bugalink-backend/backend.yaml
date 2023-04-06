@@ -24,6 +24,7 @@ env_variables:
   ENGINE: django.db.backends.postgresql_psycopg2
   NAME: bugalink
   USER: bugalink_admin
+  PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
   PORT: 5432
   HOST: /cloudsql/bugalink-379817:europe-west1:bugalink
   SECRET_KEY: ${{ secrets.SECRET_KEY }}

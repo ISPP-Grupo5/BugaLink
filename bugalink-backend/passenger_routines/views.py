@@ -3,7 +3,7 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
 
 from passenger_routines.models import PassengerRoutine
-from passenger_routines.serializers import PassengerRoutineSerializer
+from passenger_routines.serializers import PassengerRoutineSerializer, PassengerRoutineCreateSerializer
 
 
 class PassengerRoutineViewSet(
@@ -19,8 +19,8 @@ class PassengerRoutineViewSet(
 
     def get_serializer_class(self):
         if self.action == "create":
-            return PassengerRoutineSerializer  # TODO: use different serializer for GET?
-        return super().get_serializer_class()
+            return PassengerRoutineCreateSerializer
+        return PassengerRoutineSerializer
 
     # Individual GET
     # /passenger-routines/1/
@@ -32,15 +32,12 @@ class PassengerRoutineViewSet(
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        # NOTE: this saves the entity in the DB and returns the created object
-        serializer.save()
-
-        created_id = serializer.instance.id
-        headers = self.get_success_headers(serializer.data)
+        # NOTE: this creates all the routines
+        routines = serializer.create()
+        response_serializer = PassengerRoutineSerializer(routines,many=True)
+        headers = self.get_success_headers(response_serializer.data)
         return Response(
-            {"id": created_id, **serializer.data},
-            # self.get_serializer(driver_routine).data,
+            response_serializer.data,
             status=status.HTTP_201_CREATED,
             headers=headers,
         )

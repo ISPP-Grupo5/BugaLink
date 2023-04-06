@@ -100,8 +100,8 @@ export default function EditProfile() {
           <div className="relative mx-auto w-min">
             <Avatar className="mx-auto my-2 h-24 w-24 rounded-full outline outline-8 outline-white" />
             <div id="check" className="absolute -bottom-2 -right-2">
-              <div className="flex aspect-square w-9 items-center justify-center rounded-full bg-turquoise">
-                <Pencil className="m-auto aspect-square bg-transparent p-1 text-white" />
+              <div className="flex aspect-square h-10 w-10 rounded-full bg-turquoise">
+                <Pencil className="p-1 text-white" />
               </div>
             </div>
           </div>

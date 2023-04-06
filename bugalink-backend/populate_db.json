@@ -1,34 +1,44 @@
 {
   "User": [
     {
-      "email": "federico@bugalink.com",
-      "password": "F3d3r1c0",
+      "password": "pbkdf2_sha256$600000$iAL8xlbTQ8fZyOJMR220ec$1Y6LBSQ2Xn82RH7fbQ3F2eXA1hYIB9mCf1+HJ9Tm2/k=",
       "first_name": "Federico",
-      "last_name": "de los Palotes"
+      "last_name": "de los Palotes",
+      "email": "federico@bugalink.com",
+      "is_passenger" : true,
+      "is_driver" : true
     },
     {
       "password": "R4m0n",
       "first_name": "Ramón Antonio",
       "last_name": "Pérez González",
-      "email": "ramonantonio@bugalink.com"
+      "email": "ramonantonio@bugalink.com",
+      "is_passenger" : true,
+      "is_driver" : true
     },
     {
       "password": "M4r14",
       "first_name": "María Lucía",
       "last_name": "Hernández de la Roña",
-      "email": "marialucia@bugalink.com"
+      "email": "marialucia@bugalink.com",
+      "is_passenger" : true,
+      "is_driver" : true
     },
     {
       "password": "C0nch4",
       "first_name": "Concha Manuela",
       "last_name": "Sánchez del Río",
-      "email": "conchamanuela@bugalink.com"
+      "email": "conchamanuela@bugalink.com",
+      "is_passenger" : true,
+      "is_driver" : true
     },
     {
       "password": "Pr4d4",
       "first_name": "Ágata",
       "last_name": "Ruíz de la Prada",
-      "email": "prada@bugalink.com"
+      "email": "prada@bugalink.com",
+      "is_passenger" : true,
+      "is_driver" : true
     }
   ],
   "Passenger": [
@@ -50,19 +60,39 @@
   ],
   "Driver": [
     {
-      "user_id": 1
+      "user_id": 1,
+      "prefers_talk": false,
+      "prefers_music": true,
+      "allows_smoke": false,
+      "allows_pets": false
     },
     {
-      "user_id": 2
+      "user_id": 2,
+      "prefers_talk": false,
+      "prefers_music": true,
+      "allows_smoke": false,
+      "allows_pets": true
     },
     {
-      "user_id": 3
+      "user_id": 3,
+      "prefers_talk": true,
+      "prefers_music": false,
+      "allows_smoke": false,
+      "allows_pets": false
     },
     {
-      "user_id": 4
+      "user_id": 4,
+      "prefers_talk": true,
+      "prefers_music": true,
+      "allows_smoke": true,
+      "allows_pets": false
     },
     {
-      "user_id": 5
+      "user_id": 5,
+      "prefers_talk": true,
+      "prefers_music": false,
+      "allows_smoke": false,
+      "allows_pets": true
     }
   ],
   "Location": [

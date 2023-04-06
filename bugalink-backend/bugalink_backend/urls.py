@@ -20,7 +20,8 @@ from drf_spectacular.views import (  # SpectacularRedocView,
     SpectacularAPIView,
     SpectacularSwaggerView,
 )
-
+from . import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     # Include URLs for auth app
@@ -36,4 +37,5 @@ urlpatterns = [
     path("api/v1/", include("passenger_routines.urls")),
     path("api/v1/", include("trips.urls")),
     path("api/v1/", include("payment_methods.urls")),
-]
+    path("api/v1/", include("transactions.urls")),
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,18 +1,44 @@
+
+from http.client import BAD_REQUEST
 from django.db import transaction
+from datetime import datetime,timedelta
+from django.shortcuts import get_object_or_404
 from drivers.models import Driver
 from drivers.serializers import DriverSerializer
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, mixins
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from trips.models import TripRequest
 from trips.serializers import TripRequestSerializer
 from users.models import User
-from users.serializers import UserSerializer
+from users.serializers import UserSerializer, UserUpdateSerializer, UserStatsSerializer, UserRatingSerializer
 
-
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+#users/{id}/ GET Y /users/ GET(list)
+class UserViewSet( viewsets.GenericViewSet,
+                  mixins.RetrieveModelMixin,
+                  mixins.ListModelMixin,
+                 ):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+#/users/{id}/edit PUT. Recibe mediante un form-data: first_name, last_name y photo(file) 
+class UserUpdateView(APIView):
+    @transaction.atomic
+    def put(self, request, id):
+        if request.user.id != id:
+            return Response(
+                data={
+                    "error": "No tienes permiso para editar esta información"
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        serializer = UserUpdateSerializer(request.user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # POST /users/become-driver
@@ -28,10 +54,6 @@ class BecomeDriverView(APIView):
         # Create a driver profile for the user
         driver = Driver.objects.create(
             user=request.user,
-            preference_0=False,
-            preference_1=False,
-            preference_2=False,
-            preference_3=False,
         )
         request.user.is_driver = True
         request.user.save()
@@ -88,3 +110,20 @@ class UserTripsView(APIView):
         return Response(
             data=TripRequestSerializer(trips_matching_status, many=True).data
         )
+
+
+class UserStatsView(viewsets.GenericViewSet,
+                    mixins.RetrieveModelMixin):
+    queryset = User.objects.all()
+    serializer_class = UserStatsSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+    
+class UserRatingView(viewsets.GenericViewSet,
+                    mixins.RetrieveModelMixin):
+    queryset = User.objects.all()
+    serializer_class = UserRatingSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)

@@ -340,7 +340,7 @@ export default function SearchResults() {
                 date={trip.date}
                 price={trip.price}
                 className="rounded-md bg-white outline outline-1 outline-light-gray"
-                href={NEXT_ROUTES.RIDE_DETAILS_ONE(trip.id)}
+                href={NEXT_ROUTES.RIDE_DETAILS(trip.id)}
               />
             </Link>
           ))}

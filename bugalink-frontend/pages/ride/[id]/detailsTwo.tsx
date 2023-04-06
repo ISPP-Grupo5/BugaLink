@@ -38,7 +38,7 @@ export default function DetailsTwo() {
           name="Jesús Marchena"
           rating="4.8"
           numberOfRatings="14"
-          photo="/assets/anonymus-avatar.png"
+          photo="/assets/anonymous-avatar.png"
           className="mb-2"
         />
         {/* Map preview */}

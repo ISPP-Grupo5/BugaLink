@@ -1,3 +1,4 @@
+import Avatar from '@/components/avatar';
 import { BackButtonText } from '@/components/buttons/Back';
 import ProfileItems from '@/components/cards/profile';
 import AnimatedLayout from '@/components/layouts/animated';
@@ -36,9 +37,9 @@ export default function Profile({ data }) {
       <div className="flex h-full flex-col -space-y-8">
         <div className="z-10 rounded-t-3xl text-center">
           <div className="relative mx-auto h-24 w-24 ">
-            <img
-              src={user.photo || '/assets/anonymus-avatar.png'}
-              className="my-2 aspect-square rounded-full outline outline-8 outline-white"
+            <Avatar
+              src={user.photo}
+              className=" my-2 outline outline-8 outline-white"
             />
             <div id="check" className="absolute -bottom-2 -right-2">
               <div className="flex aspect-square w-9 items-center justify-center rounded-full bg-turquoise">

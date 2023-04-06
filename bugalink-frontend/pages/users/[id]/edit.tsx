@@ -1,3 +1,4 @@
+import Avatar from '@/components/avatar';
 import { BackButtonText } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import TextField from '@/components/forms/TextField';
@@ -7,9 +8,7 @@ import useUser from '@/hooks/useUser';
 import UserI from '@/interfaces/user';
 import { axiosAuth } from '@/lib/axios';
 import { GetServerSideProps } from 'next';
-import { User } from 'next-auth';
-import { signOut, useSession } from 'next-auth/react';
-import Avatar from 'public/assets/avatar.svg';
+import { signOut } from 'next-auth/react';
 import Pencil from 'public/assets/edit.svg';
 import { useEffect, useRef, useState } from 'react';
 
@@ -149,18 +148,41 @@ export default function EditProfile({ data }) {
     <AnimatedLayout className="flex h-screen flex-col items-center justify-between bg-white">
       <BackButtonText text="Mi perfil" />
       <div className="flex h-full w-full flex-col items-center overflow-y-scroll">
-        <div className="z-10 mb-5 rounded-t-3xl text-center">
-          <div className="relative mx-auto h-24 w-24 ">
-            <img
-              src={user.photo || '/assets/anonymus-avatar.png'}
-              className="my-2 aspect-square rounded-full outline outline-8 outline-white"
+        <div className="mb-5 h-24 w-24">
+          <label
+            htmlFor="uploadProfilePicture"
+            className="relative mx-auto cursor-pointer"
+          >
+            <input
+              id="uploadProfilePicture"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                  const img = document.getElementById(
+                    'profilePicture'
+                  ) as HTMLImageElement;
+                  img.src = e.target.result as string;
+                };
+                reader.readAsDataURL(file);
+                // Set to state
+              }}
+            />
+            <Avatar
+              id="profilePicture"
+              src={user.photo}
+              className="my-2 w-full outline outline-8 outline-white"
             />
             <div id="check" className="absolute -bottom-2 -right-2">
               <div className="flex aspect-square h-10 w-10 rounded-full bg-turquoise">
                 <Pencil className="p-1 text-white" />
               </div>
             </div>
-          </div>
+          </label>
         </div>
         <form
           ref={formRef}

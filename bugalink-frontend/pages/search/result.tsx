@@ -314,32 +314,32 @@ export default function SearchResults() {
       <div className="divide-y-2 divide-light-gray">
         {isLoading || isError
           ? [1, 2, 3, 4, 5].map((i) => (
-              <TripCardSkeleton
-                key={i}
-                className="rounded-md bg-white outline outline-1 outline-light-gray"
-              />
-            ))
+            <TripCardSkeleton
+              key={i}
+              className="rounded-md bg-white outline outline-1 outline-light-gray"
+            />
+          ))
           : searchResults.map((trip) => (
-              <Link
+            <Link
+              key={trip.name}
+              href="/ride/V1StGXR8_Z5jdHi6B-myT/details?requested=false"
+              className="w-full"
+            >
+              <TripCard
                 key={trip.name}
-                href="/ride/V1StGXR8_Z5jdHi6B-myT/details?requested=false"
-                className="w-full"
-              >
-                <TripCard
-                  key={trip.name}
-                  type={trip.type}
-                  rating={trip.rating}
-                  name={trip.name}
-                  avatar={trip.avatar}
-                  origin={trip.origin}
-                  destination={trip.destination}
-                  date={trip.date}
-                  price={trip.price}
-                  className="rounded-md bg-white outline outline-1 outline-light-gray"
-                  href={NEXT_ROUTES.RIDE_DETAILS(trip.id)}
-                />
-              </Link>
-            ))}
+                type={trip.type}
+                rating={trip.rating}
+                name={trip.name}
+                avatar={trip.avatar}
+                origin={trip.origin}
+                destination={trip.destination}
+                date={trip.date}
+                price={trip.price}
+                className="rounded-md bg-white outline outline-1 outline-light-gray"
+                href={NEXT_ROUTES.RIDE_DETAILS(trip.id)}
+              />
+            </Link>
+          ))}
       </div>
       <Drawer
         anchor="bottom"
@@ -520,9 +520,9 @@ export default function SearchResults() {
                   sx={{
                     fontFamily: 'Lato, sans-serif',
                     '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
-                      {
-                        borderColor: '#7cc3c4',
-                      },
+                    {
+                      borderColor: '#7cc3c4',
+                    },
                     '& .MuiFormLabel-root.Mui-focused': {
                       color: '#7cc3c4',
                     },
@@ -533,9 +533,9 @@ export default function SearchResults() {
                   sx={{
                     fontFamily: 'Lato, sans-serif',
                     '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
-                      {
-                        borderColor: '#7cc3c4',
-                      },
+                    {
+                      borderColor: '#7cc3c4',
+                    },
                     '& .MuiFormLabel-root.Mui-focused': {
                       color: '#7cc3c4',
                     },

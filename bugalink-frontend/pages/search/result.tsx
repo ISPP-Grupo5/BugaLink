@@ -54,7 +54,7 @@ const searchResultsMock = [
     type: 'driver',
     rating: 4.6,
     name: 'Paco Perez',
-    avatar: '/assets/avatar.png',
+    avatar: '/assets/anonymus-avatar.png',
     gender: 'M',
     origin: 'Centro Comercial Way',
     destination: 'ETSII',
@@ -76,7 +76,7 @@ const searchResultsMock = [
     type: 'driver',
     rating: 4.7,
     name: 'Alberto Chicote',
-    avatar: '/assets/avatar.png',
+    avatar: '/assets/anonymus-avatar.png',
     gender: 'M',
     origin: 'Centro Comercial Lagoh',
     destination: 'Isla Mágica',
@@ -198,7 +198,7 @@ export default function SearchResults() {
           <div className="col-span-6 w-full pr-4">
             <input
               type="search"
-              placeholder="Desde dónde quieres ir?"
+              placeholder="¿Desde dónde quieres ir?"
               value="Casa"
               className="ml-2 mr-2 w-full rounded-full bg-base-origin p-4 text-sm"
             ></input>

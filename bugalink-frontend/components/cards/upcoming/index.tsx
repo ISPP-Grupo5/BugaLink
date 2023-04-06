@@ -76,7 +76,7 @@ const DriverCardHeader = ({ trip }: { trip: TripI }) => (
             style={{ zIndex: 3 - index }} // for reverse stacking
             key={`passenger-${index}`}
             id={`passenger-${index}`}
-            src={passenger.user.photo ?? '/assets/avatar.png'}
+            src={passenger.user.photo ?? '/assets/anonymus-avatar.png'}
           />
         ))}
       </span>
@@ -89,7 +89,10 @@ const DriverCardHeader = ({ trip }: { trip: TripI }) => (
               key={`passenger-${index}`}
               className="text-md truncate leading-5"
             >
-              {passenger.user.first_name}{' '}
+              {passenger.user.first_name
+                .split(' ')
+                .map((name, idx) => (idx > 0 ? name.charAt(0) + '.' : name))
+                .join(' ')}{' '}
               {passenger.user.last_name.split(' ')[0]}
             </p>
           ))}
@@ -119,7 +122,7 @@ const PassengerCardHeader = ({ trip }: { trip: TripI }) => (
     <span className="flex h-full items-center space-x-3 px-3">
       <img
         className="aspect-square w-14 rounded-full object-scale-down"
-        src={trip.driver.user.photo ?? '/assets/avatar.png'}
+        src={trip.driver.user.photo ?? '/assets/anonymus-avatar.png'}
       />
       <div className="flex flex-col -space-y-1">
         <p className="text-lg font-extrabold leading-5 tracking-wide">

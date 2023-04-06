@@ -3,12 +3,15 @@ import CTAButton from '@/components/buttons/CTA';
 import TextField from '@/components/forms/TextField';
 import AnimatedLayout from '@/components/layouts/animated';
 import NEXT_ROUTES from '@/constants/nextRoutes';
+import useUser from '@/hooks/useUser';
+import UserI from '@/interfaces/user';
 import { axiosAuth } from '@/lib/axios';
+import { GetServerSideProps } from 'next';
 import { User } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import Avatar from 'public/assets/avatar.svg';
 import Pencil from 'public/assets/edit.svg';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface FormErrors {
   name?: string;
@@ -24,16 +27,36 @@ interface FormValues {
   password: string;
 }
 
-export default function EditProfile() {
-  const { data } = useSession();
-  const user = data?.user as User;
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { id } = context.query;
 
-  const [name, setName] = useState<string>('Pedro');
-  const [surname, setSurname] = useState<string>('Pérez');
-  const [email, setEmail] = useState<string>('pedroperez@mail.com');
-  const [password, setPassword] = useState<string>('password1D3!');
+  const data = {
+    id: id,
+  };
 
-  const [showPassword, setShowPassword] = useState<boolean>(false);
+  return {
+    props: { data },
+  };
+};
+
+export default function EditProfile({ data }) {
+  const userId = data.id;
+
+  const user = useUser(userId).user as UserI;
+
+  useEffect(() => {
+    if (!user) return;
+    setName(user.first_name);
+    setSurname(user.last_name);
+    setEmail(user.email);
+  }, [user]);
+  const [name, setName] = useState<string>('');
+  const [surname, setSurname] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [isDeleteConfirmation, setIsDeleteConfirmation] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -99,12 +122,19 @@ export default function EditProfile() {
     }
   };
 
+  const handleDeleteConfirmation = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    setIsDeleteConfirmation(true);
+  };
+
   const handleDeleteAccount = async (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
     try {
-      const response = await axiosAuth.delete(`/users/${user.user_id}`);
+      const response = await axiosAuth.delete(`/users/${user.id}`);
       if (response.status === 204) {
         await signOut({
           callbackUrl: NEXT_ROUTES.LOGIN,
@@ -120,15 +150,17 @@ export default function EditProfile() {
       <BackButtonText text="Mi perfil" />
       <div className="flex h-full w-full flex-col items-center overflow-y-scroll">
         <div className="z-10 mb-5 rounded-t-3xl text-center">
-          <div className="relative mx-auto w-min">
-            <Avatar className="mx-auto my-2 h-24 w-24 rounded-full outline outline-8 outline-white" />
+          <div className="relative mx-auto h-24 w-24 ">
+            <img
+              src={user.photo || '/assets/anonymus-avatar.png'}
+              className="my-2 aspect-square rounded-full outline outline-8 outline-white"
+            />
             <div id="check" className="absolute -bottom-2 -right-2">
               <div className="flex aspect-square h-10 w-10 rounded-full bg-turquoise">
                 <Pencil className="p-1 text-white" />
               </div>
             </div>
           </div>
-          <p className="pt-2 text-3xl ">Pedro Pérez</p>
         </div>
         <form
           ref={formRef}
@@ -143,7 +175,7 @@ export default function EditProfile() {
               type="text"
               error={errors.name}
               parentClassName="w-10/12 flex flex-col items-center"
-              inputClassName="w-full focus:text-black text-light-gray"
+              inputClassName="w-full focus:text-black text-gray"
             />
 
             <TextField
@@ -154,7 +186,7 @@ export default function EditProfile() {
               type="text"
               error={errors.surname}
               parentClassName="w-10/12 flex flex-col items-center"
-              inputClassName="w-full focus:text-black text-light-gray"
+              inputClassName="w-full focus:text-black text-gray"
             />
 
             <hr className="mx-2 w-11/12 text-light-gray" />
@@ -166,8 +198,9 @@ export default function EditProfile() {
               setContent={setEmail}
               type="email"
               error={errors.email}
+              disabled
               parentClassName="w-10/12 flex flex-col items-center"
-              inputClassName="w-full focus:text-black text-light-gray"
+              inputClassName="w-full focus:text-black text-gray"
             />
 
             <TextField
@@ -178,17 +211,28 @@ export default function EditProfile() {
               type="password"
               error={errors.password}
               parentClassName="w-10/12 flex flex-col items-center"
-              inputClassName="w-full focus:text-black text-light-gray"
+              inputClassName="w-full focus:text-black text-gray"
               showPassword={showPassword}
               setShowPassword={setShowPassword}
             />
           </div>
           <div className="my-5 flex w-full flex-col items-center justify-center">
-            <button className="text-red" onClick={handleDeleteAccount}>
-              Solicita la eliminación de tu cuenta
-            </button>
+            {isDeleteConfirmation ? (
+              <button className="text-red" onClick={handleDeleteAccount}>
+                Pulsa de nuevo para eliminar tu cuenta
+              </button>
+            ) : (
+              <button className="text-red" onClick={handleDeleteConfirmation}>
+                Solicita la eliminación de tu cuenta
+              </button>
+            )}
             <p className="mb-2 text-sm font-semibold text-gray">
-              Usuario desde el 22 de marzo de 2023
+              Usuario desde el{' '}
+              {new Date(user.date_joined).toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
             </p>
             <CTAButton
               className="w-11/12"

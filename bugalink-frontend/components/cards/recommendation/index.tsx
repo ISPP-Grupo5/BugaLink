@@ -1,4 +1,4 @@
-import AvatarWithRating from '@/components/avatarWithRating';
+import AvatarWithRating from '@/components/avatar/withRating';
 import Entry from '@/components/cards/common/entry';
 import Link from 'next/link';
 import Calendar from '/public/assets/calendar.svg';
@@ -6,7 +6,7 @@ import MapPin from '/public/assets/map-pin.svg';
 import OrigenPin from '/public/assets/origen-pin.svg';
 
 type Params = {
-  type?: string;
+  type?: 'driver' | 'passenger';
   rating: number;
   name: string;
   avatar: string;

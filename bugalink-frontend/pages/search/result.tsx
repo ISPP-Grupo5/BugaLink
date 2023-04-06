@@ -54,7 +54,7 @@ const searchResultsMock = [
     type: 'driver',
     rating: 4.6,
     name: 'Paco Perez',
-    avatar: '/assets/avatar.png',
+    avatar: '/assets/anonymous-avatar.png',
     origin: 'Centro Comercial Way',
     destination: 'ETSII',
     date: '14 de Marzo de 2023, 12:00',
@@ -74,7 +74,7 @@ const searchResultsMock = [
     type: 'driver',
     rating: 4.7,
     name: 'Alberto Chicote',
-    avatar: '/assets/avatar.png',
+    avatar: '/assets/anonymous-avatar.png',
     origin: 'Centro Comercial Lagoh',
     destination: 'Isla Mágica',
     date: '17 de Marzo de 2023, 11:40',
@@ -195,7 +195,7 @@ export default function SearchResults() {
           <div className="col-span-6 w-full pr-4">
             <input
               type="search"
-              placeholder="Desde dónde quieres ir?"
+              placeholder="¿Desde dónde quieres ir?"
               value="Casa"
               className="ml-2 mr-2 w-full rounded-full bg-base-origin p-4 text-sm"
             ></input>
@@ -322,7 +322,7 @@ export default function SearchResults() {
           : searchResults.map((trip) => (
               <Link
                 key={trip.name}
-                href="/ride/V1StGXR8_Z5jdHi6B-myT/detailsOne?requested=false"
+                href="/ride/V1StGXR8_Z5jdHi6B-myT/details?requested=false"
                 className="w-full"
               >
                 <TripCard
@@ -336,7 +336,7 @@ export default function SearchResults() {
                   date={trip.date}
                   price={trip.price}
                   className="rounded-md bg-white outline outline-1 outline-light-gray"
-                  href={NEXT_ROUTES.RIDE_DETAILS_ONE(trip.id)}
+                  href={NEXT_ROUTES.RIDE_DETAILS(trip.id)}
                 />
               </Link>
             ))}

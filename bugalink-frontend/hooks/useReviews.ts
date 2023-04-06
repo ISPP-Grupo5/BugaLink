@@ -1,12 +1,12 @@
-import { fetcher } from '@/utils/fetcher';
+import { fetcherAuth } from '@/utils/fetcher';
 import useSWR from 'swr';
 
-export default function useReviews(driverId) {
+export default function useReviews(userId) {
   // TODO: once we have local sessions, we can extract the user id from the session
 
   const { data, error, isLoading } = useSWR(
-    `/api/users/${driverId}/reviews`,
-    fetcher
+    `/users/${userId}/rating`,
+    fetcherAuth
   );
 
   return {

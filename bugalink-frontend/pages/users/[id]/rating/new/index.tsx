@@ -4,10 +4,9 @@ import RatingButton from '@/components/buttons/Ratings';
 import AnimatedLayout from '@/components/layouts/animated';
 import StarRating from '@/components/starRating';
 import axios from '@/lib/axios';
-import Link from 'next/link';
+import { Drawer } from '@mui/material';
 import { useState } from 'react';
 import ReportProblem from '../new/problem';
-import { Drawer } from '@mui/material';
 
 export default function RatingScreen() {
   const [rating, setRating] = useState(3);
@@ -59,7 +58,7 @@ export default function RatingScreen() {
         </p>
       </div>
 
-      <div className="justify-between flex space-x-4">
+      <div className="flex justify-between space-x-4">
         <RatingButton
           text="Buena conducción"
           icon="🛞"

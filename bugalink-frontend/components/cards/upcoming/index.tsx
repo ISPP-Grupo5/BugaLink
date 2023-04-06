@@ -33,7 +33,7 @@ export default function UpcomingCard({
         (isDriver ? 'bg-turquoise ' : 'bg-green ') +
         className
       }
-      href={NEXT_ROUTES.RIDE_DETAILS_ONE(tripRequest.id, isRequested)}
+      href={NEXT_ROUTES.RIDE_DETAILS(tripRequest.id, isRequested)}
     >
       {isDriver ? (
         <DriverCardHeader trip={trip} />

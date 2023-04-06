@@ -50,10 +50,10 @@ export default function Home() {
           text="Crear viaje"
           className="mx-auto mb-6 h-1/6 w-full px-4"
           Option1="Como pasajero"
-          Option2="Como conductor"
+          Option2={user?.driver_id ? 'Como conductor' : null}
           isLink={true}
-          linkOption1="/users/273932t8437/routines/passenger/new"
-          linkOption2="/users/273932t8437/routines/driver/new"
+          linkOption1={NEXT_ROUTES.NEW_ROUTINE_PASSENGER}
+          linkOption2={NEXT_ROUTES.NEW_ROUTINE_DRIVER}
         />
 
         <span className="flex w-full justify-between space-x-5 px-4 md:px-5">

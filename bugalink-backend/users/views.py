@@ -1,13 +1,9 @@
-from datetime import datetime, timedelta
-from http.client import BAD_REQUEST
-
+from allauth.account.models import EmailAddress
 from django.db import transaction
-from django.shortcuts import get_object_or_404
 from driver_routines.models import DriverRoutine
 from drivers.models import Driver
 from drivers.serializers import DriverSerializer
 from passenger_routines.models import PassengerRoutine
-from passengers.models import Passenger
 from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -20,7 +16,6 @@ from users.serializers import (
     UserStatsSerializer,
     UserUpdateSerializer,
 )
-from allauth.account.models import EmailAddress
 
 
 # users/{id}/ GET Y /users/ GET(list)

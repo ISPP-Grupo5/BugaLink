@@ -23,16 +23,16 @@ export default function ProfileHeader({
       }
     >
       {/* Profile header */}
-      <div className="flex flex-row">
+      <div className="flex flex-row items-start space-x-3">
         <Avatar src={photo} className="h-11 w-11" />
-        <div className="ml-3 flex flex-col">
-          <p className="text-lg font-bold leading-normal">{name}</p>
+        <div className="grid grid-rows-2 -space-y-0.5">
+          <p className="truncate text-lg font-bold">{name}</p>
           <p className="text-xs font-normal">
             ⭐ {rating} - {numberOfRatings} valoraciones
           </p>
         </div>
       </div>
-      <div className="flex space-x-2">
+      <div className="flex -translate-y-1 space-x-1">
         <button className="flex h-7 w-7 items-center justify-center rounded-full border border-turquoise">
           <Chat className="h-3 w-3" />
         </button>

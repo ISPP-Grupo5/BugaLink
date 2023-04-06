@@ -126,6 +126,7 @@ class TripRequestViewSet(
         payment_method = request.data.get("payment_method")
         price = trip.driver_routine.price
 
+        ''' FUTURE IMPLEMENTATION
         if payment_method == "Balance":
             balance = Balance.objects.get(user=user)
             pay_with_balance(balance, price)
@@ -141,7 +142,7 @@ class TripRequestViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
                 data={"error": "Método de pago inválido"},
             )
-        
+        '''
         serializer.save()
 
         created_id = serializer.instance.id

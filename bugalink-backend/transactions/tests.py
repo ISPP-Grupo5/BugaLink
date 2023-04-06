@@ -4,7 +4,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from .models import Transaction, Passenger, TransactionStatus
 from .serializers import TransactionSerializer
-from .views import TransactionViewSet
+
 
 class TransactionViewSetTest(TestCase):
     def setUp(self):
@@ -17,14 +17,14 @@ class TransactionViewSetTest(TestCase):
         self.transaction1 = Transaction.objects.create(
             sender=self.sender,
             receiver=self.receiver,
-            status=TransactionStatus.Completed,
+            status=TransactionStatus.Accepted,
             is_refund=False,
             amount=100.0
         )
         self.transaction2 = Transaction.objects.create(
             sender=self.sender,
             receiver=self.receiver,
-            status=TransactionStatus.Completed,
+            status=TransactionStatus.Accepted,
             is_refund=False,
             amount=200.0
         )

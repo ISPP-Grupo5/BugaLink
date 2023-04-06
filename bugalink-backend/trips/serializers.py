@@ -10,11 +10,18 @@ class TripSerializer(serializers.ModelSerializer):
     driver = serializers.SerializerMethodField()
     departure_datetime = serializers.DateTimeField()
     arrival_datetime = serializers.DateTimeField()
-    
 
     class Meta:
         model = Trip
-        fields = ("id", "driver_routine", "passengers", "driver", "departure_datetime", "arrival_datetime", "status")
+        fields = (
+            "id",
+            "driver_routine",
+            "passengers",
+            "driver",
+            "departure_datetime",
+            "arrival_datetime",
+            "status",
+        )
 
     def get_passengers(self, obj) -> PassengerAsUserSerializer(many=True):
         trip_requests = TripRequest.objects.filter(trip=obj)
@@ -32,7 +39,7 @@ class TripRequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TripRequest
-        fields = ("id", "trip", "status", "note")
+        fields = ("id", "trip", "passenger", "status", "note")
 
 
 class TripRequestCreateSerializer(serializers.ModelSerializer):

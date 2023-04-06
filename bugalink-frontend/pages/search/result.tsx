@@ -55,7 +55,6 @@ const searchResultsMock = [
     rating: 4.6,
     name: 'Paco Perez',
     avatar: '/assets/avatar.png',
-    gender: 'M',
     origin: 'Centro Comercial Way',
     destination: 'ETSII',
     date: '14 de Marzo de 2023, 12:00',
@@ -66,7 +65,6 @@ const searchResultsMock = [
     rating: 4.7,
     name: 'Josefina Mayo',
     avatar: '/assets/avatar.svg',
-    gender: 'F',
     origin: 'Avenida Andalucía, Dos Hermanas',
     destination: 'La Motilla',
     date: '11 de Marzo de 2023, 17:30',
@@ -77,7 +75,6 @@ const searchResultsMock = [
     rating: 4.7,
     name: 'Alberto Chicote',
     avatar: '/assets/avatar.png',
-    gender: 'M',
     origin: 'Centro Comercial Lagoh',
     destination: 'Isla Mágica',
     date: '17 de Marzo de 2023, 11:40',
@@ -88,7 +85,6 @@ const searchResultsMock = [
     rating: 4.7,
     name: 'Laura Laureada',
     avatar: '/assets/avatar.svg',
-    gender: 'F',
     origin: 'La Cartuja',
     destination: 'Facultad de Psicología',
     date: '14 de Marzo de 2023: 7:30',
@@ -96,6 +92,7 @@ const searchResultsMock = [
   },
 ];
 
+// TODO: extract to a separate file to use it in trip details, edit profile and search
 const preferences = {
   smoke: {
     checked: {
@@ -333,7 +330,6 @@ export default function SearchResults() {
                   type={trip.type}
                   rating={trip.rating}
                   name={trip.name}
-                  gender={trip.gender}
                   avatar={trip.avatar}
                   origin={trip.origin}
                   destination={trip.destination}

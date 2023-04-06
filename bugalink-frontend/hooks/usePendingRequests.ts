@@ -1,7 +1,8 @@
+import TripRequestI from '@/interfaces/tripRequest';
+import { fetcherAuth } from '@/utils/fetcher';
 import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import useSWR from 'swr';
-import { fetcherAuth } from '@/utils/fetcher';
 
 export default function usependingRequests() {
   const { data: userData } = useSession();
@@ -13,7 +14,7 @@ export default function usependingRequests() {
   );
 
   return {
-    pendingRequests: data,
+    pendingRequests: data as TripRequestI[],
     isLoading,
     isError: error,
   };

@@ -1,3 +1,4 @@
+import PassengerI from '@/interfaces/passenger';
 import { fetcherAuth } from '@/utils/fetcher';
 import useSWR from 'swr';
 
@@ -8,7 +9,7 @@ export default function usePassenger(passengerId) {
   );
 
   return {
-    passenger: data,
+    passenger: data as PassengerI,
     isLoading,
     isError: error,
   };

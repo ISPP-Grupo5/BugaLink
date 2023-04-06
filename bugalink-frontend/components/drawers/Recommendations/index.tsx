@@ -81,7 +81,6 @@ const RecommendationsList = () => {
               type={'recurring'}
               rating={0}
               name={trip.driver.user.first_name}
-              gender={'M'}
               avatar={trip.driver.user.photo}
               origin={trip.driver_routine.origin.address}
               destination={trip.driver_routine.destination.address}

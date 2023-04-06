@@ -25,6 +25,7 @@ class TripViewSet(
     queryset = Trip.objects.all()
     serializer_class = TripSerializer
 
+    @action(detail=True, methods=["get"])
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
@@ -98,18 +99,20 @@ class TripRecommendationViewSet(
     queryset = Trip.objects.all()
     serializer_class = TripSerializer
 
+    @action(detail=True, methods=["get"])
     def get(self, request, user_id, *args, **kwargs):
         try:
-            data = {}
+            data = {"trips": []}
             for passenger_routine in PassengerRoutine.objects.filter(
                 passenger__user_id=user_id
             ):
-                data = {
-                    **PassengerRoutineSerializer(
-                        passenger_routine
-                    ).get_recommendations(),
-                    **data,
-                }
+                data["trips"] = (
+                    data["trips"]
+                    + PassengerRoutineSerializer(passenger_routine)
+                    .get_recommendations(obj=passenger_routine)
+                    .data
+                )
+
             return Response(data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"msg": str(e)}, status=status.HTTP_400_BAD_REQUEST)

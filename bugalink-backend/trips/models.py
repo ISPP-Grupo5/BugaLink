@@ -21,6 +21,11 @@ class Trip(models.Model):
     def __str__(self):
         return f"{self.driver_routine} on {self.departure_datetime}"
 
+    def get_avaliable_seats(self):
+        return self.driver_routine.available_seats - len(
+            TripRequest.objects.filter(trip=self, status="ACCEPTED")
+        )
+
 
 # Model TripRequest has the following fields:
 # * trip: The trip that the passenger wants to join to

@@ -1,11 +1,9 @@
 from django.db.models import Q
-from driver_routines.models import DriverRoutine
-from drivers.models import Driver
 from locations.models import Location
 from locations.serializers import LocationSerializer
 from passenger_routines.models import PassengerRoutine
-from passengers.models import Passenger
 from rest_framework import serializers
+from trips.models import Trip
 from trips.serializers import TripSerializer
 from utils import DAYS_OF_WEEK
 
@@ -42,30 +40,26 @@ class PassengerRoutineSerializer(serializers.Serializer):
         )
 
     def get_recommendations(self, obj) -> TripSerializer(many=True):
-        driver_routines = DriverRoutine.objects.filter(
-            day_of_week=obj.day_of_week, available_seats__gt=0
+        trips = Trip.objects.filter(
+            driver_routine__day_of_week=obj.day_of_week, status="PENDING"
         )
-        driver_routines = driver_routines.filter(
-            Q(
-                departure_time_start__range=[
-                    obj.departure_time_start,
-                    obj.departure_time_end,
-                ]
-            )
-            | Q(
-                departure_time_end__range=[
-                    obj.departure_time_start,
-                    obj.departure_time_end,
-                ]
-            )
-        )
+
         recommendable_trips = []
-        for driver_routine in driver_routines:
+        for trip in trips:
             if (
-                driver_routine.origin.get_distance_to(obj.origin) <= 1.0
-                and driver_routine.destination.get_distance_to(obj.destination) <= 1.0
+                trip.driver_routine.origin.get_distance_to(obj.origin) <= 1.0
+                and trip.driver_routine.destination.get_distance_to(obj.destination)
+                <= 1.0
+                and trip.get_avaliable_seats() > 0
+                and trip.driver_routine.departure_time_start
+                <= obj.departure_time_end  # drivers_beggining_of_ride_0 <= max_time
+                and trip.driver_routine.departure_time_end
+                >= obj.departure_time_start  # drivers_beggining_of_ride_1 >= min_time
             ):
-                recommendable_trips.append(driver_routine)
+                recommendable_trips.append(trip)
+        recommendable_trips = Trip.objects.filter(
+            Q(pk__in=[trip.pk for trip in recommendable_trips])
+        )
         return TripSerializer(recommendable_trips, many=True)
 
 

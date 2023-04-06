@@ -9,10 +9,10 @@ const NEXT_ROUTES = {
   WITHDRAW_CREDIT: '/wallet/withdraw',
   MY_ROUTINES: `/routines`,
   RIDE_HISTORY: '/history',
-  RIDE_DETAILS_ONE: (rideId, requested = false) =>
-    `/ride/${rideId}/detailsOne?requested=${requested}`,
-  RIDE_DETAILS_TWO: (rideId) => `/ride/${rideId}/detailsTwo`,
+  RIDE_DETAILS: (rideId, requested = false) =>
+    `/ride/${rideId}/details?requested=${requested}`,
   RIDE_MAP: (rideId) => `/ride/${rideId}/map`,
+  RIDE_PAYMENT: (rideId) => `/ride/${rideId}/pay`,
   RATING_RIDE: (userId) => `/users/${userId}/rating/new`,
   NEW_ROUTINE_DRIVER: '/routines/driver/new',
   NEW_ROUTINE_PASSENGER: '/routines/passenger/new',

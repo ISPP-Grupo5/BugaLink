@@ -198,6 +198,22 @@
       "reject_note": "Al final voy a tener que cancelar el viaje completo.",
       "passenger_id": 2,
       "price": 2.0
+    },
+    {
+      "trip_id": 1,
+      "status": "ACCEPTED",
+      "note": "Hola me gustaría ir en su vehículo.",
+      "reject_note": "Al final voy a tener que cancelar el viaje completo.",
+      "passenger_id": 5,
+      "price": 2.0
+    },
+    {
+      "trip_id": 1,
+      "status": "ACCEPTED",
+      "note": "Hola me gustaría ir en su vehículo.",
+      "reject_note": "Al final voy a tener que cancelar el viaje completo.",
+      "passenger_id": 4,
+      "price": 2.0
     }
   ],
   "PassengerRoutine": [
@@ -299,7 +315,7 @@
   ],
   "DriverRating": [
     {
-      "trip_id": 1,
+      "trip_request_id": 3,
       "rating": 5.0,
       "preference_0": true,
       "preference_1": false,
@@ -307,34 +323,10 @@
       "preference_3": false
     },
     {
-      "trip_id": 2,
+      "trip_request_id": 4,
       "rating": 4.5,
       "preference_0": false,
       "preference_1": true,
-      "preference_2": false,
-      "preference_3": false
-    },
-    {
-      "trip_id": 3,
-      "rating": 3.5,
-      "preference_0": false,
-      "preference_1": false,
-      "preference_2": false,
-      "preference_3": true
-    },
-    {
-      "trip_id": 4,
-      "rating": 4.2,
-      "preference_0": true,
-      "preference_1": false,
-      "preference_2": false,
-      "preference_3": false
-    },
-    {
-      "trip_id": 5,
-      "rating": 4.8,
-      "preference_0": true,
-      "preference_1": false,
       "preference_2": false,
       "preference_3": false
     }

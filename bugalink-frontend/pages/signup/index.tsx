@@ -1,15 +1,15 @@
-import AnimatedLayout from '@/components/layouts/animated';
 import { BackButton } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import ExternalLogin from '@/components/externalLogin';
 import TextField from '@/components/forms/TextField';
-import RegisterImg from '/public/assets/register.svg';
+import AnimatedLayout from '@/components/layouts/animated';
 import axios from '@/lib/axios';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import RegisterImg from '/public/assets/register.svg';
 
-import { signIn, useSession } from 'next-auth/react';
 import NEXT_ROUTES from '@/constants/nextRoutes';
+import { signIn, useSession } from 'next-auth/react';
 import router from 'next/router';
 
 export default function Register() {
@@ -19,6 +19,7 @@ export default function Register() {
   const [surname, setSurname] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [registerStatus, setRegisterStatus] = useState<number>();
+  const [errors, setErrors] = useState({});
 
   const { status } = useSession();
   useEffect(() => {
@@ -27,14 +28,18 @@ export default function Register() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const response = await axios.post('/auth/registration', {
-      email,
-      password1: password,
-      password2: password,
-      first_name: name,
-      last_name: surname,
-    });
-    setRegisterStatus(response.status);
+    try {
+      const response = await axios.post('/auth/registration', {
+        email,
+        password1: password,
+        password2: password,
+        first_name: name,
+        last_name: surname,
+      });
+      setRegisterStatus(response.status);
+    } catch (error) {
+      setErrors(error.response.data);
+    }
   };
 
   useEffect(() => {
@@ -110,6 +115,14 @@ export default function Register() {
                 className="mt-8 w-5/6"
                 onClick={handleRegister}
               />
+              {errors &&
+                Object.keys(errors).map((key) => {
+                  return (
+                    <p className="mt-1 text-center text-red" key={key}>
+                      {key}: {errors[key]}
+                    </p>
+                  );
+                })}
 
               <span className="flex flex-row justify-center -justify-between py-8">
                 <p className="font-light text-gray">¿Ya tienes una cuenta?</p>

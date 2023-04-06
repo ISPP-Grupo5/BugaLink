@@ -1,3 +1,4 @@
+import Avatar from '@/components/avatar';
 import { BackButtonText } from '@/components/buttons/Back';
 import ProfileItems from '@/components/cards/profile';
 import AnimatedLayout from '@/components/layouts/animated';
@@ -36,9 +37,9 @@ export default function Profile({ data }) {
       <div className="flex h-full flex-col -space-y-8">
         <div className="z-10 rounded-t-3xl text-center">
           <div className="relative mx-auto h-24 w-24 ">
-            <img
-              src={user.photo || '/assets/avatar.png'}
-              className="my-2 aspect-square rounded-full outline outline-8 outline-white"
+            <Avatar
+              src={user.photo}
+              className=" my-2 outline outline-8 outline-white"
             />
             <div id="check" className="absolute -bottom-2 -right-2">
               <div className="flex aspect-square w-9 items-center justify-center rounded-full bg-turquoise">
@@ -59,21 +60,19 @@ export default function Profile({ data }) {
           <div className="mx-4 mb-6 flex place-items-end justify-evenly space-x-4 ">
             <div className="w-full -space-y-1 rounded-lg bg-white p-2 shadow-lg">
               <p className="text-xl font-bold">
-                {user?.date_joined
-                  ? `Desde ${user.date_joined.substring(0, 4)} `
-                  : ''}
+                {user?.date_joined ? user.date_joined.substring(0, 4) : '—'}
               </p>
               <p className="text-sm text-gray">Antiguedad</p>
             </div>
             <div className="w-full -space-y-1 rounded-lg bg-white p-2 shadow-lg">
               <p className="text-xl font-bold">
-                {userTotalRides ? userTotalRides.total_rides : '0'}
+                {userTotalRides ? userTotalRides.total_rides : '—'}
               </p>
               <p className="text-sm text-gray">Viajes</p>
             </div>
             <div className="w-full -space-y-1 rounded-lg bg-white p-2 shadow-lg">
               <p className="text-xl font-bold">
-                {userTotalRatings ? `${userTotalRatings.rating} ⭐` : '0.0 ⭐'}
+                {userTotalRatings ? `${userTotalRatings.rating} ⭐` : '—'}
               </p>
 
               <p className="text-sm text-gray">Valoraciones</p>

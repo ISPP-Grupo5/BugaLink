@@ -1,13 +1,12 @@
 from django.urls import include, path
 from rest_framework import routers
-
 from users.views import (
     BecomeDriverView,
-    UserTripsView,
-    UserViewSet,
-    UserUpdateView,
-    UserStatsView,
     UserRatingView,
+    UserStatsView,
+    UserTripsView,
+    UserUpdateView,
+    UserViewSet,
 )
 
 router = routers.DefaultRouter()

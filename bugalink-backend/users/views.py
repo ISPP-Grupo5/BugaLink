@@ -125,9 +125,12 @@ class BecomeDriverView(APIView):
         )
 
 
-# GET /users/<user_id>/trip-requests?status=pending
-# GET /users/<user_id>/trip-requests?status=accepted
-# GET /users/<user_id>/trip-requests?status=finished # HISTORIAL
+# GET /users/<user_id>/trip-requests?status=PENDING
+# GET /users/<user_id>/trip-requests?status=ACCEPTED
+# GET /users/<user_id>/trip-requests?status=FINISHED # HISTORIAL
+# También permite filtrar por rol: GET /users/<user_id>/trip-requests?status=FINISHED&role=driver
+# Útil para la vista de solicitudes pendientes, quiero filtrar por role=driver para traerme aquellas
+# solicitudes pendientes en las que yo soy el driver.
 class UserTripsView(APIView):
     def get(self, request, id):
         # If the user is not the same as the one in the URL, return a 403 status code
@@ -142,6 +145,11 @@ class UserTripsView(APIView):
         # Get the status from the query params
         # If the status is not in the query params, don't filter by it
         status_param = request.query_params.get("status")
+        role_param = (
+            request.query_params.get("role")
+            if request.query_params.get("role")
+            else "any"
+        )
         status_list = status_param.split(",") if status_param else []
 
         user = User.objects.get(id=id)
@@ -152,10 +160,16 @@ class UserTripsView(APIView):
         #     passenger__user=user
         # )
 
-        trips_where_user_is_passenger = TripRequest.objects.filter(passenger__user=user)
+        trips_where_user_is_passenger = (
+            TripRequest.objects.filter(passenger__user=user)
+            if role_param in ("passenger", "any")
+            else TripRequest.objects.none()
+        )
 
-        trips_where_user_is_driver = TripRequest.objects.filter(
-            trip__driver_routine__driver__user=user
+        trips_where_user_is_driver = (
+            TripRequest.objects.filter(trip__driver_routine__driver__user=user)
+            if role_param in ("driver", "any")
+            else TripRequest.objects.none()
         )
 
         trips_by_user = trips_where_user_is_passenger | trips_where_user_is_driver

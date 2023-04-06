@@ -77,20 +77,18 @@ const RecommendationsList = () => {
         ))
         : trips.map((trip: TripI) => (
           <TripCard
-            key={trip.id}
-            type={'recurring'}
-            rating={0}
-            name={trip.driver.user.first_name}
-            gender={'M'}
-            avatar={trip.driver.user.photo}
-            origin={trip.driver_routine.origin.address}
-            destination={trip.driver_routine.destination.address}
-            date={formatDatetime(trip.departure_datetime)}
-            price={Number.parseFloat(trip.driver_routine.price)}
-            href={NEXT_ROUTES.RIDE_DETAILS(trip.id)}
-            className="w-full rounded-md bg-white outline outline-1 outline-light-gray"
-          />
-        ))}
+              key={trip.id}
+              rating={0}
+              name={trip.driver.user.first_name}
+              avatar={trip.driver.user.photo}
+              origin={trip.driver_routine.origin.address}
+              destination={trip.driver_routine.destination.address}
+              date={formatDatetime(trip.departure_datetime)}
+              price={Number.parseFloat(trip.driver_routine.price)}
+              href={NEXT_ROUTES.RIDE_DETAILS(trip.id)}
+              className="w-full rounded-md bg-white outline outline-1 outline-light-gray"
+            />
+          ))}
     </div>
   );
 };

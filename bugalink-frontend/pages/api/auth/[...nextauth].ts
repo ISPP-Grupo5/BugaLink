@@ -2,10 +2,8 @@ import NEXT_ROUTES from '@/constants/nextRoutes';
 import axios from 'axios';
 import type { NextAuthOptions } from 'next-auth';
 import NextAuth, { Session, User } from 'next-auth';
-import { CookiesOptions } from 'next-auth/core/types';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
-
 
 const refreshAccessToken = async (refresh) => {
   const res = await axios.post('/auth/token/refresh/', { refresh });
@@ -36,7 +34,7 @@ const providers = [
     async authorize(credentials, req) {
       const { email, password } = credentials as any;
       const res = await fetch(
-        `${process?.env?.NEXT_PUBLIC_BACKEND_URL || ""}/api/v1/auth/login/`,
+        `${process?.env?.NEXT_PUBLIC_BACKEND_URL || ''}/api/v1/auth/login/`,
         {
           method: 'POST',
           headers: {

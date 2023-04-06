@@ -66,8 +66,9 @@ class UserViewSet(
 
         # Modify the email in the table account_emailaddress (allauth, used for email authentication)
         email = EmailAddress.objects.filter(user=user).first()
-        email.email = new_email
-        email.save()
+        if email:
+            email.email = new_email
+            email.save()
 
         # Do the same with the user entity fields
         user.email = new_email

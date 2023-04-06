@@ -42,7 +42,14 @@ export default function Home() {
             href={NEXT_ROUTES.PROFILE(user?.user_id)}
           >
             {user ? (
-              user?.photo ? <img className="rounded-full" src={user?.photo} /> : <img className='rounded-full ' src='/assets/anonymus-avatar.png' />
+              user?.photo ? (
+                <img className="rounded-full" src={user?.photo} />
+              ) : (
+                <img
+                  className="rounded-full "
+                  src="/assets/anonymus-avatar.png"
+                />
+              )
             ) : (
               <AvatarSkeleton />
             )}
@@ -59,13 +66,13 @@ export default function Home() {
           linkOption2="/users/273932t8437/routines/driver/new"
         />
 
-        <span className="justify-between flex w-full space-x-5 px-4 md:px-5">
+        <span className="flex w-full justify-between space-x-5 px-4 md:px-5">
           <SquareRoutinesButton userId={user?.user_id} />
           <SquareChatsButton />
           <SquareRequestsButton />
         </span>
 
-        <span className="justify-between mt-4 mb-2 flex px-4 md:px-5">
+        <span className="mt-4 mb-2 flex justify-between px-4 md:px-5">
           <p className="text-left text-xl font-semibold">Mis próximos viajes</p>
           <Link data-cy="history-link" href={NEXT_ROUTES.RIDE_HISTORY}>
             <p className="text-right text-xl text-turquoise">Historial</p>

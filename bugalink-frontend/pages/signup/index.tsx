@@ -34,7 +34,86 @@ export default function Register() {
       });
       setRegisterStatus(response.status);
     } catch (error) {
-      setErrors(error.response.data);
+      const { data } = error.response;
+      if (data.email) {
+        if (
+          data.email[0] ===
+          'A user is already registered with this e-mail address.'
+        ) {
+          data.email[0] = 'Ya existe un usuario con este correo electrónico';
+        } else if (data.email[0] === 'Enter a valid email address.') {
+          data.email[0] = 'Ingrese una dirección de correo electrónico válida';
+        } else if (data.email[0] === 'This field may not be blank.') {
+          data.email[0] = 'Este campo no puede estar vacío.';
+        }
+      }
+      if (data.password1) {
+        const passwordErrors = [];
+        if (password.length > 20) {
+          passwordErrors.push(
+            'La contraseña no puede tener más de 20 caracteres. '
+          );
+        }
+        if (
+          !/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/.test(
+            password
+          )
+        ) {
+          passwordErrors.push(
+            'La contraseña debe tener al menos una mayúscula, una minúscula, un número y un caracter especial. '
+          );
+        }
+        if (data.password1.includes('This password is too common.')) {
+          passwordErrors.push('La contraseña es demasiado común. ');
+        }
+        if (data.password1.includes('This password is entirely numeric.')) {
+          passwordErrors.push('La contraseña es completamente numérica. ');
+        }
+        if (
+          data.password1.includes(
+            'This password is too short. It must contain at least 8 characters.'
+          )
+        ) {
+          passwordErrors.push(
+            'La contraseña es demasiado corta. Debe contener al menos 8 caracteres. '
+          );
+        }
+        if (data.password1.includes('This field may not be blank.')) {
+          passwordErrors.push('Este campo no puede estar vacío. ');
+        }
+        data.password1 = passwordErrors;
+      } else {
+        const passwordErrors = [];
+        if (password.length > 20) {
+          passwordErrors.push(
+            'La contraseña no puede tener más de 20 caracteres. '
+          );
+        }
+        if (
+          !/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/.test(
+            password
+          )
+        ) {
+          passwordErrors.push(
+            'La contraseña debe tener al menos una mayúscula, una minúscula, un número y un caracter especial. '
+          );
+        }
+        if (passwordErrors.length > 0) {
+          data.password1 = passwordErrors;
+        }
+      }
+      if (data.first_name) {
+        if (data.first_name[0] === 'This field may not be blank.') {
+          data.first_name[0] = 'Este campo no puede estar vacío.';
+        }
+      }
+      if (data.last_name) {
+        if (data.last_name[0] === 'This field may not be blank.') {
+          data.last_name[0] = 'Este campo no puede estar vacío.';
+        }
+      }
+      delete data.password2;
+      setErrors(data);
       setIsLoading(false);
     }
   };
@@ -76,6 +155,8 @@ export default function Register() {
                   inputClassName="w-full"
                   parentClassName=""
                   setContent={setEmail}
+                  name="email"
+                  error={errors && errors['email']}
                 />
                 <span className="flex space-x-2">
                   <TextField
@@ -85,6 +166,8 @@ export default function Register() {
                     inputClassName="w-full"
                     parentClassName=""
                     setContent={setName}
+                    name="name"
+                    error={errors && errors['first_name']}
                   />
                   <TextField
                     type={'text'}
@@ -93,6 +176,8 @@ export default function Register() {
                     inputClassName="w-full"
                     parentClassName=""
                     setContent={setSurname}
+                    name="surname"
+                    error={errors && errors['last_name']}
                   />
                 </span>
                 <TextField
@@ -104,6 +189,8 @@ export default function Register() {
                   setContent={setPassword}
                   showPassword={showPassword}
                   setShowPassword={setShowPassword}
+                  name="password"
+                  error={errors && errors['password1']}
                 />
               </div>
               <CTAButton
@@ -112,15 +199,6 @@ export default function Register() {
                 onClick={handleRegister}
                 disabled={isLoading}
               />
-              {errors &&
-                Object.keys(errors).map((key) => {
-                  return (
-                    <p className="mt-1 text-center text-red" key={key}>
-                      {key}: {errors[key]}
-                    </p>
-                  );
-                })}
-
               <span className="flex flex-row justify-center pt-4">
                 <p className="font-light text-gray">¿Ya tienes una cuenta?</p>
                 <Link href={NEXT_ROUTES.LOGIN} className="ml-1">

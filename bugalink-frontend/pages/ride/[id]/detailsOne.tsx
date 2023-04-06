@@ -102,7 +102,7 @@ export default function DetailsOne() {
         </div>
         {/* Trip request */}
         <div className="w-full rounded-t-xl bg-white py-3 px-5 pt-5 shadow-t-md">
-          <div className="flex flex-row items-center justify-between">
+          <div className="justify-between flex flex-row items-center">
             <div className="flex flex-col">
               <p className="text-xs font-normal">Tipo de viaje</p>
               <p className="text-xl font-bold">Recurrente</p>

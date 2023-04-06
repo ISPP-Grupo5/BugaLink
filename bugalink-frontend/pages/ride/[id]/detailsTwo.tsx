@@ -30,7 +30,7 @@ export default function DetailsTwo() {
   endTime.setMinutes(endTime.getMinutes() + time);
 
   return (
-    <AnimatedLayout className="flex flex-col justify-between">
+    <AnimatedLayout className="justify-between flex flex-col">
       <BackButtonText text="Detalles del viaje" />
       <div className="flex h-full flex-col overflow-y-scroll bg-white px-4 pb-4">
         {/* Profile header */}

@@ -109,7 +109,7 @@ export default function EditProfile({ data }) {
         email: formData.get('email') as string,
         password: formData.get('password') as string,
       };
-      console.log(values);
+
       const errors = validateForm(values);
       setErrors(errors);
       if (Object.keys(errors).length === 0) {

@@ -46,20 +46,6 @@ class DriverAsUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Driver
         fields = ("user",)
-
-class UserStatsSerializer(serializers.ModelSerializer):
-    total_rides = serializers.SerializerMethodField()
-    class Meta:
-        model = User
-        fields = ["pk","first_name", "total_rides"]
-
-    def get_total_rides(self,obj) -> serializers.IntegerField:
-        trips_requests_where_user_is_passenger = TripRequest.objects.filter(passenger__user=obj, status="ACCEPTED", trip__status="FINISHED").count()
-        trips_where_user_is_driver = Trip.objects.filter(
-           driver_routine__driver__user=obj, status="FINISHED"
-        ).count()
-        total_rides = trips_where_user_is_driver + trips_requests_where_user_is_passenger
-        return total_rides
     
 class UserRatingSerializer(serializers.ModelSerializer):
     rating = serializers.SerializerMethodField()
@@ -80,3 +66,16 @@ class UserRatingSerializer(serializers.ModelSerializer):
         count = DriverRating.objects.filter(trip_request__trip__driver_routine__driver__user=obj).count()
         return count
 
+class UserStatsSerializer(UserRatingSerializer):
+    total_rides = serializers.SerializerMethodField()
+    class Meta:
+        model = User
+        fields = ["pk","first_name", "total_rides", "number_ratings", "rating"]
+
+    def get_total_rides(self,obj) -> serializers.IntegerField:
+        trips_requests_where_user_is_passenger = TripRequest.objects.filter(passenger__user=obj, status="ACCEPTED", trip__status="FINISHED").count()
+        trips_where_user_is_driver = Trip.objects.filter(
+           driver_routine__driver__user=obj, status="FINISHED"
+        ).count()
+        total_rides = trips_where_user_is_driver + trips_requests_where_user_is_passenger
+        return total_rides

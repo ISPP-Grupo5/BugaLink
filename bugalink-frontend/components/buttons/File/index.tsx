@@ -1,14 +1,13 @@
-import { useState } from 'react';
-import Upload from 'public/assets/upload.svg';
 import GreenCheck from 'public/assets/green-check.svg';
+import Upload from 'public/assets/upload.svg';
 
 type Params = {
   text: string;
+  upload: boolean;
+  setUpload: (upload: boolean) => void;
 };
 
-export default function FileButton({ text }: Params) {
-  const [upload, setUpload] = useState(false);
-
+export default function FileButton({ text, upload, setUpload }: Params) {
   return (
     <div>
       <label

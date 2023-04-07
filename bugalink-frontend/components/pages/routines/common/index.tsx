@@ -10,11 +10,15 @@ import dynamic from 'next/dynamic';
 import { useMemo, useRef, useState } from 'react';
 import { getGeocode, getLatLng } from 'use-places-autocomplete';
 import TextField from '@/components/forms/TextField';
+import { axiosAuth } from '@/lib/axios';
+import { useRouter } from 'next/router';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 
 const MIN_FREE_SEATS = 1;
 const MAX_FREE_SEATS = 8;
 
 const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+const daysToApi = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 type Props = {
   userType: 'passenger' | 'driver';
@@ -32,10 +36,19 @@ export const EmptyLeafletMap = dynamic(
 );
 
 interface FormErrors {
+  origin?: string;
+  destination?: string;
+  pickTimeFrom?: string;
+  pickTimeTo?: string;
+  selectedDays?: string;
   price?: string;
 }
 
 interface FormValues {
+  origin: string;
+  destination: string;
+  pickTimeFrom: string;
+  pickTimeTo: string;
   price: number;
 }
 
@@ -46,8 +59,11 @@ export default function NewRoutine({
 }: Props) {
   const [pickTimeFrom, setPickTimeFrom] = useState('12:00');
   const [pickTimeTo, setPickTimeTo] = useState('12:10');
+  const [time, setTime] = useState<number>(0);
   const [selectedDays, setSeletedDays] = useState([]);
-
+  const arrivalTime = new Date(Date.now());
+  arrivalTime.setHours(Number(pickTimeFrom?.split(':')[0]));
+  arrivalTime.setMinutes(Number(pickTimeFrom?.split(':')[1]) + time);
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
 
@@ -57,21 +73,65 @@ export default function NewRoutine({
   const [price, setPrice] = useState('');
   const [errors, setErrors] = useState<FormErrors>({});
   const formRef = useRef<HTMLFormElement>(null);
+  const router = useRouter();
 
+  const [isSendingForm, setIsSendingForm] = useState(false);
+
+  //arrivalTime.setMinutes
   const validateForm = (values: FormValues) => {
     const errors: FormErrors = {};
-    let isValid = true;
 
-    if (values.price < 0) {
-      errors.price = 'El precio no debe ser un valor negativo';
-      isValid = false;
-    } else if (!values.price) {
-      errors.price = 'Por favor, ingrese un precio';
-      isValid = false;
-    } else if (values.price > totalDistance * 0.1 * 2) {
-      errors.price =
-        'El precio no puede ser mayor que el doble del precio recomendado';
-      isValid = false;
+    if (!values.origin) {
+      errors.origin = 'Por favor, ingresa una dirección de origen';
+    }
+
+    if (!values.destination) {
+      errors.destination = 'Por favor, ingresa una dirección de destino';
+    }
+
+    if (values.origin && values.destination) {
+      if (values.origin === values.destination) {
+        errors.origin = 'El origen y el destino no pueden ser iguales';
+      }
+    }
+
+    if (!values.pickTimeFrom) {
+      errors.pickTimeFrom = 'Por favor, ingresa una hora de inicio';
+    }
+
+    if (!values.pickTimeTo) {
+      errors.pickTimeTo = 'Por favor, ingresa una hora de fin';
+    }
+
+    if (values.pickTimeFrom && values.pickTimeTo) {
+      const pickTimeFromHour = parseInt(values.pickTimeFrom.split(':')[0]);
+      const pickTimeFromMinutes = parseInt(values.pickTimeFrom.split(':')[1]);
+      const pickTimeToHour = parseInt(values.pickTimeTo.split(':')[0]);
+      const pickTimeToMinutes = parseInt(values.pickTimeTo.split(':')[1]);
+
+      if (
+        pickTimeFromHour > pickTimeToHour ||
+        (pickTimeFromHour === pickTimeToHour &&
+          pickTimeFromMinutes > pickTimeToMinutes)
+      ) {
+        errors.pickTimeTo =
+          'La hora de fin debe ser posterior a la hora de inicio';
+      }
+    }
+
+    if (!selectedDays || selectedDays.length === 0) {
+      errors.selectedDays = 'Por favor, seleccione al menos un día';
+    }
+
+    if (userType === 'driver') {
+      if (values.price < 0) {
+        errors.price = 'El precio no debe ser un valor negativo';
+      } else if (!values.price) {
+        errors.price = 'Por favor, ingrese un precio';
+      } else if (values.price > totalDistance * 0.1 * 2) {
+        errors.price =
+          'El precio no puede ser mayor que el doble del precio recomendado';
+      }
     }
 
     setErrors(errors);
@@ -92,19 +152,65 @@ export default function NewRoutine({
   }
 
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setIsSendingForm(true);
     event.preventDefault();
     if (formRef.current) {
       const formData = new FormData(formRef.current);
       const values: FormValues = {
+        origin: formData.get('origin') as string,
+        destination: formData.get('destination') as string,
+        pickTimeFrom: formData.get('pickTimeFrom') as string,
+        pickTimeTo: formData.get('pickTimeTo') as string,
         price: formData.get('price') as unknown as number,
       };
+
       const errors = validateForm(values);
       setErrors(errors);
       if (Object.keys(errors).length === 0) {
         // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites
-        console.log(
-          'Los datos del formulario son válidos. ¡Enviando formulario!'
-        );
+        const daysOfWeek = [];
+        for (const day in selectedDays) {
+          daysOfWeek.push(daysToApi[days.indexOf(selectedDays[day])]);
+        }
+        const data = {
+          origin: {
+            address: origin,
+            latitude: originCoords.lat.toString(),
+            longitude: originCoords.lng.toString(),
+          },
+          destination: {
+            address: destination,
+            latitude: destinationCoords.lat.toString(),
+            longitude: destinationCoords.lng.toString(),
+          },
+          days_of_week: daysOfWeek,
+          departure_time_start: pickTimeFrom,
+          departure_time_end: pickTimeTo,
+          arrival_time:
+            '' + arrivalTime.getHours() + ':' + arrivalTime.getMinutes(),
+          price: price,
+          note: note,
+          is_recurrent: false,
+          available_seats: freeSeatsNumber,
+        };
+
+        const url =
+          userType === 'driver' ? 'driver-routines/' : 'passenger-routines/';
+        axiosAuth
+          .post(url, data)
+          .then((response) => {
+            console.log('Data:', response.data);
+            console.log(
+              'Los datos del formulario son válidos. ¡Enviando formulario!'
+            );
+            router.push(NEXT_ROUTES.MY_ROUTINES);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            setIsSendingForm(false);
+          });
+      } else {
+        setIsSendingForm(false);
       }
     }
   };
@@ -120,6 +226,7 @@ export default function NewRoutine({
               originCoords={originCoords}
               destinationCoords={destinationCoords}
               setTotalDistance={setTotalDistance}
+              setTime={setTime}
             />
           ) : (
             <EmptyLeafletMap />
@@ -131,22 +238,28 @@ export default function NewRoutine({
         >
           <PlacesAutocomplete
             onAddressSelect={(address) => {
+              delete errors.origin;
               getGeocode({ address: address }).then((results) => {
                 setOrigin(results[0].formatted_address);
                 setOriginCoords(getLatLng(results[0]));
               });
             }}
             placeholder="Desde"
+            name="origin"
+            error={errors.origin}
           />
 
           <PlacesAutocomplete
             onAddressSelect={(address) => {
+              delete errors.destination;
               getGeocode({ address: address }).then((results) => {
                 setDestination(results[0].formatted_address);
                 setDestinationCoords(getLatLng(results[0]));
               });
             }}
             placeholder="Hasta"
+            name="destination"
+            error={errors.destination}
           />
           <div className="mb-4 flex flex-col">
             <label className="text-xl font-bold">
@@ -154,14 +267,36 @@ export default function NewRoutine({
             </label>
             <span className="mt-2 flex items-center space-x-2 text-xl">
               <p>Entre las</p>{' '}
-              <TimePicker time={pickTimeFrom} setTime={setPickTimeFrom} />
+              <TimePicker
+                time={pickTimeFrom}
+                setTime={setPickTimeFrom}
+                name="pickTimeFrom"
+                error={errors.pickTimeFrom}
+              />
               <p>y las</p>{' '}
-              <TimePicker time={pickTimeTo} setTime={setPickTimeTo} />
+              <TimePicker
+                time={pickTimeTo}
+                setTime={setPickTimeTo}
+                name="pickTimeTo"
+                error={errors.pickTimeTo}
+              />
             </span>
+            {errors.pickTimeFrom ||
+              (errors.pickTimeTo && (
+                <div className="-mt-2 text-xs font-medium text-red">
+                  {errors.pickTimeFrom} <br /> {errors.pickTimeTo}
+                </div>
+              ))}
           </div>
 
           <label className="text-xl font-bold">Días de la semana</label>
-          <span className="mt-2 grid min-h-[3rem] grid-cols-7 items-center divide-x divide-light-gray overflow-hidden rounded-xl border border-light-gray bg-white text-center text-xl">
+          <span
+            className={`mt-2 grid min-h-[3rem] grid-cols-7 items-center divide-x overflow-hidden rounded-xl border  bg-white text-center text-xl ${
+              errors.selectedDays
+                ? 'divide-red border-red text-red'
+                : 'divide-light-gray border-light-gray'
+            }`}
+          >
             {days.map((day: string) => (
               <p
                 key={day}
@@ -169,6 +304,7 @@ export default function NewRoutine({
                   selectedDays.includes(day) ? 'bg-turquoise text-white' : ''
                 }`}
                 onClick={() => {
+                  delete errors.selectedDays;
                   if (selectedDays.includes(day)) {
                     setSeletedDays(selectedDays.filter((d) => d !== day));
                   } else {
@@ -180,6 +316,11 @@ export default function NewRoutine({
               </p>
             ))}
           </span>
+          {errors.selectedDays && (
+            <div className="mt-1 text-xs font-medium text-red">
+              {errors.selectedDays}
+            </div>
+          )}
           {userType === 'driver' && (
             <div className="mt-4 flex w-full flex-col justify-center">
               <p className="mb-2 text-xl font-bold">
@@ -240,8 +381,9 @@ export default function NewRoutine({
             </div>
           )}
           <CTAButton
+            text={isSendingForm ? 'PROCESANDO...' : 'CREAR'}
+            disabled={isSendingForm}
             className="mt-4 w-full"
-            text="CREAR"
             onClick={handleButtonClick}
           />
         </form>

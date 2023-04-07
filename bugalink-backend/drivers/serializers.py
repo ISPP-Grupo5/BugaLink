@@ -15,7 +15,7 @@ class DriverSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Driver
-        fields = ("id", "routines", "trips")
+        fields = ("id", "routines", "trips", "dni_front", "dni_back", "driver_license", "sworn_declaration")
 
     def get_routines(self, obj) -> DriverRoutineSerializer(many=True):
         routines = obj.routines.all()

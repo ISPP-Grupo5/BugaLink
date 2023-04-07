@@ -1,3 +1,4 @@
+import Avatar from '../avatar';
 import Chat from '/public/assets/chat.svg';
 
 type Params = {
@@ -23,7 +24,7 @@ export default function ProfileHeader({
     >
       {/* Profile header */}
       <div className="flex flex-row items-start space-x-3">
-        <img src={photo} className="h-11 w-11 rounded-full" />
+        <Avatar src={photo} className="h-11 w-11" />
         <div className="grid grid-rows-2 -space-y-0.5">
           <p className="truncate text-lg font-bold">{name}</p>
           <p className="text-xs font-normal">

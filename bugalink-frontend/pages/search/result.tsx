@@ -54,8 +54,7 @@ const searchResultsMock = [
     type: 'driver',
     rating: 4.6,
     name: 'Paco Perez',
-    avatar: '/assets/avatar.png',
-    gender: 'M',
+    avatar: '/assets/anonymous-avatar.png',
     origin: 'Centro Comercial Way',
     destination: 'ETSII',
     date: '14 de Marzo de 2023, 12:00',
@@ -66,7 +65,6 @@ const searchResultsMock = [
     rating: 4.7,
     name: 'Josefina Mayo',
     avatar: '/assets/avatar.svg',
-    gender: 'F',
     origin: 'Avenida Andalucía, Dos Hermanas',
     destination: 'La Motilla',
     date: '11 de Marzo de 2023, 17:30',
@@ -76,8 +74,7 @@ const searchResultsMock = [
     type: 'driver',
     rating: 4.7,
     name: 'Alberto Chicote',
-    avatar: '/assets/avatar.png',
-    gender: 'M',
+    avatar: '/assets/anonymous-avatar.png',
     origin: 'Centro Comercial Lagoh',
     destination: 'Isla Mágica',
     date: '17 de Marzo de 2023, 11:40',
@@ -88,7 +85,6 @@ const searchResultsMock = [
     rating: 4.7,
     name: 'Laura Laureada',
     avatar: '/assets/avatar.svg',
-    gender: 'F',
     origin: 'La Cartuja',
     destination: 'Facultad de Psicología',
     date: '14 de Marzo de 2023: 7:30',
@@ -96,6 +92,7 @@ const searchResultsMock = [
   },
 ];
 
+// TODO: extract to a separate file to use it in trip details, edit profile and search
 const preferences = {
   smoke: {
     checked: {
@@ -190,7 +187,7 @@ export default function SearchResults() {
       <div className="z-50 bg-white pt-4">
         <div className="grid grid-cols-9 grid-rows-2 place-content-center place-items-center gap-y-2 px-2">
           <BackButton className="bg-white" />
-          <div className="row-span-2 flex h-full w-full flex-col items-center justify-between py-4 text-turquoise">
+          <div className="justify-between row-span-2 flex h-full w-full flex-col items-center py-4 text-turquoise">
             <SourcePin className="h-5 w-5 flex-none" />
             <ThreeDots className="w-5 flex-none" />
             <TargetPin className="h-5 w-5 flex-none" />
@@ -198,7 +195,7 @@ export default function SearchResults() {
           <div className="col-span-6 w-full pr-4">
             <input
               type="search"
-              placeholder="Desde dónde quieres ir?"
+              placeholder="¿Desde dónde quieres ir?"
               value="Casa"
               className="ml-2 mr-2 w-full rounded-full bg-base-origin p-4 text-sm"
             ></input>
@@ -333,7 +330,6 @@ export default function SearchResults() {
                 type={trip.type}
                 rating={trip.rating}
                 name={trip.name}
-                gender={trip.gender}
                 avatar={trip.avatar}
                 origin={trip.origin}
                 destination={trip.destination}

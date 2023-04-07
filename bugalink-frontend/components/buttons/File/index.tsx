@@ -1,6 +1,5 @@
-import { useState } from 'react';
-import Upload from 'public/assets/upload.svg';
 import GreenCheck from 'public/assets/green-check.svg';
+import Upload from 'public/assets/upload.svg';
 
 type Params = {
   text: string;

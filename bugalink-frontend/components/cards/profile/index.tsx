@@ -1,5 +1,8 @@
+import PreferenceBox from '@/components/preferences/box';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import { Drawer } from '@mui/material';
+import { User } from 'next-auth';
+import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Address from 'public/assets/address.svg';
 import ArrowHead from 'public/assets/arrow-head.svg';
@@ -7,12 +10,8 @@ import Carkey from 'public/assets/car-key.svg';
 import Help from 'public/assets/help.svg';
 import Logout from 'public/assets/log-out.svg';
 import Preferences from 'public/assets/preferences.svg';
-import PreferenceBox from '@/components/preferences/box';
 import Wallet from 'public/assets/wallet.svg';
-import { useEffect, useState } from 'react';
-import { signOut, useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
-import { User } from 'next-auth';
+import { useState } from 'react';
 
 const preferences = {
   smoke: {
@@ -64,13 +63,8 @@ export default function ProfileItems() {
   const [preferMusic, setPreferMusic] = useState(false);
   const [preferTalk, setPreferTalk] = useState(false);
 
-  const { data, status } = useSession();
+  const { data } = useSession();
   const user = data?.user as User;
-
-  const router = useRouter();
-  useEffect(() => {
-    if (status === 'unauthenticated') router.push(NEXT_ROUTES.LOGIN);
-  }, [status]);
 
   const handleSignOut = async () => {
     await signOut({
@@ -79,7 +73,7 @@ export default function ProfileItems() {
   };
 
   return (
-    <div className="flex h-full w-full flex-col items-start justify-between gap-y-4 rounded-t-3xl bg-white px-6 py-8 text-start text-xl">
+    <div className="flex h-full w-full flex-col items-start justify-between gap-y-4 rounded-t-3xl bg-white p-6 text-start text-xl">
       <Entry Icon={<Address />}>
         <span>Direcciones</span>
       </Entry>

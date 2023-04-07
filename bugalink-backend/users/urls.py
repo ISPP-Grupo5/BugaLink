@@ -1,13 +1,13 @@
 from django.urls import include, path
 from rest_framework import routers
-
 from users.views import (
     BecomeDriverView,
-    UserTripsView,
-    UserViewSet,
-    UserUpdateView,
-    UserStatsView,
     UserRatingView,
+    UserStatsView,
+    UserTripsView,
+    UserUpdateView,
+    UserViewSet,
+    UserTripCountView,
 )
 
 router = routers.DefaultRouter()
@@ -19,6 +19,9 @@ urlpatterns = [
     path("users/become-driver", BecomeDriverView.as_view()),
     path("users/<int:id>/trip-requests/", UserTripsView.as_view()),
     path("users/<int:id>/edit/", UserUpdateView.as_view()),
+    path("users/<int:pk>/stats/", UserStatsView.as_view({"get":"get"})),
+    path("users/<int:pk>/rating/", UserRatingView.as_view({"get":"get"})),
     path("users/<int:pk>/stats/", UserStatsView.as_view({"get": "get"})),
     path("users/<int:pk>/rating/", UserRatingView.as_view({"get": "get"})),
+    path("users/<int:id>/trip-requests/count/", UserTripCountView.as_view()),
 ]

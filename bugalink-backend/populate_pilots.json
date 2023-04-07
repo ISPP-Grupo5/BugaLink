@@ -1,0 +1,531 @@
+{
+  "User": [
+    {
+      "password": "RocioMoyanoBL123",
+      "first_name": "Rocío",
+      "last_name": "López Moyano",
+      "email": "RocioLopez@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "JoseLozanoBL123",
+      "first_name": "José Antonio",
+      "last_name": "Lozano Vázquez",
+      "email": "JoseAntonio@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "JuanSanchezBL123",
+      "first_name": "Juan José",
+      "last_name": "Sánchez Rodríguez",
+      "email": "JuanRodríguez@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "PaulaMena-BernalBL123",
+      "first_name": "Paula",
+      "last_name": "Benabal Mena-Bernal",
+      "email": "PaulaBenabal@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "ClaraRicoBL123",
+      "first_name": "Clara",
+      "last_name": "de la Cruz Rico",
+      "email": "ClaradelaCruz@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "ÁlvaroCastroBL123",
+      "first_name": "Álvaro",
+      "last_name": "Escalante Castro",
+      "email": "AlvaroEscalante@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "DamarisSerranoBL123",
+      "first_name": "Dámaris",
+      "last_name": "Gómez Serrano",
+      "email": "DamarisGomez@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "IsmaelOrtizBL123",
+      "first_name": "Ismael",
+      "last_name": "Pérez Ortiz",
+      "email": "IsmaelPerez@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "MarinaRiveroBL123",
+      "first_name": "Marina",
+      "last_name": "Moya Rivero",
+      "email": "MarinaMoya@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "GuillermoGilBL123",
+      "first_name": "Guillermo",
+      "last_name": "Díaz Gil",
+      "email": "GuillermoDiaz@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "MarcosLópezBL123",
+      "first_name": "Marcos",
+      "last_name": "Alemán López",
+      "email": "MarcosAleman@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "PaulaAlcaldeBL123",
+      "first_name": "Paula",
+      "last_name": "Cortés Alcalde",
+      "email": "PaulaCortés@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "LauraCorralBL123",
+      "first_name": "Laura",
+      "last_name": "Muñoz Corral",
+      "email": "LauraMunyoz@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "BenitoCruzBL123",
+      "first_name": "Benito",
+      "last_name": "Venegas Cruz",
+      "email": "BenitoVenegas@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "RosaArreguiBL123",
+      "first_name": "Rosa María",
+      "last_name": "Molina Arregui",
+      "email": "RosaMolina@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "GemaAguilarBL123",
+      "first_name": "Gema",
+      "last_name": "Vela Aguilar",
+      "email": "GemaVela@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "MartaFernandezBL123",
+      "first_name": "Marta",
+      "last_name": "Sanz Fernández",
+      "email": "MartaSanz@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "MartaAlemanyBL123",
+      "first_name": "Marta",
+      "last_name": "Cumbrera Alemany",
+      "email": "MartaCumbrera@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "CarmenPerezBL123",
+      "first_name": "Carmen María",
+      "last_name": "Muñoz Pérez",
+      "email": "CarmenMunyoz@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "BeatrizAlvarezBL123",
+      "first_name": "Beatriz María",
+      "last_name": "Beltrán Álvarez",
+      "email": "BeatrizBeltran@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "LucasRuizBL123",
+      "first_name": "Lucas",
+      "last_name": "Pérez Ruiz",
+      "email": "LucasPerez@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "IsabelSerranoBL123",
+      "first_name": "Isabel",
+      "last_name": "Sánchez Serrano",
+      "email": "IsabelSanchez@bugalink.es",
+      "is_driver": false
+    },
+    {
+      "password": "IreneGarozBL123",
+      "first_name": "Irene",
+      "last_name": "Domínguez Garoz",
+      "email": "IreneDominguez@bugalink.es",
+      "is_driver": false
+    }
+  ],
+  "Passenger": [
+    {
+      "user_id": 1
+    },
+    {
+      "user_id": 2
+    },
+    {
+      "user_id": 3
+    },
+    {
+      "user_id": 4
+    },
+    {
+      "user_id": 5
+    },
+    {
+      "user_id": 6
+    },
+    {
+      "user_id": 7
+    },
+    {
+      "user_id": 8
+    },
+    {
+      "user_id": 9
+    },
+    {
+      "user_id": 10
+    },
+    {
+      "user_id": 11
+    },
+    {
+      "user_id": 12
+    },
+    {
+      "user_id": 13
+    },
+    {
+      "user_id": 14
+    },
+    {
+      "user_id": 15
+    },
+    {
+      "user_id": 16
+    },
+    {
+      "user_id": 17
+    },
+    {
+      "user_id": 18
+    },
+    {
+      "user_id": 19
+    },
+    {
+      "user_id": 21
+    },
+    {
+      "user_id": 22
+    },
+    {
+      "user_id": 23
+    }
+  ],
+  "Driver": [
+    {
+      "user_id": 1,
+      "prefers_talk": false,
+      "prefers_music": true,
+      "allows_smoke": false,
+      "allows_pets": false
+    },
+    {
+      "user_id": 2,
+      "prefers_talk": false,
+      "prefers_music": true,
+      "allows_smoke": false,
+      "allows_pets": true
+    },
+    {
+      "user_id": 3,
+      "prefers_talk": true,
+      "prefers_music": false,
+      "allows_smoke": false,
+      "allows_pets": false
+    }
+  ],
+  "Location": [
+    {
+      "address": "Escuela Politécnica Superior, Escuela Politécnica Superior de la Universidad de Sevilla, Calle Virgen de África, Sevilla",
+      "latitude": 37.37616816966094,
+      "longitude": -6.002696565873753
+    },
+    {
+      "address": "C. Austria, 6, 41012 Sevilla",
+      "latitude": 37.344752371048145,
+      "longitude": -5.978176701456456
+    },
+    {
+      "address": "C. Berlín, 41012 Sevilla",
+      "latitude": 37.34703350978871,
+      "longitude": -5.98063762476977
+    },
+    {
+      "latitude": 37.35083280973525,
+      "longitude": -5.982808443785652,
+      "address": "Av. de Italia, 41012 Sevilla"
+    },
+    {
+      "address": "Escuela Técnica Superior de Arquitectura, Avenida de la Reina Mercedes, Sevilla",
+      "latitude": 37.362801027493276,
+      "longitude": -5.986301614950232
+    }
+  ],
+  "DriverRoutine": [
+    {
+      "driver_id": 1,
+      "available_seats": 3,
+      "is_recurrent": true,
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:15:00.000Z",
+      "arrival_time": "09:00:00.000Z",
+      "origin_id": 1,
+      "destination_id": 2,
+      "day_of_week": "Mon",
+      "price": 2.5
+    },
+    {
+      "driver_id": 1,
+      "available_seats": 1,
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:15:00.000Z",
+      "arrival_time": "09:00:00.000Z",
+      "origin_id": 2,
+      "destination_id": 1,
+      "day_of_week": "Tue",
+      "price": 3
+    },
+    {
+      "driver_id": 1,
+      "available_seats": 1,
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:15:00.000Z",
+      "arrival_time": "09:00:00.000Z",
+      "origin_id": 2,
+      "destination_id": 1,
+      "day_of_week": "Wed",
+      "price": 5
+    },
+    {
+      "driver_id": 2,
+      "available_seats": 2,
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:15:00.000Z",
+      "arrival_time": "09:00:00.000Z",
+      "origin_id": 3,
+      "destination_id": 1,
+      "day_of_week": "Thu",
+      "price": 1.8
+    },
+    {
+      "driver_id": 2,
+      "available_seats": 1,
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:15:00.000Z",
+      "arrival_time": "09:00:00.000Z",
+      "origin_id": 1,
+      "destination_id": 3,
+      "day_of_week": "Fri",
+      "price": 2.25
+    }
+  ],
+  "Trip": [
+    {
+      "driver_routine_id": 1,
+      "departure_datetime": "2023-03-09T08:00:00.000Z",
+      "arrival_datetime": "2023-03-09T09:00:00.000Z",
+      "status": "PENDING"
+    },
+    {
+      "driver_routine_id": 2,
+      "status": "PENDING",
+      "departure_datetime": "2023-03-09T08:00:00.000Z",
+      "arrival_datetime": "2023-03-09T09:00:00.000Z"
+    },
+    {
+      "driver_routine_id": 3,
+      "status": "PENDING",
+      "departure_datetime": "2023-03-09T08:00:00.000Z",
+      "arrival_datetime": "2023-03-09T09:00:00.000Z"
+    },
+    {
+      "driver_routine_id": 4,
+      "status": "PENDING",
+      "departure_datetime": "2023-03-09T08:00:00.000Z",
+      "arrival_datetime": "2023-03-09T09:00:00.000Z"
+    },
+    {
+      "driver_routine_id": 5,
+      "status": "PENDING",
+      "departure_datetime": "2023-03-09T08:00:00.000Z",
+      "arrival_datetime": "2023-03-09T09:00:00.000Z"
+    }
+  ],
+  "TripRequest": [
+    {
+      "trip_id": 1,
+      "status": "PENDING",
+      "note": "Hola me gustaría ir en su vehículo.",
+      "reject_note": "",
+      "passenger_id": 3,
+      "price": 2.0
+    },
+    {
+      "trip_id": 1,
+      "status": "REJECTED",
+      "note": "Hola me gustaría ir en su vehículo.",
+      "reject_note": "Al final voy a tener que cancelar el viaje completo.",
+      "passenger_id": 2,
+      "price": 2.0
+    },
+    {
+      "trip_id": 1,
+      "status": "ACCEPTED",
+      "note": "Hola me gustaría ir en su vehículo.",
+      "reject_note": "Al final voy a tener que cancelar el viaje completo.",
+      "passenger_id": 5,
+      "price": 2.0
+    },
+    {
+      "trip_id": 1,
+      "status": "ACCEPTED",
+      "note": "Hola me gustaría ir en su vehículo.",
+      "reject_note": "Al final voy a tener que cancelar el viaje completo.",
+      "passenger_id": 4,
+      "price": 2.0
+    }
+  ],
+  "PassengerRoutine": [
+    {
+      "passenger_id": 1,
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:30:00.000Z",
+      "arrival_time": "09:00:00.000Z",
+      "origin_id": 3,
+      "destination_id": 1,
+      "day_of_week": "Mon"
+    },
+    {
+      "passenger_id": 2,
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:30:00.000Z",
+      "arrival_time": "09:00:00.000Z",
+      "origin_id": 4,
+      "destination_id": 5,
+      "day_of_week": "Tue"
+    },
+    {
+      "passenger_id": 3,
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:30:00.000Z",
+      "arrival_time": "09:00:00.000Z",
+      "origin_id": 4,
+      "destination_id": 3,
+      "day_of_week": "Wed"
+    },
+    {
+      "passenger_id": 4,
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:30:00.000Z",
+      "arrival_time": "09:00:00.000Z",
+      "origin_id": 2,
+      "destination_id": 3,
+      "day_of_week": "Thu"
+    },
+    {
+      "passenger_id": 5,
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:30:00.000Z",
+      "arrival_time": "09:00:00.000Z",
+      "origin_id": 3,
+      "destination_id": 4,
+      "day_of_week": "Fri"
+    }
+  ],
+  "CreditCard": [
+    {
+      "user_id": 1,
+      "number": "1234567890123456",
+      "name": "FEDERICO DE LOS PALOTES",
+      "expiration_date": "2025-12-01",
+      "is_default": true
+    }
+  ],
+  "PaypalAccount": [
+    {
+      "user_id": 2,
+      "token": "378904289jd827u43194jd392j9823yu42913jd8239y98n329",
+      "is_default": true
+    },
+    {
+      "user_id": 3,
+      "token": "sfdgj4u3289fn3984fn38mf34903"
+    },
+    {
+      "user_id": 4,
+      "token": "asdfasdfasdf212312dfe"
+    },
+    {
+      "user_id": 5,
+      "token": "2412e11fasdf4fe"
+    }
+  ],
+  "Balance": [
+    {
+      "user_id": 1,
+      "amount": 5.05
+    },
+    {
+      "user_id": 2,
+      "amount": 10.0
+    },
+    {
+      "user_id": 3,
+      "amount": 6.82
+    },
+    {
+      "user_id": 4,
+      "amount": 4.3
+    },
+    {
+      "user_id": 5,
+      "amount": 0.0
+    }
+  ],
+  "DriverRating": [
+    {
+      "trip_request_id": 3,
+      "rating": 5.0,
+      "preference_0": true,
+      "preference_1": false,
+      "preference_2": false,
+      "preference_3": false
+    },
+    {
+      "trip_request_id": 4,
+      "rating": 4.5,
+      "preference_0": false,
+      "preference_1": true,
+      "preference_2": false,
+      "preference_3": false
+    }
+  ],
+  "Report": [
+    {
+      "trip_id": 1,
+      "reporter_user_id": 3,
+      "reported_user_id": 1,
+      "reported_is_driver": true,
+      "note": "El nota va to rapido tio"
+    }
+  ]
+}

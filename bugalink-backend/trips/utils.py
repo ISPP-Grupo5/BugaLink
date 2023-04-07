@@ -1,0 +1,99 @@
+import datetime
+
+from users.serializers import UserRatingSerializer
+
+
+def check_days(trips, days):
+    splited_days = days.split(",")
+    for trip in trips:
+        if trip.driver_routine.day_of_week not in splited_days:
+            trips.remove(trip)
+
+
+def check_minstars(trips, minstars):
+    for trip in trips:
+        if UserRatingSerializer(trip.driver_routine).get_rating(
+            trip.driver_routine.driver.user
+        ) < float(minstars):
+            trips.remove(trip)
+
+
+def check_minprice(trips, minprice):
+    for trip in trips:
+        if trip.driver_routine.price < float(minprice):
+            trips.remove(trip)
+
+
+def check_maxprice(trips, maxprice):
+    for trip in trips:
+        if trip.driver_routine.price > float(maxprice):
+            trips.remove(trip)
+
+
+def check_date_from(trips, date_from):
+    for trip in trips:
+        if (
+            trip.departure_datetime.date()
+            < datetime.datetime.strptime(date_from, "%Y-%m-%d").date()
+        ):
+            trips.remove(trip)
+
+
+def check_date_to(trips, date_to):
+    for trip in trips:
+        if (
+            trip.departure_datetime.date()
+            > datetime.datetime.strptime(date_to, "%Y-%m-%d").date()
+        ):
+            trips.remove(trip)
+
+
+def check_hour_from(trips, hour_from):
+    for trip in trips:
+        if (
+            trip.departure_datetime.time()
+            < datetime.datetime.strptime(hour_from, "%H:%M").time()
+        ):
+            trips.remove(trip)
+
+
+def check_hour_to(trips, hour_to):
+    for trip in trips:
+        if (
+            trip.departure_datetime.time()
+            > datetime.datetime.strptime(hour_to, "%H:%M").time()
+        ):
+            trips.remove(trip)
+
+
+def check_prefers_music(trips, prefers_music):
+    for trip in trips:
+        if str(trip.driver_routine.driver.prefers_music) != prefers_music:
+            trips.remove(trip)
+
+
+def check_prefers_talk(trips, prefers_talk):
+    for trip in trips:
+        if str(trip.driver_routine.driver.prefers_talk) != prefers_talk:
+            trips.remove(trip)
+
+
+def check_allows_pets(trips, allows_pets):
+    for trip in trips:
+        if str(trip.driver_routine.driver.allows_pets) != allows_pets:
+            trips.remove(trip)
+
+
+def check_allows_smoking(trips, allows_smoking):
+    for trip in trips:
+        if str(trip.driver_routine.driver.allows_smoke) != allows_smoking:
+            trips.remove(trip)
+
+
+def check_distance(result_trips, trips, origin_location, dest_location):
+    for trip in trips:
+        if (
+            trip.driver_routine.origin.get_distance_to(origin_location) <= 1.0
+            and trip.driver_routine.destination.get_distance_to(dest_location) <= 1.0
+        ):
+            result_trips.append(trip)

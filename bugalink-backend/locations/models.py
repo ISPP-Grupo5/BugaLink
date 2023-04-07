@@ -1,4 +1,6 @@
 # from django.contrib.gis.db import models as gis_models
+import math
+
 from django.db import models
 
 # A location has the following fields:
@@ -17,3 +19,15 @@ class Location(models.Model):
 
     def __str__(self):
         return f"{self.address}: ({self.latitude}, {self.longitude})"
+
+    def get_distance_to(self, location):
+        r = 6371  # Radio de la Tierra en kilómetros
+        lat = math.radians(self.latitude - location.latitude)
+        Lon = math.radians(self.longitude - location.longitude)
+        a = math.sin(lat / 2) * math.sin(lat / 2) + math.cos(
+            math.radians(location.latitude)
+        ) * math.cos(math.radians(self.latitude)) * math.sin(Lon / 2) * math.sin(
+            Lon / 2
+        )
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        return r * c

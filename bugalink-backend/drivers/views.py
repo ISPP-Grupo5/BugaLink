@@ -3,7 +3,7 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 
 from drivers.models import Driver
-from passengers.models import Passenger
+from users.models import User
 from drivers.serializers import DriverSerializer, PreferencesSerializer
 from rest_framework.response import Response
 
@@ -30,8 +30,9 @@ class DriverViewSet(
     def post_docs(self, request, *args, **kwargs):
         try:
             user_id = kwargs["user_id"]
-            passenger = Passenger.objects.get(user_id=user_id)
-            driver = m.Driver.objects.get(passenger=passenger)
+            user = User.objects.get(id=user_id)
+            driver = m.Driver.objects.get(user=user)
+
             status = "Waiting validation"
             if "sworn_declaration" in request.data:
                 driver.sworn_declaration = request.data["sworn_declaration"]
@@ -48,15 +49,15 @@ class DriverViewSet(
             if "dni_back" in request.data:
                 driver.dni_back = request.data["dni_back"]
                 driver.dni_status = status
-
+            
             driver.save()
 
             return Response(self.get_serializer(driver).data)
 
-        except Passenger.DoesNotExist:
+        except User.DoesNotExist:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
-                data={"error": "Passenger does not exist"},
+                data={"error": "User does not exist"},
             )
 
         except m.Driver.DoesNotExist:

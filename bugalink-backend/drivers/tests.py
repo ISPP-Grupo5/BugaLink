@@ -1,5 +1,6 @@
 from rest_framework import status
 from users.models import User
+from rest_framework.test import APIClient
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from django.test import TestCase
@@ -64,23 +65,39 @@ class DriverDocsTests(TestCase):
         self.user = User.objects.create(email="test@test.com", first_name="nameTest", last_name="lastNameTest", is_passenger = True, is_driver=True)
         self.passenger = Passenger.objects.create(user=self.user)
         self.driver = Driver.objects.create(user=self.user, prefers_talk = False, prefers_music = False, allows_pets = False, allows_smoke = False, )
-    
-    def test_upload_driver_docs(self):
-        
-        url = "api/v1/users/" + str(self.passenger.user.pk) + "/driver/docs/"
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
 
-        self.dni_front = SimpleUploadedFile(
-             name='dni_front.jpg',
-             content=open("drivers/dnis/dni_front.jpg", 'rb').read(),
-             content_type='image/jpeg'
-        )
-        
+    def test_upload_driver_docs(self):
+        url = "/api/v1/users/" + str(self.passenger.user.pk) + "/driver/docs/"
+
+        dni_path = "drivers/dnis/"
+        dni_front_content = open(dni_path + "dni_front.jpg", 'rb').read()
+        dni_back_content = open(dni_path + "dni_back.jpg", 'rb').read()
+
+        dni_front = SimpleUploadedFile(
+            name='dni_front.jpg',
+            content=dni_front_content,
+            content_type='image/jpeg')
+            
+        dni_back = SimpleUploadedFile(
+            name='dni_back.jpg',
+            content=dni_back_content,
+            content_type='image/jpeg')
+
         data = {
-            "dni_front": self.dni_front,
-            "dni_back": self.dni_front,
+            "dni_front": dni_front,
+            "dni_back": dni_back,
         }
 
         response = self.client.put(url, data=data)
+        # Check response status code
+        self.assertEqual(response.status_code, 200)  # Update with the expected status code
 
-        self.assertEqual(self.driver.dni_back, self.dni_front)
-        self.assertEqual(self.driver.dni_front, self.dni_front)
+        # Check if driver documents are correctly uploaded
+        self.assertEqual(self.driver.dni_front.name, "dni_front.jpg")
+        self.assertEqual(self.driver.dni_back.name, "dni_back.jpg")
+        
+        dni_front.close()
+        dni_back.close()
+

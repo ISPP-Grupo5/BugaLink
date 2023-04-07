@@ -1,11 +1,11 @@
 from rest_framework import serializers
 from transactions.models import Transaction
 
-from passengers.serializers import PassengerSerializer
+from users.serializers import UserSerializer
 
 class TransactionSerializer(serializers.ModelSerializer):
-    sender = PassengerSerializer()
-    receiver = PassengerSerializer()
+    sender = UserSerializer()
+    receiver = UserSerializer()
 
     class Meta:
         model = Transaction

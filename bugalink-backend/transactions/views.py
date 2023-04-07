@@ -26,7 +26,7 @@ class TransactionViewSet(
         user_id = kwargs["user_id"]
         user = User.objects.get(id=user_id)
 
-        transactions = Transaction.objects.filter(Q(sender=user) | Q(receiver=user)).order_by('-date_created')[:10]
+        transactions = Transaction.objects.filter(Q(sender=user) | Q(receiver=user))[:10]
 
         serializer = self.serializer_class(transactions, many=True)
 

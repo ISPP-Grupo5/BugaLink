@@ -10,7 +10,7 @@ class TransactionViewSetTest(TestCase):
         self.client = APIClient()
 
         self.sender = User.objects.create(email="test@test.com", first_name="Sender", last_name="lastNameTest", is_passenger = True, is_driver=True)
-        self.receiver = User.objects.create(email="test@test.com", first_name="Receiver", last_name="lastNameTest", is_passenger = True, is_driver=True)
+        self.receiver = User.objects.create(email="test_receiver@test.com", first_name="Receiver", last_name="lastNameTest", is_passenger = True, is_driver=True)
         self.client.force_authenticate(user=self.sender)
         self.client.force_authenticate(user=self.receiver)
 

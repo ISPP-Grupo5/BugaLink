@@ -4,12 +4,10 @@ env: standard
 service: default
 env_variables:
   APPENGINE_URL: https://bugalink-379617.ew.r.appspot.com
-  NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:  ${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
   NODE_ENV: production
   NEXT_PUBLIC_BACKEND_URL: https://app.bugalink.es
   NEXT_PUBLIC_DOMAIN: https://app.bugalink.es
   NEXTAUTH_URL: https://app.bugalink.es
-  NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
 
 handlers:
   - url: /static

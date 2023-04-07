@@ -1,3 +1,4 @@
+import os
 from rest_framework import status
 from users.models import User
 from rest_framework.test import APIClient
@@ -91,13 +92,17 @@ class DriverDocsTests(TestCase):
         }
 
         response = self.client.put(url, data=data)
+        json_data = json.loads(response.content)        
+
         # Check response status code
         self.assertEqual(response.status_code, 200)  # Update with the expected status code
-
+        
         # Check if driver documents are correctly uploaded
-        self.assertEqual(self.driver.dni_front.name, "dni_front.jpg")
-        self.assertEqual(self.driver.dni_back.name, "dni_back.jpg")
+        self.assertEqual(json_data.get('dni_front').split("/")[-1], "dni_front.jpg")
+        self.assertEqual(json_data.get('dni_back').split("/")[-1], "dni_back.jpg")
         
         dni_front.close()
         dni_back.close()
+        os.remove("files/drivers/dnis/dni_front.jpg")
+        os.remove("files/drivers/dnis/dni_back.jpg")
 

@@ -59,7 +59,7 @@ class PassengerRoutineSerializer(serializers.Serializer):
                 recommendable_trips.append(trip)
         recommendable_trips = Trip.objects.filter(
             Q(pk__in=[trip.pk for trip in recommendable_trips])
-        )
+        ).order_by("-departure_datetime")[:10]
         return TripSerializer(recommendable_trips, many=True)
 
 

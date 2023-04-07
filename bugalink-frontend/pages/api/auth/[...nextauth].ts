@@ -2,7 +2,6 @@ import NEXT_ROUTES from '@/constants/nextRoutes';
 import axios from 'axios';
 import type { NextAuthOptions } from 'next-auth';
 import NextAuth, { Session, User } from 'next-auth';
-import { CookiesOptions } from 'next-auth/core/types';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 

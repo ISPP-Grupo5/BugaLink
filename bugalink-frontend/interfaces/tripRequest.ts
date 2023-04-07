@@ -7,10 +7,10 @@ import TripI from './trip';
 
 type TripRequestI = {
   id: number;
-  trip: TripI;
-  is_recurrent: boolean;
-  status: string;
   note: string;
+  passenger: number; // passenger_id
+  status: string;
+  trip: TripI;
 };
 
 export default TripRequestI;

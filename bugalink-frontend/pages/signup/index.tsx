@@ -1,4 +1,3 @@
-import { BackButton } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import ExternalLogin from '@/components/externalLogin';
 import TextField from '@/components/forms/TextField';
@@ -134,10 +133,10 @@ export default function Register() {
   }, [registerStatus]);
 
   return (
-    <AnimatedLayout className="bg-white">
-      <div className="flex flex-col -space-y-5">
-        <span className="flex w-full justify-center bg-light-gray">
-          <RegisterImg className="bg-light-gray" />
+    <AnimatedLayout>
+      <div className="flex h-full flex-col justify-end -space-y-10">
+        <span className="flex w-full justify-center overflow-x-clip">
+          <RegisterImg className="origin-bottom scale-110 bg-light-gray" />
         </span>
         <div className="z-10 rounded-t-3xl bg-base-origin text-center">
           <p className=" py-5 text-3xl text-gray ">Crear cuenta nueva</p>
@@ -195,15 +194,38 @@ export default function Register() {
               </div>
               <CTAButton
                 text={isLoading ? 'PROCESANDO...' : 'REGISTRARSE'}
-                className="mt-8 w-5/6"
+                className="mt-2 w-5/6"
                 onClick={handleRegister}
                 disabled={isLoading}
               />
-              <span className="flex flex-row justify-center pt-4">
-                <p className="font-light text-gray">¿Ya tienes una cuenta?</p>
-                <Link href={NEXT_ROUTES.LOGIN} className="ml-1">
-                  <p className="text-dark-turquoise"> Iniciar sesión </p>
-                </Link>
+              {errors &&
+                Object.keys(errors).map((key) => {
+                  return (
+                    <p className="mt-1 text-center text-red" key={key}>
+                      {key}: {errors[key]}
+                    </p>
+                  );
+                })}
+
+              <span className="flex flex-col items-center pt-2">
+                <p className="font-light text-gray">
+                  ¿Ya tienes una cuenta?{' '}
+                  <Link
+                    href={NEXT_ROUTES.LOGIN}
+                    className="font-normal text-dark-turquoise"
+                  >
+                    Iniciar sesión
+                  </Link>
+                </p>
+                <p className="pt-2 text-sm font-light text-gray">
+                  Al registrarte aceptas nuestros{' '}
+                  <a
+                    href="https://www.bugalink.es/terms"
+                    className="font-normal text-dark-turquoise"
+                  >
+                    Términos y condiciones
+                  </a>
+                </p>
               </span>
             </form>
           </div>

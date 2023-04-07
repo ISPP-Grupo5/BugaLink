@@ -100,6 +100,10 @@ class UserStatsViewTest(TestCase):
         load_complex_data(self)
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
+        self.driver_rating = DriverRating.objects.create(
+            trip_request = self.trip_request,
+            rating = 4,
+        )
         
     def test_get_user_stats_driver(self):
         url = f"/api/v1/users/{self.user.pk}/stats/"
@@ -112,6 +116,20 @@ class UserStatsViewTest(TestCase):
         response = self.client.get(url)
         data = json.loads(response.content)
         self.assertEqual(data['total_rides'], 1) # 1 Trip finalizado en el que ha participado
+
+    def test_get_driver_rating(self):
+        url = f"/api/v1/users/{self.user.pk}/stats/"
+        response = self.client.get(url)
+        data = json.loads(response.content)
+        self.assertEqual(data['number_ratings'], 1) 
+        self.assertEqual(data['rating'], 4)
+
+    def test_get_null_rating(self):
+        url = f"/api/v1/users/{self.user_2.pk}/stats/"
+        response = self.client.get(url)
+        data = json.loads(response.content)
+        self.assertEqual(data['number_ratings'], 0) 
+        self.assertEqual(data['rating'], 0)
 
 class UserRatingViewTest(TestCase):
     def setUp(self):

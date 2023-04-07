@@ -43,3 +43,25 @@ class GetTripRecommendationTest(TestCase):
         self.assertEqual(
             data["trips"][0]["driver_routine"]["origin"]["address"], "Mi casa"
         )
+
+
+class GetTripTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        load_complex_data(self)
+
+        self.trip_3 = Trip.objects.create(
+            driver_routine=self.driver_routine,
+            departure_datetime=datetime.datetime.now() + datetime.timedelta(days=1),
+            arrival_datetime=datetime.datetime.now()
+            + datetime.timedelta(days=1, hours=1),
+            status="PENDING",
+        )
+
+        self.client.force_authenticate(user=self.user)
+
+    def test_get_trip(self):
+        url = "/api/v1/trips/" + str(self.trip_3.pk) + "/individualRides"
+        response = self.client.get(url)
+        data = json.loads(response.content)
+        self.assertEqual(data["id"], self.trip_3.pk)

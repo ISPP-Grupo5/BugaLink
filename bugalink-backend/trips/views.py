@@ -26,8 +26,13 @@ class TripViewSet(
     serializer_class = TripSerializer
 
     @action(detail=True, methods=["get"])
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+    def get(self, request, trip_id, *args, **kwargs):
+        try:
+            trip = Trip.objects.get(id=trip_id)
+            return Response(TripSerializer(trip).data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, *args, **kwargs):
         # TODO: untested!!

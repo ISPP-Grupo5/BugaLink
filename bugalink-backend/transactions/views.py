@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from django.db.models import Q
 
 from transactions.models import Transaction
+from users.models import User
 from transactions.serializers import TransactionSerializer
 
 class TransactionViewSet(
@@ -22,9 +23,10 @@ class TransactionViewSet(
     
     @action(detail=False, methods=['get'])
     def get_last_transactions(self, request, *args, **kwargs):
-        user_id = request.user.id 
+        user_id = kwargs["user_id"]
+        user = User.objects.get(id=user_id)
 
-        transactions = Transaction.objects.filter(Q(sender=user_id) | Q(receiver=user_id)).order_by('-date_created')[:10]
+        transactions = Transaction.objects.filter(Q(sender=user) | Q(receiver=user)).order_by('-date_created')[:10]
 
         serializer = self.serializer_class(transactions, many=True)
 

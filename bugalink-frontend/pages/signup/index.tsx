@@ -1,16 +1,14 @@
-import AnimatedLayout from '@/components/layouts/animated';
-import { BackButton } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import ExternalLogin from '@/components/externalLogin';
 import TextField from '@/components/forms/TextField';
-import RegisterImg from '/public/assets/register.svg';
+import AnimatedLayout from '@/components/layouts/animated';
 import axios from '@/lib/axios';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import RegisterImg from '/public/assets/register.svg';
 
-import { signIn, useSession } from 'next-auth/react';
 import NEXT_ROUTES from '@/constants/nextRoutes';
-import router from 'next/router';
+import { signIn } from 'next-auth/react';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -19,22 +17,25 @@ export default function Register() {
   const [surname, setSurname] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [registerStatus, setRegisterStatus] = useState<number>();
-
-  const { status } = useSession();
-  useEffect(() => {
-    if (status === 'authenticated') router.push(NEXT_ROUTES.HOME);
-  }, [status]);
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const response = await axios.post('/auth/registration', {
-      email,
-      password1: password,
-      password2: password,
-      first_name: name,
-      last_name: surname,
-    });
-    setRegisterStatus(response.status);
+    try {
+      setIsLoading(true);
+      const response = await axios.post('/auth/registration', {
+        email,
+        password1: password,
+        password2: password,
+        first_name: name,
+        last_name: surname,
+      });
+      setRegisterStatus(response.status);
+    } catch (error) {
+      setErrors(error.response.data);
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -53,17 +54,16 @@ export default function Register() {
   }, [registerStatus]);
 
   return (
-    <AnimatedLayout className="bg-white">
-      <BackButton className="absolute left-2 top-2 bg-base-origin py-3 pr-2 shadow-xl" />
-      <div className="flex flex-col -space-y-5">
-        <span className="flex w-full justify-center bg-light-gray">
-          <RegisterImg className="bg-light-gray" />
+    <AnimatedLayout>
+      <div className="flex h-full flex-col justify-end -space-y-10">
+        <span className="flex w-full justify-center overflow-x-clip">
+          <RegisterImg className="origin-bottom scale-110 bg-light-gray" />
         </span>
         <div className="z-10 rounded-t-3xl bg-base-origin text-center">
           <p className=" py-5 text-3xl text-gray ">Crear cuenta nueva</p>
-          <div className="h-max rounded-t-3xl bg-white py-5">
+          <div className="rounded-t-xl bg-white py-5">
             <ExternalLogin />
-            <p className="mt-2 font-light text-gray">
+            <p className="font-light text-gray opacity-70">
               o usa tu cuenta de correo
             </p>
             <form className="mt-5">
@@ -106,16 +106,39 @@ export default function Register() {
                 />
               </div>
               <CTAButton
-                text="REGISTRARSE"
-                className="mt-8 w-5/6"
+                text={isLoading ? 'PROCESANDO...' : 'REGISTRARSE'}
+                className="mt-2 w-5/6"
                 onClick={handleRegister}
+                disabled={isLoading}
               />
+              {errors &&
+                Object.keys(errors).map((key) => {
+                  return (
+                    <p className="mt-1 text-center text-red" key={key}>
+                      {key}: {errors[key]}
+                    </p>
+                  );
+                })}
 
-              <span className="flex flex-row justify-center -justify-between py-8">
-                <p className="font-light text-gray">¿Ya tienes una cuenta?</p>
-                <Link href={NEXT_ROUTES.LOGIN} className="translate-x-2">
-                  <p className="text-dark-turquoise"> Iniciar sesión </p>
-                </Link>
+              <span className="flex flex-col items-center pt-2">
+                <p className="font-light text-gray">
+                  ¿Ya tienes una cuenta?{' '}
+                  <Link
+                    href={NEXT_ROUTES.LOGIN}
+                    className="font-normal text-dark-turquoise"
+                  >
+                    Iniciar sesión
+                  </Link>
+                </p>
+                <p className="pt-2 text-sm font-light text-gray">
+                  Al registrarte aceptas nuestros{' '}
+                  <a
+                    href="https://www.bugalink.es/terms"
+                    className="font-normal text-dark-turquoise"
+                  >
+                    Términos y condiciones
+                  </a>
+                </p>
               </span>
 
               <span className="flex flex-row justify-center -justify-between py-4">

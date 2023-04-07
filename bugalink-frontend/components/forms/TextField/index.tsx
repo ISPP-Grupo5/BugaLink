@@ -35,7 +35,7 @@ export default function TextField({
 }: props) {
   return (
     <div
-      className={`relative flex ${parentClassName || ''}`}
+      className={`relative ${parentClassName || ''}`}
       data-te-input-wrapper-init
     >
       {/* TODO: extract showPassword logic to a different component that encapsulates TextField and adds the icon and functionality on top */}
@@ -59,9 +59,9 @@ export default function TextField({
           onClick={() => setShowPassword(!showPassword)}
         >
           {showPassword ? (
-            <EyeOffIcon className="h-5 w-5 text-gray" />
-          ) : (
             <EyeIcon className="h-5 w-5 text-gray" />
+          ) : (
+            <EyeOffIcon className="h-5 w-5 text-gray" />
           )}
         </div>
       )}

@@ -8,8 +8,8 @@ type GenericRoutineI = {
   origin: LocationI;
   destination: LocationI;
   day: string; // 0-6
-  departure_time_start: string; // "18:40:00"
-  departure_time_end: string; // "18:55:00"
+  departure_time_start: Date; // "18:40:00"
+  departure_time_end: Date; // "18:55:00"
   type: 'driverRoutine' | 'passengerRoutine';
 };
 

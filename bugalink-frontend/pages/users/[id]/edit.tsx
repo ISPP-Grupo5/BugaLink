@@ -1,10 +1,16 @@
+import Avatar from '@/components/avatar';
 import { BackButtonText } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import TextField from '@/components/forms/TextField';
 import AnimatedLayout from '@/components/layouts/animated';
-import Avatar from 'public/assets/avatar.svg';
+import NEXT_ROUTES from '@/constants/nextRoutes';
+import useUser from '@/hooks/useUser';
+import UserI from '@/interfaces/user';
+import { axiosAuth } from '@/lib/axios';
+import { GetServerSideProps } from 'next';
+import { signOut } from 'next-auth/react';
 import Pencil from 'public/assets/edit.svg';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface FormErrors {
   name?: string;
@@ -20,13 +26,36 @@ interface FormValues {
   password: string;
 }
 
-export default function EditProfile() {
-  const [name, setName] = useState<string>('Pedro');
-  const [surname, setSurname] = useState<string>('Pérez');
-  const [email, setEmail] = useState<string>('pedroperez@mail.com');
-  const [password, setPassword] = useState<string>('password1D3!');
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { id } = context.query;
 
-  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const data = {
+    id: id,
+  };
+
+  return {
+    props: { data },
+  };
+};
+
+export default function EditProfile({ data }) {
+  const userId = data.id;
+
+  const user = useUser(userId).user as UserI;
+
+  useEffect(() => {
+    if (!user) return;
+    setName(user.first_name);
+    setSurname(user.last_name);
+    setEmail(user.email);
+  }, [user]);
+  const [name, setName] = useState<string>('');
+  const [surname, setSurname] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [isDeleteConfirmation, setIsDeleteConfirmation] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -70,7 +99,7 @@ export default function EditProfile() {
     return errors;
   };
 
-  const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (formRef.current) {
       const formData = new FormData(formRef.current);
@@ -80,7 +109,7 @@ export default function EditProfile() {
         email: formData.get('email') as string,
         password: formData.get('password') as string,
       };
-      console.log(values);
+
       const errors = validateForm(values);
       setErrors(errors);
       if (Object.keys(errors).length === 0) {
@@ -92,22 +121,73 @@ export default function EditProfile() {
     }
   };
 
+  const handleDeleteConfirmation = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    setIsDeleteConfirmation(true);
+  };
+
+  const handleDeleteAccount = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    try {
+      const response = await axiosAuth.delete(`/users/${user.id}`);
+      if (response.status === 204) {
+        await signOut({
+          callbackUrl: NEXT_ROUTES.LOGIN,
+        });
+      }
+    } catch (error) {
+      alert(error?.response?.data?.error || 'Error al eliminar la cuenta');
+    }
+  };
+
   return (
-    <AnimatedLayout className="flex h-screen flex-col items-center justify-center bg-white">
+    <AnimatedLayout className="flex h-screen flex-col items-center justify-between bg-white">
       <BackButtonText text="Mi perfil" />
-      <div className="flex h-full w-full flex-col items-center overflow-y-scroll pb-32">
-        <div className="z-10 mb-5 rounded-t-3xl text-center">
-          <div className="relative mx-auto w-min">
-            <Avatar className="mx-auto my-2 h-24 w-24 rounded-full outline outline-8 outline-white" />
+      <div className="flex h-full w-full flex-col items-center overflow-y-scroll">
+        <div className="mb-5 h-24 w-24">
+          <label
+            htmlFor="uploadProfilePicture"
+            className="relative mx-auto cursor-pointer"
+          >
+            <input
+              id="uploadProfilePicture"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                  const img = document.getElementById(
+                    'profilePicture'
+                  ) as HTMLImageElement;
+                  img.src = e.target.result as string;
+                };
+                reader.readAsDataURL(file);
+                // Set to state
+              }}
+            />
+            <Avatar
+              id="profilePicture"
+              src={user.photo}
+              className="my-2 w-full outline outline-8 outline-white"
+            />
             <div id="check" className="absolute -bottom-2 -right-2">
-              <div className="flex aspect-square w-9 items-center justify-center rounded-full bg-turquoise">
-                <Pencil className="m-auto aspect-square bg-transparent p-1 text-white" />
+              <div className="flex aspect-square h-10 w-10 rounded-full bg-turquoise">
+                <Pencil className="p-1 text-white" />
               </div>
             </div>
-          </div>
-          <p className="pt-2 text-3xl ">Pedro Pérez</p>
+          </label>
         </div>
-        <form ref={formRef} className="flex w-full flex-col items-center">
+        <form
+          ref={formRef}
+          className="flex h-full w-full flex-col items-center justify-between"
+        >
           <div className="mt-5 flex w-full flex-col items-center space-y-6">
             <TextField
               fieldName="Nombre"
@@ -117,7 +197,7 @@ export default function EditProfile() {
               type="text"
               error={errors.name}
               parentClassName="w-10/12 flex flex-col items-center"
-              inputClassName="w-full focus:text-black text-light-gray"
+              inputClassName="w-full focus:text-black text-gray"
             />
 
             <TextField
@@ -128,7 +208,7 @@ export default function EditProfile() {
               type="text"
               error={errors.surname}
               parentClassName="w-10/12 flex flex-col items-center"
-              inputClassName="w-full focus:text-black text-light-gray"
+              inputClassName="w-full focus:text-black text-gray"
             />
 
             <hr className="mx-2 w-11/12 text-light-gray" />
@@ -140,8 +220,9 @@ export default function EditProfile() {
               setContent={setEmail}
               type="email"
               error={errors.email}
+              disabled
               parentClassName="w-10/12 flex flex-col items-center"
-              inputClassName="w-full focus:text-black text-light-gray"
+              inputClassName="w-full focus:text-black text-gray"
             />
 
             <TextField
@@ -152,19 +233,33 @@ export default function EditProfile() {
               type="password"
               error={errors.password}
               parentClassName="w-10/12 flex flex-col items-center"
-              inputClassName="w-full focus:text-black text-light-gray"
+              inputClassName="w-full focus:text-black text-gray"
               showPassword={showPassword}
               setShowPassword={setShowPassword}
             />
           </div>
-          <div className="absolute bottom-2 mt-5 flex w-full flex-col items-center justify-center space-y-6 bg-white pt-3">
-            <p className="text-sm font-semibold text-gray">
-              Usuario desde el 22 de marzo de 2023
+          <div className="my-5 flex w-full flex-col items-center justify-center">
+            {isDeleteConfirmation ? (
+              <button className="text-red" onClick={handleDeleteAccount}>
+                Pulsa de nuevo para eliminar tu cuenta
+              </button>
+            ) : (
+              <button className="text-red" onClick={handleDeleteConfirmation}>
+                Solicita la eliminación de tu cuenta
+              </button>
+            )}
+            <p className="mb-2 text-sm font-semibold text-gray">
+              Usuario desde el{' '}
+              {new Date(user.date_joined).toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
             </p>
             <CTAButton
               className="w-11/12"
               text="GUARDAR"
-              onClick={handleButtonClick}
+              onClick={handleSubmit}
             />
           </div>
         </form>

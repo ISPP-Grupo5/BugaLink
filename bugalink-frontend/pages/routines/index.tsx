@@ -8,6 +8,7 @@ import usePassenger from '@/hooks/usePassenger';
 import DriverRoutineI from '@/interfaces/driverRoutine';
 import GenericRoutineI from '@/interfaces/genericRoutine';
 import PassengerRoutineI from '@/interfaces/passengerRoutine';
+import { parseDate } from '@/utils/formatters';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { User } from 'next-auth';
@@ -16,13 +17,13 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 const WEEK_DAYS = {
-  '0': 'Lunes',
-  '1': 'Martes',
-  '2': 'Miércoles',
-  '3': 'Jueves',
-  '4': 'Viernes',
-  '5': 'Sábado',
-  '6': 'Domingo',
+  Mon: 'Lunes',
+  Tue: 'Martes',
+  Wed: 'Miércoles',
+  Thu: 'Jueves',
+  Fri: 'Viernes',
+  Sat: 'Sábado',
+  Sun: 'Domingo',
 };
 
 const mergeRoutines = (
@@ -34,33 +35,24 @@ const mergeRoutines = (
   // Iterate over each passenger routine
   for (const routine of [...passengerRoutines, ...driverRoutines]) {
     // We add a card for each day of the week the routine is repeated
-    for (const day of routine.days_of_week) {
-      allRoutines.push({
-        id: routine.id,
-        origin: routine.origin,
-        destination: routine.destination,
-        day: day.toString(),
-        departure_time_start: routine.departure_time_start.substring(0, 5), // 18:00:00 -> 18:00
-        departure_time_end: routine.departure_time_end.substring(0, 5), // 18:00:00 -> 18:00
-        // Ugly hack to determine if the routine is a passenger or driver routine
-        // We take advantage of the fact that days_of_week is an array of numbers
-        // for passenger routines and an array of strings for driver routines
-        // which has to be fixed anyways
-        type:
-          typeof routine.days_of_week[0] === 'number'
-            ? 'passengerRoutine'
-            : 'driverRoutine',
-      });
-    }
+    allRoutines.push({
+      id: routine.id,
+      origin: routine.origin,
+      destination: routine.destination,
+      day: routine.day_of_week,
+      departure_time_start: parseDate(routine.departure_time_start), // 18:00:00 -> 18:00
+      departure_time_end: parseDate(routine.departure_time_end), // 18:00:00 -> 18:00
+      type: routine.type,
+    });
   }
   return allRoutines;
 };
 
 export default function MyRoutines() {
-  const { data, status } = useSession();
+  const { data } = useSession();
   const user = data?.user as User;
-  const passengerId = user?.passenger_id; // TODO: get this from the user's session
-  const driverId = user?.driver_id; // TODO: get this from the user's session
+  const passengerId = user?.passenger_id;
+  const driverId = user?.driver_id;
 
   const {
     passenger,
@@ -89,13 +81,15 @@ export default function MyRoutines() {
         {Object.keys(WEEK_DAYS).map((day) => (
           <div key={day} className="mb-4 space-y-2">
             <h1 className="text-2xl">{WEEK_DAYS[day]}</h1>
-            {isLoading || isError
-              ? [1, 2].map((id) => <RoutineCardSkeleton key={id} />)
+            {isLoading
+              ? // || isError
+                [1, 2].map((id) => <RoutineCardSkeleton key={id} />)
               : allRoutines
                   .filter((routine: GenericRoutineI) => routine.day === day)
                   .map((routine: GenericRoutineI) => (
                     <RoutineCard
                       key={routine.id + routine.origin.address}
+                      id={routine.id}
                       departureHourStart={routine.departure_time_start}
                       departureHourEnd={routine.departure_time_end}
                       // TODO: bad practice, use meaningful names instead of type 21 and type 2 (remeber DP1)
@@ -105,7 +99,7 @@ export default function MyRoutines() {
                     />
                   ))}
             {!isLoading &&
-              !isError &&
+              // !isError &&
               allRoutines.filter(
                 (routine: GenericRoutineI) => routine.day === day
               ).length === 0 && (
@@ -116,12 +110,12 @@ export default function MyRoutines() {
           </div>
         ))}
       </div>
-      <AddRoutineMenu />
+      <AddRoutineMenu user={user} />
     </AnimatedLayout>
   );
 }
 
-const AddRoutineMenu = () => {
+const AddRoutineMenu = ({ user }: { user: User }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -155,12 +149,14 @@ const AddRoutineMenu = () => {
         >
           <MenuItem onClick={handleClose}>Como pasajero</MenuItem>
         </Link>
-        <Link
-          data-cy="new-driver-routine"
-          href={NEXT_ROUTES.NEW_ROUTINE_DRIVER}
-        >
-          <MenuItem onClick={handleClose}>Como conductor</MenuItem>
-        </Link>
+        {user?.driver_id !== undefined && (
+          <Link
+            data-cy="new-driver-routine"
+            href={NEXT_ROUTES.NEW_ROUTINE_DRIVER}
+          >
+            <MenuItem onClick={handleClose}>Como conductor</MenuItem>
+          </Link>
+        )}
       </Menu>
     </div>
   );

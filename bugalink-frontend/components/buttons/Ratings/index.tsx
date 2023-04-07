@@ -1,5 +1,3 @@
-import Star from '/public/assets/star.svg';
-
 // <RatingButton text="Buena conducción" icon="🛞" selected={goodConduction} setSelected={setGoodConduction}/>
 export default function RatingButton({ text, icon, selected, setSelected }) {
   return (

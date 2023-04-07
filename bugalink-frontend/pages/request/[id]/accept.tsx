@@ -46,9 +46,9 @@ export default function AcceptRequest() {
   endTime.setMinutes(endTime.getMinutes() + time);
 
   return (
-    <AnimatedLayout className="flex flex-col justify-between">
+    <AnimatedLayout className="justify-between flex flex-col">
       <BackButtonText text="Solicitud de viaje" />
-      <div className="flex h-full flex-col justify-between overflow-y-scroll bg-white px-6 pb-4 pt-2">
+      <div className="justify-between flex h-full flex-col overflow-y-scroll bg-white px-6 pb-4 pt-2">
         {/* Profile header */}
         <ProfileHeader
           name={ride.passenger.user.username}
@@ -92,7 +92,7 @@ export default function AcceptRequest() {
         />
       </div>
       {/* Trip request */}
-      <div className="shadossw-t-md z-50 flex w-full flex-col items-center justify-between rounded-t-lg bg-white py-6 px-4">
+      <div className="shadossw-t-md justify-between z-50 flex w-full flex-col items-center rounded-t-lg bg-white py-6 px-4">
         <div className="flex flex-row pb-3">
           <p
             className="text-md cursor-pointer font-medium text-red-dark"

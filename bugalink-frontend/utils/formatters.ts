@@ -5,7 +5,19 @@ export const formatDatetime = (datetime: string) => {
   const day = dayLower.charAt(0).toUpperCase() + dayLower.slice(1); // Capitalized day
   const dayNumber = date.toLocaleDateString('es-ES', { day: 'numeric' });
   const month = date.toLocaleDateString('es-ES', { month: 'long' });
-  const hour = date.toLocaleTimeString('es-ES', { hour: 'numeric' });
-  const minute = date.toLocaleTimeString('es-ES', { minute: 'numeric' });
-  return `${day} ${dayNumber} de ${month} a las ${hour}:${minute}`;
+  const time = date.toLocaleTimeString('es-ES', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+  return `${day} ${dayNumber} de ${month} a las ${time}`;
+};
+
+export const parseDate = (time: string) => {
+  // 18:00:00 -> Date(18:00:00)
+  const [hours, minutes, seconds] = time.split(':');
+  const date = new Date();
+  date.setHours(Number.parseInt(hours));
+  date.setMinutes(Number.parseInt(minutes));
+  date.setSeconds(Number.parseInt(seconds));
+  return date;
 };

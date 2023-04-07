@@ -1,4 +1,4 @@
-import Glass from '/public/icons/Vista-Principal/glass.svg';
+import MagnifyingGlass from '/public/icons/Vista-Principal/glass.svg';
 import Destino from 'public/icons/Vista-Principal/destino.svg';
 
 export default function SearchBar() {
@@ -11,7 +11,7 @@ export default function SearchBar() {
         className="ml-2 w-full rounded-full text-sm"
       />
       <button type="submit" data-cy="search-btn">
-        <Glass />
+        <MagnifyingGlass />
       </button>
     </form>
   );

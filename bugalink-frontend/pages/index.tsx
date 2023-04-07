@@ -13,6 +13,7 @@ import Link from 'next/link';
 import Destino from 'public/icons/Vista-Principal/destino.svg';
 import { useState } from 'react';
 import Glass from '/public/icons/Vista-Principal/glass.svg';
+import Avatar from '@/components/avatar';
 
 export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -41,11 +42,7 @@ export default function Home() {
             className="aspect-square h-14"
             href={NEXT_ROUTES.PROFILE(user?.user_id)}
           >
-            {user?.photo ? (
-              <img className="rounded-full" src={user?.photo} />
-            ) : (
-              <AvatarSkeleton />
-            )}
+            {user ? <Avatar src={user.photo} /> : <AvatarSkeleton />}
           </Link>
         </span>
 
@@ -53,19 +50,19 @@ export default function Home() {
           text="Crear viaje"
           className="mx-auto mb-6 h-1/6 w-full px-4"
           Option1="Como pasajero"
-          Option2="Como conductor"
+          Option2={user?.driver_id ? 'Como conductor' : null}
           isLink={true}
-          linkOption1="/users/273932t8437/routines/passenger/new"
-          linkOption2="/users/273932t8437/routines/driver/new"
+          linkOption1={NEXT_ROUTES.NEW_ROUTINE_PASSENGER}
+          linkOption2={NEXT_ROUTES.NEW_ROUTINE_DRIVER}
         />
 
-        <span className="justify-between flex w-full space-x-5 px-4 md:px-5">
+        <span className="flex w-full justify-between space-x-5 px-4 md:px-5">
           <SquareRoutinesButton userId={user?.user_id} />
           <SquareChatsButton />
           <SquareRequestsButton />
         </span>
 
-        <span className="justify-between mt-4 mb-2 flex px-4 md:px-5">
+        <span className="mt-4 mb-2 flex justify-between px-4 md:px-5">
           <p className="text-left text-xl font-semibold">Mis próximos viajes</p>
           <Link data-cy="history-link" href={NEXT_ROUTES.RIDE_HISTORY}>
             <p className="text-right text-xl text-turquoise">Historial</p>

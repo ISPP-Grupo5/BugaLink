@@ -12,7 +12,6 @@ urlpatterns = [
         "trips/<int:user_id>/recommendations",
         TripRecommendationViewSet.as_view({"get": "get"}),
     ),
-    path("trips/<int:trip_id>/individualRides", TripViewSet.as_view({"get": "get"})),
     path(
         "trip-requests/<int:pk>/accept/", TripRequestViewSet.as_view({"put": "accept"})
     ),

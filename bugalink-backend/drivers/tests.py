@@ -1,7 +1,12 @@
+import os
+from rest_framework import status
+from users.models import User
+from rest_framework.test import APIClient
+from django.core.files.uploadedfile import SimpleUploadedFile
+
 from django.test import TestCase
 from rest_framework.test import APIClient
 import json
-from .models import User
 from passengers.models import Passenger
 from drivers.models import Driver
 
@@ -54,3 +59,50 @@ class PreferencesTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(response.status_code, 403)
         self.assertIsNotNone(data.get('error'))
+
+class DriverDocsTests(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create(email="test@test.com", first_name="nameTest", last_name="lastNameTest", is_passenger = True, is_driver=True)
+        self.passenger = Passenger.objects.create(user=self.user)
+        self.driver = Driver.objects.create(user=self.user, prefers_talk = False, prefers_music = False, allows_pets = False, allows_smoke = False, )
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+    def test_upload_driver_docs(self):
+        url = "/api/v1/users/" + str(self.passenger.user.pk) + "/driver/docs/"
+
+        dni_path = "drivers/dnis/"
+        dni_front_content = open(dni_path + "dni_front.jpg", 'rb').read()
+        dni_back_content = open(dni_path + "dni_back.jpg", 'rb').read()
+
+        dni_front = SimpleUploadedFile(
+            name='dni_front.jpg',
+            content=dni_front_content,
+            content_type='image/jpeg')
+            
+        dni_back = SimpleUploadedFile(
+            name='dni_back.jpg',
+            content=dni_back_content,
+            content_type='image/jpeg')
+
+        data = {
+            "dni_front": dni_front,
+            "dni_back": dni_back,
+        }
+
+        response = self.client.put(url, data=data)
+        json_data = json.loads(response.content)        
+
+        # Check response status code
+        self.assertEqual(response.status_code, 200)  # Update with the expected status code
+        
+        # Check if driver documents are correctly uploaded
+        self.assertEqual(json_data.get('dni_front').split("/")[-1], "dni_front.jpg")
+        self.assertEqual(json_data.get('dni_back').split("/")[-1], "dni_back.jpg")
+        
+        dni_front.close()
+        dni_back.close()
+        os.remove("files/drivers/dnis/dni_front.jpg")
+        os.remove("files/drivers/dnis/dni_back.jpg")
+

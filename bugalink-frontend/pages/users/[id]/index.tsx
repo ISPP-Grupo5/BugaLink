@@ -4,8 +4,7 @@ import ProfileItems from '@/components/cards/profile';
 import AnimatedLayout from '@/components/layouts/animated';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import useUser from '@/hooks/useUser';
-import useUserTotalRatings from '@/hooks/useUserTotalRatings';
-import useUserTotalRides from '@/hooks/useUserTotalRides';
+import useUserStats from '@/hooks/useUserStats';
 import UserI from '@/interfaces/user';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
@@ -24,11 +23,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default function Profile({ data }) {
+  debugger;
   const userId = data.id;
   const user = useUser(userId).user as UserI;
 
-  const { userTotalRides } = useUserTotalRides(userId);
-  const { userTotalRatings } = useUserTotalRatings(userId);
+  const { stats } = useUserStats(userId);
 
   if (!user) return <div></div>;
   return (
@@ -66,13 +65,13 @@ export default function Profile({ data }) {
             </div>
             <div className="w-full -space-y-1 rounded-lg bg-white p-2 shadow-lg">
               <p className="text-xl font-bold">
-                {userTotalRides ? userTotalRides.total_rides : '—'}
+                {stats ? stats.total_rides : '—'}
               </p>
               <p className="text-sm text-gray">Viajes</p>
             </div>
             <div className="w-full -space-y-1 rounded-lg bg-white p-2 shadow-lg">
               <p className="text-xl font-bold">
-                {userTotalRatings ? `${userTotalRatings.rating} ⭐` : '—'}
+                {stats ? `${stats.rating} ⭐` : '—'}
               </p>
 
               <p className="text-sm text-gray">Valoraciones</p>

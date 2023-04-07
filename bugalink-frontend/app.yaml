@@ -11,7 +11,6 @@ env_variables:
   NEXTAUTH_URL: https://app.bugalink.es
   NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
 
-
 handlers:
   - url: /static
     static_dir: static

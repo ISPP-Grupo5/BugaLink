@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import CityDriver from '/public/assets/CityDriver.svg';
+import { MouseEvent } from 'react';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -16,9 +17,15 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const error = router.query.error;
+  let error = router.query.error;
 
-  const onSubmit = async (e) => {
+  if (error === 'No active account found with the given credentials') {
+    error = 'No se encontró una cuenta activa con las credenciales dadas';
+  }
+
+  const onSubmit = async (
+    e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
+  ) => {
     e.preventDefault();
     setIsLoading(true);
     try {

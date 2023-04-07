@@ -198,15 +198,6 @@ export default function Register() {
                 onClick={handleRegister}
                 disabled={isLoading}
               />
-              {errors &&
-                Object.keys(errors).map((key) => {
-                  return (
-                    <p className="mt-1 text-center text-red" key={key}>
-                      {key}: {errors[key]}
-                    </p>
-                  );
-                })}
-
               <span className="flex flex-col items-center pt-2">
                 <p className="font-light text-gray">
                   ¿Ya tienes una cuenta?{' '}

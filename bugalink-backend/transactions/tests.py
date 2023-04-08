@@ -1,3 +1,4 @@
+import json
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIClient
@@ -43,6 +44,13 @@ class TransactionViewSetTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+            # Cargar response.data y serializer.data como diccionarios
+        response_data = json.loads(response.content)
+
+        # Verificar que los datos de la respuesta sean iguales a los datos del serializador
+        self.assertEqual(response_data[0]["sender"]["id"], self.transaction1.sender.pk)
+        self.assertEqual(response_data[0]["receiver"]["id"], self.transaction1.receiver.pk)
+        
         self.assertEqual(len(response.data), 3) 
 
 

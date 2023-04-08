@@ -47,7 +47,7 @@ class DriverAsUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Driver
-        fields = ("user",)
+        fields = ("id", "user")
 
 
 class UserRatingSerializer(serializers.ModelSerializer):

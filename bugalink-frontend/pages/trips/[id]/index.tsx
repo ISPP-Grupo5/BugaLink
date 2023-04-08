@@ -36,11 +36,13 @@ export default function Details({ data }) {
 
   const user = useSession().data?.user as User;
 
-  const { userStats, isLoadingStats, isErrorStats } = useUserStats(tripId);
   const { sentRequests } = useSentRequests();
-  const { preferences, isLoadingPreferences, isErrorPreferences } =
-    useDriverPreferences(tripId);
   const { trip, isLoading, isError } = useTrip(tripId);
+  const { userStats, isLoadingStats, isErrorStats } = useUserStats(
+    trip?.driver.user.id
+  );
+  const { preferences, isLoadingPreferences, isErrorPreferences } =
+    useDriverPreferences(trip?.driver.id);
   const [time, setTime] = useState<number>(0);
 
   // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje

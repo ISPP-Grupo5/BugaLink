@@ -6,6 +6,7 @@ import NEXT_ROUTES from '@/constants/nextRoutes';
 import useUser from '@/hooks/useUser';
 import useUserStats from '@/hooks/useUserStats';
 import UserI from '@/interfaces/user';
+import { shortenName } from '@/utils/formatters';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import Check from 'public/assets/check.svg';
@@ -27,11 +28,15 @@ export default function Profile({ data }) {
   const user = useUser(userId).user as UserI;
 
   const { userStats } = useUserStats(userId);
+  const isMyProfile = user?.id === userId;
 
   if (!user) return <div></div>;
   return (
     <AnimatedLayout className="flex h-full flex-col overflow-y-scroll">
-      <BackButtonText text="Mi perfil" className="bg-base-origin" />
+      <BackButtonText
+        text={isMyProfile ? 'Mi perfil' : `Perfil de ${user.first_name}`}
+        className="bg-base-origin"
+      />
       <div className="flex h-full flex-col -space-y-8">
         <div className="z-10 rounded-t-3xl text-center">
           <div className="relative mx-auto h-24 w-24 ">
@@ -46,12 +51,14 @@ export default function Profile({ data }) {
             </div>
           </div>
 
-          <p className="pt-4 text-3xl ">
-            {user?.first_name || ''} {user?.last_name || ''}
+          <p className="pt-6 text-3xl">
+            {shortenName(user.first_name, user.last_name)}
           </p>
-          <Link href={NEXT_ROUTES.EDIT_PROFILE(userId)}>
-            <p className="text-md text-gray ">Editar perfil</p>
-          </Link>
+          {isMyProfile && (
+            <Link href={NEXT_ROUTES.EDIT_PROFILE(userId)}>
+              <p className="text-md text-gray ">Editar perfil</p>
+            </Link>
+          )}
           <div className="py-4 text-light-gray">
             <hr></hr>
           </div>
@@ -78,7 +85,7 @@ export default function Profile({ data }) {
           </div>
         </div>
       </div>
-      <ProfileItems />
+      {isMyProfile && <ProfileItems />}
     </AnimatedLayout>
   );
 }

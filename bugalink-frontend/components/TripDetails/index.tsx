@@ -35,9 +35,7 @@ export default function TripDetails({
           {destinationHour}
         </span>
         <TargetPin className="mt-1.5 h-3.5 w-3.5 self-start" />
-        <span className="col-span-6 place-self-start">
-          {destination.repeat(3)}
-        </span>
+        <span className="col-span-6 place-self-start">{destination}</span>
       </div>
       <hr className="mt-3 mb-3 w-full text-border-color" />
     </div>

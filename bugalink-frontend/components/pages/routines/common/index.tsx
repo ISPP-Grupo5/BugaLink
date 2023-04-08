@@ -212,7 +212,7 @@ export default function NewRoutine({
 
   return (
     <AnimatedLayout className="bg-white">
-      <BackButton className="absolute left-2 top-2 bg-base-origin py-3 pr-2 shadow-xl" />
+      <BackButton className="absolute left-2 top-2 bg-base-origin py-3 px-2 shadow-xl" />
       <div className="flex h-full flex-col overflow-y-scroll">
         <div className="h-full min-h-[30%]">
           {originCoords && destinationCoords ? (

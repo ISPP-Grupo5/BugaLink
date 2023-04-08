@@ -1,3 +1,4 @@
+import InformativeCard from '@/components/cards/informative';
 import TripCard from '@/components/cards/recommendation';
 import TripCardSkeleton from '@/components/skeletons/TripCard';
 import NEXT_ROUTES from '@/constants/nextRoutes';
@@ -5,6 +6,7 @@ import useRecommendedTrips from '@/hooks/useRecommendedTrips';
 import TripI from '@/interfaces/trip';
 import { formatDatetime } from '@/utils/formatters';
 import { SwipeableDrawer } from '@mui/material';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 type Props = {
@@ -89,6 +91,23 @@ const RecommendationsList = () => {
               className="w-full rounded-md bg-white outline outline-1 outline-light-gray"
             />
           ))}
+      {trips && trips.length === 0 && (
+        <div className="p-2">
+          <InformativeCard className="px-2">
+            Vaya, no hay nada por aquí.
+            <br />
+            {
+              <Link
+                className="font-normal text-turquoise"
+                href={NEXT_ROUTES.NEW_ROUTINE_PASSENGER}
+              >
+                Crea una rutina
+              </Link>
+            }{' '}
+            para recibir sugerencias personalizadas.
+          </InformativeCard>
+        </div>
+      )}
     </div>
   );
 };

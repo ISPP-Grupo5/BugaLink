@@ -1,5 +1,6 @@
 import Avatar from '@/components/avatar';
 import { BackButtonText } from '@/components/buttons/Back';
+import InformativeCard from '@/components/cards/informative';
 import AnimatedLayout from '@/components/layouts/animated';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import useConversationList from '@/hooks/useConversationList';
@@ -23,6 +24,9 @@ export default function ConversationList() {
             conversation={conversation}
           />
         ))}
+        {conversations.length === 0 && (
+          <InformativeCard>Todavía no tienes conversaciones</InformativeCard>
+        )}
       </div>
     </AnimatedLayout>
   );

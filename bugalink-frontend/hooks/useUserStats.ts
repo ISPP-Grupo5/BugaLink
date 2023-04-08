@@ -2,7 +2,7 @@ import UserStatsI from '@/interfaces/userStats';
 import { axiosAuth } from '@/lib/axios';
 import { useEffect, useState } from 'react';
 
-export default function useConversation(id: string | number | undefined) {
+export default function useUserStats(id: string | number | undefined) {
   const [userStats, setUserStats] = useState<UserStatsI>();
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);

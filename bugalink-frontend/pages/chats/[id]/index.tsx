@@ -1,6 +1,7 @@
 import Avatar from '@/components/avatar';
 import { BackButton } from '@/components/buttons/Back';
 import AnimatedLayout from '@/components/layouts/animated';
+import useChatSocket from '@/hooks/useChatSocket';
 import useConversation from '@/hooks/useConversation';
 import MessageI from '@/interfaces/message';
 import { User } from 'next-auth';
@@ -8,35 +9,19 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Arrow from 'public/assets/arrow-right.svg';
 import OriginPin from 'public/assets/origen-pin.svg';
-import { useEffect, useState } from 'react';
-import useWebSocket from 'react-use-websocket';
+import { useState } from 'react';
 import DestinationPin from '/public/assets/map-pin.svg';
 
 export default function Conversation() {
-  const id = useRouter().query.id as string;
+  const chatId = useRouter().query.id as string;
   const { data } = useSession();
 
   const user = data?.user as User;
 
-  const { conversation, isLoading, isError } = useConversation(id);
-  const [socketUrl, setSocketUrl] = useState<string>(
-    'ws://127.0.0.1:8000/ws/chat/1/?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjg5NDY3Mjc4LCJqdGkiOiIyNDIxYWFlZTlhY2Y0M2I5YmVlYWIxMjg1YTkxODVkOSIsInVzZXJfaWQiOjEsInBhc3Nlbmdlcl9pZCI6MSwiZHJpdmVyX2lkIjoxLCJmaXJzdF9uYW1lIjoiRmVkZXJpY28iLCJsYXN0X25hbWUiOiJkZSBsb3MgUGFsb3RlcyIsInBob3RvIjpudWxsLCJ2ZXJpZmllZCI6ZmFsc2V9.iBjwhHkcgBWjTwxu6WQMGUgHSKxEoU4RbOOIkB4T9jI'
-  );
+  const { conversation, isLoading, isError } = useConversation(chatId);
+  const { messageHistory, sendJsonMessage } = useChatSocket(chatId, user);
 
-  useEffect(() => {
-    if (id && user) {
-      setSocketUrl(`ws://localhost:8000/ws/chat/${id}/?token=${user?.access}`);
-    }
-  }, [id, user]);
-
-  const { sendMessage, lastMessage } = useWebSocket(socketUrl);
-  const [messageHistory, setMessageHistory] = useState([]);
-
-  useEffect(() => {
-    if (lastMessage !== null && !messageHistory.includes(lastMessage)) {
-      setMessageHistory((prev) => [lastMessage, ...prev]);
-    }
-  }, [lastMessage, setMessageHistory]);
+  const allMessages = [...messageHistory, ...(conversation?.message_set || [])];
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error</p>;
@@ -48,19 +33,7 @@ export default function Conversation() {
         {/* This is a bottom spacer between the most recent message bubble and the message input bar */}
         <div className="h-6 w-full">&nbsp;</div>{' '}
         {/* This is the list of messages that come from the websocket connection (real-time, happening now, updated on the fly) */}
-        {messageHistory.map((payload: any) => {
-          // They come as a stringified JSON object, so we need to parse it into a Message
-          const message = JSON.parse(payload.data) as MessageI;
-          return (
-            <MessageBubble
-              key={message.id}
-              message={message}
-              isMine={message.sender === user.user_id}
-            />
-          );
-        })}
-        {/* This is the list of messages that are stored in the database (old ones) */}
-        {conversation?.message_set.map((message: MessageI) => (
+        {allMessages.map((message: MessageI) => (
           <MessageBubble
             key={message.id}
             message={message}
@@ -68,7 +41,7 @@ export default function Conversation() {
           />
         ))}
       </div>
-      <TextInput sendMessage={sendMessage} />
+      <TextInput sendJsonMessage={sendJsonMessage} />
     </AnimatedLayout>
   );
 }
@@ -140,10 +113,10 @@ const MessageBubble = ({
   );
 };
 
-const TextInput = ({ sendMessage }) => {
+const TextInput = ({ sendJsonMessage }) => {
   const handleSubmitMessage = () => {
     if (message.length === 0) return;
-    sendMessage(JSON.stringify({ message }));
+    sendJsonMessage({ message });
     setMessage('');
   };
 

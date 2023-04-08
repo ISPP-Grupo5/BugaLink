@@ -18,7 +18,7 @@ class PassengerSerializer(serializers.ModelSerializer):
     def get_routines(self, obj) -> PassengerRoutineSerializer(many=True):
         routines = obj.routines.all()
         return PassengerRoutineSerializer(routines, many=True).data
-
+    
     def get_trips(self, obj) -> TripSerializer(many=True):
         # Get the trips where the passenger is in the list of passengers
         trip_requests = TripRequest.objects.filter(passenger=obj)

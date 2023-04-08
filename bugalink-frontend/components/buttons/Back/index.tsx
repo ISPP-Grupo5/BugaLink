@@ -47,7 +47,7 @@ export function BackButtonText({
       }
     >
       <button
-        onClick={() => router.back()}
+        onClick={router.back}
         className={'top-0 left-0 w-full text-left ' + className}
       >
         <svg

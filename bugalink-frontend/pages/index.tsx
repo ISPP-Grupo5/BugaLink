@@ -15,6 +15,7 @@ import { useState } from 'react';
 import MagnifyingGlass from '/public/icons/Vista-Principal/glass.svg';
 import Avatar from '@/components/avatar';
 import InformativeCard from '@/components/cards/informative';
+import BookmarkTripList from '@/components/bookmarks/list';
 
 export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -71,15 +72,11 @@ export default function Home() {
         </span>
         <UpcomingTripsCarousel />
 
-        <span className="mt-4 flex flex-col px-4 md:px-5">
+        <span className="mt-6 flex flex-col px-4 md:px-5">
           <p className="mb-2 text-left text-xl font-semibold">
             Mis viajes guardados
           </p>
-          <InformativeCard>
-            ¿Has encontrado un viaje que te interesa?
-            <br />
-            ¡Guárdalo y aparecerá aquí!
-          </InformativeCard>
+          <BookmarkTripList />
         </span>
       </div>
       <RecommendationsDrawer open={drawerOpen} setOpen={setDrawerOpen} />

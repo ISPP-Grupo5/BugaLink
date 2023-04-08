@@ -79,13 +79,14 @@ const RecommendationsList = () => {
           ))
         : trips.map((trip: TripI) => (
             <TripCard
+              isHistory
               key={trip.id}
               rating={0}
               name={trip.driver.user.first_name}
               avatar={trip.driver.user.photo}
               origin={trip.driver_routine.origin.address}
               destination={trip.driver_routine.destination.address}
-              date={formatDatetime(trip.departure_datetime)}
+              date={trip.departure_datetime}
               price={Number.parseFloat(trip.driver_routine.price)}
               href={NEXT_ROUTES.TRIP_DETAILS(trip.id)}
               className="w-full rounded-md bg-white outline outline-1 outline-light-gray"

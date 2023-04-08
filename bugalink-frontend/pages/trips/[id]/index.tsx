@@ -17,6 +17,7 @@ import { useState } from 'react';
 import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
 import { User } from 'next-auth';
+import BookmarkTripButton from '@/components/bookmarks/button';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
@@ -65,7 +66,10 @@ export default function Details({ data }) {
   return (
     <AnimatedLayout>
       <div className="flex h-screen flex-col items-center justify-center">
-        <BackButtonText text="Detalles del viaje" />
+        <span className="flex w-full items-center justify-between bg-white px-2">
+          <BackButtonText text="Detalles del viaje" />
+          <BookmarkTripButton className="mr-2 scale-125" trip={trip} />
+        </span>
         <div className="h-full w-full overflow-y-scroll bg-white px-5 py-2">
           <ProfileHeader user={userStats} />
           {/* Origin and target destinations */}

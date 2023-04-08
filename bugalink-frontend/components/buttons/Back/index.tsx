@@ -1,15 +1,16 @@
 import { useRouter } from 'next/router';
+import cn from 'classnames';
 
 type BackButtonProps = {
   className?: string;
 };
 
-export function BackButton({ className = '' }: BackButtonProps) {
+export function BackButton({ className }: BackButtonProps) {
   const router = useRouter();
   return (
     <button
       onClick={() => router.back()}
-      className={'z-50 rounded-full pl-3 ' + className}
+      className={cn('z-50 rounded-full', className)}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

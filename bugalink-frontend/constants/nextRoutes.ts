@@ -20,6 +20,8 @@ const NEXT_ROUTES = {
   CHECK_DRIVER: (userId) => `/users/${userId}/driverCheck`,
   SEARCH_RESULTS: '/search/result',
   PENDING_REQUESTS: '/requests/pending',
+  CHATS: '/chats',
+  CHAT: (chatId) => `/chats/${chatId}`,
 };
 
 export default NEXT_ROUTES;

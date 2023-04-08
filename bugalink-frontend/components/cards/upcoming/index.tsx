@@ -2,7 +2,6 @@ import Avatar from '@/components/avatar';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import TripI from '@/interfaces/trip';
 import TripRequestI from '@/interfaces/tripRequest';
-import UserI from '@/interfaces/user';
 import { formatDatetime } from '@/utils/formatters';
 import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';

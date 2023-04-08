@@ -1,12 +1,10 @@
 from requests import Response
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
-
 from drivers.models import Driver
 from users.models import User
 from drivers.serializers import DriverSerializer, PreferencesSerializer
 from rest_framework.response import Response
-
 
 from . import models as m
 
@@ -88,4 +86,3 @@ class DriverPreferencesView(mixins.UpdateModelMixin,
             )
         else:
             return self.update(request, *args, **kwargs)
-

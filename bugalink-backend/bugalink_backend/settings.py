@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "trips",
     "users",
     "chats",
+    "transactions",
     # Third-party packages
     "drf_spectacular",
     "rest_framework",

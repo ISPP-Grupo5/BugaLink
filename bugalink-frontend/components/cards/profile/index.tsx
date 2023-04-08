@@ -73,22 +73,19 @@ export default function ProfileItems() {
   };
 
   return (
-    <div className="flex h-full w-full flex-col items-start justify-between gap-y-4 rounded-t-3xl bg-white p-6 text-start text-xl">
-      <Entry Icon={<Address />}>
-        <span>Direcciones</span>
-      </Entry>
+    <div className="flex h-min w-full flex-col items-start justify-end rounded-t-3xl bg-white px-6 py-3 text-start text-xl">
       <Entry Icon={<Wallet />}>
         <Link href={NEXT_ROUTES.WALLET}>Mi cartera</Link>
       </Entry>
       <Entry onClick={() => setDrawerPreferences(true)} Icon={<Preferences />}>
         <span>Preferencias</span>
       </Entry>
-      <Entry Icon={<Carkey className="h-10 w-10" />}>
-        <Link href={NEXT_ROUTES.CHECK_DRIVER(user?.user_id)}>
-          Hazte Conductor
-        </Link>
-      </Entry>
-      <hr className="w-full text-light-gray" />
+      {!user?.is_validated_driver && (
+        <Entry Icon={<Carkey className="h-10 w-10" />}>
+          <Link href={NEXT_ROUTES.BECOME_DRIVER}>Hazte Conductor</Link>
+        </Entry>
+      )}
+      <hr className="my-2 w-full text-light-gray" />
       <Entry Icon={<Help />}>
         <a href="mailto:soporte@bugalink.es">Ayuda</a>
       </Entry>
@@ -156,7 +153,7 @@ function Entry({
 }) {
   return (
     <div
-      className={'flex w-full items-center justify-between ' + className}
+      className={'flex w-full items-center justify-between py-3 ' + className}
       onClick={onClick}
     >
       <span className="flex items-center gap-x-2">

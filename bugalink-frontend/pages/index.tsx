@@ -46,20 +46,22 @@ export default function Home() {
           </Link>
         </span>
 
-        <OptionButton
-          text="Crear viaje"
-          className="mx-auto mb-6 h-1/6 w-full px-4"
-          Option1="Como pasajero"
-          Option2={user?.driver_id ? 'Como conductor' : null}
-          isLink={true}
-          linkOption1={NEXT_ROUTES.NEW_ROUTINE_PASSENGER}
-          linkOption2={NEXT_ROUTES.NEW_ROUTINE_DRIVER}
-        />
+        {user?.is_validated_driver && (
+          <OptionButton
+            text="Crear viaje"
+            className="mx-auto mb-6 h-1/6 w-full px-4"
+            Option1="Como pasajero"
+            Option2={'Como conductor'}
+            isLink={true}
+            linkOption1={NEXT_ROUTES.NEW_ROUTINE_PASSENGER}
+            linkOption2={NEXT_ROUTES.NEW_ROUTINE_DRIVER}
+          />
+        )}
 
         <span className="flex w-full justify-between space-x-5 px-4 md:px-5">
           <SquareRoutinesButton userId={user?.user_id} />
           <SquareChatsButton />
-          <SquareRequestsButton />
+          <SquareRequestsButton disabled={!user?.is_validated_driver} />
         </span>
 
         <span className="mt-4 mb-2 flex justify-between px-4 md:px-5">

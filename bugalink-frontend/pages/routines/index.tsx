@@ -149,7 +149,7 @@ const AddRoutineMenu = ({ user }: { user: User }) => {
         >
           <MenuItem onClick={handleClose}>Como pasajero</MenuItem>
         </Link>
-        {user?.driver_id !== undefined && (
+        {user?.is_validated_driver && (
           <Link
             data-cy="new-driver-routine"
             href={NEXT_ROUTES.NEW_ROUTINE_DRIVER}

@@ -2,10 +2,9 @@ from allauth.account.utils import setup_user_email
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from passengers.models import Passenger
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
-from passengers.models import Passenger
 
 
 # https://dj-rest-auth.readthedocs.io/en/latest/configuration.html#register-serializer
@@ -60,5 +59,5 @@ class EnrichedTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["last_name"] = user.last_name
         token["photo"] = user.photo.url if user.photo else None
         token["verified"] = user.verified
-        token["driver_verified"] = user.is_verified_driver
+        token["is_validated_driver"] = user.is_validated_driver
         return token

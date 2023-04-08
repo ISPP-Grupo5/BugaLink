@@ -81,6 +81,15 @@ class UserViewSet(
         user.set_unusable_password()
         user.save()
 
+        # Delete the user's documents if he was also a driver
+        driver = Driver.objects.filter(user=user).first()
+        if driver:
+            driver.dni_front.delete()
+            driver.dni_back.delete()
+            driver.driver_license.delete()
+            driver.sworn_declaration.delete()
+            driver.save()
+
         # Get the email entry in the table account_emailaddress and anonymize that email too
 
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -19,26 +19,9 @@ export default function RatingScreen() {
   const passengerId = 2; //TODO: change this to the passenger's id
   const individualRideId = 1; //TODO: change this to the individual ride id
   const userId = 2; //TODO: change this to the user id
-  let selectedButtonsText = '';
   
 
   const handleSubmit = async () => {
-    selectedButtonsText = '';
-    if (knewEachOther) {
-      selectedButtonsText += ' Ya nos conocíamos de antes';
-    }
-    if (goodConduction && knewEachOther ) {
-      selectedButtonsText += ', Buena conducción';
-    }else if(goodConduction && !knewEachOther ){
-      selectedButtonsText += 'Buena conducción';
-    }
-    if (friendlyDriver && (knewEachOther || goodConduction)){
-      selectedButtonsText += ', Conductor agradable';
-    }else if(friendlyDriver && (!knewEachOther && !goodConduction)){
-      selectedButtonsText += 'Conductor agradable';
-    }
-    console.log(selectedButtonsText);
-
     const data = {
       rating_type: 'driver',
       driver: driverId,
@@ -46,7 +29,9 @@ export default function RatingScreen() {
       IndividualRide: individualRideId,
       user_id: userId,
       rating: rating,
-      comment: selectedButtonsText,
+      is_good_driver: friendlyDriver,
+      is_pleasant_driver: goodConduction,
+      already_known: knewEachOther,
     };
     
     // transform to asnyc await

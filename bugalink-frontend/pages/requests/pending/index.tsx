@@ -17,7 +17,10 @@ export default function PendingRequests() {
         {isLoading || isError
           ? [1, 2, 3].map((i) => <RequestCardSkeleton key={i} />)
           : pendingRequests?.map((request: TripRequestI) => (
-              <Link key={request.id} href={NEXT_ROUTES.ACCEPT_RIDE(request.id)}>
+              <Link
+                key={request.id}
+                href={NEXT_ROUTES.ACCEPT_TRIP_REQUEST(request.id)}
+              >
                 <RequestCard
                   data-cy="request-accept"
                   key={request.id}

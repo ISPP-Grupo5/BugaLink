@@ -36,7 +36,7 @@ export default function RequestCard({ request, className = '' }: Props) {
         note={request.note}
         date={formatDatetime(request.trip.departure_datetime)}
         avatar={user?.photo}
-        href={NEXT_ROUTES.ACCEPT_RIDE(request.id)}
+        href={NEXT_ROUTES.ACCEPT_TRIP_REQUEST(request.id)}
       />
     </div>
   );

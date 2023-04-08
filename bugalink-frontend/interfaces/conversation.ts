@@ -38,12 +38,17 @@
 // }
 
 import MessageI from './message';
+import TripI from './trip';
 import UserI from './user';
 
 type ConversationI = {
+  id: number;
   initiator: UserI;
   receiver: UserI;
   message_set: MessageI[];
+  // if the conversation is between two passengers,
+  // this will be the most recent trip they shared
+  most_recent_trip?: TripI;
 };
 
 export default ConversationI;

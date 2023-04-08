@@ -8,20 +8,19 @@ const NEXT_ROUTES = {
   RECHARGE_CREDIT: '/wallet/recharge',
   WITHDRAW_CREDIT: '/wallet/withdraw',
   MY_ROUTINES: `/routines`,
-  RIDE_HISTORY: '/history',
-  RIDE_DETAILS: (rideId, requested = false) =>
-    `/ride/${rideId}/details?requested=${requested}`,
-  RIDE_MAP: (rideId) => `/ride/${rideId}/map`,
-  RIDE_PAYMENT: (rideId) => `/ride/${rideId}/pay`,
-  RATING_RIDE: (userId) => `/users/${userId}/rating/new`,
+  TRIP_HISTORY: '/history',
+  TRIP_DETAILS: (tripId) => `/trips/${tripId}`,
+  TRIP_MAP: (tripId) => `/trips/${tripId}/map`,
+  TRIP_PAYMENT: (tripId) => `/trips/${tripId}/pay`,
+  RATING_TRIP: (userId) => `/users/${userId}/rating/new`,
   NEW_ROUTINE_DRIVER: '/routines/driver/new',
   NEW_ROUTINE_PASSENGER: '/routines/passenger/new',
-  ACCEPT_RIDE: (rideId) => `/request/${rideId}/accept`,
+  ACCEPT_TRIP_REQUEST: (tripId) => `/requests/${tripId}`,
   CHECK_DRIVER: (userId) => `/users/${userId}/driverCheck`,
   SEARCH_RESULTS: '/search/result',
   PENDING_REQUESTS: '/requests/pending',
-  CHATS: '/chats',
-  CHAT: (chatId) => `/chats/${chatId}`,
+  CHAT_LIST: '/chats',
+  CHAT: (userId) => `/users/${userId}/chat`,
 };
 
 export default NEXT_ROUTES;

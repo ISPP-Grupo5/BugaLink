@@ -19,7 +19,7 @@ export default function ConversationList() {
       <div className="flex flex-col space-y-6 overflow-y-scroll py-3">
         {conversations.map((conversation: ConversationPreviewI) => (
           <ConversationListItem
-            key={conversation.last_message.id}
+            key={conversation.initiator.email + conversation.receiver.email}
             conversation={conversation}
           />
         ))}
@@ -42,16 +42,20 @@ const ConversationListItem = ({ conversation }) => {
           <p className="truncate text-xl font-semibold">
             {shortenName(receiver.first_name, receiver.last_name)}
           </p>
-          <p className="text-lg text-gray">{last_message.text}</p>
+          <p className="text-lg text-gray">
+            {last_message?.text || 'Todavía no hay mensajes'}
+          </p>
         </div>
       </span>
 
-      <p className="text-gray">
-        {new Date(last_message.timestamp).toLocaleTimeString('es-ES', {
-          hour: '2-digit',
-          minute: '2-digit',
-        })}
-      </p>
+      {last_message && (
+        <p className="text-gray">
+          {new Date(last_message.timestamp).toLocaleTimeString('es-ES', {
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+        </p>
+      )}
     </Link>
   );
 };

@@ -5,7 +5,7 @@ from . import views
 urlpatterns = [
     path("conversations/start/", views.start_convo, name="start_convo"),
     path(
-        "conversations/<int:convo_id>/",
+        "users/<int:user_id>/conversation/",
         views.get_conversation,
         name="get_conversation",
     ),

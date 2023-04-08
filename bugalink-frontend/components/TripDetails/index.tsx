@@ -1,6 +1,5 @@
-import SourcePin from '/public/assets/source-pin.svg';
 import TargetPin from '/public/assets/map-mark.svg';
-import Dots from '/public/assets/dots.svg';
+import SourcePin from '/public/assets/source-pin.svg';
 
 type Params = {
   date: string;
@@ -21,26 +20,24 @@ export default function TripDetails({
     <div>
       {/* Details */}
       <div className="py-2">
-        <p className="text-xs">{date}</p>
+        <p className="text-md">{date}</p>
       </div>
-      <div className="mt-2 grid grid-cols-8 grid-rows-5 items-center justify-items-center text-sm">
+      <div className="text-md mt-2 grid grid-cols-8 grid-rows-1 items-center justify-items-center">
         <span className="row-span-2 self-start justify-self-end font-bold">
           {originHour}
         </span>
-        <div className=" row-span-5 flex h-full w-full flex-col items-center justify-between pt-1 pb-6">
-          <SourcePin />
-          <Dots className="h-10" />
-          <TargetPin />
-        </div>
-        <span className="col-span-6 row-span-2">{origin}</span>
-
-        <hr className="col-span-6 w-full text-border-color" />
-
+        <SourcePin className="mt-1.5 h-3.5 w-3.5 self-start" />
+        <span className="col-span-6">{origin}</span>
+      </div>
+      <hr className="col-span-7 my-2 w-full text-border-color" />
+      <div className="text-md mt-2 grid grid-cols-8 grid-rows-1 items-center justify-items-center">
         <span className="row-span-2 self-start justify-self-end font-bold">
           {destinationHour}
         </span>
-
-        <span className="col-span-6 row-span-2">{destination}</span>
+        <TargetPin className="mt-1.5 h-3.5 w-3.5 self-start" />
+        <span className="col-span-6 place-self-start">
+          {destination.repeat(3)}
+        </span>
       </div>
       <hr className="mt-3 mb-3 w-full text-border-color" />
     </div>

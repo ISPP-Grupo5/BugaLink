@@ -1,7 +1,6 @@
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
 from trips.models import Trip, TripRequest
 from trips.serializers import (
     TripRequestCreateSerializer,
@@ -36,6 +35,7 @@ class TripViewSet(
 
 
 class TripRequestViewSet(
+    mixins.RetrieveModelMixin,
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
     viewsets.GenericViewSet,
@@ -49,6 +49,9 @@ class TripRequestViewSet(
                 TripRequestCreateSerializer  # TODO: use different serializer for GET?
             )
         return super().get_serializer_class()
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
     # POST /trips/<id>/request/ (For a passenger to request a trip)
     def create(self, request, *args, **kwargs):

@@ -3,16 +3,20 @@ import { BackButtonText } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import AnimatedLayout from '@/components/layouts/animated';
 import MapPreview from '@/components/maps/mapPreview';
+import NEXT_ROUTES from '@/constants/nextRoutes';
+import { WEEK_DAYS } from '@/constants/weekDays';
 import useDriverPreferences from '@/hooks/useDriverPreferences';
-import useReviews from '@/hooks/useReviews';
+import useSentRequests from '@/hooks/useSentRequests';
 import useTrip from '@/hooks/useTrip';
+import useUserStats from '@/hooks/useUserStats';
 import { GetServerSideProps } from 'next';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
-import NEXT_ROUTES from '@/constants/nextRoutes';
+import { User } from 'next-auth';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
@@ -27,25 +31,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default function Details({ data }) {
-  const { reviews, isLoadingReviews, isErrorReviews } = useReviews(data.id);
-  const { preferences, isLoadingPreferences, isErrorPreferences } =
-    useDriverPreferences(data.id);
-  const { trip, isLoading, isError } = useTrip(data.id);
   const router = useRouter();
-  const { requested } = router.query;
-  const [time, setTime] = useState<number>(0);
+  const tripId = data.id;
 
-  // TODO: use a dictionary (object) for this mapping instead of two arrays and a function
-  const daysOfWeek = [
-    'lunes',
-    'martes',
-    'miercoles',
-    'jueves',
-    'viernes',
-    'sabados',
-    'domingos',
-  ];
-  const daysOfWeekAPI = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const user = useSession().data?.user as User;
+
+  const { userStats, isLoadingStats, isErrorStats } = useUserStats(tripId);
+  const { sentRequests } = useSentRequests();
+  const { preferences, isLoadingPreferences, isErrorPreferences } =
+    useDriverPreferences(tripId);
+  const { trip, isLoading, isError } = useTrip(tripId);
+  const [time, setTime] = useState<number>(0);
 
   // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
   const startTime = new Date(trip?.departure_datetime);
@@ -53,27 +49,23 @@ export default function Details({ data }) {
   endTime.setMinutes(endTime.getMinutes() + time);
   const origin = trip?.driver_routine.origin;
   const destination = trip?.driver_routine.destination;
-  const fullName = `${trip?.driver.user.first_name} ${trip?.driver.user.last_name}`;
 
-  if (isLoading || isLoadingReviews || isLoadingPreferences)
+  const alreadyRequestedTrip = sentRequests?.find(
+    (request) => request.trip.id.toString() === tripId
+  );
+
+  const iAmTheDriver = userStats?.id === user?.user_id;
+
+  if (isLoading || isLoadingStats || isLoadingPreferences)
     return <p>Loading...</p>; // TODO: make skeleton
-  if (isError || isErrorReviews || isErrorPreferences) return <p>Error</p>; // TODO: make error message
-
-  const dayRoutineText =
-    daysOfWeek[daysOfWeekAPI.indexOf(trip?.driver_routine.day_of_week)];
+  if (isError || isErrorStats || isErrorPreferences) return <p>Error</p>; // TODO: make error message
 
   return (
     <AnimatedLayout>
       <div className="flex h-screen flex-col items-center justify-center">
         <BackButtonText text="Detalles del viaje" />
         <div className="h-full w-full overflow-y-scroll bg-white px-5 py-2">
-          {/* Profile header */}
-          <ProfileHeader
-            name={fullName}
-            rating={reviews.rating}
-            numberOfRatings={reviews.number_ratings}
-            photo={trip?.driver.user.photo}
-          />
+          <ProfileHeader user={userStats} />
           {/* Origin and target destinations */}
           <div className="grid grid-cols-2 gap-2 py-2 text-sm">
             <div>
@@ -94,6 +86,7 @@ export default function Details({ data }) {
           {/* Map preview */}
           {origin && destination && (
             <MapPreview
+              tripId={tripId}
               originCoords={{ lat: origin.latitude, lng: origin.longitude }}
               destinationCoords={{
                 lat: destination.latitude,
@@ -107,7 +100,7 @@ export default function Details({ data }) {
           <div className="py-2">
             <p className="text-sm text-gray">Fecha y hora</p>
             <p className="text-md text-justify font-medium">
-              📅 Todos los {dayRoutineText} a las{' '}
+              📅 Todos los {WEEK_DAYS[trip?.driver_routine.day_of_week]} a las{' '}
               {/*TODO: el toLocaleString creo que está sumando dos horas, REVISAR */}
               {startTime.toLocaleString('es-ES', {
                 hour: '2-digit',
@@ -117,6 +110,7 @@ export default function Details({ data }) {
           </div>
           <div className="py-2">
             <p className="text-sm text-gray">Sobre el conductor</p>
+            {/* TODO: coger estos datos de las constantes de preferences.ts */}
             <p className="text-md text-justify font-medium">
               {preferences?.prefers_talk
                 ? '🗣 Prefiero hablar durante el viaje'
@@ -179,13 +173,17 @@ export default function Details({ data }) {
               </p>
             </div>
           </div>
-          {requested === 'false' && (
+          {!iAmTheDriver && !alreadyRequestedTrip && (
             <div className="flex justify-center">
               <Link
-                href={NEXT_ROUTES.RIDE_PAYMENT(data.id)}
+                href={NEXT_ROUTES.TRIP_PAYMENT(tripId)}
                 className="flex w-full justify-center"
               >
-                <CTAButton className="mt-4 w-full" text="PAGAR" />
+                <CTAButton
+                  className="mt-4 w-full"
+                  text="SOLICITAR"
+                  onClick={() => router.push(NEXT_ROUTES.TRIP_PAYMENT(tripId))}
+                />
               </Link>
             </div>
           )}

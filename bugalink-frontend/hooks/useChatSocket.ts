@@ -2,7 +2,7 @@ import { User } from 'next-auth';
 import { useCallback, useEffect, useState } from 'react';
 import useWebSocket from 'react-use-websocket';
 
-export default function useChatSocket(chatId: string, user: User) {
+export default function useChatSocket(chatId: string | number, user: User) {
   const getSocketUrl = useCallback(() => {
     return new Promise<string>((resolve) => {
       if (user?.access && chatId) {

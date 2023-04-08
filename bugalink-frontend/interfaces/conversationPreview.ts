@@ -36,7 +36,7 @@ type ConversationPreviewI = {
   id: number;
   initiator: UserI;
   receiver: UserI;
-  last_message: MessageI;
+  last_message: MessageI | null;
 };
 
 export default ConversationPreviewI;

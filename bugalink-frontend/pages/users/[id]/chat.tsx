@@ -1,11 +1,15 @@
 import Avatar from '@/components/avatar';
 import { BackButton } from '@/components/buttons/Back';
 import AnimatedLayout from '@/components/layouts/animated';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 import useChatSocket from '@/hooks/useChatSocket';
 import useConversation from '@/hooks/useConversation';
+import ConversationI from '@/interfaces/conversation';
 import MessageI from '@/interfaces/message';
+import { shortenName } from '@/utils/formatters';
 import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Arrow from 'public/assets/arrow-right.svg';
 import OriginPin from 'public/assets/origen-pin.svg';
@@ -13,13 +17,17 @@ import { useState } from 'react';
 import DestinationPin from '/public/assets/map-pin.svg';
 
 export default function Conversation() {
-  const chatId = useRouter().query.id as string;
+  const router = useRouter();
   const { data } = useSession();
 
+  const userId = router.query.id as string;
   const user = data?.user as User;
 
-  const { conversation, isLoading, isError } = useConversation(chatId);
-  const { messageHistory, sendJsonMessage } = useChatSocket(chatId, user);
+  const { conversation, isLoading, isError } = useConversation(userId);
+  const { messageHistory, sendJsonMessage } = useChatSocket(
+    conversation?.id,
+    user
+  );
 
   const allMessages = [...messageHistory, ...(conversation?.message_set || [])];
 
@@ -28,7 +36,7 @@ export default function Conversation() {
 
   return (
     <AnimatedLayout className="flex flex-col justify-between bg-white px-4">
-      <ChatHeader />
+      <ChatHeader user={user} conversation={conversation} />
       <div className="-mb-6 flex h-full max-h-full flex-col-reverse space-y-3 overflow-y-scroll py-3">
         {/* This is a bottom spacer between the most recent message bubble and the message input bar */}
         <div className="h-6 w-full">&nbsp;</div>{' '}
@@ -46,35 +54,56 @@ export default function Conversation() {
   );
 }
 
-const ChatHeader = () => {
+const ChatHeader = ({
+  user,
+  conversation,
+}: {
+  user: User;
+  conversation: ConversationI;
+}) => {
+  // We have to detect if we are the initiator or the receiver of the conversation
+  const otherUser =
+    conversation?.receiver.id === user.user_id
+      ? conversation.initiator
+      : conversation.receiver;
+
   return (
-    <div className="sticky -mx-4 flex flex-col bg-green px-6 py-8 text-white">
-      <span className="mb-4 flex justify-between">
+    <div className="sticky -mx-4 flex flex-col bg-green px-6 py-5 text-white">
+      <span className="flex justify-between">
         <span className="flex items-center space-x-2 text-xl">
           <BackButton />
-          <p>Chat con...</p>
+          {otherUser && (
+            <p>
+              Chat con {shortenName(otherUser.first_name, otherUser.last_name)}
+            </p>
+          )}
         </span>
-        <span className="flex flex-row -space-x-4">
-          {[1, 2, 3].map((i, index) => (
-            <Avatar
-              key={i}
-              style={{ zIndex: 3 - index }}
-              className="h-9 w-9 outline outline-4 -outline-offset-1 outline-green"
-            />
-          ))}
+        <Link
+          href={NEXT_ROUTES.PROFILE(otherUser.id)}
+          className="flex flex-row -space-x-4"
+        >
+          <Avatar
+            src={otherUser?.photo}
+            className="h-12 w-12 outline outline-4 -outline-offset-1 outline-green"
+          />
+        </Link>
+      </span>
+      {conversation.most_recent_trip && (
+        <span className="mt-4 grid grid-cols-2 gap-2">
+          <Entry title="Origen">
+            <OriginPin className="aspect-square flex-none scale-125 text-white" />
+            <p className="truncate">
+              {conversation.most_recent_trip.driver_routine.origin}
+            </p>
+          </Entry>
+          <Entry title="Destino">
+            <DestinationPin className="aspect-square flex-none translate-y-0.5 scale-125 text-pale-green" />
+            <p className="truncate">
+              {conversation.most_recent_trip.driver_routine.destination}
+            </p>
+          </Entry>
         </span>
-      </span>
-      <span className="grid grid-cols-2 gap-2">
-        <Entry title="Origen">
-          <OriginPin className="aspect-square flex-none scale-125 text-white" />
-          <p className="truncate">Plaza de Armas</p>
-        </Entry>
-        <Entry title="Destino">
-          {/* Origin svg */}
-          <DestinationPin className="aspect-square flex-none translate-y-0.5 scale-125 text-pale-green" />
-          <p className="truncate">Centro comercial Lagoh</p>
-        </Entry>
-      </span>
+      )}
     </div>
   );
 };

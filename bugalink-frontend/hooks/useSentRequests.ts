@@ -4,18 +4,17 @@ import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import useSWR from 'swr';
 
-export default function usePendingRequests() {
+export default function useSentRequests() {
   const { data: userData } = useSession();
   const user = userData?.user as User;
 
   const { data, error, isLoading } = useSWR(
-    user &&
-      `/users/${user.user_id}/trip-requests/?requestStatus=PENDING&role=driver`,
+    user && `/users/${user.user_id}/trip-requests/?role=passenger`,
     fetcherAuth
   );
 
   return {
-    pendingRequests: data as TripRequestI[],
+    sentRequests: data as TripRequestI[],
     isLoading,
     isError: error,
   };

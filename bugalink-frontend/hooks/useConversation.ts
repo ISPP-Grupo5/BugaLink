@@ -2,16 +2,16 @@ import ConversationI from '@/interfaces/conversation';
 import { axiosAuth } from '@/lib/axios';
 import { useEffect, useState } from 'react';
 
-export default function useConversation(id: string | undefined) {
+export default function useConversation(userId: string | undefined) {
   const [conversation, setConversation] = useState<ConversationI>();
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-    if (!id) return;
+    if (!userId) return;
     const fetchConversation = async () => {
       try {
-        const response = await axiosAuth.get(`/conversations/${id}/`);
+        const response = await axiosAuth.get(`/users/${userId}/conversation/`);
         const { data } = response;
         setConversation(data);
         setIsLoading(false);
@@ -22,7 +22,7 @@ export default function useConversation(id: string | undefined) {
     };
 
     fetchConversation();
-  }, [id]);
+  }, [userId]);
 
   return { conversation, isLoading, isError };
 }

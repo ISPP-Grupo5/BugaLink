@@ -9,7 +9,7 @@ export default function SquareChatsButton() {
   return (
     <SquareButton
       text="Chats"
-      link={NEXT_ROUTES.CHATS}
+      link={NEXT_ROUTES.CHAT_LIST}
       Icon={<Chat className="translate-x-0.5 translate-y-0.5" />}
       numNotifications={numPendingChats || 0}
     />

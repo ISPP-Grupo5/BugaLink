@@ -70,13 +70,13 @@ const RecommendationsList = () => {
     <div className="trip-list mt-1 grid h-full justify-items-center overflow-auto">
       {isLoading || isError
         ? [1, 2, 3, 4].map((i) => (
-          <TripCardSkeleton
-            key={i}
-            className="rounded-md bg-white outline outline-1 outline-light-gray"
-          />
-        ))
+            <TripCardSkeleton
+              key={i}
+              className="rounded-md bg-white outline outline-1 outline-light-gray"
+            />
+          ))
         : trips.map((trip: TripI) => (
-          <TripCard
+            <TripCard
               key={trip.id}
               rating={0}
               name={trip.driver.user.first_name}
@@ -85,7 +85,7 @@ const RecommendationsList = () => {
               destination={trip.driver_routine.destination.address}
               date={formatDatetime(trip.departure_datetime)}
               price={Number.parseFloat(trip.driver_routine.price)}
-              href={NEXT_ROUTES.RIDE_DETAILS(trip.id)}
+              href={NEXT_ROUTES.TRIP_DETAILS(trip.id)}
               className="w-full rounded-md bg-white outline outline-1 outline-light-gray"
             />
           ))}

@@ -64,7 +64,7 @@ export default function Home() {
 
         <span className="mt-4 mb-2 flex justify-between px-4 md:px-5">
           <p className="text-left text-xl font-semibold">Mis próximos viajes</p>
-          <Link data-cy="history-link" href={NEXT_ROUTES.RIDE_HISTORY}>
+          <Link data-cy="history-link" href={NEXT_ROUTES.TRIP_HISTORY}>
             <p className="text-right text-xl text-turquoise">Historial</p>
           </Link>
         </span>

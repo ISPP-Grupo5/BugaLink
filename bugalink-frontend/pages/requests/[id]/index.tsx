@@ -1,66 +1,77 @@
-import useIndividualRides from '@/hooks/useIndividualRides';
-import useReviews from '@/hooks/useReviews';
+import ProfileHeader from '@/components/ProfileHeader';
+import TripDetails from '@/components/TripDetails';
 import { BackButtonText } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import TextAreaField from '@/components/forms/TextAreaField';
 import AnimatedLayout from '@/components/layouts/animated';
 import MapPreview from '@/components/maps/mapPreview';
-import ProfileHeader from '@/components/ProfileHeader';
-import TripDetails from '@/components/TripDetails';
-import useMapCoordinates from '@/hooks/useMapCoordinates';
+import NEXT_ROUTES from '@/constants/nextRoutes';
+import useTripRequest from '@/hooks/useTripRequest';
+import useUserStats from '@/hooks/useUserStats';
+import { axiosAuth } from '@/lib/axios';
+import { capitalize } from '@/utils/formatters';
 import { Drawer } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 export default function AcceptRequest() {
+  const router = useRouter();
+  const id = router.query.id as string;
+
   const [time, setTime] = useState<number>(0);
   const [drawerDecline, setDrawerDecline] = useState(false);
-  const [reason, setReason] = useState('');
-  const { individualRide, isLoading, isError } = useIndividualRides(2);
-  const [origin, setOrigin] = useState();
-  const [destination, setDestination] = useState();
-  const originCoords = useMapCoordinates(origin);
-  const destinationCoords = useMapCoordinates(destination);
-  const { reviews, isLoadingReviews, isErrorReviews } = useReviews(1);
+  const [rejectNote, setRejectNote] = useState('');
+  const { tripRequest, isLoading, isError } = useTripRequest(id);
+  const { userStats, isLoadingStats, isErrorStats } = useUserStats(
+    tripRequest?.passenger
+  );
 
-  useEffect(() => {
-    if (individualRide && individualRide.length > 0) {
-      setOrigin(individualRide[0].start_location);
-      setDestination(individualRide[0].end_location);
+  const handleAcceptTripRequest = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    try {
+      const response = await axiosAuth.put(`/trip-requests/${id}/accept/`);
+      if (response.status === 200) router.push(NEXT_ROUTES.HOME);
+    } catch (error) {
+      console.log(error);
     }
-  }, [individualRide]);
+  };
 
-  if (isLoading || isLoadingReviews) return <p>Loading...</p>; // TODO: make skeleton
-  if (isError || isErrorReviews) return <p>Error</p>; // TODO: make error message
+  const handleRejectTripRequest = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    try {
+      const response = await axiosAuth.put(`/trip-requests/${id}/reject/`, {
+        reject_note: rejectNote,
+      });
+      if (response.status === 200) router.push(NEXT_ROUTES.HOME);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const ride = individualRide[0];
-  const dateText = `Cada ${ride.passenger_routine.days} a partir del ${ride.start_date}`;
+  if (isLoading || isLoadingStats) return <p>Loading...</p>; // TODO: make skeleton
+  if (isError || isErrorStats) return <p>Error</p>; // TODO: make error message
 
-  let sum = 0;
-  for (const element of reviews) {
-    sum += element.rating;
-  }
-  const meanReviews = (sum / reviews.length).toFixed(2);
   // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
-  const startTime = new Date(ride.passenger_routine.start_time_initial);
-  const endTime = new Date(ride.passenger_routine.start_time_initial);
+  const startTime = new Date(tripRequest.trip.departure_datetime);
+  const endTime = new Date(tripRequest.trip.arrival_datetime);
   endTime.setMinutes(endTime.getMinutes() + time);
+
+  const { origin, destination } = tripRequest.trip.driver_routine;
 
   return (
     <AnimatedLayout className="flex flex-col justify-between">
       <BackButtonText text="Solicitud de viaje" />
       <div className="flex h-full flex-col justify-between overflow-y-scroll bg-white px-6 pb-4 pt-2">
-        {/* Profile header */}
-        <ProfileHeader
-          name={`${ride.passenger.user.first_name} ${ride.passenger.user.last_name}`}
-          rating={meanReviews.toString()}
-          numberOfRatings={reviews.length}
-          photo={ride.passenger.user.photo}
-        />
+        <ProfileHeader user={userStats} />
         <p className="mt-4 text-justify text-sm font-normal text-dark-gray">
           Nota del pasajero
         </p>
         <div className="flex flex-row">
-          <p className="text-justify leading-5">✏️ {ride.message}</p>
+          <p className="text-justify leading-5">✏️ {tripRequest.note}</p>
         </div>
 
         {/* Details */}
@@ -71,14 +82,25 @@ export default function AcceptRequest() {
         {/* Map preview */}
         {origin && destination && (
           <MapPreview
-            originCoords={originCoords.coordinates}
-            destinationCoords={destinationCoords.coordinates}
+            tripId={tripRequest.trip.id}
+            originCoords={{ lat: origin.latitude, lng: origin.longitude }}
+            destinationCoords={{
+              lat: destination.latitude,
+              lng: destination.longitude,
+            }}
             setTime={setTime}
             className="h-full min-h-[10rem]"
           />
         )}
         <TripDetails
-          date={dateText}
+          date={capitalize(
+            startTime.toLocaleDateString('es-ES', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })
+          )}
           originHour={startTime.toLocaleTimeString('es-ES', {
             hour: '2-digit',
             minute: '2-digit',
@@ -87,8 +109,8 @@ export default function AcceptRequest() {
             hour: '2-digit',
             minute: '2-digit',
           })}
-          origin={origin}
-          destination={destination}
+          origin={origin.address}
+          destination={destination.address}
         />
       </div>
       {/* Trip request */}
@@ -123,8 +145,8 @@ export default function AcceptRequest() {
               <div className="mx-5 mb-2 flex flex-col">
                 <TextAreaField
                   fieldName="Resume brevemente el motivo"
-                  content={reason}
-                  setContent={setReason}
+                  content={rejectNote}
+                  setContent={setRejectNote}
                   inputClassName="w-full items-center"
                   maxLength={1000}
                   rows={5}
@@ -134,12 +156,17 @@ export default function AcceptRequest() {
                 <CTAButton
                   className="w-11/12 bg-red-button"
                   text={'RECHAZAR'}
+                  onClick={handleRejectTripRequest}
                 />
               </div>
             </div>
           </Drawer>
         </div>
-        <CTAButton className="w-11/12" text={'ACEPTAR'} />
+        <CTAButton
+          className="w-11/12"
+          text={'ACEPTAR'}
+          onClick={handleAcceptTripRequest}
+        />
       </div>
     </AnimatedLayout>
   );

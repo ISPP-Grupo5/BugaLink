@@ -59,6 +59,9 @@ class DriverViewSet(
             driver.dni_back = request.data["dni_back"]
             driver.dni_status = status
         
+        if driver.sworn_declaration_status == status and driver.driver_license_status == status and driver.dni_status == status:
+            driver.user.is_validated_driver = True
+
         driver.save()
 
         return Response(self.get_serializer(driver).data)

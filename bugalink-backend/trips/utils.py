@@ -4,10 +4,7 @@ from users.serializers import UserRatingSerializer
 
 
 def check_days(trips, days):
-    splited_days = days.split(",")
-    for trip in trips:
-        if trip.driver_routine.day_of_week not in splited_days:
-            trips.remove(trip)
+    return trips.filter(driver_routine__day_of_week__in=days.split(","))
 
 
 def check_minstars(trips, minstars):
@@ -19,15 +16,11 @@ def check_minstars(trips, minstars):
 
 
 def check_minprice(trips, minprice):
-    for trip in trips:
-        if trip.driver_routine.price < float(minprice):
-            trips.remove(trip)
+    return trips.filter(driver_routine__price__gt=minprice)
 
 
 def check_maxprice(trips, maxprice):
-    for trip in trips:
-        if trip.driver_routine.price > float(maxprice):
-            trips.remove(trip)
+    return trips.filter(driver_routine__price__lt=maxprice)
 
 
 def check_date_from(trips, date_from):

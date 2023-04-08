@@ -23,7 +23,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default function Profile({ data }) {
-  debugger;
   const userId = data.id;
   const user = useUser(userId).user as UserI;
 

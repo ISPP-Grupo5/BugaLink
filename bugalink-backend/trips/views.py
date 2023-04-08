@@ -154,7 +154,7 @@ class TripSearchViewSet(
                 check_date_to(result_trips, request.GET.get("date_to"))
 
             if request.GET.get("hour_from"):
-                check_hour_from(result_trips, request.GET.get("hout_from"))
+                check_hour_from(result_trips, request.GET.get("hour_from"))
 
             if request.GET.get("hour_to"):
                 check_hour_to(result_trips, request.GET.get("hour_to"))
@@ -171,6 +171,7 @@ class TripSearchViewSet(
             if request.GET.get("allows_smoking"):
                 check_allows_smoking(result_trips, request.GET.get("allows_smoking"))
 
+            print(result_trips)
             result_trips = Trip.objects.filter(
                 Q(pk__in=[trip.pk for trip in result_trips])
             ).order_by("-departure_datetime")[:10]

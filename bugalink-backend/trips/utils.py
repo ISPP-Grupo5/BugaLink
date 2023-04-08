@@ -16,11 +16,11 @@ def check_minstars(trips, minstars):
 
 
 def check_minprice(trips, minprice):
-    return trips.filter(driver_routine__price__gt=minprice)
+    return trips.filter(driver_routine__price__gte=minprice)
 
 
 def check_maxprice(trips, maxprice):
-    return trips.filter(driver_routine__price__lt=maxprice)
+    return trips.filter(driver_routine__price__lte=maxprice)
 
 
 def check_date_from(trips, date_from):

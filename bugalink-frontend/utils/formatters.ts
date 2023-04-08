@@ -21,3 +21,18 @@ export const parseDate = (time: string) => {
   date.setSeconds(Number.parseInt(seconds));
   return date;
 };
+
+export const shortenName = (firstName: string, lastName: string) => {
+  // Pablo López Benítez' -> 'Pablo López'
+  // Pablo Delfín López Benítez' -> 'Pablo D. López'
+  // If the first name has two words, the second word is replaced by the first letter of the last name
+  const firstNameWords = firstName.split(' ');
+  const lastNameWords = lastName.split(' ');
+  if (firstNameWords.length > 1) {
+    return `${firstNameWords[0]} ${firstNameWords[1].charAt(0)}. ${
+      lastNameWords[0]
+    }`;
+  }
+
+  return `${firstName} ${lastNameWords[0]}`;
+};

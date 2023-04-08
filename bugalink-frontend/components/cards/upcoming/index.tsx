@@ -2,7 +2,7 @@ import Avatar from '@/components/avatar';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import TripI from '@/interfaces/trip';
 import TripRequestI from '@/interfaces/tripRequest';
-import { formatDatetime } from '@/utils/formatters';
+import { formatDatetime, shortenName } from '@/utils/formatters';
 import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -131,8 +131,7 @@ const PassengerCardHeader = ({ trip }: { trip: TripI }) => (
           Tesla Model S
         </p>
         <p className="truncate">
-          {trip.driver.user.first_name}{' '}
-          {trip.driver.user.last_name.split(' ')[0]}
+          {shortenName(trip.driver.user.first_name, trip.driver.user.last_name)}
         </p>
       </div>
     </span>

@@ -26,6 +26,11 @@ export default function PendingRequests() {
                 />
               </Link>
             ))}
+        {pendingRequests && pendingRequests.length === 0 && (
+          <div className="mx-4 mt-4 rounded-md border border-border-color py-5 text-center text-xl font-light text-gray md:mx-5">
+            No tienes ninguna solictud pendiente.
+          </div>
+        )}
       </div>
     </AnimatedLayout>
   );

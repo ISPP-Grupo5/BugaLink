@@ -3,14 +3,11 @@ runtime: nodejs16
 env: standard
 service: default
 env_variables:
-  NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
+  APPENGINE_URL: https://bugalink-379617.ew.r.appspot.com
   NODE_ENV: production
-  NEXT_PUBLIC_DOMAIN: https://app.bugalink.es
   NEXT_PUBLIC_BACKEND_URL: https://app.bugalink.es
+  NEXT_PUBLIC_DOMAIN: https://app.bugalink.es
   NEXTAUTH_URL: https://app.bugalink.es
-  NEXTAUTH_SECRET: VeryverySecret
-
-
 handlers:
   - url: /static
     static_dir: static

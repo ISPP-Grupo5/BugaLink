@@ -9,7 +9,7 @@ urlpatterns = [
     path("", include(router.urls)),
     path("trips/<int:id>/request/", TripRequestViewSet.as_view({"post": "create"})),
     path(
-        "trips/<int:user_id>/recommendations",
+        "trips/recommendations",
         TripRecommendationViewSet.as_view({"get": "get"}),
     ),
     path(

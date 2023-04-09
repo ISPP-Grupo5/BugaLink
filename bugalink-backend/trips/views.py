@@ -99,11 +99,12 @@ class TripRecommendationViewSet(
     serializer_class = TripSerializer
 
     @action(detail=True, methods=["get"])
-    def get(self, request, user_id, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         try:
             data = {"trips": []}
+            print("EEEEE: " + str(request))
             for passenger_routine in PassengerRoutine.objects.filter(
-                passenger__user_id=user_id
+                passenger__user_id=request.GET.get("user_id")
             ):
                 data["trips"] = (
                     data["trips"]
@@ -114,7 +115,7 @@ class TripRecommendationViewSet(
 
             return Response(data, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({"msg": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": str(e)})
 
 
 class TripByIdViewSet(
@@ -130,4 +131,4 @@ class TripByIdViewSet(
             trip = Trip.objects.get(id=trip_id)
             return Response(TripSerializer(trip).data, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": str(e)})

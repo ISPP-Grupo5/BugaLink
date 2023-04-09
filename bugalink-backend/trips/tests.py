@@ -37,9 +37,10 @@ class GetTripRecommendationTest(TestCase):
         self.client.force_authenticate(user=self.user)
 
     def test_get_trip_recommendation(self):
-        url = "/api/v1/trips/" + str(self.user.pk) + "/recommendations"
-        response = self.client.get(url)
+        url = "/api/v1/trips/recommendations"
+        response = self.client.get(url, data={"user_id": self.user.pk})
         data = json.loads(response.content)
+        print("AAAAAA: " + str(response.content))
         self.assertEqual(
             data["trips"][0]["driver_routine"]["origin"]["address"], "Mi casa"
         )

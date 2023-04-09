@@ -23,11 +23,11 @@ class Location(models.Model):
     def get_distance_to(self, location):
         r = 6371  # Radio de la Tierra en kilómetros
         lat = math.radians(self.latitude - location.latitude)
-        Lon = math.radians(self.longitude - location.longitude)
+        lon = math.radians(self.longitude - location.longitude)
         a = math.sin(lat / 2) * math.sin(lat / 2) + math.cos(
             math.radians(location.latitude)
-        ) * math.cos(math.radians(self.latitude)) * math.sin(Lon / 2) * math.sin(
-            Lon / 2
+        ) * math.cos(math.radians(self.latitude)) * math.sin(lon / 2) * math.sin(
+            lon / 2
         )
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
         return r * c

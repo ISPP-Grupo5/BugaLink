@@ -4,6 +4,7 @@ from users.views import (
     BecomeDriverView,
     UserRatingView,
     UserStatsView,
+    UserTripCountView,
     UserTripsView,
     UserUpdateView,
     UserViewSet,
@@ -20,4 +21,5 @@ urlpatterns = [
     path("users/<int:id>/edit/", UserUpdateView.as_view()),
     path("users/<int:pk>/stats/", UserStatsView.as_view({"get": "get"})),
     path("users/<int:pk>/rating/", UserRatingView.as_view({"get": "get"})),
+    path("users/<int:id>/trip-requests/count/", UserTripCountView.as_view()),
 ]

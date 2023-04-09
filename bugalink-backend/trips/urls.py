@@ -12,6 +12,7 @@ urlpatterns = [
         "trips/search",
         TripSearchViewSet.as_view({"get": "get"}),
     ),
+    path("trip-requests/<int:pk>/", TripRequestViewSet.as_view({"get": "get"})),
     path(
         "trip-requests/<int:pk>/accept/", TripRequestViewSet.as_view({"put": "accept"})
     ),

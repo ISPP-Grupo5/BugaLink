@@ -22,8 +22,10 @@ class User(AbstractBaseUser):
     date_joined = models.DateTimeField(auto_now_add=True)
     verified = models.BooleanField(default=False)
     photo = models.ImageField(upload_to="users/profile_pictures/", blank=True)
-    is_passenger = models.BooleanField(default=True)  # TODO: make derived property
-    is_driver = models.BooleanField(default=False)  # TODO: make derived property
+    is_passenger = models.BooleanField(default=True)
+    # TODO: redundant now that we have is_validated_driver?
+    is_driver = models.BooleanField(default=False)
+    is_validated_driver = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     USERNAME_FIELD = "email"

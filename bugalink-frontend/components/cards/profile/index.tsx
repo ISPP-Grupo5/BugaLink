@@ -1,5 +1,6 @@
 import PreferenceBox from '@/components/preferences/box';
 import NEXT_ROUTES from '@/constants/nextRoutes';
+import { preferences } from '@/constants/preferences';
 import { Drawer } from '@mui/material';
 import { User } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
@@ -12,49 +13,6 @@ import Logout from 'public/assets/log-out.svg';
 import Preferences from 'public/assets/preferences.svg';
 import Wallet from 'public/assets/wallet.svg';
 import { useState } from 'react';
-
-const preferences = {
-  smoke: {
-    checked: {
-      icon: '🚬',
-      text: 'Puedes fumar en mi coche',
-    },
-    unchecked: {
-      icon: '🚭',
-      text: 'Mi coche es libre de humos',
-    },
-  },
-  music: {
-    checked: {
-      icon: '🔉',
-      text: 'Conduzco con música',
-    },
-    unchecked: {
-      icon: '🔇',
-      text: 'Prefiero ir sin música',
-    },
-  },
-  pets: {
-    checked: {
-      icon: '🐾',
-      text: 'Puedes traer a tu mascota',
-    },
-    unchecked: {
-      icon: '😿',
-      text: 'No acepto mascotas',
-    },
-  },
-  talk: {
-    checked: {
-      icon: '🗣️',
-      text: 'Prefiero hablar durante el camino',
-    },
-    unchecked: {
-      icon: '🤐',
-      text: 'Prefiero no hablar durante el camino',
-    },
-  },
-};
 
 export default function ProfileItems() {
   const [drawerPreferences, setDrawerPreferences] = useState(false);
@@ -73,22 +31,19 @@ export default function ProfileItems() {
   };
 
   return (
-    <div className="flex h-full w-full flex-col items-start justify-between gap-y-4 rounded-t-3xl bg-white p-6 text-start text-xl">
-      <Entry Icon={<Address />}>
-        <span>Direcciones</span>
-      </Entry>
+    <div className="flex h-min w-full flex-col items-start justify-end rounded-t-3xl bg-white px-6 py-3 text-start text-xl">
       <Entry Icon={<Wallet />}>
         <Link href={NEXT_ROUTES.WALLET}>Mi cartera</Link>
       </Entry>
       <Entry onClick={() => setDrawerPreferences(true)} Icon={<Preferences />}>
         <span>Preferencias</span>
       </Entry>
-      <Entry Icon={<Carkey className="h-10 w-10" />}>
-        <Link href={NEXT_ROUTES.CHECK_DRIVER(user?.user_id)}>
-          Hazte Conductor
-        </Link>
-      </Entry>
-      <hr className="w-full text-light-gray" />
+      {!user?.is_validated_driver && (
+        <Entry Icon={<Carkey className="h-10 w-10" />}>
+          <Link href={NEXT_ROUTES.BECOME_DRIVER}>Hazte Conductor</Link>
+        </Entry>
+      )}
+      <hr className="my-2 w-full text-light-gray" />
       <Entry Icon={<Help />}>
         <a href="mailto:soporte@bugalink.es">Ayuda</a>
       </Entry>
@@ -156,7 +111,7 @@ function Entry({
 }) {
   return (
     <div
-      className={'flex w-full items-center justify-between ' + className}
+      className={'flex w-full items-center justify-between py-3 ' + className}
       onClick={onClick}
     >
       <span className="flex items-center gap-x-2">

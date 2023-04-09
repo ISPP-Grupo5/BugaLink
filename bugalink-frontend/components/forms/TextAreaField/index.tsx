@@ -34,7 +34,7 @@ export default function TextAreaField({
         data-te-input-wrapper-init
       >
         <textarea
-          className={`peer block min-h-[auto] cursor-pointer rounded-sm border-none bg-transparent py-3 px-4 text-lg outline outline-1 outline-gray-select transition-all duration-200 ease-linear hover:outline-black focus:outline-2 focus:outline-light-turquoise motion-reduce:transition-none ${inputClassName}`}
+          className={`peer block min-h-[auto] cursor-text rounded-sm border-none bg-transparent py-3 px-4 text-lg outline outline-1 outline-gray-select transition-all duration-200 ease-linear hover:outline-black focus:outline-2 focus:outline-light-turquoise motion-reduce:transition-none ${inputClassName}`}
           onChange={onChangeTextarea}
           value={content}
           id={fieldName}

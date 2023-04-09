@@ -190,7 +190,6 @@ class TripRecommendationViewSet(
     def get(self, request, *args, **kwargs):
         try:
             data = {"trips": []}
-            print("EEEEE: " + str(request))
             for passenger_routine in PassengerRoutine.objects.filter(
                 passenger__user_id=request.GET.get("user_id")
             ):

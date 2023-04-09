@@ -40,7 +40,6 @@ class GetTripRecommendationTest(TestCase):
         url = "/api/v1/trips/recommendations"
         response = self.client.get(url, data={"user_id": self.user.pk})
         data = json.loads(response.content)
-        print("AAAAAA: " + str(response.content))
         self.assertEqual(
             data["trips"][0]["driver_routine"]["origin"]["address"], "Mi casa"
         )

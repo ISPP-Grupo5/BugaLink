@@ -184,17 +184,16 @@ class TripSearchViewSet(
                 result_trips = check_allows_smoking(
                     result_trips, request.GET.get("allows_smoking")
                 )
+            if len(result_trips) > 0:
+                result_trips = Trip.objects.filter(
+                    Q(pk__in=[trip.pk for trip in result_trips])
+                ).order_by("-departure_datetime")[:10]
 
-            result_trips = Trip.objects.filter(
-                Q(pk__in=[trip.pk for trip in result_trips])
-            ).order_by("-departure_datetime")[:10]
-
-            data = {"trips": []}
-            for trip in result_trips:
-                data["trips"].append(TripSerializer(trip).data)
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception:
-            return Response(
-                {"message": "No se han encontrado viajes compatibles"},
-                status=status.HTTP_200_OK,
-            )
+                data = {"trips": []}
+                for trip in result_trips:
+                    data["trips"].append(TripSerializer(trip).data)
+                return Response(data, status=status.HTTP_200_OK)
+            else:
+                return Response({"message": "No se encontraron viajes compatibles"})
+        except Exception as e:
+            return Response({"message": str(e)})

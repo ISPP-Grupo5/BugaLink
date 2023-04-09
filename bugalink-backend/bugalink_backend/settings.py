@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "ratings",
     "trips",
     "users",
+    "transactions",
     # Third-party packages
     "drf_spectacular",
     "rest_framework",

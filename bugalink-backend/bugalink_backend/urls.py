@@ -36,4 +36,6 @@ urlpatterns = [
     path("api/v1/", include("driver_routines.urls")),
     path("api/v1/", include("passenger_routines.urls")),
     path("api/v1/", include("trips.urls")),
+    path("api/v1/", include("payment_methods.urls")),
+    path("api/v1/", include("transactions.urls")),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,6 +1,10 @@
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from passengers.models import Passenger
+from payment_methods.models import Balance
+import stripe
+import paypal 
 
 from trips.models import Trip, TripRequest
 from trips.serializers import (
@@ -52,9 +56,94 @@ class TripRequestViewSet(
 
     # POST /trips/<id>/request/ (For a passenger to request a trip)
     def create(self, request, *args, **kwargs):
+        def pay_with_balance(balance,price):
+            if balance.amount < price:
+                return Response(
+                    status=status.HTTP_400_BAD_REQUEST,
+                    data={"error": "Saldo insuficiente"},
+                )
+            balance.amount -= price
+            balance.save()
+
+        def pay_with_credit_card(price):
+            stripe.api_key = "your_stripe_api_key"  # TODO change it 
+
+            # Get the amount to charge (in cents)
+            amount = int(price * 100)
+
+            try:
+                stripe.Charge.create(
+                    amount=amount,
+                    currency="eur",
+                    source= request.data.get("stripe_token"),  #TODO replace with a valid card token
+                    description= "Viaje Bugalink - " + str(trip.departure_datetime),
+                )
+                
+            except stripe.error.CardError:
+                return Response(
+                    status=status.HTTP_400_BAD_REQUEST,
+                    data={"error": "Tarjeta inválida"},
+                )
+        
+        def pay_with_paypal(price):
+
+            paypal_client_id = "your_paypal_client_id" # TODO change it
+            paypal_secret_key = "your_paypal_secret_key" # TODO change it
+            
+            environment = paypal.Environment(
+                client_id=paypal_client_id,
+                client_secret=paypal_secret_key
+            )
+            client = paypal.PayPalHttpClient(environment)
+
+            # Get the amount to charge
+            amount = price
+
+            # Create a PayPal order
+            order = paypal.OrderRequest({
+                "intent": "CAPTURE",
+                "purchase_units": [
+                    {
+                        "amount": {
+                            "currency_code": "EUR",
+                            "value": str(amount)
+                        }
+                    }
+                ]
+            })
+            response = client.execute(paypal.OrdersCreateRequest(order))
+            order_id = response.result.id
+
+            # Capture the payment
+            capture = paypal.CaptureRequest(order_id)
+            client.execute(capture)
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        # NOTE: this saves the entity in the DB and returns the created object
+        
+        trip = Trip.objects.get(id=kwargs["trip_id"])
+        ''' FUTURE IMPLEMENTATION
+        user = request.user
+        payment_method = request.data.get("payment_method")
+        price = trip.driver_routine.price
+
+        
+        if payment_method == "Balance":
+            balance = Balance.objects.get(user=user)
+            pay_with_balance(balance, price)
+
+        elif payment_method == "CreditCard":
+            pay_with_credit_card(price)
+            
+        elif payment_method == "PayPal":
+            pay_with_paypal(price)
+        
+        else:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={"error": "Método de pago inválido"},
+            )
+        '''
         serializer.save()
 
         created_id = serializer.instance.id
@@ -81,3 +170,4 @@ class TripRequestViewSet(
         trip_request.status = "REJECTED"
         trip_request.save()
         return Response(self.get_serializer(trip_request).data)
+    

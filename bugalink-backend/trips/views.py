@@ -1,5 +1,7 @@
 import paypal
 import stripe
+from django.db.models import Q
+from locations.models import Location
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -8,6 +10,22 @@ from trips.serializers import (
     TripRequestCreateSerializer,
     TripRequestSerializer,
     TripSerializer,
+)
+
+from .utils import (
+    check_allows_pets,
+    check_allows_smoking,
+    check_date_from,
+    check_date_to,
+    check_days,
+    check_distance,
+    check_hour_from,
+    check_hour_to,
+    check_maxprice,
+    check_minprice,
+    check_minstars,
+    check_prefers_music,
+    check_prefers_talk,
 )
 
 
@@ -168,3 +186,59 @@ class TripRequestViewSet(
         trip_request.status = "REJECTED"
         trip_request.save()
         return Response(self.get_serializer(trip_request).data)
+
+
+class TripSearchViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = Trip.objects.all()
+    serializer_class = TripSerializer
+
+    @action(detail=True, methods=["get"])
+    def get(self, request, *args, **kwargs):
+        # Se busca entre los viajes pendientes
+        trips = Trip.objects.filter(status="PENDING")
+        # Comprobacion de campos obligatorios
+        if not request.GET.get("origin") or not request.GET.get("destination"):
+            return Response(
+                {"message": "El origen y el destino son obligatorios"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        filter_checks = {
+            "days": check_days,
+            "min_price": check_minprice,
+            "max_price": check_maxprice,
+            "date_from": check_date_from,
+            "date_to": check_date_to,
+            "hour_from": check_hour_from,
+            "hour_to": check_hour_to,
+            "prefers_music": check_prefers_music,
+            "prefers_talk": check_prefers_talk,
+            "allows_pets": check_allows_pets,
+            "allows_smoking": check_allows_smoking,
+        }
+
+        # Apply all filters on the QuerySet
+        for key, func in filter_checks.items():
+            if request.GET.get(key):
+                trips = func(trips, request.GET.get(key))
+
+        # Comprobacion de distancia
+        trips = check_distance(
+            trips, request.GET.get("origin"), request.GET.get("destination")
+        )
+
+        # Comprobacion de minStars
+        if request.GET.get("min_stars"):
+            trips = check_minstars(trips, request.GET.get("min_stars"))
+
+        trips = Trip.objects.filter(Q(pk__in=[trip.pk for trip in trips])).order_by(
+            "-departure_datetime"
+        )[:10]
+
+        return Response(
+            TripSerializer(trips, many=True).data, status=status.HTTP_200_OK
+        )

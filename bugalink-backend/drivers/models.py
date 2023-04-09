@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.contrib.postgres.fields import ArrayField
 from django.core.files.storage import FileSystemStorage
 from django.db import models
 from users.models import User

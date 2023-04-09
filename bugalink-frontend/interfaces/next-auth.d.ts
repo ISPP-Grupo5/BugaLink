@@ -25,6 +25,7 @@ declare module 'next-auth' {
     last_name?: string;
     photo: string;
     verified: boolean;
+    is_validated_driver: boolean;
     iat?: number;
   }
   export { NextAuthOptions, getServerSession, Session, User };

@@ -8,6 +8,7 @@ router.register(r"trips", TripViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path("trips/<int:id>/request/", TripRequestViewSet.as_view({"post": "create"})),
+    path("trip-requests/<int:pk>/", TripRequestViewSet.as_view({"get": "get"})),
     path(
         "trips/recommendations",
         TripRecommendationViewSet.as_view({"get": "get"}),

@@ -42,32 +42,32 @@ describe('Navigation tests', () => {
     cy.location('pathname').should('match', /^\/history$/);
   });
 
-  // /request/<userId>/accept
+  // /requests/<userId>
   it('should navigate to request accept page', () => {
     cy.visit('/requests/pending');
     cy.get('[data-cy="request-accept"]').click();
-    cy.location('pathname').should('match', /^\/request\/[\w-]+\/accept$/);
+    cy.location('pathname').should('match', /^\/requests\/[\w-]+$/);
   });
 
-  // /ride/<rideId>/details
+  // /trips/<tripId>
   it('should navigate to ride details one page', () => {
     cy.visit('/');
     cy.get('[data-cy="ride-details"]').first().click();
-    cy.location('pathname').should('match', /^\/ride\/[\w-]+\/details$/);
+    cy.location('pathname').should('match', /^\/trips\/[\w-]+$/);
   });
 
-  // /ride/<rideId>/pay
+  // /trips/<tripId>/pay
   it('should navigate to ride payment page', () => {
-    cy.visit('/ride/1/details?requested=false');
+    cy.visit('/trips/1');
     cy.get('button').contains('PAGAR').click();
-    cy.location('pathname').should('match', /^\/ride\/[\w-]+\/pay$/);
+    cy.location('pathname').should('match', /^\/trips\/[\w-]+\/pay$/);
   });
 
-  // /ride/<rideId>/map
+  // /trips/<tripId>/map
   it('should navigate to ride map page', () => {
-    cy.visit('/ride/1/details?requested=false');
+    cy.visit('/trips/1/details');
     cy.get('[data-cy="map-link"]').click();
-    cy.location('pathname').should('match', /^\/ride\/[-\w]+\/map$/);
+    cy.location('pathname').should('match', /^\/trips\/[-\w]+\/map$/);
   });
 
   // TODO: login flow test
@@ -111,4 +111,4 @@ describe('Navigation tests', () => {
   });
 });
 
-export { };
+export {};

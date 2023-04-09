@@ -12,7 +12,6 @@
 # below:
 .git
 .gitignore
-.env
 
 # Node.js dependencies:
 node_modules/

@@ -1,8 +1,8 @@
+import Avatar from '@/components/avatar';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import TripI from '@/interfaces/trip';
 import TripRequestI from '@/interfaces/tripRequest';
-import UserI from '@/interfaces/user';
-import { formatDatetime } from '@/utils/formatters';
+import { formatDatetime, shortenName } from '@/utils/formatters';
 import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -22,7 +22,6 @@ export default function UpcomingCard({
   const user = useSession().data?.user as User;
   const trip = tripRequest.trip; // Shorthand for not having to write tripRequest.trip all the time
   const isDriver = trip.driver.user.id === user?.user_id;
-  const isRequested = true; // This should be taken from the backend, if the user has already requested this trip
 
   return (
     <Link
@@ -32,12 +31,12 @@ export default function UpcomingCard({
         (isDriver ? 'bg-turquoise ' : 'bg-green ') +
         className
       }
-      href={NEXT_ROUTES.RIDE_DETAILS(tripRequest.id, isRequested)}
+      href={NEXT_ROUTES.TRIP_DETAILS(tripRequest.trip.id)}
     >
       {isDriver ? (
         <DriverCardHeader trip={trip} />
       ) : (
-        <PassengerCardHeader trip={trip} />
+        <PassengerCardHeader tripRequest={tripRequest} />
       )}
       <div className="space-y-0.5 p-3 text-lg">
         <div className="flex flex-row items-center space-x-2 text-white">
@@ -71,17 +70,19 @@ const DriverCardHeader = ({ trip }: { trip: TripI }) => (
     <span className="flex h-full items-center px-3">
       <span className="flex items-start -space-x-10">
         {trip.passengers.slice(0, 3).map((passenger, index) => (
-          <img
-            className="aspect-square w-14 rounded-full border-2 border-white object-scale-down"
+          <Avatar
+            className="w-14 border-2 border-white"
             style={{ zIndex: 3 - index }} // for reverse stacking
             key={`passenger-${index}`}
             id={`passenger-${index}`}
-            src={passenger.user.photo ?? '/assets/avatar.png'}
+            src={passenger.user.photo}
           />
         ))}
       </span>
       <div className="z-10 ml-3 flex flex-col -space-y-1 overflow-hidden whitespace-nowrap">
-        <p className="text-xs text-gray">Pasajeros</p>
+        <p className="text-xs text-gray">
+          {trip.passengers.length === 0 ? 'Sin Pasajeros' : 'Pasajeros'}
+        </p>
         {trip.passengers
           .slice(0, trip.passengers.length === 3 ? 3 : 2)
           .map((passenger, index) => (
@@ -89,7 +90,10 @@ const DriverCardHeader = ({ trip }: { trip: TripI }) => (
               key={`passenger-${index}`}
               className="text-md truncate leading-5"
             >
-              {passenger.user.first_name}{' '}
+              {passenger.user.first_name
+                .split(' ')
+                .map((name, idx) => (idx > 0 ? name.charAt(0) + '.' : name))
+                .join(' ')}{' '}
               {passenger.user.last_name.split(' ')[0]}
             </p>
           ))}
@@ -103,10 +107,14 @@ const DriverCardHeader = ({ trip }: { trip: TripI }) => (
   </div>
 );
 
-const PassengerCardHeader = ({ trip }: { trip: TripI }) => (
+const PassengerCardHeader = ({
+  tripRequest,
+}: {
+  tripRequest: TripRequestI;
+}) => (
   <div className="relative flex h-28 flex-none flex-col overflow-clip rounded-2xl rounded-br-3xl bg-white shadow-xl">
     <span className="flex justify-end -space-x-7">
-      {trip.status === 'PENDING' && (
+      {tripRequest.status === 'PENDING' && (
         <Flag
           text="PENDIENTE"
           color="bg-orange"
@@ -117,22 +125,14 @@ const PassengerCardHeader = ({ trip }: { trip: TripI }) => (
     </span>
     <WomanSeated className="absolute -right-2.5 top-[2.35rem] z-20 w-24" />
     <span className="flex h-full items-center space-x-3 px-3">
-      <img
-        className="aspect-square w-14 rounded-full object-scale-down"
-        src={trip.driver.user.photo ?? '/assets/avatar.png'}
-      />
+      <Avatar className="w-14" src={tripRequest.trip.driver.user.photo} />
       <div className="flex flex-col -space-y-1">
-        <p className="text-lg font-extrabold leading-5 tracking-wide">
-          {/* TODO: license plate not present in API response */}
-          1234ABC
-        </p>
-        <p className="truncate text-sm text-gray">
-          {/* TODO: not in petition either */}
-          Tesla Model S
-        </p>
-        <p className="truncate">
-          {trip.driver.user.first_name}{' '}
-          {trip.driver.user.last_name.split(' ')[0]}
+        <p className="truncate text-sm text-gray">Conductor</p>
+        <p className="truncate font-bold">
+          {shortenName(
+            tripRequest.trip.driver.user.first_name,
+            tripRequest.trip.driver.user.last_name
+          )}
         </p>
       </div>
     </span>

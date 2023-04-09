@@ -23,7 +23,9 @@ class User(AbstractBaseUser):
     verified = models.BooleanField(default=False)
     photo = models.ImageField(upload_to="users/profile_pictures/", blank=True)
     is_passenger = models.BooleanField(default=True)
+    # TODO: redundant now that we have is_validated_driver?
     is_driver = models.BooleanField(default=False)
+    is_validated_driver = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     USERNAME_FIELD = "email"

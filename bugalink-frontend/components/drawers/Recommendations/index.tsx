@@ -1,3 +1,4 @@
+import InformativeCard from '@/components/cards/informative';
 import TripCard from '@/components/cards/recommendation';
 import TripCardSkeleton from '@/components/skeletons/TripCard';
 import NEXT_ROUTES from '@/constants/nextRoutes';
@@ -5,6 +6,7 @@ import useRecommendedTrips from '@/hooks/useRecommendedTrips';
 import TripI from '@/interfaces/trip';
 import { formatDatetime } from '@/utils/formatters';
 import { SwipeableDrawer } from '@mui/material';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 type Props = {
@@ -70,27 +72,43 @@ const RecommendationsList = () => {
     <div className="trip-list mt-1 grid h-full justify-items-center overflow-auto">
       {isLoading || isError
         ? [1, 2, 3, 4].map((i) => (
-          <TripCardSkeleton
-            key={i}
-            className="rounded-md bg-white outline outline-1 outline-light-gray"
-          />
-        ))
+            <TripCardSkeleton
+              key={i}
+              className="rounded-md bg-white outline outline-1 outline-light-gray"
+            />
+          ))
         : trips.map((trip: TripI) => (
-          <TripCard
-            key={trip.id}
-            type={'recurring'}
-            rating={0}
-            name={trip.driver.user.first_name}
-            gender={'M'}
-            avatar={trip.driver.user.photo}
-            origin={trip.driver_routine.origin.address}
-            destination={trip.driver_routine.destination.address}
-            date={formatDatetime(trip.departure_datetime)}
-            price={Number.parseFloat(trip.driver_routine.price)}
-            href={NEXT_ROUTES.RIDE_DETAILS(trip.id)}
-            className="w-full rounded-md bg-white outline outline-1 outline-light-gray"
-          />
-        ))}
+            <TripCard
+              isHistory
+              key={trip.id}
+              rating={0}
+              name={trip.driver.user.first_name}
+              avatar={trip.driver.user.photo}
+              origin={trip.driver_routine.origin.address}
+              destination={trip.driver_routine.destination.address}
+              date={trip.departure_datetime}
+              price={Number.parseFloat(trip.driver_routine.price)}
+              href={NEXT_ROUTES.TRIP_DETAILS(trip.id)}
+              className="w-full rounded-md bg-white outline outline-1 outline-light-gray"
+            />
+          ))}
+      {trips && trips.length === 0 && (
+        <div className="p-2">
+          <InformativeCard className="px-2">
+            Vaya, no hay nada por aquí.
+            <br />
+            {
+              <Link
+                className="font-normal text-turquoise"
+                href={NEXT_ROUTES.NEW_ROUTINE_PASSENGER}
+              >
+                Crea una rutina
+              </Link>
+            }{' '}
+            para recibir sugerencias personalizadas.
+          </InformativeCard>
+        </div>
+      )}
     </div>
   );
 };

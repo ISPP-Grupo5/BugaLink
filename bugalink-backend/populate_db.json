@@ -328,18 +328,16 @@
     {
       "trip_request_id": 3,
       "rating": 5.0,
-      "preference_0": true,
-      "preference_1": false,
-      "preference_2": false,
-      "preference_3": false
+      "is_good_driver": true,
+      "is_pleasant_driver": false,
+      "already_knew": false
     },
     {
       "trip_request_id": 4,
       "rating": 4.5,
-      "preference_0": false,
-      "preference_1": true,
-      "preference_2": false,
-      "preference_3": false
+      "is_good_driver": false,
+      "is_pleasant_driver": true,
+      "already_knew": false
     }
   ],
   "Report": [

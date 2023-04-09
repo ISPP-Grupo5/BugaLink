@@ -19,6 +19,7 @@ import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
 import ThreeDots from '/public/assets/three-dots.svg';
 import MagnifyingGlass from '/public/icons/Vista-Principal/glass.svg';
+import { preferences } from '@/constants/preferences';
 
 const filters = [
   {
@@ -92,50 +93,6 @@ const searchResultsMock = [
   },
 ];
 
-// TODO: extract to a separate file to use it in trip details, edit profile and search
-const preferences = {
-  smoke: {
-    checked: {
-      icon: '🚬',
-      text: 'Puedes fumar en mi coche',
-    },
-    unchecked: {
-      icon: '🚭',
-      text: 'Mi coche es libre de humos',
-    },
-  },
-  music: {
-    checked: {
-      icon: '🔉',
-      text: 'Conduzco con música',
-    },
-    unchecked: {
-      icon: '🔇',
-      text: 'Prefiero ir sin música',
-    },
-  },
-  pets: {
-    checked: {
-      icon: '🐾',
-      text: 'Puedes traer a tu mascota',
-    },
-    unchecked: {
-      icon: '😿',
-      text: 'No acepto mascotas',
-    },
-  },
-  talk: {
-    checked: {
-      icon: '🗣️',
-      text: 'Prefiero hablar durante el camino',
-    },
-    unchecked: {
-      icon: '🤐',
-      text: 'Prefiero no hablar durante el camino',
-    },
-  },
-};
-
 function valuetext(value: number) {
   return `${value}°C`;
 }
@@ -187,7 +144,7 @@ export default function SearchResults() {
       <div className="z-50 bg-white pt-4">
         <div className="grid grid-cols-9 grid-rows-2 place-content-center place-items-center gap-y-2 px-2">
           <BackButton className="bg-white" />
-          <div className="justify-between row-span-2 flex h-full w-full flex-col items-center py-4 text-turquoise">
+          <div className="row-span-2 flex h-full w-full flex-col items-center justify-between py-4 text-turquoise">
             <SourcePin className="h-5 w-5 flex-none" />
             <ThreeDots className="w-5 flex-none" />
             <TargetPin className="h-5 w-5 flex-none" />
@@ -314,32 +271,32 @@ export default function SearchResults() {
       <div className="divide-y-2 divide-light-gray">
         {isLoading || isError
           ? [1, 2, 3, 4, 5].map((i) => (
-            <TripCardSkeleton
-              key={i}
-              className="rounded-md bg-white outline outline-1 outline-light-gray"
-            />
-          ))
-          : searchResults.map((trip) => (
-            <Link
-              key={trip.name}
-              href="/ride/V1StGXR8_Z5jdHi6B-myT/details?requested=false"
-              className="w-full"
-            >
-              <TripCard
-                key={trip.name}
-                type={trip.type}
-                rating={trip.rating}
-                name={trip.name}
-                avatar={trip.avatar}
-                origin={trip.origin}
-                destination={trip.destination}
-                date={trip.date}
-                price={trip.price}
+              <TripCardSkeleton
+                key={i}
                 className="rounded-md bg-white outline outline-1 outline-light-gray"
-                href={NEXT_ROUTES.RIDE_DETAILS(trip.id)}
               />
-            </Link>
-          ))}
+            ))
+          : searchResults.map((trip) => (
+              <Link
+                key={trip.name}
+                href="/ride/V1StGXR8_Z5jdHi6B-myT/details?requested=false"
+                className="w-full"
+              >
+                <TripCard
+                  key={trip.name}
+                  type={trip.type}
+                  rating={trip.rating}
+                  name={trip.name}
+                  avatar={trip.avatar}
+                  origin={trip.origin}
+                  destination={trip.destination}
+                  date={trip.date}
+                  price={trip.price}
+                  className="rounded-md bg-white outline outline-1 outline-light-gray"
+                  href={NEXT_ROUTES.TRIP_DETAILS(trip.id)}
+                />
+              </Link>
+            ))}
       </div>
       <Drawer
         anchor="bottom"
@@ -466,6 +423,7 @@ export default function SearchResults() {
             <p className="text-xs">
               En base a las preferencias y normas de los conductores
             </p>
+            {/* TODO: This code is copypasted from the profile, make a component!! */}
             <div className="my-4 grid grid-cols-2 grid-rows-2 place-items-center gap-3">
               <PreferenceBox
                 checked={allowSmoke}
@@ -520,9 +478,9 @@ export default function SearchResults() {
                   sx={{
                     fontFamily: 'Lato, sans-serif',
                     '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
-                    {
-                      borderColor: '#7cc3c4',
-                    },
+                      {
+                        borderColor: '#7cc3c4',
+                      },
                     '& .MuiFormLabel-root.Mui-focused': {
                       color: '#7cc3c4',
                     },
@@ -533,9 +491,9 @@ export default function SearchResults() {
                   sx={{
                     fontFamily: 'Lato, sans-serif',
                     '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
-                    {
-                      borderColor: '#7cc3c4',
-                    },
+                      {
+                        borderColor: '#7cc3c4',
+                      },
                     '& .MuiFormLabel-root.Mui-focused': {
                       color: '#7cc3c4',
                     },

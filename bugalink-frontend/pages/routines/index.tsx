@@ -3,6 +3,7 @@ import RoutineCard from '@/components/cards/routine';
 import AnimatedLayout from '@/components/layouts/animated';
 import RoutineCardSkeleton from '@/components/skeletons/Routine';
 import NEXT_ROUTES from '@/constants/nextRoutes';
+import { WEEK_DAYS } from '@/constants/weekDays';
 import useDriver from '@/hooks/useDriver';
 import usePassenger from '@/hooks/usePassenger';
 import DriverRoutineI from '@/interfaces/driverRoutine';
@@ -15,16 +16,6 @@ import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useState } from 'react';
-
-const WEEK_DAYS = {
-  Mon: 'Lunes',
-  Tue: 'Martes',
-  Wed: 'Miércoles',
-  Thu: 'Jueves',
-  Fri: 'Viernes',
-  Sat: 'Sábado',
-  Sun: 'Domingo',
-};
 
 const mergeRoutines = (
   passengerRoutines: PassengerRoutineI[],
@@ -51,28 +42,23 @@ const mergeRoutines = (
 export default function MyRoutines() {
   const { data } = useSession();
   const user = data?.user as User;
-  const passengerId = user?.passenger_id;
-  const driverId = user?.driver_id;
-
   const {
     passenger,
-    isLoading: isLoadingPassenger,
-    isError: isErrorPassenger,
-  } = usePassenger(passengerId);
-
+    isLoading: passengerIsLoading,
+    isError: passengerIsError,
+  } = usePassenger(user?.passenger_id);
   const {
     driver,
-    isLoading: isLoadingDriver,
-    isError: isErrorDriver,
-  } = useDriver(driverId);
-
-  const isLoading = isLoadingPassenger || isLoadingDriver;
-  const isError = isErrorPassenger || isErrorDriver;
+    isLoading: driverIsLoading,
+    isError: driverIsError,
+  } = useDriver(user?.driver_id);
 
   const passengerRoutines = passenger?.routines || [];
   const driverRoutines = driver?.routines || [];
-
   const allRoutines = mergeRoutines(passengerRoutines, driverRoutines);
+
+  const isLoading = passengerIsLoading || driverIsLoading;
+  const isError = passengerIsError || driverIsError;
 
   return (
     <AnimatedLayout className="flex flex-col bg-white">

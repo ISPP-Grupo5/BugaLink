@@ -24,7 +24,8 @@ class TripSerializer(serializers.ModelSerializer):
         )
 
     def get_passengers(self, obj) -> PassengerAsUserSerializer(many=True):
-        trip_requests = TripRequest.objects.filter(trip=obj)
+        # Filter for those trip requests in which trip=obj and status=accepted
+        trip_requests = TripRequest.objects.filter(trip=obj, status="ACCEPTED")
         return PassengerAsUserSerializer(
             [trip_request.passenger for trip_request in trip_requests], many=True
         ).data

@@ -12,8 +12,10 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Destino from 'public/icons/Vista-Principal/destino.svg';
 import { useState } from 'react';
-import Glass from '/public/icons/Vista-Principal/glass.svg';
+import MagnifyingGlass from '/public/icons/Vista-Principal/glass.svg';
 import Avatar from '@/components/avatar';
+import InformativeCard from '@/components/cards/informative';
+import BookmarkTripList from '@/components/bookmarks/list';
 
 export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -32,8 +34,8 @@ export default function Home() {
               className="ml-2 h-full w-full rounded-full pl-2 outline-none"
             />
             <Link href={NEXT_ROUTES.SEARCH_RESULTS}>
-              <button data-cy="search-btn" type="submit">
-                <Glass />
+              <button data-cy="search-btn" type="submit" className="flex">
+                <MagnifyingGlass className="fill-turquoise" />
               </button>
             </Link>
           </form>
@@ -64,21 +66,17 @@ export default function Home() {
 
         <span className="mt-4 mb-2 flex justify-between px-4 md:px-5">
           <p className="text-left text-xl font-semibold">Mis próximos viajes</p>
-          <Link data-cy="history-link" href={NEXT_ROUTES.RIDE_HISTORY}>
+          <Link data-cy="history-link" href={NEXT_ROUTES.TRIP_HISTORY}>
             <p className="text-right text-xl text-turquoise">Historial</p>
           </Link>
         </span>
         <UpcomingTripsCarousel />
 
-        <span className="mt-4 flex flex-col px-4 md:px-5">
+        <span className="mt-6 flex flex-col px-4 md:px-5">
           <p className="mb-2 text-left text-xl font-semibold">
             Mis viajes guardados
           </p>
-          <div className="w-full rounded-md border border-border-color py-3 text-center text-lg font-light text-gray">
-            ¿Has encontrado un viaje que te interesa?
-            <br />
-            ¡Guárdalo y aparecerá aquí!
-          </div>
+          <BookmarkTripList />
         </span>
       </div>
       <RecommendationsDrawer open={drawerOpen} setOpen={setDrawerOpen} />

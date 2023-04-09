@@ -1,7 +1,6 @@
-from rest_framework import serializers
-
 from driver_routines.serializers import DriverRoutineSerializer
 from drivers.models import Driver
+from rest_framework import serializers
 from trips.models import Trip
 from trips.serializers import TripSerializer
 
@@ -15,7 +14,14 @@ class DriverSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Driver
-        fields = ("id", "routines", "trips", "dni_front", "dni_back", "driver_license", "sworn_declaration")
+        fields = (
+            "id",
+            "routines",
+            "trips",
+            "dni_status",
+            "driver_license_status",
+            "sworn_declaration_status",
+        )
 
     def get_routines(self, obj) -> DriverRoutineSerializer(many=True):
         routines = obj.routines.all()
@@ -26,7 +32,8 @@ class DriverSerializer(serializers.ModelSerializer):
         trips = Trip.objects.filter(driver_routine__driver=obj)
         return TripSerializer(trips, many=True).data
 
+
 class PreferencesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Driver
-        fields=("prefers_talk", "prefers_music", "allows_pets", "allows_smoke")
+        fields = ("prefers_talk", "prefers_music", "allows_pets", "allows_smoke")

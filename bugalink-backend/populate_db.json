@@ -5,21 +5,24 @@
 			"first_name": "Federico",
 			"last_name": "de los Palotes",
 			"email": "federico@bugalink.com",
-			"is_driver": true
+			"is_driver": true,
+			"is_validated_driver": true
 		},
 		{
 			"password": "pbkdf2_sha256$600000$LbkMRestsmHuPzQS98iiYD$471fl7AvnhcsfUvg6+ayeEl3zX+v7nTHh8LUQiy9RxI=",
 			"first_name": "Ramón Antonio",
 			"last_name": "Pérez González",
 			"email": "ramonantonio@bugalink.com",
-			"is_driver": true
+			"is_driver": true,
+			"is_validated_driver": true
 		},
 		{
 			"password": "M4r14",
 			"first_name": "María Lucía",
 			"last_name": "Hernández de la Roña",
 			"email": "marialucia@bugalink.com",
-			"is_driver": true
+			"is_driver": true,
+			"is_validated_driver": false
 		},
 		{
 			"password": "C0nch4",
@@ -164,33 +167,33 @@
 	"Trip": [
 		{
 			"driver_routine_id": 1,
+			"departure_datetime": "2023-03-09T08:00:00.000Z",
+			"arrival_datetime": "2023-03-09T09:00:00.000Z",
+			"status": "PENDING"
+		},
+		{
+			"driver_routine_id": 2,
 			"status": "PENDING",
 			"departure_datetime": "2023-03-09T08:00:00.000Z",
 			"arrival_datetime": "2023-03-09T09:00:00.000Z"
 		},
 		{
-			"driver_routine_id": 2,
-			"status": "PENDING",
-			"departure_datetime": "2023-03-10T08:00:00.000Z",
-			"arrival_datetime": "2023-03-10T09:00:00.000Z"
-		},
-		{
 			"driver_routine_id": 3,
 			"status": "PENDING",
-			"departure_datetime": "2023-03-11T08:00:00.000Z",
-			"arrival_datetime": "2023-03-11T09:00:00.000Z"
+			"departure_datetime": "2023-03-09T08:00:00.000Z",
+			"arrival_datetime": "2023-03-09T09:00:00.000Z"
 		},
 		{
 			"driver_routine_id": 4,
 			"status": "PENDING",
-			"departure_datetime": "2023-03-12T08:00:00.000Z",
-			"arrival_datetime": "2023-03-12T09:00:00.000Z"
+			"departure_datetime": "2023-03-09T08:00:00.000Z",
+			"arrival_datetime": "2023-03-09T09:00:00.000Z"
 		},
 		{
 			"driver_routine_id": 5,
 			"status": "PENDING",
-			"departure_datetime": "2023-03-13T08:00:00.000Z",
-			"arrival_datetime": "2023-03-13T09:00:00.000Z"
+			"departure_datetime": "2023-03-09T08:00:00.000Z",
+			"arrival_datetime": "2023-03-09T09:00:00.000Z"
 		}
 	],
 	"TripRequest": [
@@ -199,7 +202,7 @@
 			"status": "PENDING",
 			"note": "Hola me gustaría ir en su vehículo.",
 			"reject_note": "",
-			"passenger_id": 2,
+			"passenger_id": 3,
 			"price": 2.0
 		},
 		{
@@ -207,21 +210,23 @@
 			"status": "REJECTED",
 			"note": "Hola me gustaría ir en su vehículo.",
 			"reject_note": "Al final voy a tener que cancelar el viaje completo.",
-			"passenger_id": 3,
+			"passenger_id": 2,
 			"price": 2.0
 		},
 		{
-			"trip_id": 2,
-			"status": "PENDING",
-			"note": "Hola me gustaría ir en su vehículo.",
-			"passenger_id": 4,
-			"price": 2.0
-		},
-		{
-			"trip_id": 2,
+			"trip_id": 1,
 			"status": "ACCEPTED",
 			"note": "Hola me gustaría ir en su vehículo.",
+			"reject_note": "Al final voy a tener que cancelar el viaje completo.",
 			"passenger_id": 5,
+			"price": 2.0
+		},
+		{
+			"trip_id": 1,
+			"status": "ACCEPTED",
+			"note": "Hola me gustaría ir en su vehículo.",
+			"reject_note": "Al final voy a tener que cancelar el viaje completo.",
+			"passenger_id": 4,
 			"price": 2.0
 		}
 	],

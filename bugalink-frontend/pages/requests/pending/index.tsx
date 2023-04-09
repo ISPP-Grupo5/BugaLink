@@ -14,7 +14,7 @@ export default function PendingRequests() {
   return (
     <AnimatedLayout className="overflow-y-scroll bg-white">
       <BackButtonText text={'Solicitudes pendientes'} />
-      <div className="px-6">
+      <div className="flex flex-col space-y-8 px-6">
         {isLoading || isError
           ? [1, 2, 3].map((i) => <RequestCardSkeleton key={i} />)
           : pendingRequests?.map((request: TripRequestI) => (
@@ -26,7 +26,6 @@ export default function PendingRequests() {
                   data-cy="request-accept"
                   key={request.id}
                   request={request}
-                  className="mb-8"
                 />
               </Link>
             ))}

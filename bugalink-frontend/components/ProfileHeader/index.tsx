@@ -36,7 +36,9 @@ export default function ProfileHeader({ user, className = '' }: Params) {
             {shortenName(user.first_name, user.last_name)}
           </p>
           <p className="text-xs font-normal">
-            ⭐ {user.rating} - {user.number_ratings} valoraciones
+            {user.number_ratings > 0
+              ? `⭐ ${user.rating} · ${user.number_ratings} valoraciones`
+              : 'Sin valoraciones'}
           </p>
         </div>
       </div>

@@ -18,6 +18,8 @@ from trips.serializers import (
     TripSerializer,
 )
 
+from .utils import get_recommendations
+
 
 class TripViewSet(
     mixins.RetrieveModelMixin,
@@ -194,10 +196,7 @@ class TripRecommendationViewSet(
                 passenger__user_id=request.GET.get("user_id")
             ):
                 data["trips"] = (
-                    data["trips"]
-                    + PassengerRoutineSerializer(passenger_routine)
-                    .get_recommendations(obj=passenger_routine)
-                    .data
+                    data["trips"] + get_recommendations(obj=passenger_routine).data
                 )
 
             return Response(data, status=status.HTTP_200_OK)

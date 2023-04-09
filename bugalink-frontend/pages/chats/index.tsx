@@ -41,7 +41,7 @@ const ConversationListItem = ({ conversation, authUser }) => {
 
   // Get who is the user who i'm chatting with (the one we want to display)
   const otherUser =
-    conversation?.receiver.id === authUser.user_id
+    conversation?.receiver.id === authUser?.user_id
       ? conversation.initiator
       : conversation.receiver;
 

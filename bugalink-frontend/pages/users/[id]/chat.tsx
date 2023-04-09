@@ -63,7 +63,7 @@ const ChatHeader = ({
 }) => {
   // We have to detect if we are the initiator or the receiver of the conversation
   const otherUser =
-    conversation?.receiver.id === user.user_id
+    conversation?.receiver.id === user?.user_id
       ? conversation.initiator
       : conversation.receiver;
 
@@ -89,20 +89,23 @@ const ChatHeader = ({
         </Link>
       </span>
       {conversation.most_recent_trip && (
-        <span className="mt-4 grid grid-cols-2 gap-2">
+        <Link
+          href={NEXT_ROUTES.TRIP_DETAILS(conversation.most_recent_trip.id)}
+          className="mt-4 grid grid-cols-2 gap-2"
+        >
           <Entry title="Origen">
             <OriginPin className="aspect-square flex-none scale-125 text-white" />
             <p className="truncate">
-              {conversation.most_recent_trip.driver_routine.origin}
+              {conversation.most_recent_trip.driver_routine.origin.address}
             </p>
           </Entry>
           <Entry title="Destino">
             <DestinationPin className="aspect-square flex-none translate-y-0.5 scale-125 text-pale-green" />
             <p className="truncate">
-              {conversation.most_recent_trip.driver_routine.destination}
+              {conversation.most_recent_trip.driver_routine.destination.address}
             </p>
           </Entry>
-        </span>
+        </Link>
       )}
     </div>
   );

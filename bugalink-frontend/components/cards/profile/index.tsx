@@ -1,5 +1,6 @@
 import PreferenceBox from '@/components/preferences/box';
 import NEXT_ROUTES from '@/constants/nextRoutes';
+import { preferences } from '@/constants/preferences';
 import { Drawer } from '@mui/material';
 import { User } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
@@ -12,49 +13,6 @@ import Logout from 'public/assets/log-out.svg';
 import Preferences from 'public/assets/preferences.svg';
 import Wallet from 'public/assets/wallet.svg';
 import { useState } from 'react';
-
-const preferences = {
-  smoke: {
-    checked: {
-      icon: '🚬',
-      text: 'Puedes fumar en mi coche',
-    },
-    unchecked: {
-      icon: '🚭',
-      text: 'Mi coche es libre de humos',
-    },
-  },
-  music: {
-    checked: {
-      icon: '🔉',
-      text: 'Conduzco con música',
-    },
-    unchecked: {
-      icon: '🔇',
-      text: 'Prefiero ir sin música',
-    },
-  },
-  pets: {
-    checked: {
-      icon: '🐾',
-      text: 'Puedes traer a tu mascota',
-    },
-    unchecked: {
-      icon: '😿',
-      text: 'No acepto mascotas',
-    },
-  },
-  talk: {
-    checked: {
-      icon: '🗣️',
-      text: 'Prefiero hablar durante el camino',
-    },
-    unchecked: {
-      icon: '🤐',
-      text: 'Prefiero no hablar durante el camino',
-    },
-  },
-};
 
 export default function ProfileItems() {
   const [drawerPreferences, setDrawerPreferences] = useState(false);

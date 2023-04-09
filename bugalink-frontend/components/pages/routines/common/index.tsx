@@ -2,17 +2,17 @@ import { BackButton } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import PlusMinusCounter from '@/components/buttons/PlusMinusCounter';
 import TextAreaField from '@/components/forms/TextAreaField';
+import TextField from '@/components/forms/TextField';
 import TimePicker from '@/components/forms/TimePicker';
 import AnimatedLayout from '@/components/layouts/animated';
 import PlacesAutocomplete from '@/components/maps/placesAutocomplete';
+import NEXT_ROUTES from '@/constants/nextRoutes';
+import { axiosAuth } from '@/lib/axios';
 import { useLoadScript } from '@react-google-maps/api';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import { useMemo, useRef, useState } from 'react';
 import { getGeocode, getLatLng } from 'use-places-autocomplete';
-import TextField from '@/components/forms/TextField';
-import { axiosAuth } from '@/lib/axios';
-import { useRouter } from 'next/router';
-import NEXT_ROUTES from '@/constants/nextRoutes';
 
 const MIN_FREE_SEATS = 1;
 const MAX_FREE_SEATS = 8;
@@ -199,14 +199,9 @@ export default function NewRoutine({
         axiosAuth
           .post(url, data)
           .then((response) => {
-            console.log('Data:', response.data);
-            console.log(
-              'Los datos del formulario son válidos. ¡Enviando formulario!'
-            );
             router.push(NEXT_ROUTES.MY_ROUTINES);
           })
           .catch((error) => {
-            console.error('Error:', error);
             setIsSendingForm(false);
           });
       } else {
@@ -217,7 +212,7 @@ export default function NewRoutine({
 
   return (
     <AnimatedLayout className="bg-white">
-      <BackButton className="absolute left-2 top-2 bg-base-origin py-3 pr-2 shadow-xl" />
+      <BackButton className="absolute left-2 top-2 bg-base-origin py-3 px-2 shadow-xl" />
       <div className="flex h-full flex-col overflow-y-scroll">
         <div className="h-full min-h-[30%]">
           {originCoords && destinationCoords ? (

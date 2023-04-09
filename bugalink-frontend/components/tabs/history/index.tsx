@@ -1,3 +1,4 @@
+import InformativeCard from '@/components/cards/informative';
 import TripCard from '@/components/cards/recommendation';
 import TripCardSkeleton from '@/components/skeletons/TripCard';
 import NEXT_ROUTES from '@/constants/nextRoutes';
@@ -94,10 +95,10 @@ const HistoryList = ({ trips, type, isLoading, isError }) => {
 
   return (
     <div className="absolute w-full divide-y-2 divide-light-gray px-4">
-      {!isError && trips && trips.length === 0 && (
-        <div className="mx-4 mt-4 rounded-md border border-border-color py-5 text-center text-2xl font-light text-gray md:mx-5">
-          No has realizado todavía ningún viaje.
-        </div>
+      {!isLoading && !isError && trips && trips.length === 0 && (
+        <InformativeCard className="mt-4 text-xl">
+          No has realizado ningún viaje todavía.
+        </InformativeCard>
       )}
       {isLoading || isError
         ? [1, 2, 3, 4].map((i) => <TripCardSkeleton key={i} />)
@@ -112,7 +113,7 @@ const HistoryList = ({ trips, type, isLoading, isError }) => {
               destination={tripRequest.trip.driver_routine.destination.address}
               date={tripRequest.trip.departure_datetime}
               price={Number.parseFloat(tripRequest.trip.driver_routine.price)}
-              href={NEXT_ROUTES.RATING_RIDE(USER_ID)}
+              href={NEXT_ROUTES.RATING_TRIP(USER_ID)}
               isHistory
             />
           ))}

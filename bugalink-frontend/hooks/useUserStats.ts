@@ -1,15 +1,28 @@
-import { fetcherAuth } from '@/utils/fetcher';
-import useSWR from 'swr';
+import UserStatsI from '@/interfaces/userStats';
+import { axiosAuth } from '@/lib/axios';
+import { useEffect, useState } from 'react';
 
-export default function useUserStats(id) {
-  const { data, error, isLoading } = useSWR(
-    `/users/${id}/stats`,
-    fetcherAuth
-  );
+export default function useUserStats(id: string | number | undefined) {
+  const [userStats, setUserStats] = useState<UserStatsI>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
-  return {
-    stats: data,
-    isLoading,
-    isError: error,
-  };
+  useEffect(() => {
+    if (!id) return;
+    const fetchUserStats = async () => {
+      try {
+        const response = await axiosAuth.get(`/users/${id}/stats`);
+        const { data } = response;
+        setUserStats(data);
+        setIsLoading(false);
+      } catch (error) {
+        setIsError(true);
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserStats();
+  }, [id]);
+
+  return { userStats, isLoadingStats: isLoading, isErrorStats: isError };
 }

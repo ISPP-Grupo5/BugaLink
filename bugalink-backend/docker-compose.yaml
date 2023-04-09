@@ -1,6 +1,12 @@
 version: "3.7"
 
 services:
+  redis:
+    image: "redis:7.0.10"
+    container_name: bugalink_redis
+    command: redis-server
+    ports:
+      - "6379:6379"
   db:
     image: "postgres:15"
     environment:

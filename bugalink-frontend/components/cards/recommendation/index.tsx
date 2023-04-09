@@ -1,5 +1,6 @@
 import AvatarWithRating from '@/components/avatar/withRating';
 import Entry from '@/components/cards/common/entry';
+import { formatDatetime } from '@/utils/formatters';
 import Link from 'next/link';
 import Calendar from '/public/assets/calendar.svg';
 import MapPin from '/public/assets/map-pin.svg';
@@ -60,7 +61,7 @@ export default function TripCard({
         <p className="truncate">{origin}</p>
       </Entry>
       <Entry title="Destino">
-        <MapPin />
+        <MapPin className="flex-none" />
         <p className="truncate">{destination}</p>
       </Entry>
       <Entry title="Precio por asiento">
@@ -70,8 +71,8 @@ export default function TripCard({
         })}
       </Entry>
       <Entry title="Fecha y hora">
-        <Calendar />
-        <p className="truncate">{date}</p>
+        <Calendar className="flex-none" />
+        <p className="truncate">{formatDatetime(date)}</p>
       </Entry>
       {note && (
         <div className="col-span-2 pt-2">

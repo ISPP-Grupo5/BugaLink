@@ -35,10 +35,12 @@ INSTALLED_APPS = [
     "ratings",
     "trips",
     "users",
+    "chats",
     "transactions",
     # Third-party packages
     "drf_spectacular",
     "rest_framework",
+    "channels",
     # Auth modules
     "rest_framework.authtoken",
     "dj_rest_auth",
@@ -200,3 +202,14 @@ STATICFILES_DIRS = []
 
 # TODO: only allow cors requests from the frontend (localhost:3000 or the deployed url)
 CORS_ORIGIN_ALLOW_ALL = True
+
+ASGI_APPLICATION = "bugalink_backend.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}

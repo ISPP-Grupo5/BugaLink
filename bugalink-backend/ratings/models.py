@@ -33,4 +33,4 @@ class Report(models.Model):
     note = models.CharField(max_length=2048)
 
     def __str__(self):
-        return f"{self.trip} - {self.rating}"
+        return f"{self.reported_user} REPORTED BY {self.reporter_user}"

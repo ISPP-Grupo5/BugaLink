@@ -8,6 +8,8 @@ import useUserStats from '@/hooks/useUserStats';
 import UserI from '@/interfaces/user';
 import { shortenName } from '@/utils/formatters';
 import { GetServerSideProps } from 'next';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Check from 'public/assets/check.svg';
 
@@ -24,11 +26,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default function Profile({ data }) {
-  const userId = data.id;
-  const user = useUser(userId).user as UserI;
+  const authUser = useSession().data?.user as User;
 
-  const { userStats } = useUserStats(userId);
-  const isMyProfile = user?.id === userId;
+  const profileUserId = data.id;
+  const user = useUser(profileUserId).user as UserI;
+
+  const { userStats } = useUserStats(profileUserId);
+  const isMyProfile = authUser?.user_id.toString() === profileUserId;
 
   if (!user) return <div></div>;
   return (
@@ -55,7 +59,7 @@ export default function Profile({ data }) {
             {shortenName(user.first_name, user.last_name)}
           </p>
           {isMyProfile && (
-            <Link href={NEXT_ROUTES.EDIT_PROFILE(userId)}>
+            <Link href={NEXT_ROUTES.EDIT_PROFILE(profileUserId)}>
               <p className="text-md text-gray ">Editar perfil</p>
             </Link>
           )}

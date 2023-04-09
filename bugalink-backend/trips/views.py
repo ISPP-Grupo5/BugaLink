@@ -113,26 +113,24 @@ class TripSearchViewSet(
 
     @action(detail=True, methods=["get"])
     def get(self, request, *args, **kwargs):
+        # Se busca entre los viajes pendientes
+        trips = Trip.objects.filter(status="PENDING")
+        result_trips = []
+        # Comprobacion de campos obligatorios
+        if not request.GET.get("origin") or not request.GET.get("destination"):
+            return Response(
+                {"message": "El origen y el destino son obligatorios"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        origin_lat, origin_lon = request.GET.get("origin").split(",")
+        dest_lat, dest_lon = request.GET.get("destination").split(",")
+        origin_location = Location(
+            latitude=float(origin_lat), longitude=float(origin_lon)
+        )
+        dest_location = Location(latitude=float(dest_lat), longitude=float(dest_lon))
+
         try:
-            # Se busca entre los viajes pendientes
-            trips = Trip.objects.filter(status="PENDING")
-            result_trips = []
-            # Comprobacion de campos obligatorios
-            if not request.GET.get("origin") or not request.GET.get("destination"):
-                return Response(
-                    {"message": "El origen y el destino son obligatorios"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            origin_lat, origin_lon = request.GET.get("origin").split(",")
-            dest_lat, dest_lon = request.GET.get("destination").split(",")
-            origin_location = Location(
-                latitude=float(origin_lat), longitude=float(origin_lon)
-            )
-            dest_location = Location(
-                latitude=float(dest_lat), longitude=float(dest_lon)
-            )
-
             if request.GET.get("days"):
                 trips = check_days(trips, request.GET.get("days"))
 
@@ -142,50 +140,61 @@ class TripSearchViewSet(
             if request.GET.get("max_price"):
                 trips = check_maxprice(trips, request.GET.get("max_price"))
 
-            check_distance(result_trips, trips, origin_location, dest_location)
+            result_trips = check_distance(
+                result_trips, trips, origin_location, dest_location
+            )
 
             if request.GET.get("min_stars"):
-                check_minstars(result_trips, request.GET.get("min_stars"))
+                result_trips = check_minstars(
+                    result_trips, request.GET.get("min_stars")
+                )
 
             if request.GET.get("date_from"):
-                check_date_from(result_trips, request.GET.get("date_from"))
+                result_trips = check_date_from(
+                    result_trips, request.GET.get("date_from")
+                )
 
             if request.GET.get("date_to"):
-                check_date_to(result_trips, request.GET.get("date_to"))
+                result_trips = check_date_to(result_trips, request.GET.get("date_to"))
 
             if request.GET.get("hour_from"):
-                check_hour_from(result_trips, request.GET.get("hour_from"))
+                result_trips = check_hour_from(
+                    result_trips, request.GET.get("hour_from")
+                )
 
             if request.GET.get("hour_to"):
-                check_hour_to(result_trips, request.GET.get("hour_to"))
+                result_trips = check_hour_to(result_trips, request.GET.get("hour_to"))
 
             if request.GET.get("prefers_music"):
-                check_prefers_music(result_trips, request.GET.get("prefers_music"))
+                result_trips = check_prefers_music(
+                    result_trips, request.GET.get("prefers_music")
+                )
 
             if request.GET.get("prefers_talk"):
-                check_prefers_talk(result_trips, request.GET.get("prefers_talk"))
+                result_trips = check_prefers_talk(
+                    result_trips, request.GET.get("prefers_talk")
+                )
 
             if request.GET.get("allows_pets"):
-                check_allows_pets(result_trips, request.GET.get("allows_pets"))
+                result_trips = check_allows_pets(
+                    result_trips, request.GET.get("allows_pets")
+                )
 
             if request.GET.get("allows_smoking"):
-                check_allows_smoking(result_trips, request.GET.get("allows_smoking"))
+                result_trips = check_allows_smoking(
+                    result_trips, request.GET.get("allows_smoking")
+                )
 
-            print(result_trips)
             result_trips = Trip.objects.filter(
                 Q(pk__in=[trip.pk for trip in result_trips])
             ).order_by("-departure_datetime")[:10]
 
-            if len(result_trips) > 0:
-                data = {"trips": []}
-                for trip in result_trips:
-                    data["trips"].append(TripSerializer(trip).data)
-                return Response(data, status=status.HTTP_200_OK)
-            else:
-                return Response(
-                    {"message": "No se han encontrado viajes compatibles"},
-                    status=status.HTTP_200_OK,
-                )
-
-        except Exception as e:
-            return Response({"message": str(e)})
+            data = {"trips": []}
+            for trip in result_trips:
+                data["trips"].append(TripSerializer(trip).data)
+            return Response(data, status=status.HTTP_200_OK)
+        except Exception:
+            return Response(
+                {"message": "No se han encontrado viajes compatibles"},
+                status=status.HTTP_200_OK,
+            )

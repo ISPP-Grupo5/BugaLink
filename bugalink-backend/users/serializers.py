@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from drivers.models import Driver
 from passengers.models import Passenger
 from ratings.models import DriverRating
@@ -59,13 +60,15 @@ class UserRatingSerializer(serializers.ModelSerializer):
         fields = ["pk", "number_ratings", "rating"]
 
     def get_rating(self, obj) -> serializers.FloatField:
-        ratings = DriverRating.objects.filter(
-            trip_request__trip__driver_routine__driver__user=obj
+        avg_rating = (
+            DriverRating.objects.filter(
+                trip_request__trip__driver_routine__driver__user=obj
+            )
+            .aggregate(Avg("rating"))
+            .get("rating__avg")
         )
-        if len(ratings) == 0:
-            return 0
-        values = [r.rating for r in ratings]
-        return sum(values) / len(ratings)
+
+        return avg_rating if avg_rating is not None else 0.0
 
     def get_number_ratings(self, obj) -> serializers.IntegerField:
         count = DriverRating.objects.filter(

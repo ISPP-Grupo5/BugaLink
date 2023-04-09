@@ -30,4 +30,4 @@ class Location(models.Model):
             lon / 2
         )
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-        return r * c
+        return abs(r * c)

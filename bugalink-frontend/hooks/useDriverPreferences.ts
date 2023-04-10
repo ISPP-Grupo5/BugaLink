@@ -1,12 +1,37 @@
-import { fetcherAuth } from '@/utils/fetcher';
-import useSWR from 'swr';
+import DriverPreferencesI from '@/interfaces/driverPreferences';
+import { axiosAuth } from '@/lib/axios';
+import { useEffect, useState } from 'react';
 
-export default function useDriverPreferences(id) {
-  const { data, error, isLoading } = useSWR(`/drivers/${id}/preferences`, fetcherAuth);
+export default function useDriverPreferences(
+  driverId: string | number | undefined
+) {
+  const [driverPreferences, setDriverPreferences] =
+    useState<DriverPreferencesI>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    if (!driverId) return;
+    const fetchUserStats = async () => {
+      try {
+        const response = await axiosAuth.get(
+          `/drivers/${driverId}/preferences`
+        );
+        const { data } = response;
+        setDriverPreferences(data);
+        setIsLoading(false);
+      } catch (error) {
+        setIsError(true);
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserStats();
+  }, [driverId]);
 
   return {
-    preferences: data,
+    preferences: driverPreferences,
     isLoadingPreferences: isLoading,
-    isErrorPreferences: error,
+    isErrorPreferences: isError,
   };
 }

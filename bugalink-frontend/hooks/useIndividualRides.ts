@@ -1,14 +1,12 @@
+import TripI from '@/interfaces/trip';
 import { fetcherAuth } from '@/utils/fetcher';
 import useSWR from 'swr';
 
-export default function useIndividualRides(individualRideId) {
-  const { data, error, isLoading } = useSWR(
-    `/individualRides/${individualRideId}`,
-    fetcherAuth
-  );
+export default function useTrip(tripId) {
+  const { data, error, isLoading } = useSWR(`/trips/${tripId}`, fetcherAuth);
 
   return {
-    individualRide: data,
+    trip: data as TripI,
     isLoading,
     isError: error,
   };

@@ -12,8 +12,10 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Destino from 'public/icons/Vista-Principal/destino.svg';
 import { useState } from 'react';
-import Glass from '/public/icons/Vista-Principal/glass.svg';
+import MagnifyingGlass from '/public/icons/Vista-Principal/glass.svg';
 import Avatar from '@/components/avatar';
+import InformativeCard from '@/components/cards/informative';
+import BookmarkTripList from '@/components/bookmarks/list';
 
 export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -32,8 +34,8 @@ export default function Home() {
               className="ml-2 h-full w-full rounded-full pl-2 outline-none"
             />
             <Link href={NEXT_ROUTES.SEARCH_RESULTS}>
-              <button data-cy="search-btn" type="submit">
-                <Glass />
+              <button data-cy="search-btn" type="submit" className="flex">
+                <MagnifyingGlass className="fill-turquoise" />
               </button>
             </Link>
           </form>
@@ -46,39 +48,37 @@ export default function Home() {
           </Link>
         </span>
 
-        <OptionButton
-          text="Crear viaje"
-          className="mx-auto mb-6 h-1/6 w-full px-4"
-          Option1="Como pasajero"
-          Option2={user?.driver_id ? 'Como conductor' : null}
-          isLink={true}
-          linkOption1={NEXT_ROUTES.NEW_ROUTINE_PASSENGER}
-          linkOption2={NEXT_ROUTES.NEW_ROUTINE_DRIVER}
-        />
+        {user?.is_validated_driver && (
+          <OptionButton
+            text="Crear viaje"
+            className="mx-auto mb-6 h-1/6 w-full px-4"
+            Option1="Como pasajero"
+            Option2={'Como conductor'}
+            isLink={true}
+            linkOption1={NEXT_ROUTES.NEW_ROUTINE_PASSENGER}
+            linkOption2={NEXT_ROUTES.NEW_ROUTINE_DRIVER}
+          />
+        )}
 
         <span className="flex w-full justify-between space-x-5 px-4 md:px-5">
           <SquareRoutinesButton userId={user?.user_id} />
           <SquareChatsButton />
-          <SquareRequestsButton />
+          <SquareRequestsButton disabled={!user?.is_validated_driver} />
         </span>
 
         <span className="mt-4 mb-2 flex justify-between px-4 md:px-5">
           <p className="text-left text-xl font-semibold">Mis próximos viajes</p>
-          <Link data-cy="history-link" href={NEXT_ROUTES.RIDE_HISTORY}>
+          <Link data-cy="history-link" href={NEXT_ROUTES.TRIP_HISTORY}>
             <p className="text-right text-xl text-turquoise">Historial</p>
           </Link>
         </span>
         <UpcomingTripsCarousel />
 
-        <span className="mt-4 flex flex-col px-4 md:px-5">
+        <span className="mt-6 flex flex-col px-4 md:px-5">
           <p className="mb-2 text-left text-xl font-semibold">
             Mis viajes guardados
           </p>
-          <div className="w-full rounded-md border border-border-color py-3 text-center text-lg font-light text-gray">
-            ¿Has encontrado un viaje que te interesa?
-            <br />
-            ¡Guárdalo y aparecerá aquí!
-          </div>
+          <BookmarkTripList />
         </span>
       </div>
       <RecommendationsDrawer open={drawerOpen} setOpen={setDrawerOpen} />

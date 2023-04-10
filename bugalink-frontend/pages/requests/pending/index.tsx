@@ -1,4 +1,5 @@
 import { BackButtonText } from '@/components/buttons/Back';
+import InformativeCard from '@/components/cards/informative';
 import RequestCard from '@/components/cards/request';
 import AnimatedLayout from '@/components/layouts/animated';
 import RequestCardSkeleton from '@/components/skeletons/RequestCard';
@@ -13,23 +14,25 @@ export default function PendingRequests() {
   return (
     <AnimatedLayout className="overflow-y-scroll bg-white">
       <BackButtonText text={'Solicitudes pendientes'} />
-      <div className="mx-6 space-y-4">
+      <div className="flex flex-col space-y-8 px-6">
         {isLoading || isError
           ? [1, 2, 3].map((i) => <RequestCardSkeleton key={i} />)
           : pendingRequests?.map((request: TripRequestI) => (
-              <Link key={request.id} href={NEXT_ROUTES.ACCEPT_RIDE(request.id)}>
+              <Link
+                key={request.id}
+                href={NEXT_ROUTES.ACCEPT_TRIP_REQUEST(request.id)}
+              >
                 <RequestCard
                   data-cy="request-accept"
                   key={request.id}
                   request={request}
-                  className="mb-4"
                 />
               </Link>
             ))}
         {pendingRequests && pendingRequests.length === 0 && (
-          <div className="mx-4 mt-4 rounded-md border border-border-color py-5 text-center text-xl font-light text-gray md:mx-5">
-            No tienes ninguna solictud pendiente.
-          </div>
+          <InformativeCard>
+            No tienes ninguna solictud pendiente
+          </InformativeCard>
         )}
       </div>
     </AnimatedLayout>

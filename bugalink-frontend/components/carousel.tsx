@@ -83,10 +83,10 @@ export default function UpcomingTripsCarousel(props) {
                 }),
               }}
             >
-              {(isLoading || isError) && (
+              {(!upcomingTrips || isLoading || isError) && (
                 <UpcomingCardSkeleton className={cardClassnames(tweenValues)} />
               )}
-              {upcomingTrips && upcomingTrips.length > 0 && (
+              {!isError && upcomingTrips && upcomingTrips.length > 0 && (
                 <UpcomingCard
                   trip={trip}
                   className={cardClassnames(tweenValues)}

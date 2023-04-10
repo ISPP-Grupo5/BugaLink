@@ -1,12 +1,15 @@
+import Avatar from '@/components/avatar';
 import { BackButtonText } from '@/components/buttons/Back';
 import ProfileItems from '@/components/cards/profile';
 import AnimatedLayout from '@/components/layouts/animated';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import useUser from '@/hooks/useUser';
-import useUserTotalRatings from '@/hooks/useUserTotalRatings';
-import useUserTotalRides from '@/hooks/useUserTotalRides';
+import useUserStats from '@/hooks/useUserStats';
 import UserI from '@/interfaces/user';
+import { shortenName } from '@/utils/formatters';
 import { GetServerSideProps } from 'next';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Check from 'public/assets/check.svg';
 
@@ -23,22 +26,27 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 export default function Profile({ data }) {
-  const userId = data.id;
-  const user = useUser(userId).user as UserI;
+  const authUser = useSession().data?.user as User;
 
-  const { userTotalRides } = useUserTotalRides(userId);
-  const { userTotalRatings } = useUserTotalRatings(userId);
+  const profileUserId = data.id;
+  const user = useUser(profileUserId).user as UserI;
+
+  const { userStats } = useUserStats(profileUserId);
+  const isMyProfile = authUser?.user_id.toString() === profileUserId;
 
   if (!user) return <div></div>;
   return (
     <AnimatedLayout className="flex h-full flex-col overflow-y-scroll">
-      <BackButtonText text="Mi perfil" className="bg-base-origin" />
+      <BackButtonText
+        text={isMyProfile ? 'Mi perfil' : `Perfil de ${user.first_name}`}
+        className="bg-base-origin"
+      />
       <div className="flex h-full flex-col -space-y-8">
         <div className="z-10 rounded-t-3xl text-center">
           <div className="relative mx-auto h-24 w-24 ">
-            <img
-              src={user.photo || '/assets/avatar.png'}
-              className="my-2 aspect-square rounded-full outline outline-8 outline-white"
+            <Avatar
+              src={user.photo}
+              className=" my-2 outline outline-8 outline-white"
             />
             <div id="check" className="absolute -bottom-2 -right-2">
               <div className="flex aspect-square w-9 items-center justify-center rounded-full bg-turquoise">
@@ -47,33 +55,33 @@ export default function Profile({ data }) {
             </div>
           </div>
 
-          <p className="pt-4 text-3xl ">
-            {user?.first_name || ''} {user?.last_name || ''}
+          <p className="pt-6 text-3xl">
+            {shortenName(user.first_name, user.last_name)}
           </p>
-          <Link href={NEXT_ROUTES.EDIT_PROFILE(userId)}>
-            <p className="text-md text-gray ">Editar perfil</p>
-          </Link>
+          {isMyProfile && (
+            <Link href={NEXT_ROUTES.EDIT_PROFILE(profileUserId)}>
+              <p className="text-md text-gray ">Editar perfil</p>
+            </Link>
+          )}
           <div className="py-4 text-light-gray">
             <hr></hr>
           </div>
           <div className="mx-4 mb-6 flex place-items-end justify-evenly space-x-4 ">
             <div className="w-full -space-y-1 rounded-lg bg-white p-2 shadow-lg">
               <p className="text-xl font-bold">
-                {user?.date_joined
-                  ? `Desde ${user.date_joined.substring(0, 4)} `
-                  : ''}
+                {user?.date_joined ? user.date_joined.substring(0, 4) : '—'}
               </p>
               <p className="text-sm text-gray">Antiguedad</p>
             </div>
             <div className="w-full -space-y-1 rounded-lg bg-white p-2 shadow-lg">
               <p className="text-xl font-bold">
-                {userTotalRides ? userTotalRides.total_rides : '0'}
+                {userStats ? userStats.total_rides : '—'}
               </p>
               <p className="text-sm text-gray">Viajes</p>
             </div>
             <div className="w-full -space-y-1 rounded-lg bg-white p-2 shadow-lg">
               <p className="text-xl font-bold">
-                {userTotalRatings ? `${userTotalRatings.rating} ⭐` : '0.0 ⭐'}
+                {userStats ? `${userStats.rating.toPrecision(2)} ⭐` : '—'}
               </p>
 
               <p className="text-sm text-gray">Valoraciones</p>
@@ -81,7 +89,7 @@ export default function Profile({ data }) {
           </div>
         </div>
       </div>
-      <ProfileItems />
+      {isMyProfile && <ProfileItems />}
     </AnimatedLayout>
   );
 }

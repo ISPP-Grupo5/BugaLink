@@ -1,15 +1,9 @@
 import NEXT_ROUTES from '@/constants/nextRoutes';
-import axios from 'axios';
+import { refreshAccessToken } from '@/utils/token';
 import type { NextAuthOptions } from 'next-auth';
 import NextAuth, { Session, User } from 'next-auth';
-import { CookiesOptions } from 'next-auth/core/types';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
-
-const refreshAccessToken = async (refresh) => {
-  const res = await axios.post('/auth/token/refresh/', { refresh });
-  return res.data.access;
-};
 
 const providers = [
   // ...add more providers here

@@ -12,12 +12,9 @@ class DriverRating(models.Model):
     rating = models.FloatField(
         validators=[MinValueValidator(1.0), MaxValueValidator(5.0)]
     )
-
-    # TODO: These are 3 preferences, not 4. Give meaningful names to the fields
-    preference_0 = models.BooleanField(default=False)
-    preference_1 = models.BooleanField(default=False)
-    preference_2 = models.BooleanField(default=False)
-    preference_3 = models.BooleanField(default=False)
+    is_good_driver = models.BooleanField(default=False)
+    is_pleasant_driver = models.BooleanField(default=False)
+    already_knew = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.trip_request.trip.driver_routine.driver.user} - {self.rating}"
@@ -36,4 +33,4 @@ class Report(models.Model):
     note = models.CharField(max_length=2048)
 
     def __str__(self):
-        return f"{self.trip} - {self.rating}"
+        return f"{self.reported_user} REPORTED BY {self.reporter_user}"

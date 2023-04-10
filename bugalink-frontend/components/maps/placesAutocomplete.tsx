@@ -5,9 +5,13 @@ import TextField from '@/components/forms/TextField';
 export default function PlacesAutocomplete({
   onAddressSelect,
   placeholder,
+  name,
+  error,
 }: {
   onAddressSelect?: (address: string) => void;
   placeholder?: string;
+  name?: string;
+  error?: string;
 }) {
   const {
     ready,
@@ -81,6 +85,8 @@ export default function PlacesAutocomplete({
         disabled={!ready}
         onClick={handleInputClick}
         parentClassName="mb-1"
+        name={name}
+        error={error}
       />
 
       {showSuggestions && status === 'OK' && (

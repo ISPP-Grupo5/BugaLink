@@ -5,40 +5,35 @@
       "first_name": "Federico",
       "last_name": "de los Palotes",
       "email": "federico@bugalink.com",
-      "is_passenger" : true,
-      "is_driver" : true
+      "is_driver": true
     },
     {
-      "password": "R4m0n",
+      "password": "pbkdf2_sha256$600000$LbkMRestsmHuPzQS98iiYD$471fl7AvnhcsfUvg6+ayeEl3zX+v7nTHh8LUQiy9RxI=",
       "first_name": "Ramón Antonio",
       "last_name": "Pérez González",
       "email": "ramonantonio@bugalink.com",
-      "is_passenger" : true,
-      "is_driver" : true
+      "is_driver": true
     },
     {
       "password": "M4r14",
       "first_name": "María Lucía",
       "last_name": "Hernández de la Roña",
       "email": "marialucia@bugalink.com",
-      "is_passenger" : true,
-      "is_driver" : true
+      "is_driver": true
     },
     {
       "password": "C0nch4",
       "first_name": "Concha Manuela",
       "last_name": "Sánchez del Río",
       "email": "conchamanuela@bugalink.com",
-      "is_passenger" : true,
-      "is_driver" : true
+      "is_driver": false
     },
     {
       "password": "Pr4d4",
       "first_name": "Ágata",
       "last_name": "Ruíz de la Prada",
       "email": "prada@bugalink.com",
-      "is_passenger" : true,
-      "is_driver" : true
+      "is_driver": false
     }
   ],
   "Passenger": [
@@ -79,20 +74,6 @@
       "prefers_music": false,
       "allows_smoke": false,
       "allows_pets": false
-    },
-    {
-      "user_id": 4,
-      "prefers_talk": true,
-      "prefers_music": true,
-      "allows_smoke": true,
-      "allows_pets": false
-    },
-    {
-      "user_id": 5,
-      "prefers_talk": true,
-      "prefers_music": false,
-      "allows_smoke": false,
-      "allows_pets": true
     }
   ],
   "Location": [
@@ -127,53 +108,53 @@
       "driver_id": 1,
       "available_seats": 3,
       "is_recurrent": true,
-      "departure_time_start": "8:00",
-      "departure_time_end": "8:15",
-      "arrival_time": "9:00",
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:15:00.000Z",
+      "arrival_time": "09:00:00.000Z",
       "origin_id": 1,
       "destination_id": 2,
       "day_of_week": "Mon",
       "price": 2.5
     },
     {
-      "driver_id": 2,
+      "driver_id": 1,
       "available_seats": 1,
-      "departure_time_start": "8:00",
-      "departure_time_end": "8:15",
-      "arrival_time": "9:00",
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:15:00.000Z",
+      "arrival_time": "09:00:00.000Z",
       "origin_id": 2,
       "destination_id": 1,
       "day_of_week": "Tue",
       "price": 3
     },
     {
-      "driver_id": 3,
+      "driver_id": 1,
       "available_seats": 1,
-      "departure_time_start": "8:00",
-      "departure_time_end": "8:15",
-      "arrival_time": "9:00",
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:15:00.000Z",
+      "arrival_time": "09:00:00.000Z",
       "origin_id": 2,
       "destination_id": 1,
       "day_of_week": "Wed",
       "price": 5
     },
     {
-      "driver_id": 4,
+      "driver_id": 2,
       "available_seats": 2,
-      "departure_time_start": "8:00",
-      "departure_time_end": "8:15",
-      "arrival_time": "9:00",
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:15:00.000Z",
+      "arrival_time": "09:00:00.000Z",
       "origin_id": 3,
       "destination_id": 1,
       "day_of_week": "Thu",
       "price": 1.8
     },
     {
-      "driver_id": 5,
+      "driver_id": 2,
       "available_seats": 1,
-      "departure_time_start": "8:00",
-      "departure_time_end": "8:15",
-      "arrival_time": "9:00",
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:15:00.000Z",
+      "arrival_time": "09:00:00.000Z",
       "origin_id": 1,
       "destination_id": 3,
       "day_of_week": "Fri",
@@ -183,33 +164,33 @@
   "Trip": [
     {
       "driver_routine_id": 1,
-      "departure_datetime": "2023-03-09 8:00",
-      "arrival_datetime": "2023-03-09 9:00",
+      "departure_datetime": "2023-03-09T08:00:00.000Z",
+      "arrival_datetime": "2023-03-09T09:00:00.000Z",
       "status": "PENDING"
     },
     {
       "driver_routine_id": 2,
       "status": "PENDING",
-      "departure_datetime": "2023-03-09 8:00",
-      "arrival_datetime": "2023-03-09 9:00"
+      "departure_datetime": "2023-03-09T08:00:00.000Z",
+      "arrival_datetime": "2023-03-09T09:00:00.000Z"
     },
     {
       "driver_routine_id": 3,
       "status": "PENDING",
-      "departure_datetime": "2023-03-09 8:00",
-      "arrival_datetime": "2023-03-09 9:00"
+      "departure_datetime": "2023-03-09T08:00:00.000Z",
+      "arrival_datetime": "2023-03-09T09:00:00.000Z"
     },
     {
       "driver_routine_id": 4,
       "status": "PENDING",
-      "departure_datetime": "2023-03-09 8:00",
-      "arrival_datetime": "2023-03-09 9:00"
+      "departure_datetime": "2023-03-09T08:00:00.000Z",
+      "arrival_datetime": "2023-03-09T09:00:00.000Z"
     },
     {
       "driver_routine_id": 5,
       "status": "PENDING",
-      "departure_datetime": "2023-03-09 8:00",
-      "arrival_datetime": "2023-03-09 9:00"
+      "departure_datetime": "2023-03-09T08:00:00.000Z",
+      "arrival_datetime": "2023-03-09T09:00:00.000Z"
     }
   ],
   "TripRequest": [
@@ -249,45 +230,45 @@
   "PassengerRoutine": [
     {
       "passenger_id": 1,
-      "departure_time_start": "8:00",
-      "departure_time_end": "8:30",
-      "arrival_time": "9:00",
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:30:00.000Z",
+      "arrival_time": "09:00:00.000Z",
       "origin_id": 3,
       "destination_id": 1,
       "day_of_week": "Mon"
     },
     {
       "passenger_id": 2,
-      "departure_time_start": "8:00",
-      "departure_time_end": "8:30",
-      "arrival_time": "9:00",
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:30:00.000Z",
+      "arrival_time": "09:00:00.000Z",
       "origin_id": 4,
       "destination_id": 5,
       "day_of_week": "Tue"
     },
     {
       "passenger_id": 3,
-      "departure_time_start": "8:00",
-      "departure_time_end": "8:30",
-      "arrival_time": "9:00",
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:30:00.000Z",
+      "arrival_time": "09:00:00.000Z",
       "origin_id": 4,
       "destination_id": 3,
       "day_of_week": "Wed"
     },
     {
       "passenger_id": 4,
-      "departure_time_start": "8:00",
-      "departure_time_end": "8:30",
-      "arrival_time": "9:00",
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:30:00.000Z",
+      "arrival_time": "09:00:00.000Z",
       "origin_id": 2,
       "destination_id": 3,
       "day_of_week": "Thu"
     },
     {
       "passenger_id": 5,
-      "departure_time_start": "8:00",
-      "departure_time_end": "8:30",
-      "arrival_time": "9:00",
+      "departure_time_start": "08:00:00.000Z",
+      "departure_time_end": "08:30:00.000Z",
+      "arrival_time": "09:00:00.000Z",
       "origin_id": 3,
       "destination_id": 4,
       "day_of_week": "Fri"
@@ -347,18 +328,16 @@
     {
       "trip_request_id": 3,
       "rating": 5.0,
-      "preference_0": true,
-      "preference_1": false,
-      "preference_2": false,
-      "preference_3": false
+      "is_good_driver": true,
+      "is_pleasant_driver": false,
+      "already_knew": false
     },
     {
       "trip_request_id": 4,
       "rating": 4.5,
-      "preference_0": false,
-      "preference_1": true,
-      "preference_2": false,
-      "preference_3": false
+      "is_good_driver": false,
+      "is_pleasant_driver": true,
+      "already_knew": false
     }
   ],
   "Report": [

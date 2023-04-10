@@ -19,7 +19,7 @@ class Trip(models.Model):
     )
 
     def __str__(self):
-        return f"{self.driver_routine} on {self.departure_datetime}"
+        return f"{self.pk} - {self.driver_routine} on {self.departure_datetime}"
 
 
 # Model TripRequest has the following fields:
@@ -46,4 +46,4 @@ class TripRequest(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
-        return f"{self.passenger} requests to join {self.trip} on {self.trip.departure_datetime}"
+        return f"{self.pk} - {self.passenger} requests to join {self.trip} on {self.trip.departure_datetime}"

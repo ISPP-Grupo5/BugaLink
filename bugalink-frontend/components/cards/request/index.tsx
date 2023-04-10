@@ -2,7 +2,7 @@ import RequestCardSkeleton from '@/components/skeletons/RequestCard';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import useUser from '@/hooks/useUser';
 import TripRequestI from '@/interfaces/tripRequest';
-import { formatDatetime } from '@/utils/formatters';
+import { shortenName } from '@/utils/formatters';
 import TripCard from '../recommendation';
 
 type Props = {
@@ -28,15 +28,15 @@ export default function RequestCard({ request, className = '' }: Props) {
       <TripCard
         className="-my-2 rounded-b-lg outline outline-1 outline-light-gray"
         type="passenger"
-        name={`${user?.first_name} ${user?.last_name}`}
+        name={shortenName(user?.first_name, user?.last_name)}
         rating={0.0} // TODO: add user rating
         origin={request.trip.driver_routine.origin.address}
         destination={request.trip.driver_routine.destination.address}
         price={Number.parseFloat(request.trip.driver_routine.price)}
         note={request.note}
-        date={formatDatetime(request.trip.departure_datetime)}
+        date={request.trip.departure_datetime}
         avatar={user?.photo}
-        href={NEXT_ROUTES.ACCEPT_RIDE(request.id)}
+        href={NEXT_ROUTES.ACCEPT_TRIP_REQUEST(request.id)}
       />
     </div>
   );

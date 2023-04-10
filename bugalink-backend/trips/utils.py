@@ -17,11 +17,12 @@ def get_recommendations(obj) -> TripSerializer(many=True):
     recommendable_trips = []
     for trip in trips:
         if (
-            trip.driver_routine.origin.get_distance_to(obj.origin) <= 1.0
-            and trip.driver_routine.destination.get_distance_to(obj.destination) <= 1.0
-            and trip.get_avaliable_seats() > 0
+            trip.get_avaliable_seats() > 0
+            and trip.driver_routine.driver.user != obj.passenger.user
             and trip.driver_routine.departure_time_start <= obj.departure_time_end
             and trip.driver_routine.departure_time_end >= obj.departure_time_start
+            and trip.driver_routine.origin.get_distance_to(obj.origin) <= 1.0
+            and trip.driver_routine.destination.get_distance_to(obj.destination) <= 1.0
         ):
             recommendable_trips.append(trip)
 

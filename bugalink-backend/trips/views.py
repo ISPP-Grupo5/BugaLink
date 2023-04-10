@@ -54,6 +54,16 @@ class TripViewSet(
 
         return self.destroy(request, *args, **kwargs)
 
+    @action(detail=False, methods=["get"])
+    def list_recommendations(self, request, *args, **kwargs):
+        user = request.user
+        recommendations = []
+        for passenger_routine in PassengerRoutine.objects.filter(
+            passenger__user_id=user.id
+        ):
+            recommendations += get_recommendations(obj=passenger_routine).data
+        return Response(recommendations)
+
 
 class TripRequestViewSet(
     mixins.RetrieveModelMixin,
@@ -243,16 +253,3 @@ class TripSearchViewSet(
         return Response(
             TripSerializer(trips, many=True).data, status=status.HTTP_200_OK
         )
-
-
-class TripRecommendationViewSet(viewsets.GenericViewSet):
-    serializer_class = TripSerializer
-
-    def list(self, request, *args, **kwargs):
-        user_id = request.GET.get("user_id")
-        recommendations = []
-        for passenger_routine in PassengerRoutine.objects.filter(
-            passenger__user_id=user_id
-        ):
-            recommendations += get_recommendations(obj=passenger_routine).data
-        return Response({"trips": recommendations})

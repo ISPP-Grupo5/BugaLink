@@ -13,35 +13,36 @@ export default function RatingScreen() {
   const [goodConduction, setGoodConduction] = useState(false);
   const [friendlyDriver, setFriendlyDriver] = useState(true);
   const [knewEachOther, setKnewEachOther] = useState(false);
-  const [selectedButtonsText, setSelectedButtonsText] = useState('');
   const [drawerReport, setDrawerReport] = useState(false);
-
-  //Add the values of the 3 RatingButtons to selectedButtonText depending if they are selected or not
 
   const driverId = 1; //TODO: change this to the id of the driver
   const passengerId = 2; //TODO: change this to the passenger's id
   const individualRideId = 1; //TODO: change this to the individual ride id
   const userId = 2; //TODO: change this to the user id
-
-  const data = {
-    rating_type: 'driver',
-    driver: driverId,
-    passenger: passengerId,
-    IndividualRide: individualRideId,
-    user_id: userId,
-    rating: rating,
-    comment: selectedButtonsText,
-  };
+  
 
   const handleSubmit = async () => {
-    console.log('Rating: ', rating);
-    console.log('Good conduction: ', goodConduction);
-    console.log('Friendly driver: ', friendlyDriver);
-    console.log('Knew each other: ', knewEachOther);
-
+    const data = {
+      rating_type: 'driver',
+      driver: driverId,
+      passenger: passengerId,
+      IndividualRide: individualRideId,
+      user_id: userId,
+      rating: rating,
+      is_good_driver: friendlyDriver,
+      is_pleasant_driver: goodConduction,
+      already_known: knewEachOther,
+    };
+    
     // transform to asnyc await
     const response = await axios.post('/users' + driverId + '/reviews/', data);
     console.log(response.data);
+
+    //Set values to default just in case so there is no problem in future ratings (see if can bedeleted)
+    
+    setGoodConduction(false);
+    setFriendlyDriver(true);
+    setKnewEachOther(false);
   };
 
   return (

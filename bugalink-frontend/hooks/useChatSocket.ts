@@ -7,7 +7,12 @@ export default function useChatSocket(chatId: string | number, user: User) {
     return new Promise<string>((resolve) => {
       if (user?.access && chatId) {
         // TODO: use env variable for backend url and check that it works
-        resolve(`ws://${process.env.NEXT_PUBLIC_DOMAIN_WS}/ws/chat/${chatId}/?token=${user.access}`);
+        if (process.env.NODE_ENV === 'production') {
+          resolve(`ws://app.bugalink.es/ws/chat/${chatId}/?token=${user.access}`);
+        } else {
+          resolve(`ws://localhost:8000/ws/chat/${chatId}/?token=${user.access}`);
+        }
+
       }
     });
   }, [chatId, user]);

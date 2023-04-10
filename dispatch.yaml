@@ -8,10 +8,3 @@ dispatch:
       service: api
     - url: '*/ws*'
       service: api
-    # To Front
-    - url: '*/static/assets*'
-      service: default
-    - url: '*/public/assets*'
-      service: default
-    - url: '*/static/public*'
-      service: default

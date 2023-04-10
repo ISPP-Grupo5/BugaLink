@@ -1,7 +1,13 @@
 runtime: nodejs16
 
-env: standard
+env: flex
 service: default
+manual_scaling:
+  instances: 1
+resources:
+  cpu: 1
+  memory_gb: 0.5
+  disk_size_gb: 5
 env_variables:
   APPENGINE_URL: https://bugalink-379617.ew.r.appspot.com
   NODE_ENV: production

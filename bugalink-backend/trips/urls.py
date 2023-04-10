@@ -1,6 +1,11 @@
 from django.urls import include, path
 from rest_framework import routers
-from trips.views import TripRecommendationViewSet, TripRequestViewSet, TripViewSet
+from trips.views import (
+    TripRecommendationViewSet,
+    TripRequestViewSet,
+    TripSearchViewSet,
+    TripViewSet,
+)
 
 router = routers.DefaultRouter()
 router.register(r"trips", TripViewSet)
@@ -8,9 +13,13 @@ router.register(r"trips", TripViewSet)
 urlpatterns = [
     path("", include(router.urls)),
     path("trips/<int:id>/request/", TripRequestViewSet.as_view({"post": "create"})),
+    path(
+        "trips/search/",
+        TripSearchViewSet.as_view({"get": "get"}),
+    ),
     path("trip-requests/<int:pk>/", TripRequestViewSet.as_view({"get": "get"})),
     path(
-        "trips/recommendations",
+        "trips/recommendations/",
         TripRecommendationViewSet.as_view({"get": "get"}),
     ),
     path(

@@ -1,4 +1,7 @@
+from django.db.models import Q
 from rest_framework import serializers
+from trips.models import TripRequest
+from trips.serializers import SimpleTripSerializer
 from users.serializers import UserSerializer
 
 from .models import Conversation, Message
@@ -31,7 +34,24 @@ class ConversationSerializer(serializers.ModelSerializer):
     initiator = UserSerializer()
     receiver = UserSerializer()
     message_set = MessageSerializer(many=True)
+    most_recent_trip = serializers.SerializerMethodField()
 
     class Meta:
         model = Conversation
-        fields = ["id", "initiator", "receiver", "message_set"]
+        fields = ["id", "initiator", "receiver", "message_set", "most_recent_trip"]
+
+    def get_most_recent_trip(self, obj) -> SimpleTripSerializer():
+        common_trips = TripRequest.objects.filter(
+            Q(
+                passenger__user=obj.initiator,
+                trip__driver_routine__driver__user=obj.receiver,
+            )
+            | Q(
+                passenger__user=obj.receiver,
+                trip__driver_routine__driver__user=obj.initiator,
+            )
+        )
+        if len(common_trips) == 0:
+            return None
+        most_recent_trip = common_trips.order_by("trip__departure_datetime").last().trip
+        return SimpleTripSerializer(most_recent_trip).data

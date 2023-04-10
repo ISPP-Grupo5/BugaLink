@@ -1,13 +1,7 @@
-import datetime
-import math
-
 import paypal
 import stripe
-from driver_routines.models import DriverRoutine
-from drivers.models import Driver
+from django.db.models import Q
 from passenger_routines.models import PassengerRoutine
-from passenger_routines.serializers import PassengerRoutineSerializer
-from passengers.models import Passenger, User
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -18,7 +12,22 @@ from trips.serializers import (
     TripSerializer,
 )
 
-from .utils import get_recommendations
+from .utils import (
+    check_allows_pets,
+    check_allows_smoking,
+    check_date_from,
+    check_date_to,
+    check_days,
+    check_distance,
+    check_hour_from,
+    check_hour_to,
+    check_maxprice,
+    check_minprice,
+    check_minstars,
+    check_prefers_music,
+    check_prefers_talk,
+    get_recommendations,
+)
 
 
 class TripViewSet(
@@ -180,7 +189,7 @@ class TripRequestViewSet(
         return Response(self.get_serializer(trip_request).data)
 
 
-class TripRecommendationViewSet(
+class TripSearchViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
@@ -190,31 +199,60 @@ class TripRecommendationViewSet(
 
     @action(detail=True, methods=["get"])
     def get(self, request, *args, **kwargs):
-        try:
-            data = {"trips": []}
-            for passenger_routine in PassengerRoutine.objects.filter(
-                passenger__user_id=request.GET.get("user_id")
-            ):
-                data["trips"] = (
-                    data["trips"] + get_recommendations(obj=passenger_routine).data
-                )
+        # Se busca entre los viajes pendientes
+        trips = Trip.objects.filter(status="PENDING")
+        # Comprobacion de campos obligatorios
+        if not request.GET.get("origin") or not request.GET.get("destination"):
+            return Response(
+                {"message": "El origen y el destino son obligatorios"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-            return Response(data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"message": str(e)})
+        filter_checks = {
+            "days": check_days,
+            "min_price": check_minprice,
+            "max_price": check_maxprice,
+            "date_from": check_date_from,
+            "date_to": check_date_to,
+            "hour_from": check_hour_from,
+            "hour_to": check_hour_to,
+            "prefers_music": check_prefers_music,
+            "prefers_talk": check_prefers_talk,
+            "allows_pets": check_allows_pets,
+            "allows_smoking": check_allows_smoking,
+        }
+
+        # Apply all filters on the QuerySet
+        for key, func in filter_checks.items():
+            if request.GET.get(key):
+                trips = func(trips, request.GET.get(key))
+
+        # Comprobacion de distancia
+        trips = check_distance(
+            trips, request.GET.get("origin"), request.GET.get("destination")
+        )
+
+        # Comprobacion de minStars
+        if request.GET.get("min_stars"):
+            trips = check_minstars(trips, request.GET.get("min_stars"))
+
+        trips = Trip.objects.filter(Q(pk__in=[trip.pk for trip in trips])).order_by(
+            "-departure_datetime"
+        )[:10]
+
+        return Response(
+            TripSerializer(trips, many=True).data, status=status.HTTP_200_OK
+        )
 
 
-class TripByIdViewSet(
-    mixins.RetrieveModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet,
-):
-    queryset = Trip.objects.all()
+class TripRecommendationViewSet(viewsets.GenericViewSet):
     serializer_class = TripSerializer
 
-    def get(self, request, trip_id, *args, **kwargs):
-        try:
-            trip = Trip.objects.get(id=trip_id)
-            return Response(TripSerializer(trip).data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"message": str(e)})
+    def list(self, request, *args, **kwargs):
+        user_id = request.GET.get("user_id")
+        recommendations = []
+        for passenger_routine in PassengerRoutine.objects.filter(
+            passenger__user_id=user_id
+        ):
+            recommendations += get_recommendations(obj=passenger_routine).data
+        return Response({"trips": recommendations})

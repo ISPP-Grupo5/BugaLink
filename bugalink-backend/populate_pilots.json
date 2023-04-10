@@ -5,259 +5,259 @@
       "first_name": "Rocío",
       "last_name": "López Moyano",
       "email": "RocioLopez@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$8dQHsuLcjQyqQlaQN3ir8X$wQ3Wae6J77sYw6kyuRh3DGlBP2aEJrBb11gjw8rE/ug=",
       "first_name": "José Antonio",
       "last_name": "Lozano Vázquez",
       "email": "JoseLozano@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$VJa8XWE3gtxubf4YlszfLK$A4sDLFxbo0euwRr+cJpe/TrJOHsq2FaAclzvMOGi9Gk=",
       "first_name": "Juan José",
       "last_name": "Sánchez Rodríguez",
       "email": "JuanSanchez@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$5O6XFiOJMg3Fc5YtmHzene$QbQpqjfNQSo8E/QSiLyVwwzdmJzvttTLBUm35s/r48s=",
       "first_name": "Paula",
       "last_name": "Benabal Mena-Bernal",
       "email": "PaulaBenabal@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$IS0TZ1wTlM7wftZdwAwFlm$ITTKyEKI84I2qVPEEl56qqoZzXopA+kkVbZjYfhYLvo=",
       "first_name": "Clara",
       "last_name": "de la Cruz Rico",
       "email": "ClaradelaCruz@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$zKYFQfwvGp8gzbKdcymWWw$v4pl3YrpnqN3g7PK63nBsZ1QwJcuVdFMtnEXBbUFwFA=",
       "first_name": "Álvaro",
       "last_name": "Escalante Castro",
       "email": "AlvaroEscalante@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$sjWlXkbO7jmDlryxMtsyhI$H0GahDzUbAfUp0Q8w9yozxHxhf27gr/iDqPzqCjxcWU=",
       "first_name": "Dámaris",
       "last_name": "Gómez Serrano",
       "email": "DamarisGomez@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$KbVICSZJEsL3ZpwutE50pi$rwXSujHjbvBJ9v6C0afaNWMlpzG5e1lQ54DYMtEyGnM=",
       "first_name": "Ismael",
       "last_name": "Pérez Ortiz",
       "email": "IsmaelPerez@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$54tc10ftZRf5cfOecXbiWQ$lCsG2ibkJ3ksawOUq1Cvdgc11Q6keA6oiGiJWfNwrfw=",
       "first_name": "Marina",
       "last_name": "Moya Rivero",
       "email": "MarinaMoya@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$B14TJPWaS9uIb2a95PGM2A$ZPk40gK813GvnG0z6jmbHppW9jQACs5DPm40EP74szU=",
       "first_name": "Guillermo",
       "last_name": "Diz Gil",
       "email": "GuillermoDiz@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$kdXyYpw4Zv9uSzfwp8MPed$T26tCpP+MHTZ/Ozp4ncyEp0JY+q5flfTdbM8VriVGfM=",
       "first_name": "Marcos",
       "last_name": "Alemán López",
       "email": "MarcosAleman@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$TBK5vfwuLnkfdYo3LBocj4$JDtDWSXUfHQdgggTYK3fJ0wHKAeHvm4nzb5nJUL1eAw=",
       "first_name": "Paula",
       "last_name": "Cortés Alcalde",
       "email": "PaulaCortes@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$cWDUKJXqLlpVQtcNJ7PSIB$e3I8cGOogAB88rbp1ttX2eJJavgGInw9G2QwDJ+9PZU=",
       "first_name": "Laura",
       "last_name": "Muñoz Corral",
       "email": "LauraMunyoz@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$NMhBCtYJEB1Aj4rTaOOkBk$n6ITlzBT8c6zlQJI7P+Q0bfNJf2yL4u/cm3pZ66KE4k=",
       "first_name": "Benito",
       "last_name": "Venegas Cruz",
       "email": "BenitoVenegas@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$hYQGqEX53m02VdEgMEy03W$g7C0rHwzOiZSQgZWZ6XKqL6xjbVXR7VVU6ZbktcZOOk=",
       "first_name": "Rosa María",
       "last_name": "Molina Arregui",
       "email": "RosaMolina@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$CL2Hpeh9TxKMS2krJI8Dmg$TaRgkJtnoZVOG8fLj1lq2ocZX3nNapJSry4MLXKsJRg=",
       "first_name": "Gema",
       "last_name": "Vela Aguilar",
       "email": "GemaVela@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$iEFcMm8f9FzMBVmmuWZs2r$4Z3aARJeq7Bfqi//tXw5Nmhn+wsJR2uG5nAAwoiacDk=",
       "first_name": "Marta",
       "last_name": "Sanz Fernández",
       "email": "MartaSanz@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$p276otqrI1yTG7B5vy0VKD$1//odm/4CIygFzbxEPyXzYYFtN3lPjWgjsshmZM5Lpg=",
       "first_name": "Marta",
       "last_name": "Cumbrera Alemany",
       "email": "MartaCumbrera@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$o2n8ROM7LwoksCZHumVI7k$nOe38+iLg50AhvBtiHlD1kWwEmuSwQqDvyvhYEXJNPQ=",
       "first_name": "Carmen María",
       "last_name": "Muñoz Pérez",
       "email": "CarmenMunyoz@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$SYIEeCQpjrYRp9veDLeFHS$mV7N20EIFpiRjwQdLyKG/7URffi89a/Op2rLmo+OBtE=",
       "first_name": "Beatriz María",
       "last_name": "Beltrán Álvarez",
       "email": "BeatrizBeltran@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$EsE3rAOaJOfN30MOywGbvi$SHUxHnRVuIp531b9hm1lyYgPUMBiCfpEeVONUeCDlwE=",
       "first_name": "Lucas",
       "last_name": "Pérez Ruiz",
       "email": "LucasPerez@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$aKDcFjLA7BHLbNIkm9HHi1$z84DTbot0jeyGEyxnx+mpuj/EFhRb8rKDOL6KD80li8=",
       "first_name": "Isabel",
       "last_name": "Sánchez Serrano",
       "email": "IsabelSanchez@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$qAE4SFBlqCxALP2OQaPWyO$NiDX6etRzmH51xQMsQvNsGu13oZRjWKsW1O5ZuzJ55c=",
       "first_name": "Irene",
       "last_name": "Domínguez Garoz",
       "email": "IreneDominguez@bugalink.es",
-      "is_driver": false
+      "is_validated_driver": false
     },
     {
       "password": "pbkdf2_sha256$390000$sPrEJO91bU2Bc4yrgwNoMX$jQxjAIypehaCXRzG0vvG1T7a9M9CWH95dMzusvnB16o=",
       "first_name": "Noelia",
       "last_name": "López Durán",
       "email": "NoeliaLopez@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$LOjSlkyxzfiquujPpzxU3X$ZGWUIXt9NrE5rAuxcoIEEfc6FyCEr7WY98JOm1CcQR0=",
       "first_name": "Manuel",
       "last_name": "Sánchez Rodríguez",
       "email": "ManuelSanchez@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$FH8YyVy6D7ikjeEjFAxpKk$e+E3eHC7dscbq2a6sCQ7TnB4CTngw5hBc4vx31QKrvw=",
       "first_name": "Nicolás",
       "last_name": "Sánchez Mendoza",
       "email": "NicolasSanchez@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$MqPk8JpBUxDRHu9PzGahy8$pSVlzdhTwfYrSRnTb7F9Vr4d0U17wtdzCKDtd+X/1w8=",
       "first_name": "Oliva",
       "last_name": "Sánchez Rodríguez",
       "email": "OlivaSanchez@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$lyjGYx7wNz82f8BXYqwPbU$czYDClwXQNc4XoXcc9jT+BHU+iAfn9b/i62orvDxDZc=",
       "first_name": "Marcos",
       "last_name": "Olmedo Marín",
       "email": "MarcosOlmedo@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$F0cgYP5Z3j0J9t5WaktbUN$HR1ny1btK3HOxKEaLz9K4PDWhuqjRKBZJxSrPqs6VOM=",
       "first_name": "Carlos",
       "last_name": "Delgado Becerril",
       "email": "CarlosDelgado@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$L6BWWaN2Hfwes3DVM13V77$fSQRIQl2X+WwgGsa45+vyyYjoJ/BAj7WpyOVglglGPg=",
       "first_name": "Ricardo",
       "last_name": "Nadal García",
       "email": "RicardoNadal@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$58xjfOL1xlE41moupvb1Er$V16r5pMZGLp3BvDK1opKftixxPuZyN8BpHMbk5E6rdM=",
       "first_name": "Manuel",
       "last_name": "Domínguez Magdaleno",
       "email": "ManuelDominguez@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$dNmWQ0TL3llGwslVxzXmGX$vmLxs2t5jMDDKhxv3dZeG3HbRqI1DLCypDRkv3nR/Ww=",
       "first_name": "Celia",
       "last_name": "Hermoso Soto",
       "email": "CeliaHermoso@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$orIBc6w1P8uwG3ANLgVJ9g$BFU0jylRx7xlaxYOjDDtnzg168MnO/8Pfb3769JKADY=",
       "first_name": "Rubén",
       "last_name": "Suárez David",
       "email": "RubenSuarez@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$vd2oaz9ifTYsVIkX1NQKO3$X7DuPVKN2yd848Yz+ir3qml8ul4sMhc/crCBjazzNJo=",
       "first_name": "Juan José",
       "last_name": "Álvarez Campanón",
       "email": "JuanAlvarez@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$cWQLonkDM2TuYUYbj4xbui$0Gaj4LYRvZc4Od4XAbRoSpWz71KvK7qo1gCJjOahpQk=",
       "first_name": "Marina",
       "last_name": "Ramiro Fernández",
       "email": "MarinaRamiro@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$Z4Lhu0WvmRIh99tFyAR6LY$k7cy4qN+4Y5sduP9Jl720fCQEsMfWqrg3WfTd4gmdKw=",
       "first_name": "Aisha Doris",
       "last_name": "Qazza Cevallos",
       "email": "AishaQazza@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     },
     {
       "password": "pbkdf2_sha256$390000$AbqD0XRiFJBJpftE5goBM3$DY762xwL9ayHkyZRCtHS34ubQzea+xS8CztZ4ws0d+U=",
       "first_name": "José María",
       "last_name": "Delgado Sánchez",
       "email": "JoseDelgado@bugalink.es",
-      "is_driver": true
+      "is_validated_driver": true
     }
   ],
   "Passenger": [
@@ -1700,18 +1700,16 @@
     {
       "trip_request_id": 3,
       "rating": 5.0,
-      "preference_0": true,
-      "preference_1": false,
-      "preference_2": false,
-      "preference_3": false
+      "is_good_driver": true,
+      "is_pleasant_driver": false,
+      "already_knew": false
     },
     {
       "trip_request_id": 4,
       "rating": 4.5,
-      "preference_0": false,
-      "preference_1": true,
-      "preference_2": false,
-      "preference_3": false
+      "is_good_driver": false,
+      "is_pleasant_driver": true,
+      "already_knew": false
     }
   ],
   "Report": [

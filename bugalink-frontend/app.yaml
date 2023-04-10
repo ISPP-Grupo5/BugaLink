@@ -1,13 +1,7 @@
 runtime: nodejs16
 
-env: flex
+env: standard
 service: default
-manual_scaling:
-  instances: 1
-resources:
-  cpu: 1
-  memory_gb: 0.5
-  disk_size_gb: 5
 env_variables:
   APPENGINE_URL: https://bugalink-379617.ew.r.appspot.com
   NODE_ENV: production
@@ -17,8 +11,7 @@ env_variables:
   NEXT_PUBLIC_DOMAIN_WS: app.bugalink.es
 handlers:
   - url: /static
-    static_dir: static
-    secure: always
+    static_dir: public
 
   - url: /.*
     script: auto

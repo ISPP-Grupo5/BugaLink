@@ -94,7 +94,7 @@ if os.environ.get("IS_APP_ENGINE"):
         "default": {
             "ENGINE": config("ENGINE"),
             "NAME": config("NAME"),
-            "USER": config("USER"),
+            "USER": config("USER_DB"),
             "PASSWORD": config("PASSWORD"),
             "HOST": config("HOST"),
             "PORT": 5432,

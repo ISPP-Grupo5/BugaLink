@@ -1,7 +1,7 @@
 import paypal
 import stripe
 from django.db.models import Q
-from locations.models import Location
+from passenger_routines.models import PassengerRoutine
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -26,6 +26,7 @@ from .utils import (
     check_minstars,
     check_prefers_music,
     check_prefers_talk,
+    get_recommendations,
 )
 
 
@@ -52,6 +53,16 @@ class TripViewSet(
             )
 
         return self.destroy(request, *args, **kwargs)
+
+    @action(detail=False, methods=["get"])
+    def list_recommendations(self, request, *args, **kwargs):
+        user = request.user
+        recommendations = []
+        for passenger_routine in PassengerRoutine.objects.filter(
+            passenger__user_id=user.id
+        ):
+            recommendations += get_recommendations(obj=passenger_routine).data
+        return Response(recommendations)
 
 
 class TripRequestViewSet(

@@ -1,16 +1,8 @@
 import { BackButton } from '@/components/buttons/Back';
-import CTAButton from '@/components/buttons/CTA';
-import TagsButton from '@/components/buttons/Tags';
 import TripCard from '@/components/cards/recommendation';
-import TimePicker from '@/components/forms/TimePicker';
 import AnimatedLayout from '@/components/layouts/animated';
-import PreferenceBox from '@/components/preferences/box';
 import TripCardSkeleton from '@/components/skeletons/TripCard';
 import NEXT_ROUTES from '@/constants/nextRoutes';
-import { Drawer } from '@mui/material';
-import Slider from '@mui/material/Slider';
-import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Link from 'next/link';
 import FilterIcon from 'public/assets/filter-icon.svg';
 import React, { useEffect, useState } from 'react';
@@ -19,8 +11,9 @@ import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
 import ThreeDots from '/public/assets/three-dots.svg';
 import MagnifyingGlass from '/public/icons/Vista-Principal/glass.svg';
-import { preferences } from '@/constants/preferences';
+import SelectedUnselectedFilter from '@/components/search/selectedUnselectedFilters';
 
+// TODO: Replace with data from the backend
 const filters = [
   {
     name: 'Precio',
@@ -44,10 +37,13 @@ const filters = [
   },
   {
     name: 'Día',
-    selected: true,
-    selectedValue: '5/4 — 8/4',
+    selected: false,
+    selectedValue: 'Día',
   },
 ];
+
+const selectedFilters = filters.filter((filter) => filter.selected);
+const unselectedFilters = filters.filter((filter) => !filter.selected);
 
 // TODO: Replace with data from the mock backend
 const searchResultsMock = [
@@ -93,26 +89,7 @@ const searchResultsMock = [
   },
 ];
 
-function valuetext(value: number) {
-  return `${value}°C`;
-}
-
-// TODO: reduce this view's complexity
 export default function SearchResults() {
-  const [drawerHour, setDrawerHour] = useState(false);
-  const [drawerRating, setDrawerRating] = useState(false);
-  const [drawerPrice, setDrawerPrice] = useState(false);
-  const [drawerPreferences, setDrawerPreferences] = useState(false);
-  const [drawerDay, setDrawerDay] = useState(false);
-  const [pickTimeFrom, setPickTimeFrom] = useState('16:00');
-  const [pickTimeTo, setPickTimeTo] = useState('16:15');
-  const [errorPickTime, setErrorPickTime] = useState<string | null>();
-  const [values, setValues] = React.useState<number[]>([0, 2]);
-  const [allowSmoke, setAllowSmoke] = useState(false);
-  const [allowPets, setAllowPets] = useState(false);
-  const [preferMusic, setPreferMusic] = useState(false);
-  const [preferTalk, setPreferTalk] = useState(false);
-
   // TODO: remove this block once the API is integrated, it's to simulate the loading of the results
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   const [searchResults, setSearchResults] = useState([]);
@@ -126,45 +103,6 @@ export default function SearchResults() {
       setIsError(false);
     }, 1000);
   });
-  ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  // TODO: use more meaningful variable names. I suppose "values" is about the price range.
-  // Better to define 2 states for that (minPrice, maxPrice) and use them in the slider.
-  // Ideally we would have each filter contained in its own file, and this page would
-  // only contain the logic to render the filters and the results
-
-  const handleChange = (event: Event, newValue: number | number[]) => {
-    setValues(newValue as number[]);
-  };
-
-  const selectedFilters = filters.filter((filter) => filter.selected);
-  const unselectedFilters = filters.filter((filter) => !filter.selected);
-
-  useEffect(() => {
-    const pickTimeFromHour = parseInt(pickTimeFrom.split(':')[0]);
-    const pickTimeFromMinutes = parseInt(pickTimeFrom.split(':')[1]);
-    const pickTimeToHour = parseInt(pickTimeTo.split(':')[0]);
-    const pickTimeToMinutes = parseInt(pickTimeTo.split(':')[1]);
-
-    if (
-      pickTimeFromHour > pickTimeToHour ||
-      (pickTimeFromHour === pickTimeToHour &&
-        pickTimeFromMinutes >= pickTimeToMinutes)
-    ) {
-      setErrorPickTime('La hora de fin debe ser mayor que la hora de inicio');
-    } else {
-      setErrorPickTime(null);
-    }
-  }, [pickTimeFrom, pickTimeTo]);
-
-  const onCloseDrawerHour = () => {
-    if (errorPickTime) {
-      setPickTimeFrom('--:--');
-      setPickTimeTo('--:--');
-    }
-
-    setDrawerHour(false);
-  };
 
   return (
     <AnimatedLayout className="flex flex-col overflow-y-scroll bg-white">
@@ -201,93 +139,13 @@ export default function SearchResults() {
       <div className="sticky top-0 z-50 rounded-b-3xl bg-white pl-2 pt-4 pb-2 shadow-md">
         <div className="flex items-center space-x-2 overflow-x-scroll pr-2">
           <FilterIcon className="flex-none" />
-          {selectedFilters.map(
-            (filter) =>
-              (filter.name === 'Precio' && (
-                <div
-                  onClick={() => setDrawerPrice(true)}
-                  className="flex-grow-1 flex-shrink-0"
-                >
-                  <TagsButton text={filter.selectedValue} selected />
-                </div>
-              )) ||
-              (filter.name === 'Hora' && (
-                <div
-                  onClick={() => setDrawerHour(true)}
-                  className="flex-grow-1 flex-shrink-0"
-                >
-                  <TagsButton text={filter.selectedValue} selected />
-                </div>
-              )) ||
-              (filter.name === 'Valoración' && (
-                <div
-                  onClick={() => setDrawerRating(true)}
-                  className="flex-grow-1 flex-shrink-0"
-                >
-                  <TagsButton text={filter.selectedValue} selected />
-                </div>
-              )) ||
-              (filter.name === 'Preferencias' && (
-                <div
-                  onClick={() => setDrawerPreferences(true)}
-                  className="flex-grow-1 flex-shrink-0"
-                >
-                  <TagsButton text="Preferencias" selected />
-                </div>
-              )) ||
-              (filter.name === 'Día' && (
-                <div
-                  onClick={() => setDrawerDay(true)}
-                  className="flex-grow-1 flex-shrink-0"
-                >
-                  <TagsButton text={filter.selectedValue} selected />
-                </div>
-              ))
-          )}
+          {selectedFilters.map((filter) => (
+            <SelectedUnselectedFilter filter={filter} />
+          ))}
           <div className="h-8 w-[0.05rem] flex-none bg-border-color" />
-          {unselectedFilters.map(
-            (filter) =>
-              (filter.name === 'Precio' && (
-                <div
-                  onClick={() => setDrawerPrice(true)}
-                  className="flex-grow-1 flex-shrink-0"
-                >
-                  <TagsButton text={filter.name} />
-                </div>
-              )) ||
-              (filter.name === 'Hora' && (
-                <div
-                  onClick={() => setDrawerHour(true)}
-                  className="flex-grow-1 flex-shrink-0"
-                >
-                  <TagsButton text={filter.name} />
-                </div>
-              )) ||
-              (filter.name === 'Valoración' && (
-                <div
-                  onClick={() => setDrawerRating(true)}
-                  className="flex-grow-1 flex-shrink-0"
-                >
-                  <TagsButton text={filter.name} />
-                </div>
-              )) ||
-              (filter.name === 'Preferencias' && (
-                <div
-                  onClick={() => setDrawerPreferences(true)}
-                  className="flex-grow-1 flex-shrink-0"
-                >
-                  <TagsButton text={filter.name} />
-                </div>
-              )) ||
-              (filter.name === 'Día' && (
-                <div
-                  onClick={() => setDrawerDay(true)}
-                  className="flex-grow-1 flex-shrink-0"
-                >
-                  <TagsButton text={filter.name} />
-                </div>
-              ))
-          )}
+          {unselectedFilters.map((filter) => (
+            <SelectedUnselectedFilter filter={filter} />
+          ))}
         </div>
         <div className="flex justify-center py-2">
           <p className="text-xs font-thin text-gray">
@@ -325,223 +183,6 @@ export default function SearchResults() {
               </Link>
             ))}
       </div>
-      <Drawer
-        anchor="bottom"
-        open={drawerHour}
-        onClose={onCloseDrawerHour}
-        SlideProps={{
-          style: {
-            minWidth: '320px',
-            maxWidth: '480px',
-            width: '100%',
-            margin: '0 auto',
-            backgroundColor: 'transparent',
-          },
-        }}
-      >
-        <div className="rounded-t-lg bg-white">
-          <div className="ml-6 mt-2">
-            <p className="font-lato text-xl font-bold">Hora de salida</p>
-            <p className="text-xs">Define el rango de hora de salida</p>
-            <span className="mt-4 flex items-center justify-center space-x-2 text-xl font-bold">
-              <TimePicker time={pickTimeFrom} setTime={setPickTimeFrom} />
-              <p> — </p>
-              <TimePicker
-                time={pickTimeTo}
-                error={errorPickTime}
-                setTime={setPickTimeTo}
-              />
-            </span>
-            <span className="flex items-center justify-center text-xs text-red">
-              {errorPickTime}
-            </span>
-          </div>
-          <div className="my-5 flex flex-col items-center">
-            {/* TODO: If there are errors, it should not let you filter */}
-            <CTAButton className="w-11/12" text={'FILTRAR'} />
-          </div>
-        </div>
-      </Drawer>
-      <Drawer
-        id="drawerPrice"
-        anchor="bottom"
-        open={drawerPrice}
-        onClose={() => setDrawerPrice(false)}
-        SlideProps={{
-          style: {
-            minWidth: '320px',
-            maxWidth: '480px',
-            width: '100%',
-            margin: '0 auto',
-            backgroundColor: 'transparent',
-          },
-        }}
-      >
-        <div className="rounded-t-lg bg-white">
-          <div className="ml-6 mt-2 mr-5">
-            <p className="font-lato text-xl font-bold">Precio</p>
-            <p className="text-xs">Define tu presupuesto por trayecto</p>
-            <p className="mt-4 font-lato font-bold">
-              {values[0]}€ — {values[1]}€{' '}
-            </p>
-            <div className="mt-2 flex items-center justify-center space-x-2 text-xl">
-              <Slider
-                getAriaLabel={() => 'Price range range'}
-                value={values}
-                onChange={handleChange}
-                valueLabelDisplay="auto"
-                getAriaValueText={valuetext}
-                min={0}
-                max={50}
-                sx={{
-                  width: 300,
-                  color: '#38a3a5',
-                }}
-              />
-            </div>
-          </div>
-          <div className="my-5 flex flex-col items-center">
-            <CTAButton className="w-11/12" text={'FILTRAR'} />
-          </div>
-        </div>
-      </Drawer>
-
-      <Drawer
-        anchor="bottom"
-        open={drawerRating}
-        onClose={() => setDrawerRating(false)}
-        SlideProps={{
-          style: {
-            minWidth: '320px',
-            maxWidth: '480px',
-            width: '100%',
-            margin: '0 auto',
-            backgroundColor: 'transparent',
-          },
-        }}
-      >
-        <div className="rounded-t-lg bg-white">
-          <div className="ml-6 mt-2 mr-5">
-            <p className="font-lato text-xl font-bold">Valoraciones</p>
-            <p className="text-xs">En base a la opinión de otros usuarios</p>
-            <span className="mt-4 grid grid-cols-2 items-center justify-center gap-y-3 gap-x-3 text-xl">
-              <TagsButton text="Más de 4 ⭐️" selected ratingOptions={true} />
-              <TagsButton text="Más de 3 ⭐️" ratingOptions={true} />
-              <TagsButton text="Más de 2 ⭐️" ratingOptions={true} />
-              <TagsButton text="Más de 1 ⭐️" ratingOptions={true} />
-            </span>
-          </div>
-          <div className="my-5 flex flex-col items-center">
-            <CTAButton className="w-11/12" text={'FILTRAR'} />
-          </div>
-        </div>
-      </Drawer>
-
-      {/* TODO: Abstract this drawer and the state variables that are also used in the profile view (a very similar drawer) */}
-      <Drawer
-        anchor="bottom"
-        open={drawerPreferences}
-        onClose={() => setDrawerPreferences(false)}
-        SlideProps={{
-          style: {
-            minWidth: '320px',
-            maxWidth: '480px',
-            width: '100%',
-            margin: '0 auto',
-            backgroundColor: 'transparent',
-          },
-        }}
-      >
-        <div className="rounded-t-lg bg-white">
-          <div className="ml-6 mt-2 mr-5">
-            <p className="font-lato text-xl font-bold">Preferencias y normas</p>
-            <p className="text-xs">
-              En base a las preferencias y normas de los conductores
-            </p>
-            {/* TODO: This code is copypasted from the profile, make a component!! */}
-            <div className="my-4 grid grid-cols-2 grid-rows-2 place-items-center gap-3">
-              <PreferenceBox
-                checked={allowSmoke}
-                setChecked={setAllowSmoke}
-                item={preferences.smoke}
-              />
-              <PreferenceBox
-                checked={preferMusic}
-                setChecked={setPreferMusic}
-                item={preferences.music}
-              />
-              <PreferenceBox
-                checked={allowPets}
-                setChecked={setAllowPets}
-                item={preferences.pets}
-              />
-              <PreferenceBox
-                checked={preferTalk}
-                setChecked={setPreferTalk}
-                item={preferences.talk}
-              />
-            </div>
-          </div>
-          <div className="my-5 flex flex-col items-center">
-            <CTAButton className="w-11/12" text={'FILTRAR'} />
-          </div>
-        </div>
-      </Drawer>
-
-      <Drawer
-        anchor="bottom"
-        open={drawerDay}
-        onClose={() => setDrawerDay(false)}
-        SlideProps={{
-          style: {
-            minWidth: '320px',
-            maxWidth: '480px',
-            width: '100%',
-            margin: '0 auto',
-            backgroundColor: 'transparent',
-          },
-        }}
-      >
-        <div className="rounded-t-lg bg-white">
-          <div className="ml-6 mt-2 mr-5">
-            <p className="font-lato text-xl font-bold">Día</p>
-            <p className="text-xs">En base al día en el que deseas viajar</p>
-            <span className="mt-4 grid grid-cols-2 items-center justify-center gap-y-3 gap-x-3 text-xl">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <MobileDatePicker
-                  label="Desde"
-                  sx={{
-                    fontFamily: 'Lato, sans-serif',
-                    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
-                      {
-                        borderColor: '#7cc3c4',
-                      },
-                    '& .MuiFormLabel-root.Mui-focused': {
-                      color: '#7cc3c4',
-                    },
-                  }}
-                />
-                <MobileDatePicker
-                  label="Hasta"
-                  sx={{
-                    fontFamily: 'Lato, sans-serif',
-                    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
-                      {
-                        borderColor: '#7cc3c4',
-                      },
-                    '& .MuiFormLabel-root.Mui-focused': {
-                      color: '#7cc3c4',
-                    },
-                  }}
-                />
-              </LocalizationProvider>
-            </span>
-          </div>
-          <div className="my-5 flex flex-col items-center">
-            <CTAButton className="w-11/12" text={'FILTRAR'} />
-          </div>
-        </div>
-      </Drawer>
     </AnimatedLayout>
   );
 }

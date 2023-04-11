@@ -18,6 +18,8 @@ import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
 import { User } from 'next-auth';
 import BookmarkTripButton from '@/components/bookmarks/button';
+import { Drawer } from '@mui/material';
+import NoteToDriver from './note';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
@@ -34,6 +36,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 export default function Details({ data }) {
   const router = useRouter();
   const tripId = data.id;
+
+  const [drawerNote, setDrawerNote] = useState(false);
 
   const user = useSession().data?.user as User;
 
@@ -66,7 +70,7 @@ export default function Details({ data }) {
   return (
     <AnimatedLayout>
       <div className="flex h-screen flex-col items-center justify-center">
-        <span className="flex w-full items-center justify-between bg-white px-2">
+        <span className="justify-between flex w-full items-center bg-white px-2">
           <BackButtonText text="Detalles del viaje" />
           <BookmarkTripButton className="mr-2 scale-125" trip={trip} />
         </span>
@@ -148,10 +152,26 @@ export default function Details({ data }) {
               </p>
             </div>
           )}
+
+          {!iAmTheDriver && !alreadyRequestedTrip && (
+            <>
+              <div className="grid justify-items-center">
+                <hr className="mt-4 mb-4 w-full text-border-color" />
+              </div>
+              <div className="mb-4 flex flex-row">
+                <p
+                  className="cursor-pointer font-normal text-dark-turquoise"
+                  onClick={() => setDrawerNote(true)}
+                >
+                  Añade una nota al conductor
+                </p>
+              </div>
+            </>
+          )}
         </div>
         {/* Trip request */}
         <div className="w-full rounded-t-xl bg-white py-6 px-5 shadow-t-md">
-          <div className="flex flex-row items-center justify-between">
+          <div className="justify-between flex flex-row items-center">
             <div className="flex flex-col">
               <p className="text-sm font-normal">Tipo de viaje</p>
               <p className="text-xl font-bold">
@@ -195,6 +215,22 @@ export default function Details({ data }) {
           )}
         </div>
       </div>
+      <Drawer
+        anchor="bottom"
+        open={drawerNote}
+        onClose={() => setDrawerNote(false)}
+        SlideProps={{
+          style: {
+            minWidth: '320px',
+            maxWidth: '480px',
+            width: '100%',
+            margin: '0 auto',
+            backgroundColor: 'transparent',
+          },
+        }}
+      >
+        <NoteToDriver />
+      </Drawer>
     </AnimatedLayout>
   );
 }

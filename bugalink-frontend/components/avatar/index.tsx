@@ -1,4 +1,5 @@
 import cn from 'classnames';
+import Image from 'next/image';
 
 export default function Avatar({
   src = '',
@@ -7,7 +8,9 @@ export default function Avatar({
   ...props
 }) {
   return (
-    <img
+    <Image
+      width={100}
+      height={100}
       src={src || '/assets/anonymous-avatar.png'}
       alt={alt}
       className={cn('aspect-square rounded-full object-cover', className)}

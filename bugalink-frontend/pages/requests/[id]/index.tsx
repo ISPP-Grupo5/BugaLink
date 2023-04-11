@@ -65,7 +65,7 @@ export default function AcceptRequest() {
   return (
     <AnimatedLayout className="justify-between flex flex-col">
       <BackButtonText text="Solicitud de viaje" />
-      <div className="flex h-full flex-col justify-between overflow-y-scroll bg-white px-6 pb-4 pt-2">
+      <div className="justify-between flex h-full flex-col overflow-y-scroll bg-white px-6 pb-4 pt-2">
         <ProfileHeader user={userStats} />
         <p className="mt-4 text-justify text-sm font-normal text-dark-gray">
           Nota del pasajero

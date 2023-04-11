@@ -1,0 +1,10 @@
+dispatch:
+    # Send all trafic on /api to api service.
+    - url: '*/api/v1/*'
+      service: api
+    - url: '*/admin*'
+      service: api
+    - url: '*/static/*'
+      service: api
+    - url: '*/ws*'
+      service: api

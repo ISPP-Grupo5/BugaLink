@@ -1,7 +1,9 @@
-# ========================= PYTHON =========================
 # IDE configuration
 
 .vscode/
+
+# environment variables
+.env
 
 # Environments
 .env
@@ -11,3 +13,15 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+/venv/
+/.venv/
+.idea/
+
+# pycache
+
+bugalink-backend/BugaLink/__pycache__/
+bugalink-backend/newsletter/__pycache__/
+bugalink-backend/newsletter/migrations/__pycache__/
+*.pyc
+
+bugalink-backend/files/

@@ -1,0 +1,35 @@
+version: "3.7"
+
+services:
+  redis:
+    image: "redis:7.0.10"
+    container_name: bugalink_redis
+    command: redis-server
+    ports:
+      - "6379:6379"
+  db:
+    image: "postgres:15"
+    environment:
+      - POSTGRES_DBNAME=bugalink
+      - POSTGRES_USER=bugalink_admin
+      - POSTGRES_PASSWORD=8ug4l1nk_adm1n
+      - POSTGRES_PORT=5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    container_name: bugalink_backend
+    environment:
+      IS_DOCKER: 1
+    command: bash -c "python /code/manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+volumes:
+  postgres_data:

@@ -18,6 +18,8 @@ import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
 import { User } from 'next-auth';
 import BookmarkTripButton from '@/components/bookmarks/button';
+import { Drawer } from '@mui/material';
+import NoteToDriver from './note';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
@@ -34,6 +36,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 export default function Details({ data }) {
   const router = useRouter();
   const tripId = data.id;
+
+  const [drawerNote, setDrawerNote] = useState(false);
 
   const user = useSession().data?.user as User;
 
@@ -148,6 +152,22 @@ export default function Details({ data }) {
               </p>
             </div>
           )}
+
+          {!iAmTheDriver && !alreadyRequestedTrip && (
+            <>
+              <div className="grid justify-items-center">
+                <hr className="mt-4 mb-4 w-full text-border-color" />
+              </div>
+              <div className="mb-4 flex flex-row">
+                <p
+                  className="cursor-pointer font-normal text-dark-turquoise"
+                  onClick={() => setDrawerNote(true)}
+                >
+                  Añade una nota al conductor
+                </p>
+              </div>
+            </>
+          )}
         </div>
         {/* Trip request */}
         <div className="w-full rounded-t-xl bg-white py-6 px-5 shadow-t-md">
@@ -195,6 +215,22 @@ export default function Details({ data }) {
           )}
         </div>
       </div>
+      <Drawer
+        anchor="bottom"
+        open={drawerNote}
+        onClose={() => setDrawerNote(false)}
+        SlideProps={{
+          style: {
+            minWidth: '320px',
+            maxWidth: '480px',
+            width: '100%',
+            margin: '0 auto',
+            backgroundColor: 'transparent',
+          },
+        }}
+      >
+        <NoteToDriver />
+      </Drawer>
     </AnimatedLayout>
   );
 }

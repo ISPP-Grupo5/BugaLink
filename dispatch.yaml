@@ -6,3 +6,5 @@ dispatch:
       service: api
     - url: '*/static/*'
       service: api
+    - url: '*/ws*'
+      service: api

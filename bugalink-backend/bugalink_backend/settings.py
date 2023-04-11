@@ -94,7 +94,7 @@ if os.environ.get("IS_APP_ENGINE"):
         "default": {
             "ENGINE": config("ENGINE"),
             "NAME": config("NAME"),
-            "USER": config("USER"),
+            "USER": config("USER_DB"),
             "PASSWORD": config("PASSWORD"),
             "HOST": config("HOST"),
             "PORT": 5432,
@@ -205,11 +205,22 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 ASGI_APPLICATION = "bugalink_backend.asgi.application"
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("redis", 6379)],
+
+if os.environ.get("IS_APP_ENGINE"):
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [("10.194.81.115", 6379)],
+            },
         },
-    },
-}
+    }
+else:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [("redis", 6379)],
+            },
+        },
+    }

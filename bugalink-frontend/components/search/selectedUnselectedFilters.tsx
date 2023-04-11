@@ -95,7 +95,10 @@ const SelectedUnselectedFilter = ({ filter }) => {
               <TagsButton text={filter.name} />
             </div>
           )}
-          <PreferencesFilter open={drawerPreferences} setOpen={setDrawerPreferences} />
+          <PreferencesFilter
+            open={drawerPreferences}
+            setOpen={setDrawerPreferences}
+          />
         </>
       );
     case 'Día':
@@ -123,6 +126,5 @@ const SelectedUnselectedFilter = ({ filter }) => {
       return null;
   }
 };
-
 
 export default SelectedUnselectedFilter;

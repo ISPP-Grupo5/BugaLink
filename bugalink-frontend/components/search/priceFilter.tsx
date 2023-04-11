@@ -1,4 +1,3 @@
-
 import CTAButton from '@/components/buttons/CTA';
 import { Drawer } from '@mui/material';
 import React, { useState } from 'react';
@@ -10,15 +9,15 @@ type Props = {
 };
 
 export default function PriceFilter({ open, setOpen }: Props) {
-    const [priceRange, setPriceRange] = useState<number[]>([0, 0]);
+  const [priceRange, setPriceRange] = useState<number[]>([0, 0]);
 
-    const handleChange = (event: Event, newValue: number | number[]) => {
-      setPriceRange(newValue as number[]);
-    };
+  const handleChange = (event: Event, newValue: number | number[]) => {
+    setPriceRange(newValue as number[]);
+  };
 
-    function valuetext(value: number) {
-      return `${value}°C`;
-    }
+  function valuetext(value: number) {
+    return `${value}°C`;
+  }
 
   return (
     <Drawer

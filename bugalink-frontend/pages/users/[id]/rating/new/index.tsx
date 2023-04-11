@@ -19,7 +19,6 @@ export default function RatingScreen() {
   const passengerId = 2; //TODO: change this to the passenger's id
   const individualRideId = 1; //TODO: change this to the individual ride id
   const userId = 2; //TODO: change this to the user id
-  
 
   const handleSubmit = async () => {
     const data = {
@@ -33,13 +32,13 @@ export default function RatingScreen() {
       is_pleasant_driver: goodConduction,
       already_known: knewEachOther,
     };
-    
+
     // transform to asnyc await
     const response = await axios.post('/users' + driverId + '/reviews/', data);
     console.log(response.data);
 
     //Set values to default just in case so there is no problem in future ratings (see if can bedeleted)
-    
+
     setGoodConduction(false);
     setFriendlyDriver(true);
     setKnewEachOther(false);
@@ -59,7 +58,7 @@ export default function RatingScreen() {
         </p>
       </div>
 
-      <div className="flex justify-between space-x-4">
+      <div className="justify-between flex space-x-4">
         <RatingButton
           text="Buena conducción"
           icon="🛞"

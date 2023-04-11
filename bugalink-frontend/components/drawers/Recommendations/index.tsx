@@ -50,7 +50,7 @@ export default function RecommendationsDrawer({ open, setOpen }: Props) {
           className={`visible absolute -top-20 right-0 left-0 w-full cursor-pointer rounded-t-2xl bg-white`}
           onClick={() => setOpen(true)}
         >
-          <div className="ml-4 mt-4">
+          <div className="mx-auto mt-4 text-center">
             <div className="absolute top-2 left-1/2 h-1.5 w-7 -translate-x-1/2 transform rounded-lg bg-light-gray"></div>
             <p className="text-3xl font-semibold">Recomendaciones</p>
             <p className="mb-5 text-base font-thin leading-3 text-gray">

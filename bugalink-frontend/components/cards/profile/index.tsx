@@ -1,7 +1,8 @@
 import PreferenceBox from '@/components/preferences/box';
 import NEXT_ROUTES from '@/constants/nextRoutes';
-import { preferences } from '@/constants/preferences';
+import { preferences as preferencesData}  from '@/constants/preferences';
 import { Drawer } from '@mui/material';
+import { axiosAuth } from '@/lib/axios';
 import { User } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -12,17 +13,32 @@ import Help from 'public/assets/help.svg';
 import Logout from 'public/assets/log-out.svg';
 import Preferences from 'public/assets/preferences.svg';
 import Wallet from 'public/assets/wallet.svg';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import useDriverPreferences from '@/hooks/useDriverPreferences';
 
 export default function ProfileItems() {
-  const [drawerPreferences, setDrawerPreferences] = useState(false);
-  const [allowSmoke, setAllowSmoke] = useState(false);
-  const [allowPets, setAllowPets] = useState(false);
-  const [preferMusic, setPreferMusic] = useState(false);
-  const [preferTalk, setPreferTalk] = useState(false);
-
   const { data } = useSession();
   const user = data?.user as User;
+  const [drawerPreferences, setDrawerPreferences] = useState(false);
+  const { preferences, isLoadingPreferences, isErrorPreferences } = useDriverPreferences(user.driver_id);
+  const [allowSmoke, setAllowSmoke] = useState(preferences? preferences.allows_smoke : false);
+  const [allowPets, setAllowPets] = useState(preferences? preferences.allows_pets : false);
+  const [preferMusic, setPreferMusic] = useState(preferences? preferences.prefers_music : false);
+  const [preferTalk, setPreferTalk] = useState(preferences? preferences.prefers_talk : false);
+
+
+
+  useEffect(() => {
+    if(preferences){
+      setAllowPets(preferences.allows_pets);
+      setAllowSmoke(preferences.allows_smoke);
+      setPreferMusic(preferences.prefers_music);
+      setPreferTalk(preferences.prefers_talk);
+    }
+    
+  }, [preferences, isLoadingPreferences]);
+
+
 
   const handleSignOut = async () => {
     await signOut({
@@ -30,13 +46,41 @@ export default function ProfileItems() {
     });
   };
 
+  function onClosePreferences() {
+    let preferencesToSend = {
+      "prefers_talk": preferTalk,
+      "prefers_music": preferMusic,
+      "allows_pets": allowPets,
+      "allows_smoke": allowSmoke
+    }
+
+    setDrawerPreferences(false);
+    axiosAuth.put('/drivers/' + user.driver_id + '/preferences', preferencesToSend)
+      .then(response => {
+        console.log('Preferencias actualizadas:', response.data);
+      })
+      .catch(error => {
+        console.error('Error actualizando las preferencias: ', error);
+      });
+  }
+
+
+
+
+
+
+
   return (
     <div className="flex h-min w-full flex-col items-start justify-end rounded-t-3xl bg-white px-6 py-3 text-start text-xl">
       <Entry Icon={<Wallet />}>
         <Link href={NEXT_ROUTES.WALLET}>Mi cartera</Link>
       </Entry>
-      <Entry onClick={() => setDrawerPreferences(true)} Icon={<Preferences />}>
-        <span>Preferencias</span>
+      <Entry
+        onClick={() => setDrawerPreferences(true)}
+        Icon={<Preferences />}
+        className="cursor-pointer"
+      >
+        <span>Preferencias y normas</span>
       </Entry>
       {!user?.is_validated_driver && (
         <Entry Icon={<Carkey className="h-10 w-10" />}>
@@ -58,7 +102,7 @@ export default function ProfileItems() {
       <Drawer
         anchor="bottom"
         open={drawerPreferences}
-        onClose={() => setDrawerPreferences(false)}
+        onClose={() => onClosePreferences()}
         SlideProps={{
           style: {
             minWidth: '320px',
@@ -76,22 +120,22 @@ export default function ProfileItems() {
               <PreferenceBox
                 checked={allowSmoke}
                 setChecked={setAllowSmoke}
-                item={preferences.smoke}
+                item={preferencesData.smoke}
               />
               <PreferenceBox
                 checked={preferMusic}
                 setChecked={setPreferMusic}
-                item={preferences.music}
+                item={preferencesData.music}
               />
               <PreferenceBox
                 checked={allowPets}
                 setChecked={setAllowPets}
-                item={preferences.pets}
+                item={preferencesData.pets}
               />
               <PreferenceBox
                 checked={preferTalk}
                 setChecked={setPreferTalk}
-                item={preferences.talk}
+                item={preferencesData.talk}
               />
             </div>
           </div>

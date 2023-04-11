@@ -75,7 +75,7 @@ export default function ProfileItems() {
       <Entry Icon={<Wallet />}>
         <Link href={NEXT_ROUTES.WALLET}>Mi cartera</Link>
       </Entry>
-      <Entry onClick={() => setDrawerPreferences(true)} Icon={<Preferences />}>
+      <Entry onClick={() => setDrawerPreferences(true)} Icon={<Preferences />} className="cursor-pointer">
         <span>Preferencias</span>
       </Entry>
       {!user?.is_validated_driver && (

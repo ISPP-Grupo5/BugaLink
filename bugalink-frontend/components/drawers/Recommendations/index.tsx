@@ -4,7 +4,6 @@ import TripCardSkeleton from '@/components/skeletons/TripCard';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import useRecommendedTrips from '@/hooks/useRecommendedTrips';
 import TripI from '@/interfaces/trip';
-import { formatDatetime } from '@/utils/formatters';
 import { SwipeableDrawer } from '@mui/material';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';

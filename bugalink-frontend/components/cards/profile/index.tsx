@@ -1,12 +1,11 @@
 import PreferenceBox from '@/components/preferences/box';
 import NEXT_ROUTES from '@/constants/nextRoutes';
-import { preferences as preferencesData}  from '@/constants/preferences';
+import { preferences as preferencesData } from '@/constants/preferences';
 import { Drawer } from '@mui/material';
 import { axiosAuth } from '@/lib/axios';
 import { User } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
-import Address from 'public/assets/address.svg';
 import ArrowHead from 'public/assets/arrow-head.svg';
 import Carkey from 'public/assets/car-key.svg';
 import Help from 'public/assets/help.svg';
@@ -20,25 +19,30 @@ export default function ProfileItems() {
   const { data } = useSession();
   const user = data?.user as User;
   const [drawerPreferences, setDrawerPreferences] = useState(false);
-  const { preferences, isLoadingPreferences, isErrorPreferences } = useDriverPreferences(user.driver_id);
-  const [allowSmoke, setAllowSmoke] = useState(preferences? preferences.allows_smoke : false);
-  const [allowPets, setAllowPets] = useState(preferences? preferences.allows_pets : false);
-  const [preferMusic, setPreferMusic] = useState(preferences? preferences.prefers_music : false);
-  const [preferTalk, setPreferTalk] = useState(preferences? preferences.prefers_talk : false);
-
-
+  const { preferences, isLoadingPreferences } = useDriverPreferences(
+    user.driver_id
+  );
+  const [allowSmoke, setAllowSmoke] = useState(
+    preferences ? preferences.allows_smoke : false
+  );
+  const [allowPets, setAllowPets] = useState(
+    preferences ? preferences.allows_pets : false
+  );
+  const [preferMusic, setPreferMusic] = useState(
+    preferences ? preferences.prefers_music : false
+  );
+  const [preferTalk, setPreferTalk] = useState(
+    preferences ? preferences.prefers_talk : false
+  );
 
   useEffect(() => {
-    if(preferences){
+    if (preferences) {
       setAllowPets(preferences.allows_pets);
       setAllowSmoke(preferences.allows_smoke);
       setPreferMusic(preferences.prefers_music);
       setPreferTalk(preferences.prefers_talk);
     }
-    
   }, [preferences, isLoadingPreferences]);
-
-
 
   const handleSignOut = async () => {
     await signOut({
@@ -47,28 +51,23 @@ export default function ProfileItems() {
   };
 
   function onClosePreferences() {
-    let preferencesToSend = {
-      "prefers_talk": preferTalk,
-      "prefers_music": preferMusic,
-      "allows_pets": allowPets,
-      "allows_smoke": allowSmoke
-    }
+    const body = {
+      prefers_talk: preferTalk,
+      prefers_music: preferMusic,
+      allows_pets: allowPets,
+      allows_smoke: allowSmoke,
+    };
 
     setDrawerPreferences(false);
-    axiosAuth.put('/drivers/' + user.driver_id + '/preferences', preferencesToSend)
-      .then(response => {
+    axiosAuth
+      .put('/drivers/' + user.driver_id + '/preferences', body)
+      .then((response) => {
         console.log('Preferencias actualizadas:', response.data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error actualizando las preferencias: ', error);
       });
   }
-
-
-
-
-
-
 
   return (
     <div className="flex h-min w-full flex-col items-start justify-end rounded-t-3xl bg-white px-6 py-3 text-start text-xl">

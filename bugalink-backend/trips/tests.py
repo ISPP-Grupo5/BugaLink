@@ -3,9 +3,9 @@ import json
 
 from django.test import TestCase
 from passenger_routines.models import PassengerRoutine
-from ratings.models import DriverRating
+from ratings.models import DriverRating, Report
 from rest_framework.test import APIClient
-from trips.models import Trip
+from trips.models import Trip, TripRequest
 from users.tests import load_complex_data
 
 
@@ -60,3 +60,23 @@ class TripSearchTest(TestCase):
         response = self.client.get(url)
         data = json.loads(response.content)
         self.assertEqual(data["trips"][0]["id"], self.trip_2.id)
+
+
+class ReportTripUserTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        load_complex_data(self)
+        self.client.force_authenticate(user=self.user)
+
+    def test_report_trip_user(self):
+        url = "/api/v1/trips/" + str(self.trip.id) + "/report-issue/"
+        self.client.post(
+            url,
+            data={
+                "reported_user_id": self.user_2.id,
+                "reporter_is_driver": True,
+                "reported_is_driver": False,
+                "note": "note",
+            },
+        )
+        self.assertEqual(Report.objects.get(id=1).note, "note")

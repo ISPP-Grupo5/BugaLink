@@ -2,6 +2,7 @@ import paypal
 import stripe
 from django.db.models import Q
 from passenger_routines.models import PassengerRoutine
+from ratings.models import Report
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -11,6 +12,7 @@ from trips.serializers import (
     TripRequestSerializer,
     TripSerializer,
 )
+from users.models import User
 
 from .utils import (
     check_allows_pets,
@@ -253,3 +255,38 @@ class TripSearchViewSet(
         return Response(
             TripSerializer(trips, many=True).data, status=status.HTTP_200_OK
         )
+
+
+class ReportIssueViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = Trip.objects.all()
+    serializer_class = TripSerializer
+
+    @action(detail=True, methods=["post"])
+    def post(self, request, trip_id, *args, **kwargs):
+        try:
+            trip = Trip.objects.get(id=trip_id, status="FINISHED")
+            user = request.user
+            trip_request = TripRequest.objects.filter(
+                trip=trip, passenger__user=user
+            ).first()
+            if trip_request or trip.driver_routine.driver.user == user:
+                reported_user_id = request.POST.get("reported_user_id")
+                reported_user = User.objects.get(id=reported_user_id)
+                reporter_is_driver = request.POST.get("reporter_is_driver")
+                reported_is_driver = request.POST.get("reported_is_driver")
+                note = request.POST.get("note")
+                Report.objects.create(
+                    trip=trip,
+                    reporter_user=user,
+                    reported_user=reported_user,
+                    reporter_is_driver=reporter_is_driver,
+                    reported_is_driver=reported_is_driver,
+                    note=note,
+                )
+                return Response({"message": "Usuario reportado con exito"})
+        except Exception as e:
+            return Response({"message": str(e)})

@@ -17,10 +17,17 @@ class ConversationListSerializer(serializers.ModelSerializer):
     initiator = UserSerializer()
     receiver = UserSerializer()
     last_message = serializers.SerializerMethodField()
+    unread_messages_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Conversation
-        fields = ["id", "initiator", "receiver", "last_message"]
+        fields = [
+            "id",
+            "initiator",
+            "receiver",
+            "last_message",
+            "unread_messages_count",
+        ]
 
     def get_last_message(self, instance):
         message = instance.message_set.first()
@@ -28,6 +35,9 @@ class ConversationListSerializer(serializers.ModelSerializer):
             return MessageSerializer(instance=message).data
         else:
             return None
+
+    def get_unread_messages_count(self, instance):
+        return instance.message_set.filter(read_by_recipient=False).count()
 
 
 class ConversationSerializer(serializers.ModelSerializer):

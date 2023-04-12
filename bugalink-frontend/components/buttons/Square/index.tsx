@@ -36,7 +36,7 @@ export default function SquareButton({
       </Link>
       <p className="text-center text-lg">{text}</p>
       {numNotifications > 0 && (
-        <p className="absolute -left-3 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-light-red text-center text-lg font-semibold text-white">
+        <p className="absolute -right-3 -top-2 flex h-10 w-10 items-center justify-center rounded-full bg-light-red text-center text-xl font-semibold text-white">
           {numNotifications}
         </p>
       )}

@@ -55,7 +55,7 @@ Bugalink is a webapp that allows you to find other people who share the same rou
 The landing page is accessible via the [bugalink.es](https://bugalink.es) domain. There is a link in the navigation bar that leads to [app.bugalink.es](https://app.bugalink.es) where the user can access all the functionalities of the application once they have registered and logged in.
 
   <a href="https://bugalink.es">
-  <img src="https://i.imgur.com/DY8N0C0.gif" alt="Landing page" width="320" height="180" style="width: 100%; height: 100%;">
+  <img src="https://i.imgur.com/DY8N0C0.gif" alt="Landing page" style="width: 100%; height: 100%;">
   </a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -134,6 +134,13 @@ NEXTAUTH_SECRET=SECRET_KEY
 
 ```sh
 cd bugalink-backend
+
+# Install the dependencies (only for local development)
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+pre-commit install
+
+# Start the django project and PostgreSQL-redis databases
 docker-compose up --build
 docker-compose exec web python manage.py migrate
 docker-compose exec web python populate_db.py

@@ -1,5 +1,6 @@
 from django.urls import include, path
 from rest_framework import routers
+from trips.views import ReportIssueViewSet
 from users.views import (
     BecomeDriverView,
     UserRatingView,
@@ -17,6 +18,9 @@ urlpatterns = [
     path("", include(router.urls)),
     # TODO: the endpoint below doesn't work if we add a "/"
     path("users/become-driver", BecomeDriverView.as_view()),
+    path(
+        "users/<int:trip_id>/report-issue/", ReportIssueViewSet.as_view({"get": "get"})
+    ),
     path("users/<int:id>/trip-requests/", UserTripsView.as_view()),
     path("users/<int:id>/edit/", UserUpdateView.as_view()),
     path("users/<int:pk>/stats/", UserStatsView.as_view({"get": "get"})),

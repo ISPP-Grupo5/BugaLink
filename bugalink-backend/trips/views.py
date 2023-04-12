@@ -13,6 +13,7 @@ from trips.serializers import (
     TripSerializer,
 )
 from users.models import User
+from users.serializers import UserSerializer
 
 from .utils import (
     check_allows_pets,
@@ -288,5 +289,22 @@ class ReportIssueViewSet(
                     note=note,
                 )
                 return Response({"message": "Usuario reportado con exito"})
+        except Exception as e:
+            return Response({"message": str(e)})
+
+    @action(detail=True, methods=["get"])
+    def get(self, request, trip_id, *args, **kwargs):
+        try:
+            trip = Trip.objects.get(id=trip_id)
+            trip_requests = TripRequest.objects.filter(trip=trip)
+            trip_requests_id = []
+            for trip_request in trip_requests:
+                trip_requests_id.append(trip_request.passenger.id)
+            users = User.objects.filter(
+                id=trip.driver_routine.driver.user.id
+            ) | User.objects.filter(id__in=trip_requests_id)
+            return Response(
+                UserSerializer(users, many=True).data, status=status.HTTP_200_OK
+            )
         except Exception as e:
             return Response({"message": str(e)})

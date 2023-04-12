@@ -5,7 +5,7 @@ from django.test import TestCase
 from passenger_routines.models import PassengerRoutine
 from ratings.models import DriverRating
 from rest_framework.test import APIClient
-from trips.models import Trip
+from trips.models import Trip, TripRequest
 from users.tests import load_complex_data
 
 
@@ -23,7 +23,7 @@ class GetTripRecommendationTest(TestCase):
         )
 
         self.passenger_routine_1 = PassengerRoutine.objects.create(
-            passenger=self.passenger,
+            passenger=self.passenger_2,
             departure_time_start=(
                 datetime.datetime.now() - datetime.timedelta(hours=1)
             ).time(),
@@ -35,15 +35,13 @@ class GetTripRecommendationTest(TestCase):
             destination=self.location_2,
             day_of_week="Mon",
         )
-        self.client.force_authenticate(user=self.user)
+        self.client.force_authenticate(user=self.user_2)
 
     def test_get_trip_recommendation(self):
-        url = "/api/v1/trips/recommendations"
-        response = self.client.get(url, data={"user_id": self.user.pk})
+        url = "/api/v1/trips/recommendations/"
+        response = self.client.get(url)
         data = json.loads(response.content)
-        self.assertEqual(
-            data["trips"][0]["driver_routine"]["origin"]["address"], "Mi casa"
-        )
+        self.assertEqual(data[0]["driver_routine"]["origin"]["address"], "Mi casa")
 
 
 class TripSearchTest(TestCase):
@@ -59,4 +57,28 @@ class TripSearchTest(TestCase):
         "prefers_talk=False&allows_pets=False&allows_smoking=False"
         response = self.client.get(url)
         data = json.loads(response.content)
-        self.assertEqual(data["trips"][0]["id"], self.trip_2.id)
+        self.assertEqual(data[0]["id"], self.trip_2.id)
+
+
+class TripRateTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        load_complex_data(self)
+        self.client.force_authenticate(user=self.user_2)
+
+    def test_rate_trip(self):
+        url = "/api/v1/trips/" + str(self.trip.pk) + "/rate/"
+
+        self.client.post(
+            url,
+            data={
+                "rating": 2.3,
+                "is_good_driver": True,
+                "is_pleasant_driver": False,
+                "already_knew": True,
+            },
+        )
+
+        self.assertEqual(
+            DriverRating.objects.get(trip_request=self.trip_request).rating, 2.3
+        )

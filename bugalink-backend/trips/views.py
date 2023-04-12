@@ -186,15 +186,19 @@ class TripRequestViewSet(
     @action(detail=True, methods=["put"])
     def accept(self, request, *args, **kwargs):
         trip_request = self.get_object()
-        trip_request.status = "ACCEPTED"
-        trip_request.save()
-        return Response(self.get_serializer(trip_request).data)
+        trip_requests = TripRequest.objects.filter(trip = trip_request.trip, status="ACCEPTED")
+        is_full = trip_request.trip.driver_routine.available_seats - len(trip_requests) <= 0
+        if not is_full:
+            trip_request.status = "ACCEPTED"
+            trip_request.save()
+            return Response(self.get_serializer(trip_request).data)
 
     # PUT /trip-requests/<pk>/reject/ (For a driver to reject a trip request)
     @action(detail=True, methods=["put"])
     def reject(self, request, *args, **kwargs):
         trip_request = self.get_object()
         trip_request.status = "REJECTED"
+        #trip_request.reject_note = request.body("reject_note")
         trip_request.save()
         return Response(self.get_serializer(trip_request).data)
 

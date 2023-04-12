@@ -2,7 +2,7 @@ import paypal
 import stripe
 from django.db.models import Q
 from passenger_routines.models import PassengerRoutine
-from ratings.models import Report
+from ratings.models import DriverRating, Report
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -256,6 +256,43 @@ class TripSearchViewSet(
         return Response(
             TripSerializer(trips, many=True).data, status=status.HTTP_200_OK
         )
+
+
+class TripRateViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = TripRequest.objects.all()
+    serializer_class = TripRequestSerializer
+
+    @action(detail=True, methods=["post"])
+    def post(self, request, trip_id, *args, **kwargs):
+        try:
+            trip = Trip.objects.get(id=trip_id)
+            if trip.status == "FINISHED":
+                trip_request = TripRequest.objects.filter(
+                    trip=trip, status="ACCEPTED", passenger__user=request.user
+                ).first()
+            if trip_request:
+                rating = request.POST.get("rating")
+                is_good_driver = request.POST.get("is_good_driver")
+                is_pleasant_driver = request.POST.get("is_pleasant_driver")
+                already_knew = request.POST.get("already_knew")
+
+                DriverRating.objects.create(
+                    trip_request=TripRequest.objects.get(id=trip_request.id),
+                    rating=rating,
+                    is_good_driver=is_good_driver,
+                    is_pleasant_driver=is_pleasant_driver,
+                    already_knew=already_knew,
+                )
+
+                return Response({"message": "Valoración realizada con exito"})
+            else:
+                return Response({"message": "No has participado en este viaje"})
+        except Exception as e:
+            return Response({"message": str(e)})
 
 
 class ReportIssueViewSet(

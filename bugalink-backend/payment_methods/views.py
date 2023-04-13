@@ -5,6 +5,7 @@ from .models import Balance
 from .serializers import BalanceSerializer
 from users.models import User
 
+
 class BalanceViewSet(
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
@@ -21,12 +22,11 @@ class BalanceViewSet(
                 user = User.objects.get(id=user_id)
             except User.DoesNotExist:
                 return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-            balance = self.queryset.get(user = user)
-            serializer = self.serializer_class({'user_id': user_id, 'balance': balance})
+            balance = self.queryset.get(user=user)
+            serializer = self.serializer_class({'user': user, 'balance': balance})
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'User ID not provided'}, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
-

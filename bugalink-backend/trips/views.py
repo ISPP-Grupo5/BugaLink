@@ -1,3 +1,4 @@
+from payment_methods.models import Balance
 from bugalink_backend import settings
 import paypal
 import stripe
@@ -151,12 +152,11 @@ class TripRequestViewSet(
         serializer.is_valid(raise_exception=True)
 
         trip = Trip.objects.get(id=kwargs["trip_id"])
-        """ FUTURE IMPLEMENTATION
+
         user = request.user
         payment_method = request.data.get("payment_method")
         price = trip.driver_routine.price
-
-
+        print(payment_method)
         if payment_method == "Balance":
             balance = Balance.objects.get(user=user)
             pay_with_balance(balance, price)
@@ -172,7 +172,7 @@ class TripRequestViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
                 data={"error": "Método de pago inválido"},
             )
-        """
+
         serializer.save()
 
         created_id = serializer.instance.id

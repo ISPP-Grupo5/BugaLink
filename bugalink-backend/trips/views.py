@@ -156,7 +156,7 @@ class TripRequestViewSet(
         user = request.user
         payment_method = request.data.get("payment_method")
         price = trip.driver_routine.price
-        print(payment_method)
+        
         if payment_method == "Balance":
             balance = Balance.objects.get(user=user)
             pay_with_balance(balance, price)
@@ -177,6 +177,7 @@ class TripRequestViewSet(
 
         created_id = serializer.instance.id
         headers = self.get_success_headers(serializer.data)
+              
         return Response(
             {"id": created_id, **serializer.data},
             # self.get_serializer(driver_routine).data,

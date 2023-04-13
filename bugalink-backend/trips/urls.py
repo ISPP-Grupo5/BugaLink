@@ -11,7 +11,7 @@ router = routers.DefaultRouter()
 router.register(r"trips", TripViewSet)
 
 urlpatterns = [
-    path("trips/<int:id>/request/", TripRequestViewSet.as_view({"post": "create"})),
+    path("trips/<int:trip_id>/request/", TripRequestViewSet.as_view({"post": "create"})),
     path(
         "trips/search/",
         TripSearchViewSet.as_view({"get": "get"}),

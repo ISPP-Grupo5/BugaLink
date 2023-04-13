@@ -69,7 +69,7 @@ class TripRequestCreateSerializer(serializers.ModelSerializer):
     # TODO: Verificar que no se solicita un viaje a si mismo y que no lo ha solicitado ya
     def create(self, validated_data):
         # Get the trip from the URL path
-        trip_id = self.context["view"].kwargs["id"]
+        trip_id = self.context["view"].kwargs["trip_id"]
         trip = Trip.objects.get(id=trip_id)
         passenger = self.context["request"].user.passenger
         price = trip.driver_routine.price

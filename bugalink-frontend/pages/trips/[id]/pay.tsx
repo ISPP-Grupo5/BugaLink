@@ -13,7 +13,9 @@ export default function Pay() {
   const authUser = useSession().data?.user as User;
 
   const { balance, isLoadingBalance, isErrorBalance } = useBalance(authUser?.user_id.toString());
-  console.log(balance);
+
+  if (isLoadingBalance) return <p>Loading...</p>;
+  if (isErrorBalance) return <p>Error</p>;
   return (
     <AnimatedLayout className="justify-between flex flex-col">
       <BackButtonText text="Pago del viaje" />
@@ -23,7 +25,7 @@ export default function Pay() {
           <div className="my-2 flex flex-col items-center justify-center">
             <div className="my-2 flex w-full flex-col items-center justify-center rounded-xl border border-dashed border-gray p-12">
               <p className="text-lg">Saldo disponible</p>
-              <p className="text-5xl font-bold">13,30€</p>
+              <p className="text-5xl font-bold">{balance.amount}€</p>
             </div>
             <AddMethod text="Añadir método de pago" />
           </div>
@@ -35,7 +37,7 @@ export default function Pay() {
             <PayMethod
               logo={<BugalinkLogo color="white" />}
               name="Saldo"
-              data="13,30€"
+              data={`${balance.amount}€`}
               href="#"
             />
             <PayMethod

@@ -1,3 +1,4 @@
+from bugalink_backend import settings
 import paypal
 import stripe
 from django.db.models import Q
@@ -97,7 +98,7 @@ class TripRequestViewSet(
             balance.save()
 
         def pay_with_credit_card(price):
-            stripe.api_key = "your_stripe_api_key"  # TODO change it
+            stripe.api_key = settings.STRIP
 
             # Get the amount to charge (in cents)
             amount = int(price * 100)

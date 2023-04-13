@@ -138,32 +138,31 @@ class TripRequestViewSet(
                 )
 
         def pay_with_paypal(price):
-            paypal_client_id = "your_paypal_client_id"  # TODO change it
-            paypal_secret_key = "your_paypal_secret_key"  # TODO change it
+            paypal_client_id = "AdWSL48duytv4qy76be71a2S3Tt5nTYn-1gGv-53vL_dxNWYzZpAGrUZYrZBvGjkNwOSxJE1s_RSCkL8"
+            paypal_secret_key= "EHps0LO5OsQsUOrDTu9J6BY_mD0OkcF9aNzOT7rkRtDYKCOxoiqCUXsnz-nkhZX5rhlA741NosbaxBpb" 
 
-            environment = paypal.Environment(
-                client_id=paypal_client_id, client_secret=paypal_secret_key
-            )
-            client = paypal.PayPalHttpClient(environment)
+            paypal.configure({
+                "mode": "sandbox",  # Or "live" for production environment
+                "client_id": paypal_client_id,
+                "client_secret": paypal_secret_key
+            })
 
-            # Get the amount to charge
-            amount = price
-
-            # Create a PayPal order
-            order = paypal.OrderRequest(
-                {
-                    "intent": "CAPTURE",
-                    "purchase_units": [
-                        {"amount": {"currency_code": "EUR", "value": str(amount)}}
-                    ],
-                }
-            )
-            response = client.execute(paypal.OrdersCreateRequest(order))
-            order_id = response.result.id
+            order = paypal.Order({
+                "intent": "CAPTURE",
+                "purchase_units": [
+                    {"amount": {"currency": "EUR", "total": str(price)}}
+                ]
+            })
+            order.create()
 
             # Capture the payment
-            capture = paypal.CaptureRequest(order_id)
-            client.execute(capture)
+            capture = paypal.Capture({
+                "amount": {"currency": "EUR", "total": str(price)},
+                "is_final_capture": True
+            })
+
+            if order.capture(capture):
+                print("Payment succeeded!")
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

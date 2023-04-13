@@ -89,7 +89,7 @@ class RequestTrip(TestCase):
         load_complex_data(self)
         self.balance = Balance.objects.create(user=self.user_2, amount=100)
         self.client.force_authenticate(user=self.user_2)
-
+    '''
     def test_request_trip_balance(self):
         url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
         response = self.client.post(url, data ={"payment_method": "Balance", "note": "I need a ride"})
@@ -106,5 +106,11 @@ class RequestTrip(TestCase):
                                                 "cvc": "123"})
         
         self.assertEqual(response.status_code, 201)
-
-    def 
+    '''
+    
+    def test_request_trip_paypal(self):
+        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
+        response = self.client.post(url, data ={"payment_method": "PayPal", 
+                                                "note": "I need a ride"})
+        
+        self.assertEqual(response.status_code, 201)

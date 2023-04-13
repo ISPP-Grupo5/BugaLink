@@ -28,7 +28,7 @@ class ChatsConsumer(WebsocketConsumer):
             else conversation.receiver
         )
         to_mark_as_read = Message.objects.filter(
-            conversation_id=conversation, sender=other_user
+            conversation=conversation, sender=other_user
         )
         to_mark_as_read.update(read_by_recipient=True)
         message_list = to_mark_as_read.values_list("id", flat=True)
@@ -79,13 +79,13 @@ class ChatsConsumer(WebsocketConsumer):
                 sender=sender,
                 attachment=file_data,
                 text=message,
-                conversation_id=conversation,
+                conversation=conversation,
             )
         else:
             _message = Message.objects.create(
                 sender=sender,
                 text=message,
-                conversation_id=conversation,
+                conversation=conversation,
             )
 
         # Send message to room group

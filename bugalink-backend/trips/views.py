@@ -98,7 +98,7 @@ class TripRequestViewSet(
             balance.amount -= price
             balance.save()
 
-        def pay_with_credit_card(price):
+        def pay_with_credit_card(price, credit_car_number, expiration_month, expiration_year, cvc):
             stripe.api_key = settings.STRIPE_SECRET_KEY
 
             amount = int(price * 100)  # Stripe expects amount in cents
@@ -108,10 +108,10 @@ class TripRequestViewSet(
                 payment_method = stripe.PaymentMethod.create(
                     type="card",
                     card={
-                        "number": "4242424242424242",  # Replace with the actual card number
-                        "exp_month": 12,  # Replace with the actual expiration month
-                        "exp_year": 2023,  # Replace with the actual expiration year
-                        "cvc": "123",  # Replace with the actual CVC code
+                        "number": credit_car_number, 
+                        "exp_month": expiration_month,  
+                        "exp_year": expiration_year,  
+                        "cvc": cvc,  
                     },
                 )
 
@@ -181,7 +181,11 @@ class TripRequestViewSet(
             pay_with_balance(balance, price)
 
         elif payment_method == "CreditCard":
-            pay_with_credit_card(price)
+            credit_car_number = request.data.get("credit_car_number")
+            expiration_month = request.data.get("expiration_month")
+            expiration_year = request.data.get("expiration_year")
+            cvc = request.data.get("cvc")
+            pay_with_credit_card(price, credit_car_number, expiration_month, expiration_year, cvc)
 
         elif payment_method == "PayPal":
             pay_with_paypal(price)

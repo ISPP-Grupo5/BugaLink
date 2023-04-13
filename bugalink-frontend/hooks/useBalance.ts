@@ -6,7 +6,6 @@ export default function useBalance(userId) {
         `/users/${userId}/balance`,
         fetcherAuth
     );
-    console.log(data);
     return {
         balance: data,
         isLoadingBalance: isLoading,

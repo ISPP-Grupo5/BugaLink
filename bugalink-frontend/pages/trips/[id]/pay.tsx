@@ -8,14 +8,43 @@ import AddMethod from '@/components/payment/AddMethod';
 import useBalance from '@/hooks/useBalance';
 import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
+import { axiosAuth } from '@/lib/axios';
+import { useState } from 'react';
+import { useRouter } from 'next/router';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 
 export default function Pay() {
+  const [isSendingForm, setIsSendingForm] = useState(false);
   const authUser = useSession().data?.user as User;
-
+  const router = useRouter();
+  const id = router.query.id as string;
   const { balance, isLoadingBalance, isErrorBalance } = useBalance(authUser?.user_id.toString());
 
   if (isLoadingBalance) return <p>Loading...</p>;
   if (isErrorBalance) return <p>Error</p>;
+
+  const payWithBalance = (event: React.MouseEvent<HTMLButtonElement>) => {
+
+    event.preventDefault();
+    setIsSendingForm(true);
+    const data = {
+      payment_method: "Balance",
+      note: "Example note"
+    };
+
+
+    axiosAuth
+      .post(`trips/${id}/request/`, data)
+      .then((response) => {
+        router.push(NEXT_ROUTES.HOME);
+      })
+      .catch((error) => {
+        setIsSendingForm(false);
+      });
+
+  }
+
+  if (isSendingForm) return <p>Se está procesando el pago...</p>;
   return (
     <AnimatedLayout className="justify-between flex flex-col">
       <BackButtonText text="Pago del viaje" />
@@ -39,6 +68,7 @@ export default function Pay() {
               name="Saldo"
               data={`${balance.amount}€`}
               href="#"
+              onClick={payWithBalance}
             />
             <PayMethod
               logo={<VisaMastercard height="100%" />}

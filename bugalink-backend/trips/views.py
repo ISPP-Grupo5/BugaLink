@@ -4,6 +4,7 @@ import paypal
 import stripe
 from django.db.models import Q
 from passenger_routines.models import PassengerRoutine
+from transactions.models import Transaction
 from ratings.models import DriverRating
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
@@ -201,6 +202,8 @@ class TripRequestViewSet(
             )
 
         serializer.save()
+
+        Transaction.objects.create(sender = user, receiver = trip.driver_routine.driver.user, amount = price, is_refund = False, status = "PENDING")
 
         created_id = serializer.instance.id
         headers = self.get_success_headers(serializer.data)

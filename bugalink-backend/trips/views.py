@@ -314,8 +314,16 @@ class ReportIssueViewSet(
             if trip_request or trip.driver_routine.driver.user == user:
                 reported_user_id = request.POST.get("reported_user_id")
                 reported_user = User.objects.get(id=reported_user_id)
-                reporter_is_driver = request.POST.get("reporter_is_driver")
-                reported_is_driver = request.POST.get("reported_is_driver")
+                if user == trip.driver_routine.driver.user:
+                    reporter_is_driver = True
+                    reported_is_driver = False
+                elif reported_user == trip.driver_routine.driver.user:
+                    reported_is_driver = True
+                    reporter_is_driver = False
+                else:
+                    reported_is_driver = False
+                    reporter_is_driver = False
+
                 note = request.POST.get("note")
                 Report.objects.create(
                     trip=trip,

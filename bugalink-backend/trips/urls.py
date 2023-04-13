@@ -23,8 +23,8 @@ urlpatterns = [
         ReportIssueViewSet.as_view({"post": "post"}),
     ),
     path(
-        "trips/<int:trip_id>/report-issue/",
-        ReportIssueViewSet.as_view({"post": "post"}),
+        "trips/<int:trip_id>/users/",
+        ReportIssueViewSet.as_view({"get": "get"}),
     ),
     path("trip-requests/<int:pk>/", TripRequestViewSet.as_view({"get": "get"})),
     path(

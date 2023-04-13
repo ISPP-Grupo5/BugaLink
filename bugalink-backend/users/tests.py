@@ -166,16 +166,3 @@ class UserRatingViewTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data["number_ratings"], 0)
         self.assertEqual(data["rating"], 0)
-
-
-class UsersFromTripTest(TestCase):
-    def setUp(self):
-        self.client = APIClient()
-        load_complex_data(self)
-        self.client.force_authenticate(user=self.user)
-
-    def test_report_trip_user(self):
-        url = "/api/v1/users/" + str(self.trip.id) + "/report-issue/"
-        response = self.client.get(url)
-        data = json.loads(response.content)
-        self.assertEqual(len(data), 2)

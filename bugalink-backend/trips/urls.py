@@ -1,7 +1,6 @@
 from django.urls import include, path
 from rest_framework import routers
 from trips.views import (
-    TripRateViewSet,
     TripRequestViewSet,
     TripSearchViewSet,
     TripViewSet,
@@ -16,7 +15,6 @@ urlpatterns = [
         "trips/search/",
         TripSearchViewSet.as_view({"get": "get"}),
     ),
-    path("trips/<int:trip_id>/rate/", TripRateViewSet.as_view({"post": "post"})),
     path("trip-requests/<int:pk>/", TripRequestViewSet.as_view({"get": "get"})),
     path(
         "trips/recommendations/",

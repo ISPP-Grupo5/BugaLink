@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "chats",
     "transactions",
     # Third-party packages
+    "paypal",
     "drf_spectacular",
     "rest_framework",
     "channels",

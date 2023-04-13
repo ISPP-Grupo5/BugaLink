@@ -1,6 +1,8 @@
+from django.shortcuts import redirect
 from payment_methods.models import Balance
 from bugalink_backend import settings
-import paypal
+import paypalrestsdk
+from paypalrestsdk import Payment
 import stripe
 from django.db.models import Q
 from passenger_routines.models import PassengerRoutine
@@ -118,7 +120,7 @@ class TripRequestViewSet(
                 payment_intent = stripe.PaymentIntent.create(
                     payment_method=payment_method.id,
                     amount=amount,
-                    currency="eur",
+                    currency="usd",
                     confirmation_method="manual",
                     confirm=True
                 )
@@ -140,30 +142,49 @@ class TripRequestViewSet(
 
         def pay_with_paypal(price):
             paypal_client_id = "AdWSL48duytv4qy76be71a2S3Tt5nTYn-1gGv-53vL_dxNWYzZpAGrUZYrZBvGjkNwOSxJE1s_RSCkL8"
-            paypal_secret_key = "EHps0LO5OsQsUOrDTu9J6BY_mD0OkcF9aNzOT7rkRtDYKCOxoiqCUXsnz-nkhZX5rhlA741NosbaxBpb"
+            paypal_secret_key= "EHps0LO5OsQsUOrDTu9J6BY_mD0OkcF9aNzOT7rkRtDYKCOxoiqCUXsnz-nkhZX5rhlA741NosbaxBpb" 
 
-            paypal.configure({
-                "mode": "sandbox",  # Or "live" for production environment
+            # Set up PayPal API credentials
+            paypalrestsdk.configure({
+                "mode": "sandbox",  
                 "client_id": paypal_client_id,
-                "client_secret": paypal_secret_key
+                "client_secret": paypal_secret_key,
             })
 
-            order = paypal.Order({
-                "intent": "CAPTURE",
-                "purchase_units": [
-                    {"amount": {"currency": "EUR", "total": str(price)}}
-                ]
+            # Create a payment object
+            payment = Payment({
+                "intent": "sale",
+                "payer": {
+                    "payment_method": "paypal",
+                },
+                "redirect_urls": {
+                    "return_url": "http://app.bugalink.es",
+                    "cancel_url": "http://app.bugalink.es",
+                },
+                "transactions": [{
+                    "amount": {
+                        "total": str(price),
+                        "currency": "EUR",
+                    },
+                    "description": "Payment for your trip with Bugalink",
+                }],
             })
-            order.create()
 
-            # Capture the payment
-            capture = paypal.Capture({
-                "amount": {"currency": "EUR", "total": str(price)},
-                "is_final_capture": True
-            })
+            # Create payment
+            if payment.create():
+                # Redirect the user to PayPal for payment approval
+                for link in payment.links:
+                    if link.method == "REDIRECT":
+                        redirect_url = link.href
+                        return redirect(redirect_url)
 
-            if order.capture(capture):
-                print("Payment succeeded!")
+            else:
+                return Response(
+                    status=status.HTTP_400_BAD_REQUEST,
+                    data={"error": "Failed to create PayPal payment"},
+                )
+
+           
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

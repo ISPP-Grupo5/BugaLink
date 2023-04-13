@@ -98,7 +98,7 @@ class TripRequestViewSet(
             balance.save()
 
         def pay_with_credit_card(price):
-            stripe.api_key = settings.STRIP
+            stripe.api_key = settings.STRIPE_SECRET_KEY
 
             # Get the amount to charge (in cents)
             amount = int(price * 100)

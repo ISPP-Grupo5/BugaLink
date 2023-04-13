@@ -1,4 +1,3 @@
-
 import CTAButton from '@/components/buttons/CTA';
 import { Drawer } from '@mui/material';
 import TagsButton from '../buttons/Tags';
@@ -10,10 +9,10 @@ type Props = {
 };
 
 export default function RatingFilter({ open, setOpen }: Props) {
-    const [isRatingSelected4, setIsRatingSelected4] = useState(false);
-    const [isRatingSelected3, setIsRatingSelected3] = useState(false);
-    const [isRatingSelected2, setIsRatingSelected2] = useState(false);
-    const [isRatingSelected1, setIsRatingSelected1] = useState(false);
+  const [isRatingSelected4, setIsRatingSelected4] = useState(false);
+  const [isRatingSelected3, setIsRatingSelected3] = useState(false);
+  const [isRatingSelected2, setIsRatingSelected2] = useState(false);
+  const [isRatingSelected1, setIsRatingSelected1] = useState(false);
 
   return (
     <Drawer

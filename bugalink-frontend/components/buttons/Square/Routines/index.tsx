@@ -2,11 +2,7 @@ import NEXT_ROUTES from '@/constants/nextRoutes';
 import SquareButton from '..';
 import Calendar from '/public/icons/Vista-Principal/calendar.svg';
 
-interface Props {
-  userId: number;
-}
-
-export default function SquareRoutinesButton({ userId }: Props) {
+export default function SquareRoutinesButton() {
   return (
     <SquareButton
       text="Mi horario"

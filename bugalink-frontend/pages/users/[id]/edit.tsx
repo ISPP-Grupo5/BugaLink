@@ -145,7 +145,7 @@ export default function EditProfile({ data }) {
   };
 
   return (
-    <AnimatedLayout className="flex h-screen flex-col items-center justify-between bg-white">
+    <AnimatedLayout className="justify-between flex h-screen flex-col items-center bg-white">
       <BackButtonText text="Mi perfil" />
       <div className="flex h-full w-full flex-col items-center overflow-y-scroll">
         <div className="mb-5 h-24 w-24">
@@ -186,7 +186,7 @@ export default function EditProfile({ data }) {
         </div>
         <form
           ref={formRef}
-          className="flex h-full w-full flex-col items-center justify-between"
+          className="justify-between flex h-full w-full flex-col items-center"
         >
           <div className="mt-5 flex w-full flex-col items-center space-y-6">
             <TextField

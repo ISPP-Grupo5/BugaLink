@@ -1,4 +1,3 @@
-
 import CTAButton from '@/components/buttons/CTA';
 import { Drawer } from '@mui/material';
 import React, { useState } from 'react';
@@ -11,10 +10,10 @@ type Props = {
 };
 
 export default function PreferencesFilter({ open, setOpen }: Props) {
-    const [allowSmoke, setAllowSmoke] = useState(false);
-    const [allowPets, setAllowPets] = useState(false);
-    const [preferMusic, setPreferMusic] = useState(false);
-    const [preferTalk, setPreferTalk] = useState(false);
+  const [allowSmoke, setAllowSmoke] = useState(false);
+  const [allowPets, setAllowPets] = useState(false);
+  const [preferMusic, setPreferMusic] = useState(false);
+  const [preferTalk, setPreferTalk] = useState(false);
 
   return (
     <Drawer

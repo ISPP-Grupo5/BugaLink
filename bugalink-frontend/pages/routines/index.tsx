@@ -67,9 +67,8 @@ export default function MyRoutines() {
         {Object.keys(WEEK_DAYS).map((day) => (
           <div key={day} className="mb-4 space-y-2">
             <h1 className="text-2xl">{WEEK_DAYS[day]}</h1>
-            {isLoading
-              ? // || isError
-                [1, 2].map((id) => <RoutineCardSkeleton key={id} />)
+            {isLoading || isError
+              ? [1, 2].map((id) => <RoutineCardSkeleton key={id} />)
               : allRoutines
                   .filter((routine: GenericRoutineI) => routine.day === day)
                   .map((routine: GenericRoutineI) => (
@@ -85,7 +84,7 @@ export default function MyRoutines() {
                     />
                   ))}
             {!isLoading &&
-              // !isError &&
+              !isError &&
               allRoutines.filter(
                 (routine: GenericRoutineI) => routine.day === day
               ).length === 0 && (

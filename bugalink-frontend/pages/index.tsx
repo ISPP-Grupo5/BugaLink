@@ -1,3 +1,5 @@
+import Avatar from '@/components/avatar';
+import BookmarkTripList from '@/components/bookmarks/list';
 import OptionButton from '@/components/buttons/Option';
 import SquareChatsButton from '@/components/buttons/Square/Chats';
 import SquareRequestsButton from '@/components/buttons/Square/Requests';
@@ -13,9 +15,6 @@ import Link from 'next/link';
 import Destino from 'public/icons/Vista-Principal/destino.svg';
 import { useState } from 'react';
 import MagnifyingGlass from '/public/icons/Vista-Principal/glass.svg';
-import Avatar from '@/components/avatar';
-import InformativeCard from '@/components/cards/informative';
-import BookmarkTripList from '@/components/bookmarks/list';
 
 export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -61,7 +60,7 @@ export default function Home() {
         )}
 
         <span className="flex w-full justify-between space-x-5 px-4 md:px-5">
-          <SquareRoutinesButton userId={user?.user_id} />
+          <SquareRoutinesButton />
           <SquareChatsButton />
           <SquareRequestsButton disabled={!user?.is_validated_driver} />
         </span>
@@ -69,7 +68,9 @@ export default function Home() {
         <span className="mt-4 mb-2 flex justify-between px-4 md:px-5">
           <p className="text-left text-xl font-semibold">Mis próximos viajes</p>
           <Link data-cy="history-link" href={NEXT_ROUTES.TRIP_HISTORY}>
-            <p className="text-right text-xl text-turquoise">Historial</p>
+            <p className="text-right text-xl font-normal text-turquoise">
+              Historial
+            </p>
           </Link>
         </span>
         <UpcomingTripsCarousel />

@@ -95,4 +95,9 @@ class RequestTrip(TestCase):
         response = self.client.post(url, data ={"payment_method": "Balance", "note": "I need a ride"})
         
         self.assertEqual(response.status_code, 201)
+    
+    def test_request_trip_card(self):
+        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
+        response = self.client.post(url, data ={"payment_method": "CreditCard", "note": "I need a ride"})
         
+        self.assertEqual(response.status_code, 201)

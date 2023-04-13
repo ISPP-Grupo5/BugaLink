@@ -101,24 +101,50 @@ class TripRequestViewSet(
         def pay_with_credit_card(price):
             stripe.api_key = settings.STRIPE_SECRET_KEY
 
-            # Get the amount to charge (in cents)
-            amount = int(price * 100)
+            amount = int(price * 100)  # Stripe expects amount in cents
 
-            try:
-                stripe.Charge.create(
-                    amount=amount,
-                    currency="eur",
-                    source=request.data.get(
-                        "stripe_token"
-                    ),  # TODO replace with a valid card token
-                    description="Viaje Bugalink - " + str(trip.departure_datetime),
-                )
+            card_number = "4242424242424242"  
+            exp_month = 12
+            exp_year = 2023  
+            cvc = "123"  
+            card_holder_name = "John Doe" 
 
-            except stripe.error.CardError:
-                return Response(
-                    status=status.HTTP_400_BAD_REQUEST,
-                    data={"error": "Tarjeta inválida"},
-                )
+            # Create a Stripe token
+            token = stripe.Token.create(
+                card={
+                    "number": card_number,  
+                    "exp_month": exp_month,  
+                    "exp_year": exp_year,  
+                    "cvc": cvc,  
+                    "name": card_holder_name  
+                }
+            )
+
+            # Use the token to create a payment method
+            payment_method = stripe.PaymentMethod.create(
+                type="card",
+                card={
+                    "token": token.id
+                }
+            )
+
+            # Attach the payment method to a customer
+            customer = stripe.Customer.create(
+                payment_method=payment_method.id
+            )
+
+            # Charge the customer
+            charge = stripe.Charge.create(
+                amount=amount, 
+                currency="eur", 
+                customer=customer.id
+            )
+
+            # Handle the charge result
+            if charge.status == "succeeded":
+                print("Payment successful!")
+            else:
+                print("Payment failed: " + charge.failure_message)
 
         def pay_with_paypal(price):
             paypal_client_id = "your_paypal_client_id"  # TODO change it

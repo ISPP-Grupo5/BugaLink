@@ -103,48 +103,41 @@ class TripRequestViewSet(
 
             amount = int(price * 100)  # Stripe expects amount in cents
 
-            card_number = "4242424242424242"  
-            exp_month = 12
-            exp_year = 2023  
-            cvc = "123"  
-            card_holder_name = "John Doe" 
+            try:
+                # Create a PaymentMethod
+                payment_method = stripe.PaymentMethod.create(
+                    type="card",
+                    card={
+                        "number": "4242424242424242",  # Replace with the actual card number
+                        "exp_month": 12,  # Replace with the actual expiration month
+                        "exp_year": 2023,  # Replace with the actual expiration year
+                        "cvc": "123",  # Replace with the actual CVC code
+                    },
+                )
 
-            # Create a Stripe token
-            token = stripe.Token.create(
-                card={
-                    "number": card_number,  
-                    "exp_month": exp_month,  
-                    "exp_year": exp_year,  
-                    "cvc": cvc,  
-                    "name": card_holder_name  
-                }
+                # Confirm the PaymentMethod to complete the payment
+                payment_intent = stripe.PaymentIntent.create(
+                    payment_method=payment_method.id,
+                    amount=amount,
+                    currency="usd",
+                    confirmation_method="manual",
+                    confirm=True
+                )
+
+                # Check if the payment is succeeded
+                if payment_intent.status == "succeeded":
+                    print("Payment succeeded!")
+                else:
+                    return Response(
+                        status=status.HTTP_400_BAD_REQUEST,
+                        data={"error": "Método de pago fallido"},
+                    )
+                
+            except stripe.error.StripeError as e:
+                return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={"error": "Stripe error"},
             )
-
-            # Use the token to create a payment method
-            payment_method = stripe.PaymentMethod.create(
-                type="card",
-                card={
-                    "token": token.id
-                }
-            )
-
-            # Attach the payment method to a customer
-            customer = stripe.Customer.create(
-                payment_method=payment_method.id
-            )
-
-            # Charge the customer
-            charge = stripe.Charge.create(
-                amount=amount, 
-                currency="eur", 
-                customer=customer.id
-            )
-
-            # Handle the charge result
-            if charge.status == "succeeded":
-                print("Payment successful!")
-            else:
-                print("Payment failed: " + charge.failure_message)
 
         def pay_with_paypal(price):
             paypal_client_id = "your_paypal_client_id"  # TODO change it

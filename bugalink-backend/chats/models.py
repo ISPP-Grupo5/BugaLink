@@ -21,9 +21,13 @@ class Conversation(models.Model):
 
     def __str__(self):
         return f"iniciator: {self.initiator} , receiver: {self.receiver}"
-    
+
     def get_messages(self):
         return Message.objects.filter(conversation_id=self)
+
+    def get_last_message(self):
+        # For some reason, this returns the last message
+        return self.get_messages().first()
 
 
 class Message(models.Model):
@@ -35,8 +39,11 @@ class Message(models.Model):
     )
     text = models.CharField(max_length=200)
     attachment = models.FileField(blank=True)
-    conversation_id = models.ForeignKey(Conversation, on_delete=models.CASCADE, related_name="message_set")
+    conversation_id = models.ForeignKey(
+        Conversation, on_delete=models.CASCADE, related_name="message_set"
+    )
     timestamp = models.DateTimeField(auto_now_add=True)
+    read_by_recipient = models.BooleanField(default=False)
 
     class Meta:
         ordering = ("-timestamp",)

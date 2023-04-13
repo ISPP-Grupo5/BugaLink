@@ -24,7 +24,7 @@ export default function Conversation() {
   const user = data?.user as User;
 
   const { conversation, isLoading, isError } = useConversation(userId);
-  const { messageHistory, sendJsonMessage } = useChatSocket(
+  const { messageHistory, sendJsonMessage, connectionStatus } = useChatSocket(
     conversation?.id,
     user
   );
@@ -35,11 +35,11 @@ export default function Conversation() {
   if (isError) return <p>Error</p>;
 
   return (
-    <AnimatedLayout className="justify-between flex flex-col bg-white px-4">
+    <AnimatedLayout className="flex flex-col justify-between bg-white px-4">
       <ChatHeader user={user} conversation={conversation} />
       <div className="-mb-6 flex h-full max-h-full flex-col-reverse space-y-3 overflow-y-scroll py-3">
         {/* This is a bottom spacer between the most recent message bubble and the message input bar */}
-        <div className="h-6 w-full">&nbsp;</div>{' '}
+        <div className="h-6 w-full">&nbsp;</div>
         {/* This is the list of messages that come from the websocket connection (real-time, happening now, updated on the fly) */}
         {allMessages.map((message: MessageI) => (
           <MessageBubble
@@ -49,7 +49,10 @@ export default function Conversation() {
           />
         ))}
       </div>
-      <TextInput sendJsonMessage={sendJsonMessage} />
+      <TextInput
+        sendJsonMessage={sendJsonMessage}
+        connectionStatus={connectionStatus}
+      />
     </AnimatedLayout>
   );
 }
@@ -69,7 +72,7 @@ const ChatHeader = ({
 
   return (
     <div className="sticky -mx-4 flex flex-col bg-green px-6 py-5 text-white">
-      <span className="justify-between flex">
+      <span className="flex justify-between">
         <span className="flex items-center space-x-2 text-xl">
           <BackButton />
           {otherUser && (
@@ -132,43 +135,48 @@ const MessageBubble = ({
               ? 'rounded-br-none bg-pale-green'
               : 'rounded-bl-none bg-light-gray'
           }`}
+          style={{
+            wordBreak: 'break-word',
+          }}
         >
           <p
-            className="hyphens-auto overflow-hidden text-ellipsis text-lg font-medium text-black"
+            className="hyphens-auto flex-wrap whitespace-pre-line text-lg font-medium text-black"
             lang="es"
           >
             {message.text}
           </p>
         </div>
+        {isMine &&
+          (message.read_by_recipient ? <DoubleCheckMark /> : <CheckMark />)}
       </span>
     </div>
   );
 };
 
-const TextInput = ({ sendJsonMessage }) => {
+const TextInput = ({ sendJsonMessage, connectionStatus }) => {
   const handleSubmitMessage = () => {
-    if (message.length === 0) return;
-    sendJsonMessage({ message });
+    const trimmedMessage = message.trim();
+    if (trimmedMessage.length > 0) sendJsonMessage({ message: trimmedMessage });
     setMessage('');
-  };
-
-  const handlePressEnter = (e) => {
-    if (e.keyCode == 13 && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmitMessage();
-    }
   };
 
   const [message, setMessage] = useState('');
 
   return (
-    <div className="justify-between sticky bottom-0 mb-4 flex w-full flex-row items-center rounded-full bg-light-gray p-4">
+    <div className="sticky bottom-0 mb-4 flex w-full flex-row items-center justify-between rounded-full bg-light-gray p-4">
       <textarea
-        className="h-8 w-full resize-none bg-transparent pl-1 pt-0.5 text-lg focus:outline-none"
-        placeholder="Escribe un mensaje..."
+        className="h-8 w-full resize-none bg-transparent pl-1 pt-0.5 text-lg leading-none focus:outline-none"
+        placeholder={
+          connectionStatus === 'Open'
+            ? 'Escribe un mensaje...'
+            : 'Conectando...'
+        }
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        onKeyDown={handlePressEnter} // Allow sending messages with the enter key
+        onKeyDown={(e) =>
+          e.key == 'Enter' && !e.shiftKey && handleSubmitMessage()
+        }
+        disabled={connectionStatus !== 'Open'}
       />
       <button
         className="-m-2 flex aspect-square w-14 items-center justify-center rounded-full bg-green text-white"
@@ -190,3 +198,8 @@ const Entry = ({ title, children }) => {
     </div>
   );
 };
+
+export const CheckMark = () => <p className="text-dark-gray">✓ </p>;
+export const DoubleCheckMark = () => (
+  <p className="-tracking-widest text-blue-select">✓✓</p>
+);

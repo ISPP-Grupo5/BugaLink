@@ -19,6 +19,21 @@ class ChatsConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name, self.channel_name
         )
+
+        # Mark all messages sent by the other user as read
+        conversation = Conversation.objects.get(id=int(self.room_name))
+        other_user = (
+            conversation.initiator
+            if self.scope["user"] == conversation.receiver
+            else conversation.receiver
+        )
+        to_mark_as_read = Message.objects.filter(
+            conversation_id=conversation, sender=other_user
+        )
+        to_mark_as_read.update(read_by_recipient=True)
+        message_list = to_mark_as_read.values_list("id", flat=True)
+
+        self.send_read_confirmation(message_list)
         self.accept()
 
     def disconnect(self, close_code):
@@ -31,15 +46,27 @@ class ChatsConsumer(WebsocketConsumer):
     def receive(self, text_data=None, bytes_data=None):
         # parse the json data into dictionary object
         text_data_json = json.loads(text_data)
+        conversation = Conversation.objects.get(id=int(self.room_name))
+        sender = self.scope["user"]
+
+        if text_data_json.get("type"):
+            print(f"Received message of type {text_data_json.get('type')}")
+            if text_data_json.get("sender") == sender.id:
+                return
+            to_confirm_id = text_data_json.get("message_id")
+            to_confirm = Message.objects.filter(id=to_confirm_id)
+            to_confirm.update(read_by_recipient=True)
+
+            read_messages = to_confirm.values_list("id", flat=True)
+            print(f"Sending confirmation for messages {read_messages}")
+            self.send_read_confirmation(read_messages)
+            return
 
         # unpack the dictionary into the necessary parts
         message, attachment = (
             text_data_json["message"],
             text_data_json.get("attachment"),
         )
-
-        conversation = Conversation.objects.get(id=int(self.room_name))
-        sender = self.scope["user"]
 
         # Attachment
         if attachment:
@@ -60,10 +87,12 @@ class ChatsConsumer(WebsocketConsumer):
                 text=message,
                 conversation_id=conversation,
             )
+
         # Send message to room group
         chat_type = {"type": "chat_message"}
         message_serializer = dict(MessageSerializer(instance=_message).data)
         return_dict = {**chat_type, **message_serializer}
+
         if _message.attachment:
             async_to_sync(self.channel_layer.group_send)(
                 self.room_group_name,
@@ -88,3 +117,15 @@ class ChatsConsumer(WebsocketConsumer):
 
         # Send message to WebSocket
         self.send(text_data=json.dumps(dict_to_be_sent))
+
+    def send_read_confirmation(self, message_list):
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                "type": "message_confirmation",
+                "read_messages": list(message_list),
+            },
+        )
+
+    def message_confirmation(self, event):
+        self.send(text_data=json.dumps(event))

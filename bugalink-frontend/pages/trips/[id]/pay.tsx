@@ -7,6 +7,7 @@ import PayMethod from '@/components/payment/PayMethod';
 import AddMethod from '@/components/payment/AddMethod';
 
 export default function Pay() {
+
   return (
     <AnimatedLayout className="justify-between flex flex-col">
       <BackButtonText text="Pago del viaje" />

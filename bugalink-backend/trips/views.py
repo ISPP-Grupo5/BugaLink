@@ -150,7 +150,6 @@ class TripRequestViewSet(
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.status = "Accepted"
 
         trip = Trip.objects.get(id=kwargs["trip_id"])
 

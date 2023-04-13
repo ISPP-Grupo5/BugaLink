@@ -5,9 +5,15 @@ import VisaMastercard from '/public/assets/visa-mastercard.svg';
 import Paypal from '/public/assets/paypal.svg';
 import PayMethod from '@/components/payment/PayMethod';
 import AddMethod from '@/components/payment/AddMethod';
+import useBalance from '@/hooks/useBalance';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
 
 export default function Pay() {
+  const authUser = useSession().data?.user as User;
 
+  const { balance, isLoadingBalance, isErrorBalance } = useBalance(authUser?.user_id.toString());
+  console.log(balance);
   return (
     <AnimatedLayout className="justify-between flex flex-col">
       <BackButtonText text="Pago del viaje" />

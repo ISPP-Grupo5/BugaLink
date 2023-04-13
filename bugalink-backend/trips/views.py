@@ -91,12 +91,10 @@ class TripRequestViewSet(
     def create(self, request, *args, **kwargs):
         def pay_with_balance(balance, price):
             if balance.amount < price:
-                return Response(
-                    status=status.HTTP_400_BAD_REQUEST,
-                    data={"error": "Saldo insuficiente"},
-                )
+                return False  # No se ha pagado
             balance.amount -= price
             balance.save()
+            return True  # Se ha pagado
 
         def pay_with_credit_card(price, credit_car_number, expiration_month, expiration_year, cvc):
             stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -108,10 +106,10 @@ class TripRequestViewSet(
                 payment_method = stripe.PaymentMethod.create(
                     type="card",
                     card={
-                        "number": credit_car_number, 
-                        "exp_month": expiration_month,  
-                        "exp_year": expiration_year,  
-                        "cvc": cvc,  
+                        "number": credit_car_number,
+                        "exp_month": expiration_month,
+                        "exp_year": expiration_year,
+                        "cvc": cvc,
                     },
                 )
 
@@ -132,12 +130,12 @@ class TripRequestViewSet(
                         status=status.HTTP_400_BAD_REQUEST,
                         data={"error": "Método de pago fallido"},
                     )
-                
+
             except stripe.error.StripeError as e:
                 return Response(
-                status=status.HTTP_400_BAD_REQUEST,
-                data={"error": "Stripe error"},
-            )
+                    status=status.HTTP_400_BAD_REQUEST,
+                    data={"error": "Stripe error"},
+                )
 
         def pay_with_paypal(price):
             paypal_client_id = "your_paypal_client_id"  # TODO change it
@@ -175,17 +173,24 @@ class TripRequestViewSet(
         user = request.user
         payment_method = request.data.get("payment_method")
         price = trip.driver_routine.price
-        
+
         if payment_method == "Balance":
             balance = Balance.objects.get(user=user)
-            pay_with_balance(balance, price)
+            payed = pay_with_balance(balance, price)
+
+            if (not payed):
+                return Response(
+                    {"error": "Saldo insuficiente"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
         elif payment_method == "CreditCard":
             credit_car_number = request.data.get("credit_car_number")
             expiration_month = request.data.get("expiration_month")
             expiration_year = request.data.get("expiration_year")
             cvc = request.data.get("cvc")
-            pay_with_credit_card(price, credit_car_number, expiration_month, expiration_year, cvc)
+            pay_with_credit_card(price, credit_car_number,
+                                 expiration_month, expiration_year, cvc)
 
         elif payment_method == "PayPal":
             pay_with_paypal(price)
@@ -200,7 +205,7 @@ class TripRequestViewSet(
 
         created_id = serializer.instance.id
         headers = self.get_success_headers(serializer.data)
-              
+
         return Response(
             {"id": created_id, **serializer.data},
             # self.get_serializer(driver_routine).data,

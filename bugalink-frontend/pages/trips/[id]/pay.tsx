@@ -9,12 +9,12 @@ import useBalance from '@/hooks/useBalance';
 import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import { axiosAuth } from '@/lib/axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 
 export default function Pay() {
-  const [isSendingForm, setIsSendingForm] = useState(false);
+  const [isPaying, setIsPaying] = useState(false);
   const authUser = useSession().data?.user as User;
   const router = useRouter();
   const id = router.query.id as string;
@@ -24,27 +24,29 @@ export default function Pay() {
   if (isErrorBalance) return <p>Error</p>;
 
   const payWithBalance = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isPaying) {
+      event.preventDefault();
+      setIsPaying(true);
+      const data = {
+        payment_method: "Balance",
+        note: "Example note"
+      };
 
-    event.preventDefault();
-    setIsSendingForm(true);
-    const data = {
-      payment_method: "Balance",
-      note: "Example note"
-    };
 
-
-    axiosAuth
-      .post(`trips/${id}/request/`, data)
-      .then((response) => {
-        router.push(NEXT_ROUTES.HOME);
-      })
-      .catch((error) => {
-        setIsSendingForm(false);
-      });
-
+      axiosAuth
+        .post(`trips/${id}/request/`, data)
+        .then((response) => {
+          router.push(NEXT_ROUTES.HOME);
+        })
+        .catch((error) => {
+          alert("Saldo insuficiente o error en el pago");
+          setIsPaying(false);
+        });
+    }
   }
 
-  if (isSendingForm) return <p>Se está procesando el pago...</p>;
+
+
   return (
     <AnimatedLayout className="justify-between flex flex-col">
       <BackButtonText text="Pago del viaje" />
@@ -69,18 +71,21 @@ export default function Pay() {
               data={`${balance.amount}€`}
               href="#"
               onClick={payWithBalance}
+              disabled={isPaying}
             />
             <PayMethod
               logo={<VisaMastercard height="100%" />}
               name="VISA/Mastercard"
               data="**** **** **** 5678"
               href="#"
+              disabled={isPaying}
             />
             <PayMethod
               logo={<Paypal height="100%" />}
               name="Paypal"
               data="pedro@gmail.com"
               href="#"
+              disabled={isPaying}
             />
           </div>
         </div>

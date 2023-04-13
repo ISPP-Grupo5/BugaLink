@@ -17,9 +17,9 @@ export default function Pay() {
   const [isPaying, setIsPaying] = useState(false);
   const authUser = useSession().data?.user as User;
   const router = useRouter();
+  const paymentNote = router.query.paymentNote as string;
   const id = router.query.id as string;
   const { balance, isLoadingBalance, isErrorBalance } = useBalance(authUser?.user_id.toString());
-
   if (isLoadingBalance) return <p>Loading...</p>;
   if (isErrorBalance) return <p>Error</p>;
 
@@ -29,7 +29,7 @@ export default function Pay() {
       setIsPaying(true);
       const data = {
         payment_method: "Balance",
-        note: "Example note"
+        note: paymentNote
       };
 
 
@@ -77,7 +77,7 @@ export default function Pay() {
               logo={<VisaMastercard height="100%" />}
               name="VISA/Mastercard"
               data="**** **** **** 5678"
-              href="#"
+              href={`/trips/${id}/creditCardPay`}
               disabled={isPaying}
             />
             <PayMethod

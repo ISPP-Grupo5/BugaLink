@@ -185,7 +185,7 @@ class UserTripsView(APIView):
             trips_by_trip_status.filter(status__in=request_status_list)
             if request_status_list
             else trips_by_trip_status
-        ).distinct("trip")
+        )
 
         return trips_matching_status
 

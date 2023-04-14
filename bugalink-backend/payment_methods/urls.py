@@ -10,7 +10,9 @@ urlpatterns = [
     path("", include(router.urls)),
     path('users/<int:user_id>/balance/',
          BalanceViewSet.as_view({'get': 'get'}), name='balance'),
-    path('trips/<int:pk>/create-checkout-session/',
-         PaymentViewSet.as_view({"create_checkout_session": "post"}, name='create-checkout-session'))
+    path('trips/<int:trip_id>/create-checkout-session/',
+         PaymentViewSet.as_view({"post": "create_checkout_session"}, name='create-checkout-session')),
+    path('webhook/',  # Esto va a ser api/v1/webhook asi que no debería funcionar
+         PaymentViewSet.as_view({"post": "webhook_view"}, name='webhook'))
 
 ]

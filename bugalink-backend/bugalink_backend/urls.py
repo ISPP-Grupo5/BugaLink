@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from payment_methods.views import PaymentViewSet
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -26,6 +27,7 @@ from . import settings
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("webhook/", PaymentViewSet.as_view({"post": "webhook_view"}, name='webhook')),
     # Include URLs for auth app
     path("api/v1/auth/", include("authentication.urls")),
     path("api/v1/schema/", SpectacularAPIView.as_view(), name="schema"),

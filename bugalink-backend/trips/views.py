@@ -7,7 +7,8 @@ from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import redirect
 from passenger_routines.models import PassengerRoutine
-from payment_methods.models import Balance
+from payment_methods.models import Balance, Report
+from ratings.models import DriverRating
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -18,6 +19,8 @@ from trips.serializers import (
     TripRequestSerializer,
     TripSerializer,
 )
+from users.models import User
+from users.serializers import UserSerializer
 
 from .utils import (
     check_allows_pets,
@@ -327,3 +330,103 @@ class TripSearchViewSet(
         return Response(
             TripSerializer(trips, many=True).data, status=status.HTTP_200_OK
         )
+
+
+class TripRateViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = TripRequest.objects.all()
+    serializer_class = TripRequestSerializer
+
+    @action(detail=True, methods=["post"])
+    def post(self, request, trip_id, *args, **kwargs):
+        try:
+            trip = Trip.objects.get(id=trip_id)
+            if trip.status == "FINISHED":
+                trip_request = TripRequest.objects.filter(
+                    trip=trip, status="ACCEPTED", passenger__user=request.user
+                ).first()
+            if trip_request:
+                rating = request.POST.get("rating")
+                is_good_driver = request.POST.get("is_good_driver")
+                is_pleasant_driver = request.POST.get("is_pleasant_driver")
+                already_knew = request.POST.get("already_knew")
+
+                DriverRating.objects.create(
+                    trip_request=TripRequest.objects.get(id=trip_request.id),
+                    rating=rating,
+                    is_good_driver=is_good_driver,
+                    is_pleasant_driver=is_pleasant_driver,
+                    already_knew=already_knew,
+                )
+
+                return Response({"message": "Valoración realizada con exito"})
+            else:
+                return Response(
+                    {"message": "No has participado en este viaje"},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+        except Exception as e:
+            return Response({"message": str(e)})
+
+
+class ReportIssueViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = Trip.objects.all()
+    serializer_class = TripSerializer
+
+    @action(detail=True, methods=["post"])
+    def post(self, request, trip_id, *args, **kwargs):
+        try:
+            trip = Trip.objects.get(id=trip_id, status="FINISHED")
+            user = request.user
+            trip_request = TripRequest.objects.filter(
+                trip=trip, passenger__user=user
+            ).first()
+            if trip_request or trip.driver_routine.driver.user == user:
+                reported_user_id = request.POST.get("reported_user_id")
+                reported_user = User.objects.get(id=reported_user_id)
+                if user == trip.driver_routine.driver.user:
+                    reporter_is_driver = True
+                    reported_is_driver = False
+                elif reported_user == trip.driver_routine.driver.user:
+                    reported_is_driver = True
+                    reporter_is_driver = False
+                else:
+                    reported_is_driver = False
+                    reporter_is_driver = False
+
+                note = request.POST.get("note")
+                Report.objects.create(
+                    trip=trip,
+                    reporter_user=user,
+                    reported_user=reported_user,
+                    reporter_is_driver=reporter_is_driver,
+                    reported_is_driver=reported_is_driver,
+                    note=note,
+                )
+                return Response({"message": "Usuario reportado con exito"})
+        except Exception as e:
+            return Response({"message": str(e)})
+
+    @action(detail=True, methods=["get"])
+    def get(self, request, trip_id, *args, **kwargs):
+        try:
+            trip = Trip.objects.get(id=trip_id)
+            trip_requests = TripRequest.objects.filter(trip=trip)
+            trip_requests_id = []
+            for trip_request in trip_requests:
+                trip_requests_id.append(trip_request.passenger.id)
+            users = User.objects.filter(
+                id=trip.driver_routine.driver.user.id
+            ) | User.objects.filter(id__in=trip_requests_id)
+            return Response(
+                UserSerializer(users, many=True).data, status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response({"message": str(e)})

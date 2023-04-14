@@ -256,6 +256,7 @@ class TripRequestViewSet(
         )
 
     # PUT /trip-requests/<pk>/accept/ (For a driver to accept a trip request)
+
     @action(detail=True, methods=["put"])
     def accept(self, request, *args, **kwargs):
         trip_request = TripRequest.objects.get(id=kwargs["pk"])

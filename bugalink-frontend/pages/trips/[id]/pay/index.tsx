@@ -20,9 +20,9 @@ export default function Pay() {
 
   const amount = balance
     ? Number.parseFloat(balance.amount).toLocaleString('es-ES', {
-        style: 'currency',
-        currency: 'EUR',
-      })
+      style: 'currency',
+      currency: 'EUR',
+    })
     : '--,-- €';
 
   const payWithBalance = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -39,6 +39,22 @@ export default function Pay() {
         router.replace(NEXT_ROUTES.HOME);
       } catch (error) {
         alert('Saldo insuficiente o error en el pago');
+        setIsPaying(false);
+      }
+    }
+  }
+
+  const payWithCreditCard = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isPaying) {
+      event.preventDefault();
+      setIsPaying(true);
+
+      try {
+        const { data } = await axiosAuth.post(`trips/${id}/create-checkout-session/`);
+        console.log(data.url);
+        router.push(data.url);
+      } catch (error) {
+        alert('Error en el pago');
         setIsPaying(false);
       }
     }
@@ -73,12 +89,7 @@ export default function Pay() {
               logo={<VisaMastercard height="100%" />}
               name="VISA/Mastercard"
               data="**** **** **** 5678"
-              onClick={() =>
-                router.push({
-                  pathname: NEXT_ROUTES.TRIP_PAYMENT_CREDIT(id),
-                  query: { note },
-                })
-              }
+              onClick={payWithCreditCard}
               disabled={isPaying}
             />
             <PayMethod

@@ -1,3 +1,5 @@
+from django.http import HttpResponse
+from bugalink_backend import settings
 from rest_framework import mixins, status, viewsets
 import os
 from django.shortcuts import redirect
@@ -10,6 +12,7 @@ from users.models import User
 
 from .models import Balance
 from .serializers import BalanceSerializer
+from django.views.decorators.csrf import csrf_exempt
 
 
 class BalanceViewSet(
@@ -55,9 +58,10 @@ class PaymentViewSet(
     # DOCS:
     # https://stripe.com/docs/payments/accept-a-payment?platform=web&ui=checkout#redirect-customers
     def create_checkout_session(self, request, *args, **kwargs):
-
+        stripe.api_key = settings.STRIPE_SECRET_KEY
         trip = Trip.objects.get(id=kwargs["trip_id"])
-        price = trip.driver_routine.price
+        # El post recibe la cantidad en centimos integer
+        price = int(float(trip.driver_routine.price) * 100)
 
         URL = "http://127.0.0.1:3000"
 
@@ -76,8 +80,18 @@ class PaymentViewSet(
                 'quantity': 1,
             }],
             mode='payment',
-            success_url=URL + "/success",  # TODO
-            cancel_url=URL + "/cancel",  # TODO
+            success_url=URL,  # TODO crear pantalla de pagado
+            cancel_url=URL + "/cancel",  # TODO pantalla de cancelado
         )
 
-        return redirect(session.url, code=303)
+        return Response({'url': session.url})
+
+    @csrf_exempt
+    def webhook_view(request):
+        payload = request.body
+
+        # For now, you only need to print out the webhook payload so you can see
+        # the structure.
+        print(payload)
+
+        return HttpResponse(status=200)

@@ -120,7 +120,7 @@ class TripRequestViewSet(
                 payment_intent = stripe.PaymentIntent.create(
                     payment_method=payment_method.id,
                     amount=amount,
-                    currency="usd",
+                    currency="eur",
                     confirmation_method="manual",
                     confirm=True
                 )
@@ -142,11 +142,11 @@ class TripRequestViewSet(
 
         def pay_with_paypal(price):
             paypal_client_id = "AdWSL48duytv4qy76be71a2S3Tt5nTYn-1gGv-53vL_dxNWYzZpAGrUZYrZBvGjkNwOSxJE1s_RSCkL8"
-            paypal_secret_key= "EHps0LO5OsQsUOrDTu9J6BY_mD0OkcF9aNzOT7rkRtDYKCOxoiqCUXsnz-nkhZX5rhlA741NosbaxBpb" 
+            paypal_secret_key = "EHps0LO5OsQsUOrDTu9J6BY_mD0OkcF9aNzOT7rkRtDYKCOxoiqCUXsnz-nkhZX5rhlA741NosbaxBpb"
 
             # Set up PayPal API credentials
             paypalrestsdk.configure({
-                "mode": "sandbox",  
+                "mode": "sandbox",
                 "client_id": paypal_client_id,
                 "client_secret": paypal_secret_key,
             })
@@ -183,8 +183,6 @@ class TripRequestViewSet(
                     status=status.HTTP_400_BAD_REQUEST,
                     data={"error": "Failed to create PayPal payment"},
                 )
-
-           
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -224,7 +222,8 @@ class TripRequestViewSet(
 
         serializer.save()
 
-        Transaction.objects.create(sender = user, receiver = trip.driver_routine.driver.user, amount = price, is_refund = False, status = "PENDING")
+        Transaction.objects.create(sender=user, receiver=trip.driver_routine.driver.user,
+                                   amount=price, is_refund=False, status="PENDING")
 
         created_id = serializer.instance.id
         headers = self.get_success_headers(serializer.data)

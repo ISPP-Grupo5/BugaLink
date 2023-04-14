@@ -15,6 +15,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
+CSRF_TRUSTED_ORIGINS = ["https://app.bugalink.es", "https://www.app.bugalink.es"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
     "chats",
     "transactions",
     # Third-party packages
+    "paypal",
     "drf_spectacular",
     "rest_framework",
     "channels",
@@ -180,7 +182,7 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 }
 
 ALLOWED_HOSTS = ["*"]
-
+STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
 
 LANGUAGE_CODE = "en-us"
 

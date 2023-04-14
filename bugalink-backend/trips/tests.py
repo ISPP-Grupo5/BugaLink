@@ -3,6 +3,7 @@ import json
 
 from django.test import TestCase
 from passenger_routines.models import PassengerRoutine
+from payment_methods.models import Balance
 from ratings.models import DriverRating, Report
 from rest_framework.test import APIClient
 from trips.models import Trip, TripRequest
@@ -82,6 +83,46 @@ class TripRateTest(TestCase):
         self.assertEqual(
             DriverRating.objects.get(trip_request=self.trip_request).rating, 2.3
         )
+
+
+class RequestTrip(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        load_complex_data(self)
+        self.balance = Balance.objects.create(user=self.user_2, amount=100)
+        self.client.force_authenticate(user=self.user_2)
+
+    def test_request_trip_balance(self):
+        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
+        response = self.client.post(
+            url, data={"payment_method": "Balance", "note": "I need a ride"}
+        )
+
+        self.assertEqual(response.status_code, 201)
+
+    def test_request_trip_card(self):
+        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
+        response = self.client.post(
+            url,
+            data={
+                "payment_method": "CreditCard",
+                "note": "I need a ride",
+                "credit_car_number": "4242424242424242",
+                "expiration_month": 12,
+                "expiration_year": 2023,
+                "cvc": "123",
+            },
+        )
+
+        self.assertEqual(response.status_code, 201)
+
+    def test_request_trip_paypal(self):
+        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
+        response = self.client.post(
+            url, data={"payment_method": "PayPal", "note": "I need a ride"}
+        )
+
+        self.assertEqual(response.status_code, 201)
 
 
 class ReportTripUserTest(TestCase):

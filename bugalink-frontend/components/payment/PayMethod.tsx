@@ -1,18 +1,37 @@
-import Link from 'next/link';
+import cn from 'classnames';
+import { HTMLAttributes } from 'react';
 import ArrowRightWhite from '/public/assets/arrow-right-white.svg';
 
-type PayMethodProps = {
+interface PayMethodProps extends HTMLAttributes<HTMLElement> {
   logo: any;
   name: string;
   data: string;
-  href: string;
-};
+  disabled?: boolean;
+}
 
-export default function PayMethod({ logo, name, data, href }: PayMethodProps) {
+export default function PayMethod({
+  logo,
+  name,
+  data,
+  disabled = false,
+  ...props
+}: PayMethodProps) {
   return (
-    <Link
-      href={href}
-      className="my-2 grid h-32 w-full grid-cols-3 items-center justify-center rounded-xl border border-light-gray p-2 shadow-md"
+    <button
+      onClick={
+        disabled
+          ? () => {
+              return;
+            }
+          : props.onClick
+      }
+      className={cn(
+        {
+          'cursor-auto grayscale': disabled,
+        },
+        'my-2 grid h-32 w-full grid-cols-3 items-center justify-center rounded-xl border border-light-gray p-2 shadow-md'
+      )}
+      {...props}
     >
       <div
         className={`flex h-5/6 w-5/6 justify-center rounded-2xl ${
@@ -34,6 +53,6 @@ export default function PayMethod({ logo, name, data, href }: PayMethodProps) {
           <ArrowRightWhite />
         </p>
       </div>
-    </Link>
+    </button>
   );
 }

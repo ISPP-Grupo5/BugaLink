@@ -4,7 +4,7 @@ name: Deploy to GAE
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main, feature/016-Github-Actions]
+    branches: [main, feature/016-Github-Actions]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -13,33 +13,33 @@ jobs:
   deploy:
     name: Deploying to Google Cloud
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Use Node.js
-      uses: actions/setup-node@v3
-    
-    - run: |
-        cd bugalink-frontend
-        echo NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }} >> .env
-        echo NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} >> .env
+      - name: Use Node.js
+        uses: actions/setup-node@v3
 
-    - run: |
-        cd bugalink-backend
-        echo SECRET_KEY="${{ secrets.SECRET_KEY }}" >> .env
-        echo PASSWORD=${{ secrets.DATABASE_PASSWORD }} >> .env
-        echo STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }} >> .env
+      - run: |
+          cd bugalink-frontend
+          echo NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }} >> .env
+          echo NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} >> .env
 
-    - name: Deploy to App Engine
-      id: deploy
-      uses: google-github-actions/deploy-appengine@v0.2.0
-      with:
-        deliverables: bugalink-frontend/app.yaml bugalink-backend/backend.yaml dispatch.yaml
-        version: v1
-        project_id: ${{ secrets.GCP_PROJECT }}
-        credentials: ${{ secrets.GCP_CREDENTIALS }}
+      - run: |
+          cd bugalink-backend
+          echo SECRET_KEY="${{ secrets.SECRET_KEY }}" >> .env
+          echo PASSWORD=${{ secrets.DATABASE_PASSWORD }} >> .env
+          echo STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }} >> .env
 
-    - name: Test
-      run: curl "${{ steps.deploy.outputs.url }}"
+      - name: Deploy to App Engine
+        id: deploy
+        uses: google-github-actions/deploy-appengine@v0.2.0
+        with:
+          deliverables: bugalink-frontend/app.yaml bugalink-backend/backend.yaml dispatch.yaml
+          version: v1
+          project_id: ${{ secrets.GCP_PROJECT }}
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Test
+        run: curl "${{ steps.deploy.outputs.url }}"

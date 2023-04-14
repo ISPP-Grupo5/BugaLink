@@ -18,6 +18,7 @@ from trips.serializers import (
     TripRequestSerializer,
     TripSerializer,
 )
+from django.db import transaction
 
 from .utils import (
     check_allows_pets,
@@ -92,6 +93,7 @@ class TripRequestViewSet(
         return self.retrieve(request, *args, **kwargs)
 
     # POST /trips/<id>/request/ (For a passenger to request a trip)
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         def pay_with_balance(balance, price):
             if balance.amount < price:

@@ -30,12 +30,14 @@ export default function CreditOperation({
               name="VISA/Mastercard"
               data="**** **** **** 5678"
               href="#"
+              disabled={false}
             />
             <PayMethod
               logo={<Paypal />}
               name="Paypal"
               data="pedro@gmail.com"
               href="#"
+              disabled={false}
             />
           </div>
         </div>

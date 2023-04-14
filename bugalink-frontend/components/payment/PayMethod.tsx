@@ -11,7 +11,7 @@ interface PayMethodProps extends HTMLAttributes<HTMLElement> {
   disabled: boolean;
 };
 
-export default function PayMethod({ logo, name, data, href, disabled = false, ...props }: PayMethodProps) {
+export default function PayMethod({ logo, name, data, href, disabled, ...props }: PayMethodProps) {
   return (
     <Link
       href={href}

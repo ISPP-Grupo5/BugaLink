@@ -179,8 +179,8 @@ class TripRequestViewSet(
                         "payment_method": "paypal",
                     },
                     "redirect_urls": {
-                        "return_url": "http://127.0.0.1:8000",
-                        "cancel_url": "http://127.0.0.1:8000",
+                        "return_url": "http://127.0.0.1:3000",
+                        "cancel_url": "http://127.0.0.1:3000",
                     },
                     "transactions": [{
                         "amount": {

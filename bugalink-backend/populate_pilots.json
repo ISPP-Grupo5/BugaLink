@@ -5,6 +5,7 @@
       "first_name": "Rocío",
       "last_name": "López Moyano",
       "email": "RocioLopez@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -12,6 +13,7 @@
       "first_name": "José Antonio",
       "last_name": "Lozano Vázquez",
       "email": "JoseLozano@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -19,6 +21,7 @@
       "first_name": "Juan José",
       "last_name": "Sánchez Rodríguez",
       "email": "JuanSanchez@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -26,6 +29,7 @@
       "first_name": "Paula",
       "last_name": "Benabal Mena-Bernal",
       "email": "PaulaBenabal@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -33,6 +37,7 @@
       "first_name": "Clara",
       "last_name": "de la Cruz Rico",
       "email": "ClaradelaCruz@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -40,6 +45,7 @@
       "first_name": "Álvaro",
       "last_name": "Escalante Castro",
       "email": "AlvaroEscalante@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -47,6 +53,7 @@
       "first_name": "Dámaris",
       "last_name": "Gómez Serrano",
       "email": "DamarisGomez@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -54,6 +61,7 @@
       "first_name": "Ismael",
       "last_name": "Pérez Ortiz",
       "email": "IsmaelPerez@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -61,6 +69,7 @@
       "first_name": "Marina",
       "last_name": "Moya Rivero",
       "email": "MarinaMoya@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -68,6 +77,7 @@
       "first_name": "Guillermo",
       "last_name": "Diz Gil",
       "email": "GuillermoDiz@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -75,6 +85,7 @@
       "first_name": "Marcos",
       "last_name": "Alemán López",
       "email": "MarcosAleman@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -82,6 +93,7 @@
       "first_name": "Paula",
       "last_name": "Cortés Alcalde",
       "email": "PaulaCortes@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -89,6 +101,7 @@
       "first_name": "Laura",
       "last_name": "Muñoz Corral",
       "email": "LauraMunyoz@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -96,6 +109,7 @@
       "first_name": "Benito",
       "last_name": "Venegas Cruz",
       "email": "BenitoVenegas@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -103,6 +117,7 @@
       "first_name": "Rosa María",
       "last_name": "Molina Arregui",
       "email": "RosaMolina@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -110,6 +125,7 @@
       "first_name": "Gema",
       "last_name": "Vela Aguilar",
       "email": "GemaVela@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -117,6 +133,7 @@
       "first_name": "Marta",
       "last_name": "Sanz Fernández",
       "email": "MartaSanz@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -124,6 +141,7 @@
       "first_name": "Marta",
       "last_name": "Cumbrera Alemany",
       "email": "MartaCumbrera@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -131,6 +149,7 @@
       "first_name": "Carmen María",
       "last_name": "Muñoz Pérez",
       "email": "CarmenMunyoz@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -138,6 +157,7 @@
       "first_name": "Beatriz María",
       "last_name": "Beltrán Álvarez",
       "email": "BeatrizBeltran@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -145,6 +165,7 @@
       "first_name": "Lucas",
       "last_name": "Pérez Ruiz",
       "email": "LucasPerez@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -152,6 +173,7 @@
       "first_name": "Isabel",
       "last_name": "Sánchez Serrano",
       "email": "IsabelSanchez@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -159,6 +181,7 @@
       "first_name": "Irene",
       "last_name": "Domínguez Garoz",
       "email": "IreneDominguez@bugalink.es",
+      "is_driver": false,
       "is_validated_driver": false
     },
     {
@@ -166,6 +189,7 @@
       "first_name": "Noelia",
       "last_name": "López Durán",
       "email": "NoeliaLopez@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -173,6 +197,7 @@
       "first_name": "Manuel",
       "last_name": "Sánchez Rodríguez",
       "email": "ManuelSanchez@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -180,6 +205,7 @@
       "first_name": "Nicolás",
       "last_name": "Sánchez Mendoza",
       "email": "NicolasSanchez@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -187,6 +213,7 @@
       "first_name": "Oliva",
       "last_name": "Sánchez Rodríguez",
       "email": "OlivaSanchez@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -194,6 +221,7 @@
       "first_name": "Marcos",
       "last_name": "Olmedo Marín",
       "email": "MarcosOlmedo@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -201,6 +229,7 @@
       "first_name": "Carlos",
       "last_name": "Delgado Becerril",
       "email": "CarlosDelgado@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -208,6 +237,7 @@
       "first_name": "Ricardo",
       "last_name": "Nadal García",
       "email": "RicardoNadal@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -215,6 +245,7 @@
       "first_name": "Manuel",
       "last_name": "Domínguez Magdaleno",
       "email": "ManuelDominguez@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -222,6 +253,7 @@
       "first_name": "Celia",
       "last_name": "Hermoso Soto",
       "email": "CeliaHermoso@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -229,6 +261,7 @@
       "first_name": "Rubén",
       "last_name": "Suárez David",
       "email": "RubenSuarez@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -236,6 +269,7 @@
       "first_name": "Juan José",
       "last_name": "Álvarez Campanón",
       "email": "JuanAlvarez@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -243,6 +277,7 @@
       "first_name": "Marina",
       "last_name": "Ramiro Fernández",
       "email": "MarinaRamiro@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -250,6 +285,7 @@
       "first_name": "Aisha Doris",
       "last_name": "Qazza Cevallos",
       "email": "AishaQazza@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     },
     {
@@ -257,6 +293,7 @@
       "first_name": "José María",
       "last_name": "Delgado Sánchez",
       "email": "JoseDelgado@bugalink.es",
+      "is_driver": true,
       "is_validated_driver": true
     }
   ],
@@ -564,7 +601,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 2,
       "destination_id": 1,
-      "day_of_week": "Tue",
+      "day_of_week": "Mon",
       "price": 3
     },
     {
@@ -573,9 +610,9 @@
       "departure_time_start": "08:00:00",
       "departure_time_end": "08:15:00",
       "arrival_time": "09:00:00",
-      "origin_id": 2,
-      "destination_id": 1,
-      "day_of_week": "Tue",
+      "origin_id": 1,
+      "destination_id": 3,
+      "day_of_week": "Mon",
       "price": 3
     },
     {
@@ -584,9 +621,9 @@
       "departure_time_start": "08:00:00",
       "departure_time_end": "08:15:00",
       "arrival_time": "09:00:00",
-      "origin_id": 2,
+      "origin_id": 3,
       "destination_id": 1,
-      "day_of_week": "Wed",
+      "day_of_week": "Mon",
       "price": 5
     },
     {
@@ -595,9 +632,9 @@
       "departure_time_start": "08:00:00",
       "departure_time_end": "08:15:00",
       "arrival_time": "09:00:00",
-      "origin_id": 3,
-      "destination_id": 1,
-      "day_of_week": "Thu",
+      "origin_id": 1,
+      "destination_id": 4,
+      "day_of_week": "Mon",
       "price": 1.8
     },
     {
@@ -606,9 +643,9 @@
       "departure_time_start": "08:00:00",
       "departure_time_end": "08:15:00",
       "arrival_time": "09:00:00",
-      "origin_id": 1,
-      "destination_id": 3,
-      "day_of_week": "Fri",
+      "origin_id": 4,
+      "destination_id": 1,
+      "day_of_week": "Mon",
       "price": 2.25
     },
     {
@@ -618,8 +655,8 @@
       "departure_time_end": "08:15:00",
       "arrival_time": "09:00:00",
       "origin_id": 1,
-      "destination_id": 3,
-      "day_of_week": "Fri",
+      "destination_id": 5,
+      "day_of_week": "Mon",
       "price": 2.25
     },
     {
@@ -628,9 +665,9 @@
       "departure_time_start": "08:00:00",
       "departure_time_end": "08:15:00",
       "arrival_time": "09:00:00",
-      "origin_id": 1,
-      "destination_id": 3,
-      "day_of_week": "Fri",
+      "origin_id": 5,
+      "destination_id": 1,
+      "day_of_week": "Mon",
       "price": 2.25
     },
     {
@@ -639,9 +676,9 @@
       "departure_time_start": "08:00:00",
       "departure_time_end": "08:15:00",
       "arrival_time": "09:00:00",
-      "origin_id": 1,
+      "origin_id": 2,
       "destination_id": 3,
-      "day_of_week": "Fri",
+      "day_of_week": "Mon",
       "price": 2.25
     },
     {
@@ -650,9 +687,9 @@
       "departure_time_start": "08:00:00",
       "departure_time_end": "08:15:00",
       "arrival_time": "09:00:00",
-      "origin_id": 1,
-      "destination_id": 3,
-      "day_of_week": "Fri",
+      "origin_id": 3,
+      "destination_id": 2,
+      "day_of_week": "Mon",
       "price": 2.25
     },
     {
@@ -661,9 +698,9 @@
       "departure_time_start": "08:00:00",
       "departure_time_end": "08:15:00",
       "arrival_time": "09:00:00",
-      "origin_id": 1,
-      "destination_id": 3,
-      "day_of_week": "Fri",
+      "origin_id": 2,
+      "destination_id": 4,
+      "day_of_week": "Mon",
       "price": 2.25
     },
     {
@@ -672,9 +709,9 @@
       "departure_time_start": "08:00:00",
       "departure_time_end": "08:15:00",
       "arrival_time": "09:00:00",
-      "origin_id": 1,
-      "destination_id": 3,
-      "day_of_week": "Fri",
+      "origin_id": 4,
+      "destination_id": 2,
+      "day_of_week": "Mon",
       "price": 2.25
     },
     {
@@ -683,9 +720,9 @@
       "departure_time_start": "08:00:00",
       "departure_time_end": "08:15:00",
       "arrival_time": "09:00:00",
-      "origin_id": 1,
-      "destination_id": 3,
-      "day_of_week": "Fri",
+      "origin_id": 2,
+      "destination_id": 5,
+      "day_of_week": "Mon",
       "price": 2.25
     },
     {
@@ -694,9 +731,9 @@
       "departure_time_start": "08:00:00",
       "departure_time_end": "08:15:00",
       "arrival_time": "09:00:00",
-      "origin_id": 1,
-      "destination_id": 3,
-      "day_of_week": "Fri",
+      "origin_id": 5,
+      "destination_id": 2,
+      "day_of_week": "Mon",
       "price": 2.25
     },
     {
@@ -705,9 +742,9 @@
       "departure_time_start": "08:00:00",
       "departure_time_end": "08:15:00",
       "arrival_time": "09:00:00",
-      "origin_id": 1,
-      "destination_id": 3,
-      "day_of_week": "Fri",
+      "origin_id": 3,
+      "destination_id": 4,
+      "day_of_week": "Mon",
       "price": 2.25
     },
     {
@@ -716,9 +753,9 @@
       "departure_time_start": "08:00:00",
       "departure_time_end": "08:15:00",
       "arrival_time": "09:00:00",
-      "origin_id": 1,
+      "origin_id": 4,
       "destination_id": 3,
-      "day_of_week": "Fri",
+      "day_of_week": "Mon",
       "price": 2.25
     },
     {
@@ -727,9 +764,9 @@
       "departure_time_start": "08:00:00",
       "departure_time_end": "08:15:00",
       "arrival_time": "09:00:00",
-      "origin_id": 1,
-      "destination_id": 3,
-      "day_of_week": "Fri",
+      "origin_id": 3,
+      "destination_id": 5,
+      "day_of_week": "Mon",
       "price": 2.25
     },
     {
@@ -738,9 +775,9 @@
       "departure_time_start": "08:00:00",
       "departure_time_end": "08:15:00",
       "arrival_time": "09:00:00",
-      "origin_id": 1,
+      "origin_id": 5,
       "destination_id": 3,
-      "day_of_week": "Fri",
+      "day_of_week": "Mon",
       "price": 2.25
     },
     {
@@ -761,8 +798,8 @@
       "departure_time_end": "08:15:00",
       "arrival_time": "09:00:00",
       "origin_id": 1,
-      "destination_id": 3,
-      "day_of_week": "Fri",
+      "destination_id": 4,
+      "day_of_week": "Wed",
       "price": 2.25
     }
   ],
@@ -1195,7 +1232,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 4,
       "destination_id": 5,
-      "day_of_week": "Tue"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 3,
@@ -1204,7 +1241,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 4,
       "destination_id": 3,
-      "day_of_week": "Wed"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 4,
@@ -1213,7 +1250,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 2,
       "destination_id": 3,
-      "day_of_week": "Thu"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 5,
@@ -1222,7 +1259,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 3,
       "destination_id": 4,
-      "day_of_week": "Fri"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 6,
@@ -1231,7 +1268,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 3,
       "destination_id": 4,
-      "day_of_week": "Fri"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 7,
@@ -1240,7 +1277,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 2,
       "destination_id": 3,
-      "day_of_week": "Thu"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 8,
@@ -1249,7 +1286,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 3,
       "destination_id": 4,
-      "day_of_week": "Fri"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 9,
@@ -1267,7 +1304,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 4,
       "destination_id": 5,
-      "day_of_week": "Tue"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 11,
@@ -1276,7 +1313,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 4,
       "destination_id": 3,
-      "day_of_week": "Wed"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 12,
@@ -1285,7 +1322,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 2,
       "destination_id": 3,
-      "day_of_week": "Thu"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 13,
@@ -1294,7 +1331,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 3,
       "destination_id": 4,
-      "day_of_week": "Fri"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 14,
@@ -1303,7 +1340,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 3,
       "destination_id": 4,
-      "day_of_week": "Fri"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 15,
@@ -1312,7 +1349,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 2,
       "destination_id": 3,
-      "day_of_week": "Thu"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 16,
@@ -1321,7 +1358,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 3,
       "destination_id": 4,
-      "day_of_week": "Fri"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 17,
@@ -1339,16 +1376,16 @@
       "arrival_time": "09:00:00",
       "origin_id": 4,
       "destination_id": 5,
-      "day_of_week": "Tue"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 19,
       "departure_time_start": "08:00:00",
       "departure_time_end": "08:30:00",
       "arrival_time": "09:00:00",
-      "origin_id": 4,
+      "origin_id": 1,
       "destination_id": 3,
-      "day_of_week": "Wed"
+      "day_of_week": "Fri"
     },
     {
       "passenger_id": 20,
@@ -1357,7 +1394,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 2,
       "destination_id": 3,
-      "day_of_week": "Thu"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 21,
@@ -1366,7 +1403,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 3,
       "destination_id": 4,
-      "day_of_week": "Fri"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 22,
@@ -1375,7 +1412,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 3,
       "destination_id": 4,
-      "day_of_week": "Fri"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 23,
@@ -1384,16 +1421,16 @@
       "arrival_time": "09:00:00",
       "origin_id": 2,
       "destination_id": 3,
-      "day_of_week": "Thu"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 24,
       "departure_time_start": "08:00:00",
       "departure_time_end": "08:30:00",
       "arrival_time": "09:00:00",
-      "origin_id": 3,
+      "origin_id": 1,
       "destination_id": 4,
-      "day_of_week": "Fri"
+      "day_of_week": "Wed"
     },
     {
       "passenger_id": 25,
@@ -1411,7 +1448,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 4,
       "destination_id": 5,
-      "day_of_week": "Tue"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 27,
@@ -1420,7 +1457,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 4,
       "destination_id": 3,
-      "day_of_week": "Wed"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 28,
@@ -1429,7 +1466,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 2,
       "destination_id": 3,
-      "day_of_week": "Thu"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 29,
@@ -1438,7 +1475,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 3,
       "destination_id": 4,
-      "day_of_week": "Fri"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 30,
@@ -1447,7 +1484,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 3,
       "destination_id": 4,
-      "day_of_week": "Fri"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 31,
@@ -1456,7 +1493,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 2,
       "destination_id": 3,
-      "day_of_week": "Thu"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 32,
@@ -1465,7 +1502,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 3,
       "destination_id": 4,
-      "day_of_week": "Fri"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 33,
@@ -1483,7 +1520,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 4,
       "destination_id": 5,
-      "day_of_week": "Tue"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 35,
@@ -1492,7 +1529,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 4,
       "destination_id": 3,
-      "day_of_week": "Wed"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 36,
@@ -1501,7 +1538,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 2,
       "destination_id": 3,
-      "day_of_week": "Thu"
+      "day_of_week": "Mon"
     },
     {
       "passenger_id": 37,
@@ -1510,7 +1547,7 @@
       "arrival_time": "09:00:00",
       "origin_id": 3,
       "destination_id": 4,
-      "day_of_week": "Fri"
+      "day_of_week": "Mon"
     }
   ],
   "CreditCard": [

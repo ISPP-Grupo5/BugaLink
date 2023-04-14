@@ -12,6 +12,7 @@ const NEXT_ROUTES = {
   TRIP_DETAILS: (tripId) => `/trips/${tripId}`,
   TRIP_MAP: (tripId) => `/trips/${tripId}/map`,
   TRIP_PAYMENT: (tripId) => `/trips/${tripId}/pay`,
+  TRIP_PAYMENT_CREDIT: (tripId) => `/trips/${tripId}/pay/credit`,
   RATING_TRIP: (userId) => `/users/${userId}/rating/new`,
   NEW_ROUTINE_DRIVER: '/routines/driver/new',
   NEW_ROUTINE_PASSENGER: '/routines/passenger/new',

@@ -9,7 +9,7 @@ export default function useUpcomingTrips() {
 
   const { data, error, isLoading } = useSWR(
     user &&
-      `/users/${user?.user_id}/trip-requests/?requestStatus=PENDING,ACCEPTED&tripStatus=PENDING`,
+      `/users/${user?.user_id}/trip-requests/?requestStatus=PENDING,ACCEPTED&tripStatus=PENDING&distinct=true`,
     fetcherAuth
   );
 

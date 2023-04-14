@@ -44,9 +44,6 @@ export default function Pay() {
         });
     }
   }
-
-  console.log(balance)
-
   return (
     <AnimatedLayout className="justify-between flex flex-col">
       <BackButtonText text="Pago del viaje" />

@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import redirect
 from payment_methods.models import Balance
 from bugalink_backend import settings
@@ -151,24 +152,44 @@ class TripRequestViewSet(
                 "client_secret": paypal_secret_key,
             })
 
-            # Create a payment object
-            payment = Payment({
-                "intent": "sale",
-                "payer": {
-                    "payment_method": "paypal",
-                },
-                "redirect_urls": {
-                    "return_url": "http://app.bugalink.es",
-                    "cancel_url": "http://app.bugalink.es",
-                },
-                "transactions": [{
-                    "amount": {
-                        "total": str(price),
-                        "currency": "EUR",
+            if os.environ.get("IS_APP_ENGINE"):
+                # Create a payment object
+                payment = Payment({
+                    "intent": "sale",
+                    "payer": {
+                        "payment_method": "paypal",
                     },
-                    "description": "Payment for your trip with Bugalink",
-                }],
-            })
+                    "redirect_urls": {
+                        "return_url": "https://app.bugalink.es",
+                        "cancel_url": "https://app.bugalink.es",
+                    },
+                    "transactions": [{
+                        "amount": {
+                            "total": str(price),
+                            "currency": "EUR",
+                        },
+                        "description": "Payment for your trip with Bugalink",
+                    }],
+                })
+            else:
+                # Create a payment object
+                payment = Payment({
+                    "intent": "sale",
+                    "payer": {
+                        "payment_method": "paypal",
+                    },
+                    "redirect_urls": {
+                        "return_url": "http://127.0.0.1:8000",
+                        "cancel_url": "http://127.0.0.1:8000",
+                    },
+                    "transactions": [{
+                        "amount": {
+                            "total": str(price),
+                            "currency": "EUR",
+                        },
+                        "description": "Payment for your trip with Bugalink",
+                    }],
+                })
 
             # Create payment
             if payment.create():

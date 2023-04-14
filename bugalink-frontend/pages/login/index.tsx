@@ -6,9 +6,18 @@ import NEXT_ROUTES from '@/constants/nextRoutes';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useState, MouseEvent, useRef } from 'react';
 import CityDriver from '/public/assets/CityDriver.svg';
-import { MouseEvent } from 'react';
+
+interface FormErrors {
+  email?: string;
+  password?: string;
+}
+
+interface FormValues {
+  email: string;
+  password: string;
+}
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -16,6 +25,8 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
+  const [errors, setErrors] = useState<FormErrors>({});
 
   let error = router.query.error;
 
@@ -28,15 +39,42 @@ export default function Login() {
   ) => {
     e.preventDefault();
     setIsLoading(true);
-    try {
-      await signIn('credentials', {
-        email,
-        password,
-        redirect: true,
-        callbackUrl: '/',
-      });
-    } catch (error) {
-      setIsLoading(false);
+
+    if (formRef.current) {
+      const formData = new FormData(formRef.current);
+      const values: FormValues = {
+        email: formData.get('email') as string,
+        password: formData.get('password') as string,
+      };
+
+      const errors: FormErrors = {};
+      const emailRegex = /^\S+@\S+$/i;
+      if (!email) {
+        errors.email = 'Por favor, ingrese su correo electrónico';
+      } else if (!emailRegex.test(email)) {
+        errors.email = 'Por favor, ingrese un correo electrónico válido';
+      }
+      
+      if (!password) {
+        errors.password = 'Por favor, introduce una contraseña';
+      }
+
+      setErrors(errors);
+
+      if (Object.keys(errors).length === 0) {
+        try {
+          await signIn('credentials', {
+            email,
+            password,
+            redirect: true,
+            callbackUrl: '/',
+          });
+        } catch (error) {
+          setIsLoading(false);
+        }  
+      } else {
+        setIsLoading(false)
+      }
     }
   };
 
@@ -53,7 +91,7 @@ export default function Login() {
             <p className="font-light text-gray opacity-70">
               o usa tu cuenta de correo
             </p>
-            <form className="mt-5">
+            <form className="mt-5" ref={formRef}>
               <div className="mr-8 ml-8 flex flex-col space-y-5">
                 <TextField
                   type="email"
@@ -61,6 +99,7 @@ export default function Login() {
                   fieldName={'Correo electrónico'}
                   inputClassName="w-full"
                   setContent={setEmail}
+                  error={errors.email}
                 />
                 <TextField
                   type="password"
@@ -70,6 +109,7 @@ export default function Login() {
                   setContent={setPassword}
                   showPassword={showPassword}
                   setShowPassword={setShowPassword}
+                  error={errors.password}
                 />
               </div>
               {error && <p className="mt-2 text-center text-red">{error}</p>}

@@ -27,9 +27,10 @@ export default function Pay() {
     if (!isPaying) {
       event.preventDefault();
       setIsPaying(true);
+      const note = paymentNote !== undefined ? String(paymentNote) : '';
       const data = {
         payment_method: "Balance",
-        note: paymentNote
+        note: note
       };
 
 

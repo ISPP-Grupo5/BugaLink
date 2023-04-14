@@ -27,7 +27,7 @@ export default function NoteToDriver() {
           onClick={() =>
             router.push({
               pathname: NEXT_ROUTES.TRIP_PAYMENT(tripId),
-              query: { note: note },
+              query: { note },
             })
           }
         />

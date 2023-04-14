@@ -1,3 +1,5 @@
+import os
+
 import paypalrestsdk
 import stripe
 from bugalink_backend import settings
@@ -6,7 +8,6 @@ from django.db.models import Q
 from django.shortcuts import redirect
 from passenger_routines.models import PassengerRoutine
 from payment_methods.models import Balance
-from ratings.models import DriverRating
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -91,7 +92,7 @@ class TripRequestViewSet(
         return self.retrieve(request, *args, **kwargs)
 
     # POST /trips/<id>/request/ (For a passenger to request a trip)
-    # Transaction
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         def pay_with_balance(balance, price):
             if balance.amount < price:
@@ -123,7 +124,7 @@ class TripRequestViewSet(
                 payment_intent = stripe.PaymentIntent.create(
                     payment_method=payment_method.id,
                     amount=amount,
-                    currency="usd",
+                    currency="eur",
                     confirmation_method="manual",
                     confirm=True,
                 )
@@ -156,6 +157,12 @@ class TripRequestViewSet(
                 }
             )
 
+            paypal_url = (
+                "https://app.bugalink.es"
+                if os.environ.get("IS_APP_ENGINE")
+                else "http://localhost:3000"
+            )
+
             # Create a payment object
             payment = paypalrestsdk.Payment(
                 {
@@ -163,10 +170,10 @@ class TripRequestViewSet(
                     "payer": {
                         "payment_method": "paypal",
                     },
-                    # "redirect_urls": {
-                    #     "return_url": "http://app.bugalink.es",
-                    #     "cancel_url": "http://app.bugalink.es",
-                    # },
+                    "redirect_urls": {
+                        "return_url": paypal_url,
+                        "cancel_url": paypal_url,
+                    },
                     "transactions": [
                         {
                             "amount": {

@@ -1,7 +1,6 @@
-import Link from 'next/link';
-import ArrowRightWhite from '/public/assets/arrow-right-white.svg';
-import { HTMLAttributes } from 'react';
 import cn from 'classnames';
+import { HTMLAttributes } from 'react';
+import ArrowRightWhite from '/public/assets/arrow-right-white.svg';
 
 interface PayMethodProps extends HTMLAttributes<HTMLElement> {
   logo: any;

@@ -1,6 +1,8 @@
 import ProfileHeader from '@/components/ProfileHeader';
+import BookmarkTripButton from '@/components/bookmarks/button';
 import { BackButtonText } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
+import NoteToDriver from '@/components/drawers/note';
 import AnimatedLayout from '@/components/layouts/animated';
 import MapPreview from '@/components/maps/mapPreview';
 import NEXT_ROUTES from '@/constants/nextRoutes';
@@ -9,17 +11,15 @@ import useDriverPreferences from '@/hooks/useDriverPreferences';
 import useSentRequests from '@/hooks/useSentRequests';
 import useTrip from '@/hooks/useTrip';
 import useUserStats from '@/hooks/useUserStats';
+import { Drawer } from '@mui/material';
 import { GetServerSideProps } from 'next';
+import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
-import { User } from 'next-auth';
-import BookmarkTripButton from '@/components/bookmarks/button';
-import { Drawer } from '@mui/material';
-import NoteToDriver from './note';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;

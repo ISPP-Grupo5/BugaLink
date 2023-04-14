@@ -31,7 +31,7 @@ export default function Pay() {
       setIsPaying(true);
       const data = {
         payment_method: 'Balance',
-        note: note,
+        note,
       };
 
       try {
@@ -66,7 +66,6 @@ export default function Pay() {
               logo={<BugalinkLogo color="white" />}
               name="Saldo"
               data={amount}
-              // href="#"
               onClick={payWithBalance}
               disabled={isPaying}
             />
@@ -74,7 +73,12 @@ export default function Pay() {
               logo={<VisaMastercard height="100%" />}
               name="VISA/Mastercard"
               data="**** **** **** 5678"
-              // href={`/trips/${id}/creditCardPay`}
+              onClick={() =>
+                router.push({
+                  pathname: NEXT_ROUTES.TRIP_PAYMENT_CREDIT(id),
+                  query: { note },
+                })
+              }
               disabled={isPaying}
             />
             <PayMethod

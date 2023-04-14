@@ -3,11 +3,13 @@ from rest_framework import serializers
 from trips.models import Trip, TripRequest
 from users.serializers import DriverAsUserSerializer, PassengerAsUserSerializer
 
+
 class SimpleTripSerializer(serializers.ModelSerializer):
     driver_routine = DriverRoutineSerializer()
     driver = serializers.SerializerMethodField()
     departure_datetime = serializers.DateTimeField()
     arrival_datetime = serializers.DateTimeField()
+
     class Meta:
         model = Trip
         fields = (
@@ -18,9 +20,11 @@ class SimpleTripSerializer(serializers.ModelSerializer):
             "arrival_datetime",
             "status",
         )
+
     def get_driver(self, obj) -> DriverAsUserSerializer():
         driver_routine = obj.driver_routine
         return DriverAsUserSerializer(driver_routine.driver).data
+
 
 class TripSerializer(serializers.ModelSerializer):
     driver_routine = DriverRoutineSerializer()
@@ -73,7 +77,7 @@ class TripRequestCreateSerializer(serializers.ModelSerializer):
         trip = Trip.objects.get(id=trip_id)
         passenger = self.context["request"].user.passenger
         price = trip.driver_routine.price
-        note = validated_data.pop("note")
+        note = validated_data.get("note", None)  # Note is optional
         return TripRequest.objects.create(
             passenger=passenger, trip=trip, note=note, price=price
         )

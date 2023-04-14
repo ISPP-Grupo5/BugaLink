@@ -21,7 +21,16 @@ export default function NoteToDriver() {
         />
       </div>
       <div className="flex flex-col items-center">
-        <CTAButton className="w-11/12" text="SOLICITAR" onClick={() => router.push(NEXT_ROUTES.TRIP_PAYMENT(tripId) + "?paymentNote=" + note)} />
+        <CTAButton
+          className="w-11/12"
+          text="SOLICITAR"
+          onClick={() =>
+            router.push({
+              pathname: NEXT_ROUTES.TRIP_PAYMENT(tripId),
+              query: { note: note },
+            })
+          }
+        />
       </div>
     </div>
   );

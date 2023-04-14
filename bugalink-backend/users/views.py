@@ -146,6 +146,7 @@ class UserTripsView(APIView):
         # If the status is not in the query params, don't filter by it
         request_status_param = request.query_params.get("requestStatus")
         trip_status_param = request.query_params.get("tripStatus")
+        distinct_param = request.query_params.get("distinct")
 
         request_status_list = (
             request_status_param.split(",") if request_status_param else []
@@ -185,9 +186,16 @@ class UserTripsView(APIView):
             trips_by_trip_status.filter(status__in=request_status_list)
             if request_status_list
             else trips_by_trip_status
-        ).distinct("trip")
+        )
 
-        return trips_matching_status
+        # Filter out repeated trips if required
+        trips_matching_distinct = (
+            trips_matching_status.distinct("trip")
+            if distinct_param and distinct_param.lower() == "true"
+            else trips_matching_status
+        )
+
+        return trips_matching_distinct
 
     def get(self, request, id):
         # If the user is not the same as the one in the URL, return a 403 status code

@@ -50,7 +50,10 @@ export default function Pay() {
       setIsPaying(true);
 
       try {
-        const { data } = await axiosAuth.post(`trips/${id}/create-checkout-session/`);
+        const dataPost = {
+          note,
+        };
+        const { data } = await axiosAuth.post(`trips/${id}/create-checkout-session/`, dataPost);
         console.log(data.url);
         router.push(data.url);
       } catch (error) {

@@ -16,6 +16,7 @@ urlpatterns = [
         TripSearchViewSet.as_view({"get": "get"}),
     ),
     path("trip-requests/<int:pk>/", TripRequestViewSet.as_view({"get": "get"})),
+    path("trip-requests/pending/count/", TripRequestViewSet.as_view({"get": "count"})),
     path(
         "trips/recommendations/",
         TripViewSet.as_view({"get": "list_recommendations"}),

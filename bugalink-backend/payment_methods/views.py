@@ -93,7 +93,7 @@ class PaymentViewSet(
             },
             mode='payment',
             success_url=URL,  # TODO crear pantalla de pagado
-            cancel_url=URL + "/cancel",  # TODO pantalla de cancelado
+            cancel_url=URL,  # TODO pantalla de cancelado
         )
 
         return Response({'url': session.url})
@@ -102,7 +102,7 @@ class PaymentViewSet(
     def webhook_view(self, request):
         endpoint_secret = settings.WEBHOOK_SECRET
         payload = request.body
-        sig_header = request.META['HTTP_STRIPE_SIGNATURE']       
+        sig_header = request.META['HTTP_STRIPE_SIGNATURE']
         event = None
 
         try:
@@ -148,8 +148,9 @@ class PaymentViewSet(
         else:
             balance.amount -= price
             balance.save()
-            return TripRequestViewSet.create(self, trip.id, user.id, note)   # Si todo está correcto, se crea el triprequest
-    
+            # Si todo está correcto, se crea el triprequest
+            return TripRequestViewSet.create(self, trip.id, user.id, note)
+
     ''' FUTURE IMPLEMENTATION def pay_with_paypal(self, request, *args, **kwargs):
     
         paypal_client_id = "AdWSL48duytv4qy76be71a2S3Tt5nTYn-1gGv-53vL_dxNWYzZpAGrUZYrZBvGjkNwOSxJE1s_RSCkL8"

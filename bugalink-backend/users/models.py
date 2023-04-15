@@ -28,6 +28,7 @@ class User(AbstractBaseUser):
     is_validated_driver = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    is_pilotuser = models.BooleanField(default=False)
     USERNAME_FIELD = "email"
 
     objects = UserManager()

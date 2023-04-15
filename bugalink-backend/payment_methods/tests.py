@@ -3,15 +3,35 @@ import stripe
 from trips.models import Trip
 from users.tests import load_complex_data
 from rest_framework.test import APIClient
+from trips.models import Trip, TripRequest
+from payment_methods.models import Balance
+from passengers.models import Passenger
 
-class CheckoutSessionTest(TestCase):
+class RequestTripPayment(TestCase):
 
     def setUp(self):
         self.maxDiff = None
         self.client = APIClient()
         load_complex_data(self)
+        self.balance = Balance.objects.create(user=self.user_2, amount=100)
         self.client.force_authenticate(user=self.user_2)
+    
+    def test_request_trip_balance(self):
+        url = "/api/v1/trips/" + str(self.trip.id) + "/checkout-balance/"
+        response = self.client.post(url, data ={"note": "I need a ride"})
+        
+        passenger = Passenger.objects.get(user=self.user_2)
 
+        self.assertEqual(TripRequest.objects.get(trip=self.trip, status = "PENDING", passenger = passenger).price, self.trip.driver_routine.price)
+
+        self.assertEqual(Balance.objects.get(user=self.user_2).amount, self.balance.amount - self.trip.driver_routine.price)
+
+        self.assertIsNotNone(TripRequest.objects.get(trip=self.trip, status = "PENDING", passenger = passenger))
+
+        self.assertEqual(response.status_code, 201)
+
+
+    #Test to check payment with stripe
     def test_create_checkout_session(self):
         url = "/api/v1/trips/" + str(self.trip.id) + "/create-checkout-session/"
         response = self.client.post(url, data ={})

@@ -60,7 +60,7 @@ class TripSearchTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data[0]["id"], self.trip_2.id)
 
-''' DONT WORK - PLEASE CHECK THIS OUT
+''' DONT WORK - PLEASE CHECK THIS OUT ABRAHAM
 class TripRateTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -84,31 +84,3 @@ class TripRateTest(TestCase):
             DriverRating.objects.get(trip_request=self.trip_request).rating, 2.3
         )
 '''
-
-class RequestTrip(TestCase):
-    def setUp(self):
-        self.client = APIClient()
-        load_complex_data(self)
-        self.balance = Balance.objects.create(user=self.user_2, amount=100)
-        self.client.force_authenticate(user=self.user_2)
-
-    def test_request_trip_balance(self):
-        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
-        response = self.client.post(url, data ={"payment_method": "Balance", "note": "I need a ride"})
-        
-        passenger = Passenger.objects.get(user=self.user_2)
-
-        self.assertEqual(TripRequest.objects.get(trip=self.trip, status = "PENDING", passenger = passenger).price, self.trip.driver_routine.price)
-
-        self.assertEqual(Balance.objects.get(user=self.user_2).amount, self.balance.amount - self.trip.driver_routine.price)
-
-        self.assertIsNotNone(TripRequest.objects.get(trip=self.trip, status = "PENDING", passenger = passenger))
-
-        self.assertEqual(response.status_code, 201)
-    
-    def test_request_trip_paypal(self):
-        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
-        response = self.client.post(url, data ={"payment_method": "PayPal", 
-                                                "note": "I need a ride"})
-        
-        self.assertEqual(response.status_code, 201)

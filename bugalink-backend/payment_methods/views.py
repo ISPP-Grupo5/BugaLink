@@ -1,3 +1,4 @@
+from trips.views import TripRequestViewSet
 from django.http import HttpResponse
 from bugalink_backend import settings
 from rest_framework import mixins, status, viewsets
@@ -126,3 +127,24 @@ class PaymentViewSet(
             print('Unhandled event type {}'.format(event['type']))
 
         return HttpResponse(status=200)
+
+
+    # POST /trips/<id>/checkout-balance/ (For a passenger to request a trip)
+    def pay_with_balance(self, request, *args, **kwargs):
+        trip = Trip.objects.get(id=kwargs["trip_id"])
+
+        user = request.user
+        price = trip.driver_routine.price
+        note = request.data.get("note")
+
+        balance = Balance.objects.get(user=user)
+        if balance.amount < price:
+            return Response(
+                {"error": "Saldo insuficiente"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        else:
+            balance.amount -= price
+            balance.save()
+            return TripRequestViewSet.create(self, trip.id, user.id, note)   # Si todo está correcto, se crea el triprequest
+            

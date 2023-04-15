@@ -56,7 +56,7 @@ export default function Login() {
       }
       
       if (!password) {
-        errors.password = 'Por favor, introduce una contraseña';
+        errors.password = 'Por favor, ingrese una contraseña';
       }
 
       setErrors(errors);

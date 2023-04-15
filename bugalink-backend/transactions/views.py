@@ -24,7 +24,7 @@ class TransactionViewSet(
     @action(detail=False, methods=['get'])
     def get_last_transactions(self, request, *args, **kwargs):
         user_id = kwargs["user_id"]
-        print(user_id)
+        #print(user_id)
         user = User.objects.get(id=user_id)
 
         transactions = Transaction.objects.filter(Q(sender=user) | Q(receiver=user))[:10]

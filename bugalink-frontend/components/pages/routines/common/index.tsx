@@ -308,7 +308,7 @@ export default function NewRoutine({
                 }}
               >
                 {day}
-              </p>
+              </p>  
             ))}
           </span>
           {errors.selectedDays && (

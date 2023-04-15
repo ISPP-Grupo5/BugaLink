@@ -101,49 +101,6 @@ class TripRequestViewSet(
             balance.save()
             return True  # Se ha pagado
 
-        def pay_with_credit_card(
-            price, credit_car_number, expiration_month, expiration_year, cvc
-        ):
-            stripe.api_key = settings.STRIPE_SECRET_KEY
-
-            amount = int(price * 100)  # Stripe expects amount in cents
-
-            try:
-                # Create a PaymentMethod
-                payment_method = stripe.PaymentMethod.create(
-                    type="card",
-                    card={
-                        "number": credit_car_number,
-                        "exp_month": expiration_month,
-                        "exp_year": expiration_year,
-                        "cvc": cvc,
-                    },
-                )
-
-                # Confirm the PaymentMethod to complete the payment
-                payment_intent = stripe.PaymentIntent.create(
-                    payment_method=payment_method.id,
-                    amount=amount,
-                    currency="eur",
-                    confirmation_method="manual",
-                    confirm=True,
-                )
-
-                # Check if the payment is succeeded
-                if payment_intent.status == "succeeded":
-                    print("Payment succeeded!")
-                else:
-                    return Response(
-                        status=status.HTTP_400_BAD_REQUEST,
-                        data={"error": "Método de pago fallido"},
-                    )
-
-            except stripe.error.StripeError:
-                return Response(
-                    status=status.HTTP_400_BAD_REQUEST,
-                    data={"error": "Stripe error"},
-                )
-
         def pay_with_paypal(price):
             paypal_client_id = "AdWSL48duytv4qy76be71a2S3Tt5nTYn-1gGv-53vL_dxNWYzZpAGrUZYrZBvGjkNwOSxJE1s_RSCkL8"
             paypal_secret_key = "EHps0LO5OsQsUOrDTu9J6BY_mD0OkcF9aNzOT7rkRtDYKCOxoiqCUXsnz-nkhZX5rhlA741NosbaxBpb"
@@ -218,15 +175,6 @@ class TripRequestViewSet(
                     {"error": "Saldo insuficiente"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-
-        elif payment_method == "CreditCard":
-            credit_car_number = request.data.get("credit_car_number")
-            expiration_month = request.data.get("expiration_month")
-            expiration_year = request.data.get("expiration_year")
-            cvc = request.data.get("cvc")
-            pay_with_credit_card(
-                price, credit_car_number, expiration_month, expiration_year, cvc
-            )
 
         elif payment_method == "PayPal":
             pay_with_paypal(price)

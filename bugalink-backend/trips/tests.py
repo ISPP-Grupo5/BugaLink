@@ -97,17 +97,6 @@ class RequestTrip(TestCase):
         
         self.assertEqual(response.status_code, 201)
     
-    def test_request_trip_card(self):
-        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
-        response = self.client.post(url, data ={"payment_method": "CreditCard", 
-                                                "note": "I need a ride", 
-                                                "credit_car_number" : "4242424242424242",
-                                                "expiration_month": 12,
-                                                "expiration_year": 2023,
-                                                "cvc": "123"})
-        
-        self.assertEqual(response.status_code, 201)
-    
     def test_request_trip_paypal(self):
         url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
         response = self.client.post(url, data ={"payment_method": "PayPal", 

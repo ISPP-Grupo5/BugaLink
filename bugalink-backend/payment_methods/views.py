@@ -102,7 +102,7 @@ class PaymentViewSet(
     def webhook_view(self, request):
         endpoint_secret = settings.WEBHOOK_SECRET
         payload = request.body
-        sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+        sig_header = request.META['HTTP_STRIPE_SIGNATURE']       
         event = None
 
         try:
@@ -121,7 +121,6 @@ class PaymentViewSet(
                 event['data']['object']['id'],
                 expand=['line_items'],
             )
-            print(session.metadata)
 
             note = session.metadata.note if session.metadata.note != "None" else None
             return TripRequestViewSet.create(self, session.metadata.trip_id, session.metadata.user_id, note)

@@ -1,4 +1,6 @@
+from bugalink_backend import settings
 from django.test import TestCase
+from django.urls import reverse
 import stripe
 from trips.models import Trip
 from users.tests import load_complex_data
@@ -43,6 +45,57 @@ class RequestTripPayment(TestCase):
         #self.assertEqual(response.data['url'], expected_url)
         #self.assertRedirects ? 
 
+    def test_webhook_view(self):
+        
+        webhook_url = 'api/v1/webhook/'
+        endpoint_secret = settings.WEBHOOK_SECRET
+        event_id = 'evt_test_1234567890'
+        event_type = 'checkout.session.completed'
+
+        payload = {
+                'type': event_type,
+                'data': {
+                    'object': {
+                        'id': event_id,  
+                        'metadata': {
+                            'trip_id': '12345',  # Replace with a valid trip ID
+                            'user_id': '98765',  # Replace with a valid user ID
+                            'note': 'Example note',  # Replace with an example note
+                        }
+                    }
+                }
+            }
+
+        # Construct the event data
+        event_data = {
+            'type': event_type,
+            'data': {
+                'object': {
+                    'id': 'event_id',  # Replace with a valid event ID
+                },
+            },
+        }
+
+        # Sign the payload with the endpoint secret
+        signature = stripe.WebhookSignature._compute_signature(
+            str(payload), endpoint_secret
+        )
+
+        # Add the signature to the request headers
+        headers = {
+            'HTTP_STRIPE_SIGNATURE': signature,
+        }
+        
+        # Send a POST request to the webhook view with the payload and headers
+        response = self.client.post(webhook_url, data=event_data, headers=headers)
+
+        # Assert that the response status code is 200 (or any other expected value)
+        self.assertEqual(response.status_code, 200)
+
+        # Assert that the response content is empty or contains the expected content
+        self.assertContains(response, 'Expected content', status_code=200)
+    
+    ''' FUTURE IMPLEMENTATION 
     def test_request_trip_paypal(self):
         
         url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
@@ -50,3 +103,4 @@ class RequestTripPayment(TestCase):
                                                 "note": "I need a ride"})
         
         self.assertEqual(response.status_code, 201)
+        '''

@@ -91,7 +91,9 @@ WSGI_APPLICATION = "bugalink_backend.wsgi.application"
 # Database
 # If you wish to use some other database other than the default sqlite
 # Make sure to update the value of DATABASE_URL in your .env file
+APP_ENGINE = False
 if os.environ.get("IS_APP_ENGINE"):
+    APP_ENGINE = True
     DATABASES = {
         "default": {
             "ENGINE": config("ENGINE"),
@@ -183,6 +185,7 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 
 ALLOWED_HOSTS = ["*"]
 STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
+WEBHOOK_SECRET = config("WEBHOOK_SECRET")
 
 LANGUAGE_CODE = "en-us"
 

@@ -63,13 +63,16 @@ class PaymentViewSet(
 
     def create_checkout_session(self, request, *args, **kwargs):
         stripe.api_key = settings.STRIPE_SECRET_KEY
+        note = request.data.get("note")
         trip = Trip.objects.get(id=kwargs["trip_id"])
+        user = request.user
         # El post recibe la cantidad en centimos integer
         price = int(float(trip.driver_routine.price) * 100)
-
         URL = "http://127.0.0.1:3000"
 
-        if os.environ.get("IS_APP_ENGINE"):
+        # No puedo añadir nuevos campos a line items, por lo que lo estoy pasando en el name del producto
+        # data = 'Trip:' + str(trip.id) + ',User:' + str(user.id)
+        if settings.APP_ENGINE:
             URL = "https://app.bugalink.es"
 
         session = stripe.checkout.Session.create(
@@ -83,6 +86,11 @@ class PaymentViewSet(
                 },
                 'quantity': 1,
             }],
+            metadata={
+                'user_id': user.id,
+                'trip_id': trip.id,
+                'note': note
+            },
             mode='payment',
             success_url=URL,  # TODO crear pantalla de pagado
             cancel_url=URL + "/cancel",  # TODO pantalla de cancelado
@@ -92,7 +100,7 @@ class PaymentViewSet(
 
     @csrf_exempt
     def webhook_view(self, request):
-        endpoint_secret = os.environ.get("WEBHOOK_SECRET")
+        endpoint_secret = settings.WEBHOOK_SECRET
         payload = request.body
         sig_header = request.META['HTTP_STRIPE_SIGNATURE']
         event = None
@@ -108,18 +116,12 @@ class PaymentViewSet(
             # Invalid signature
             return HttpResponse(status=400)
 
-            # Handle the event
-        if event['type'] == 'payment_intent.canceled':
-            # payment_intent = event['data']['object']
-            # TODO Pago cancelado
-            pass
-        elif event['type'] == 'payment_intent.payment_failed':
-            # payment_intent = event['data']['object']
-            # TODO Pago fallado
-            pass
-        elif event['type'] == 'payment_intent.succeeded':
-            payment_intent = event['data']['object']
-            print(payment_intent)
+        if event['type'] == 'checkout.session.completed':
+            session = stripe.checkout.Session.retrieve(
+                event['data']['object']['id'],
+                expand=['line_items'],
+            )
+
         # ... handle other event types
         else:
             print('Unhandled event type {}'.format(event['type']))

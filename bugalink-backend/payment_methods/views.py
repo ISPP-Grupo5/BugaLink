@@ -70,8 +70,8 @@ class PaymentViewSet(
         price = int(float(trip.driver_routine.price) * 100)
         URL = "http://127.0.0.1:3000"
 
-        # No puedo añadir nuevos campos a line items, por lo que lo estoy pasando en el name del producto
-        # data = 'Trip:' + str(trip.id) + ',User:' + str(user.id)
+        # Si no hay texto da error al intentar acceder a este dato
+        note = note if note else "None"
         if settings.APP_ENGINE:
             URL = "https://app.bugalink.es"
 
@@ -111,25 +111,28 @@ class PaymentViewSet(
             )
         except ValueError as e:
             # Invalid payload
-            return HttpResponse(status=400)
+            return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
         except stripe.error.SignatureVerificationError as e:
             # Invalid signature
-            return HttpResponse(status=400)
+            return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
         if event['type'] == 'checkout.session.completed':
             session = stripe.checkout.Session.retrieve(
                 event['data']['object']['id'],
                 expand=['line_items'],
             )
+            print(session.metadata)
 
+            note = session.metadata.note if session.metadata.note != "None" else None
+            return TripRequestViewSet.create(self, session.metadata.trip_id, session.metadata.user_id, note)
         # ... handle other event types
         else:
             print('Unhandled event type {}'.format(event['type']))
 
         return HttpResponse(status=200)
 
-
     # POST /trips/<id>/checkout-balance/ (For a passenger to request a trip)
+
     def pay_with_balance(self, request, *args, **kwargs):
         trip = Trip.objects.get(id=kwargs["trip_id"])
 
@@ -146,5 +149,5 @@ class PaymentViewSet(
         else:
             balance.amount -= price
             balance.save()
-            return TripRequestViewSet.create(self, trip.id, user.id, note)   # Si todo está correcto, se crea el triprequest
-            
+            # Si todo está correcto, se crea el triprequest
+            return TripRequestViewSet.create(self, trip.id, user.id, note)

@@ -30,12 +30,11 @@ export default function Pay() {
       event.preventDefault();
       setIsPaying(true);
       const data = {
-        payment_method: 'Balance',
         note,
       };
 
       try {
-        await axiosAuth.post(`trips/${id}/request/`, data);
+        await axiosAuth.post(`trips/${id}/checkout-balance/`, data);
         router.replace(NEXT_ROUTES.HOME);
       } catch (error) {
         alert('Saldo insuficiente o error en el pago');

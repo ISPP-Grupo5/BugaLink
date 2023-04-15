@@ -13,6 +13,7 @@ from users.models import User
 from .models import Balance
 from .serializers import BalanceSerializer
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import AllowAny
 
 
 class BalanceViewSet(
@@ -53,10 +54,12 @@ class PaymentViewSet(
 ):
     queryset = TripRequest.objects.all()
     serializer_class = TripRequestSerializer
-
+    # Maybe it only have to permit in webhook CHECK THIS
+    permission_classes = [AllowAny]
     # POST /trips/<id>/create-checkout-session/ (For a passenger to request a trip)
     # DOCS:
     # https://stripe.com/docs/payments/accept-a-payment?platform=web&ui=checkout#redirect-customers
+
     def create_checkout_session(self, request, *args, **kwargs):
         stripe.api_key = settings.STRIPE_SECRET_KEY
         trip = Trip.objects.get(id=kwargs["trip_id"])
@@ -87,11 +90,37 @@ class PaymentViewSet(
         return Response({'url': session.url})
 
     @csrf_exempt
-    def webhook_view(request):
+    def webhook_view(self, request):
+        endpoint_secret = os.environ.get("WEBHOOK_SECRET")
         payload = request.body
+        sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+        event = None
 
-        # For now, you only need to print out the webhook payload so you can see
-        # the structure.
-        print(payload)
+        try:
+            event = stripe.Webhook.construct_event(
+                payload, sig_header, endpoint_secret
+            )
+        except ValueError as e:
+            # Invalid payload
+            return HttpResponse(status=400)
+        except stripe.error.SignatureVerificationError as e:
+            # Invalid signature
+            return HttpResponse(status=400)
+
+            # Handle the event
+        if event['type'] == 'payment_intent.canceled':
+            # payment_intent = event['data']['object']
+            # TODO Pago cancelado
+            pass
+        elif event['type'] == 'payment_intent.payment_failed':
+            # payment_intent = event['data']['object']
+            # TODO Pago fallado
+            pass
+        elif event['type'] == 'payment_intent.succeeded':
+            payment_intent = event['data']['object']
+            print(payment_intent)
+        # ... handle other event types
+        else:
+            print('Unhandled event type {}'.format(event['type']))
 
         return HttpResponse(status=200)

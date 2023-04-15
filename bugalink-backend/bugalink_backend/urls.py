@@ -27,7 +27,6 @@ from . import settings
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("webhook", PaymentViewSet.as_view({"post": "webhook_view"}, name='webhook')),
     # Include URLs for auth app
     path("api/v1/auth/", include("authentication.urls")),
     path("api/v1/schema/", SpectacularAPIView.as_view(), name="schema"),

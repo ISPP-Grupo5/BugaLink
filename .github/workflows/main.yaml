@@ -30,6 +30,7 @@ jobs:
         cd bugalink-backend
         echo SECRET_KEY="${{ secrets.SECRET_KEY }}" >> .env
         echo PASSWORD=${{ secrets.DATABASE_PASSWORD }} >> .env
+        echo WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }} >> .env
 
     - name: Deploy to App Engine
       id: deploy

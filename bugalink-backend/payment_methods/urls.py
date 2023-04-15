@@ -11,6 +11,7 @@ urlpatterns = [
     path('users/<int:user_id>/balance/',
          BalanceViewSet.as_view({'get': 'get'}), name='balance'),
     path('trips/<int:trip_id>/create-checkout-session/',
-         PaymentViewSet.as_view({"post": "create_checkout_session"}, name='create-checkout-session'))
+         PaymentViewSet.as_view({"post": "create_checkout_session"}, name='create-checkout-session')),
+    path("webhook/", PaymentViewSet.as_view({"post": "webhook_view"}, name='webhook')),
 
 ]

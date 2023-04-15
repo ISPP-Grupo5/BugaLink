@@ -151,10 +151,22 @@ class PaymentViewSet(
             # Si todo está correcto, se crea el triprequest
             return TripRequestViewSet.create(self, trip.id, user.id, note)
 
-    ''' FUTURE IMPLEMENTATION def pay_with_paypal(self, request, *args, **kwargs):
-    
-        paypal_client_id = "AdWSL48duytv4qy76be71a2S3Tt5nTYn-1gGv-53vL_dxNWYzZpAGrUZYrZBvGjkNwOSxJE1s_RSCkL8"
-        paypal_secret_key = "EHps0LO5OsQsUOrDTu9J6BY_mD0OkcF9aNzOT7rkRtDYKCOxoiqCUXsnz-nkhZX5rhlA741NosbaxBpb"
+    def pay_with_paypal(self, request, *args, **kwargs):
+        note = request.data.get("note")
+        trip = Trip.objects.get(id=kwargs["trip_id"])
+        user = request.user
+        # El post recibe la cantidad en centimos integer
+        price = trip.driver_routine.price
+
+        URL = "http://127.0.0.1:3000"
+        if settings.APP_ENGINE:
+            URL = "https://app.bugalink.es"
+
+        # Si no hay texto da error al intentar acceder a este dato
+        note = note if note else "None"
+
+        paypal_client_id = settings.PAYPAL_CLIENT_ID
+        paypal_secret_key = settings.PAYPAL_SECRET_KEY
 
         # Set up PayPal API credentials
         paypalrestsdk.configure(
@@ -165,12 +177,6 @@ class PaymentViewSet(
             }
         )
 
-        paypal_url = (
-            "https://app.bugalink.es"
-            if os.environ.get("IS_APP_ENGINE")
-            else "http://localhost:3000"
-        )
-
         # Create a payment object
         payment = paypalrestsdk.Payment(
             {
@@ -179,8 +185,8 @@ class PaymentViewSet(
                     "payment_method": "paypal",
                 },
                 "redirect_urls": {
-                    "return_url": paypal_url,
-                    "cancel_url": paypal_url,
+                    "return_url": URL,  # TODO hacer vistas de pago aceptado
+                    "cancel_url": URL,  # TODO hacer vistas de pago cancelado
                 },
                 "transactions": [
                     {
@@ -200,11 +206,22 @@ class PaymentViewSet(
             for link in payment.links:
                 if link.method == "REDIRECT":
                     redirect_url = link.href
-                    return redirect(redirect_url)
+                    return Response({'url': redirect_url})
 
         else:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
                 data={"error": "Failed to create PayPal payment"},
             )
-    '''
+
+    def webhook_paypal_view(self, request):
+        if "HTTP_PAYPAL_TRANSMISSION_ID" not in request.META:
+            # Do not even attempt to process/store the event if there is
+            # no paypal transmission id so we avoid overfilling the db.
+            return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+
+        payload = request.body
+
+        print(payload)
+
+        return HttpResponse(status=200)

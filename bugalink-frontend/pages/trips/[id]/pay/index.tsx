@@ -53,7 +53,24 @@ export default function Pay() {
           note,
         };
         const { data } = await axiosAuth.post(`trips/${id}/create-checkout-session/`, dataPost);
-        console.log(data.url);
+        router.push(data.url);
+      } catch (error) {
+        alert('Error en el pago');
+        setIsPaying(false);
+      }
+    }
+  };
+
+  const payWithPaypal = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isPaying) {
+      event.preventDefault();
+      setIsPaying(true);
+
+      try {
+        const dataPost = {
+          note,
+        };
+        const { data } = await axiosAuth.post(`trips/${id}/create-paypal-session/`, dataPost);
         router.push(data.url);
       } catch (error) {
         alert('Error en el pago');
@@ -98,7 +115,7 @@ export default function Pay() {
               logo={<Paypal height="100%" />}
               name="Paypal"
               data="pedro@gmail.com"
-              // href="#"
+              onClick={payWithPaypal}
               disabled={isPaying}
             />
           </div>

@@ -43,8 +43,8 @@ class TripRequest(models.Model):
         default="PENDING",
         max_length=10,
     )
-    note = models.CharField(max_length=2000, blank=True)
-    reject_note = models.CharField(max_length=2048, blank=True)
+    note = models.CharField(max_length=2000, null=True)
+    reject_note = models.CharField(max_length=2048, null=True)
     passenger = models.ForeignKey(
         Passenger, on_delete=models.CASCADE, related_name="passenger"
     )

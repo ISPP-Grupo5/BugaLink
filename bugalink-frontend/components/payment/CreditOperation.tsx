@@ -29,13 +29,17 @@ export default function CreditOperation({
               logo={<VisaMastercard />}
               name="VISA/Mastercard"
               data="**** **** **** 5678"
-              href="#"
+              onClick={() => {
+                return;
+              }}
             />
             <PayMethod
               logo={<Paypal />}
               name="Paypal"
               data="pedro@gmail.com"
-              href="#"
+              onClick={() => {
+                return;
+              }}
             />
           </div>
         </div>
@@ -43,3 +47,6 @@ export default function CreditOperation({
     </AnimatedLayout>
   );
 }
+
+// Link href next.js
+// router.push('/trips/[id]/pay');

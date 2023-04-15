@@ -3,6 +3,7 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from passengers.models import Passenger
+from payment_methods.models import Balance
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -37,6 +38,10 @@ class CustomRegisterSerializer(RegisterSerializer):
         passenger = Passenger.objects.create(user=user)
         passenger.routines.set([])
         passenger.save()
+
+        # create the user's wallet when they register
+        balance = Balance.objects.create(user=user, amount=0)
+        balance.save()
 
         user.passenger = passenger
         setup_user_email(request, user, [])

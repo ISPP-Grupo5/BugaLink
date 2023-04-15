@@ -1,6 +1,8 @@
 import ProfileHeader from '@/components/ProfileHeader';
+import BookmarkTripButton from '@/components/bookmarks/button';
 import { BackButtonText } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
+import NoteToDriver from '@/components/drawers/note';
 import AnimatedLayout from '@/components/layouts/animated';
 import MapPreview from '@/components/maps/mapPreview';
 import NEXT_ROUTES from '@/constants/nextRoutes';
@@ -9,17 +11,15 @@ import useDriverPreferences from '@/hooks/useDriverPreferences';
 import useSentRequests from '@/hooks/useSentRequests';
 import useTrip from '@/hooks/useTrip';
 import useUserStats from '@/hooks/useUserStats';
+import { Drawer } from '@mui/material';
 import { GetServerSideProps } from 'next';
+import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import TargetPin from '/public/assets/map-mark.svg';
 import SourcePin from '/public/assets/source-pin.svg';
-import { User } from 'next-auth';
-import BookmarkTripButton from '@/components/bookmarks/button';
-import { Drawer } from '@mui/material';
-import NoteToDriver from './note';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
@@ -57,11 +57,13 @@ export default function Details({ data }) {
   const origin = trip?.driver_routine.origin;
   const destination = trip?.driver_routine.destination;
 
+  const iAmTheDriver = userStats?.id === user?.user_id;
   const alreadyRequestedTrip = sentRequests?.find(
     (request) => request.trip.id.toString() === tripId
   );
 
-  const iAmTheDriver = userStats?.id === user?.user_id;
+  const occupiedSeats = trip?.passengers.length;
+  const freeSeats = trip?.driver_routine.available_seats - occupiedSeats;
 
   if (isLoading || isLoadingStats || isLoadingPreferences)
     return <p>Loading...</p>; // TODO: make skeleton
@@ -199,7 +201,7 @@ export default function Details({ data }) {
               </p>
             </div>
           </div>
-          {!iAmTheDriver && !alreadyRequestedTrip && (
+          {!iAmTheDriver && !alreadyRequestedTrip && freeSeats > 0 && (
             <div className="flex justify-center">
               <Link
                 href={NEXT_ROUTES.TRIP_PAYMENT(tripId)}

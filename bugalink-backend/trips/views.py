@@ -1,11 +1,17 @@
-import paypal
+import os
+
+import paypalrestsdk
 import stripe
+from bugalink_backend import settings
+from django.db import transaction
 from django.db.models import Q
+from django.shortcuts import redirect
 from passenger_routines.models import PassengerRoutine
-from ratings.models import DriverRating
+from payment_methods.models import Balance
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from transactions.models import Transaction
 from trips.models import Trip, TripRequest
 from trips.serializers import (
     TripRequestCreateSerializer,
@@ -86,82 +92,141 @@ class TripRequestViewSet(
         return self.retrieve(request, *args, **kwargs)
 
     # POST /trips/<id>/request/ (For a passenger to request a trip)
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         def pay_with_balance(balance, price):
             if balance.amount < price:
-                return Response(
-                    status=status.HTTP_400_BAD_REQUEST,
-                    data={"error": "Saldo insuficiente"},
-                )
+                return False  # No se ha pagado
             balance.amount -= price
             balance.save()
+            return True  # Se ha pagado
 
-        def pay_with_credit_card(price):
-            stripe.api_key = "your_stripe_api_key"  # TODO change it
+        def pay_with_credit_card(
+            price, credit_car_number, expiration_month, expiration_year, cvc
+        ):
+            stripe.api_key = settings.STRIPE_SECRET_KEY
 
-            # Get the amount to charge (in cents)
-            amount = int(price * 100)
+            amount = int(price * 100)  # Stripe expects amount in cents
 
             try:
-                stripe.Charge.create(
-                    amount=amount,
-                    currency="eur",
-                    source=request.data.get(
-                        "stripe_token"
-                    ),  # TODO replace with a valid card token
-                    description="Viaje Bugalink - " + str(trip.departure_datetime),
+                # Create a PaymentMethod
+                payment_method = stripe.PaymentMethod.create(
+                    type="card",
+                    card={
+                        "number": credit_car_number,
+                        "exp_month": expiration_month,
+                        "exp_year": expiration_year,
+                        "cvc": cvc,
+                    },
                 )
 
-            except stripe.error.CardError:
+                # Confirm the PaymentMethod to complete the payment
+                payment_intent = stripe.PaymentIntent.create(
+                    payment_method=payment_method.id,
+                    amount=amount,
+                    currency="eur",
+                    confirmation_method="manual",
+                    confirm=True,
+                )
+
+                # Check if the payment is succeeded
+                if payment_intent.status == "succeeded":
+                    print("Payment succeeded!")
+                else:
+                    return Response(
+                        status=status.HTTP_400_BAD_REQUEST,
+                        data={"error": "Método de pago fallido"},
+                    )
+
+            except stripe.error.StripeError:
                 return Response(
                     status=status.HTTP_400_BAD_REQUEST,
-                    data={"error": "Tarjeta inválida"},
+                    data={"error": "Stripe error"},
                 )
 
         def pay_with_paypal(price):
-            paypal_client_id = "your_paypal_client_id"  # TODO change it
-            paypal_secret_key = "your_paypal_secret_key"  # TODO change it
+            paypal_client_id = "AdWSL48duytv4qy76be71a2S3Tt5nTYn-1gGv-53vL_dxNWYzZpAGrUZYrZBvGjkNwOSxJE1s_RSCkL8"
+            paypal_secret_key = "EHps0LO5OsQsUOrDTu9J6BY_mD0OkcF9aNzOT7rkRtDYKCOxoiqCUXsnz-nkhZX5rhlA741NosbaxBpb"
 
-            environment = paypal.Environment(
-                client_id=paypal_client_id, client_secret=paypal_secret_key
-            )
-            client = paypal.PayPalHttpClient(environment)
-
-            # Get the amount to charge
-            amount = price
-
-            # Create a PayPal order
-            order = paypal.OrderRequest(
+            # Set up PayPal API credentials
+            paypalrestsdk.configure(
                 {
-                    "intent": "CAPTURE",
-                    "purchase_units": [
-                        {"amount": {"currency_code": "EUR", "value": str(amount)}}
+                    "mode": "sandbox",
+                    "client_id": paypal_client_id,
+                    "client_secret": paypal_secret_key,
+                }
+            )
+
+            paypal_url = (
+                "https://app.bugalink.es"
+                if os.environ.get("IS_APP_ENGINE")
+                else "http://localhost:3000"
+            )
+
+            # Create a payment object
+            payment = paypalrestsdk.Payment(
+                {
+                    "intent": "sale",
+                    "payer": {
+                        "payment_method": "paypal",
+                    },
+                    "redirect_urls": {
+                        "return_url": paypal_url,
+                        "cancel_url": paypal_url,
+                    },
+                    "transactions": [
+                        {
+                            "amount": {
+                                "total": str(price),
+                                "currency": "EUR",
+                            },
+                            "description": "Payment for your trip with Bugalink",
+                        }
                     ],
                 }
             )
-            response = client.execute(paypal.OrdersCreateRequest(order))
-            order_id = response.result.id
 
-            # Capture the payment
-            capture = paypal.CaptureRequest(order_id)
-            client.execute(capture)
+            # Create payment
+            if payment.create():
+                # Redirect the user to PayPal for payment approval
+                for link in payment.links:
+                    if link.method == "REDIRECT":
+                        redirect_url = link.href
+                        return redirect(redirect_url)
+
+            else:
+                return Response(
+                    status=status.HTTP_400_BAD_REQUEST,
+                    data={"error": "Failed to create PayPal payment"},
+                )
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         trip = Trip.objects.get(id=kwargs["trip_id"])
-        """ FUTURE IMPLEMENTATION
+
         user = request.user
         payment_method = request.data.get("payment_method")
         price = trip.driver_routine.price
 
-
         if payment_method == "Balance":
             balance = Balance.objects.get(user=user)
-            pay_with_balance(balance, price)
+            paid = pay_with_balance(balance, price)
+
+            if not paid:
+                return Response(
+                    {"error": "Saldo insuficiente"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
         elif payment_method == "CreditCard":
-            pay_with_credit_card(price)
+            credit_car_number = request.data.get("credit_car_number")
+            expiration_month = request.data.get("expiration_month")
+            expiration_year = request.data.get("expiration_year")
+            cvc = request.data.get("cvc")
+            pay_with_credit_card(
+                price, credit_car_number, expiration_month, expiration_year, cvc
+            )
 
         elif payment_method == "PayPal":
             pay_with_paypal(price)
@@ -171,11 +236,18 @@ class TripRequestViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
                 data={"error": "Método de pago inválido"},
             )
-        """
+
         serializer.save()
+
+        Transaction.objects.create(
+            sender=user,
+            receiver=trip.driver_routine.driver.user,
+            amount=price,
+        )
 
         created_id = serializer.instance.id
         headers = self.get_success_headers(serializer.data)
+
         return Response(
             {"id": created_id, **serializer.data},
             # self.get_serializer(driver_routine).data,
@@ -183,10 +255,20 @@ class TripRequestViewSet(
             headers=headers,
         )
 
+    # GET /trip-requests/pending/count/ (For a driver to get the number of pending requests)
+    def count(self, request, *args, **kwargs):
+        num_pending_requests = TripRequest.objects.filter(
+            trip__driver_routine__driver__user=request.user,
+            trip__status="PENDING",
+            status="PENDING",
+        )
+        return Response({"count": num_pending_requests.count()})
+
     # PUT /trip-requests/<pk>/accept/ (For a driver to accept a trip request)
+
     @action(detail=True, methods=["put"])
     def accept(self, request, *args, **kwargs):
-        trip_request = self.get_object()
+        trip_request = TripRequest.objects.get(id=kwargs["pk"])
         trip_request.status = "ACCEPTED"
         trip_request.save()
         return Response(self.get_serializer(trip_request).data)
@@ -194,7 +276,7 @@ class TripRequestViewSet(
     # PUT /trip-requests/<pk>/reject/ (For a driver to reject a trip request)
     @action(detail=True, methods=["put"])
     def reject(self, request, *args, **kwargs):
-        trip_request = self.get_object()
+        trip_request = TripRequest.objects.get(id=kwargs["pk"])
         trip_request.status = "REJECTED"
         trip_request.save()
         return Response(self.get_serializer(trip_request).data)
@@ -254,40 +336,3 @@ class TripSearchViewSet(
         return Response(
             TripSerializer(trips, many=True).data, status=status.HTTP_200_OK
         )
-
-
-class TripRateViewSet(
-    mixins.RetrieveModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet,
-):
-    queryset = TripRequest.objects.all()
-    serializer_class = TripRequestSerializer
-
-    @action(detail=True, methods=["post"])
-    def post(self, request, trip_id, *args, **kwargs):
-        try:
-            trip = Trip.objects.get(id=trip_id)
-            if trip.status == "FINISHED":
-                trip_request = TripRequest.objects.filter(
-                    trip=trip, status="ACCEPTED", passenger__user=request.user
-                ).first()
-            if trip_request:
-                rating = request.POST.get("rating")
-                is_good_driver = request.POST.get("is_good_driver")
-                is_pleasant_driver = request.POST.get("is_pleasant_driver")
-                already_knew = request.POST.get("already_knew")
-
-                DriverRating.objects.create(
-                    trip_request=TripRequest.objects.get(id=trip_request.id),
-                    rating=rating,
-                    is_good_driver=is_good_driver,
-                    is_pleasant_driver=is_pleasant_driver,
-                    already_knew=already_knew,
-                )
-
-                return Response({"message": "Valoración realizada con exito"})
-            else:
-                return Response({"message": "No has participado en este viaje"})
-        except Exception as e:
-            return Response({"message": str(e)})

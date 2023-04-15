@@ -3,6 +3,7 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
 
 from passenger_routines.models import PassengerRoutine
+from locations.models import Location
 from passenger_routines.serializers import PassengerRoutineSerializer, PassengerRoutineCreateSerializer
 
 
@@ -41,3 +42,25 @@ class PassengerRoutineViewSet(
             status=status.HTTP_201_CREATED,
             headers=headers,
         )
+
+    def update(self, request, *args, **kwargs):   
+        routine_original = PassengerRoutine.objects.get(id=kwargs['pk'])
+        routine_request = request.data
+        serializer = PassengerRoutineSerializer(routine_request)
+
+        if (routine_request.get("day_of_week") != routine_original.day_of_week ):
+            return Response(
+                {
+                    "error": "No se puede cambiar el día de la semana"
+                },
+
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        routine_original.departure_time_start = routine_request.get("departure_time_start")
+        routine_original.departure_time_end = routine_request.get("departure_time_end")
+        routine_original.arrival_time = routine_request.get("arrival_time")
+        routine_original.origin = Location.objects.create(**serializer.data.pop("origin"))
+        routine_original.destination=Location.objects.create(**serializer.data.pop("destination"))
+        routine_original.save()
+
+        return Response(routine_request, status= status.HTTP_200_OK)

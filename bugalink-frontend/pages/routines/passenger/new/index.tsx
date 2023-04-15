@@ -1,5 +1,16 @@
 import NewRoutine from '@/components/pages/routines/common';
+import usePassengerRoutines from '@/hooks/usePassengerRoutines';
+import { useRouter } from 'next/router';
 
 export default function NewPassengerRoutine() {
-  return <NewRoutine userType="passenger" />;
+  const router = useRouter();
+  const id = router.query.id as string;
+  const { passengerRoutines } = usePassengerRoutines(id);
+
+  return (
+    <NewRoutine
+      userType="passenger"
+      routineDetailsPassenger={passengerRoutines}
+    />
+  );
 }

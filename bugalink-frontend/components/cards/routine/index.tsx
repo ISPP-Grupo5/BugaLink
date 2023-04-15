@@ -6,6 +6,8 @@ import { useState } from 'react';
 import MapPin from '/public/assets/map-pin.svg';
 import OrigenPin from '/public/assets/origen-pin.svg';
 import SteeringWheel from '/public/assets/steering-wheel.svg';
+import NEXT_ROUTES from '@/constants/nextRoutes';
+import Link from 'next/link';
 
 type Props = {
   id: number;
@@ -26,6 +28,7 @@ export default function RoutineCard({
 }: Props) {
   const isDriver = type === 'driverRoutine';
   const [isDeleted, setIsDeleted] = useState(false);
+  const editLink = isDriver ? NEXT_ROUTES.NEW_ROUTINE_DRIVER : NEXT_ROUTES.NEW_ROUTINE_PASSENGER;
 
   async function deleteRoutine() {
     const url = isDriver ? 'driver-routines' : 'passenger-routines';
@@ -88,7 +91,11 @@ export default function RoutineCard({
         </Entry>
         <ThreeDotsMenu>
           <MenuItem>
-            <p>Editar</p>
+            <Link
+              href={`${editLink}?id=${id}`}    
+            >
+              <p>Editar</p>
+            </Link>
           </MenuItem>
           <MenuItem onClick={deleteRoutine}>
             <p className="text-red">Eliminar</p>

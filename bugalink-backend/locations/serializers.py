@@ -7,3 +7,5 @@ class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = ["latitude", "longitude", "address"]
+
+  

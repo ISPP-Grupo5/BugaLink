@@ -42,3 +42,11 @@ class RequestTripPayment(TestCase):
         #expected_url = "https://checkout.stripe.com/c/pay/cs_test_a1R4RgSpLAgMGn8BS2FGPLJskySPtwxM8ysngwSFHvRYEtBQ99qNnOzvZ9#fidkdWxOYHwnPyd1blpxYHZxWjA0SHJLTDFHSkFESGxTYjJzV3BJM2Bycl1%2FTlRuTjZCQGlEVXxqT1V%2FRjJxdTNmV2hnMn1WYzJ2MGFGXXx2dWFJXz10bVJGQUl9fEJSXT1oa3ZRaFNCTG59NTV1M1RMa0ZQZCcpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl"
         #self.assertEqual(response.data['url'], expected_url)
         #self.assertRedirects ? 
+
+    def test_request_trip_paypal(self):
+        
+        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
+        response = self.client.post(url, data ={"payment_method": "PayPal", 
+                                                "note": "I need a ride"})
+        
+        self.assertEqual(response.status_code, 201)

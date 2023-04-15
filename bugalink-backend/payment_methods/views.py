@@ -4,7 +4,7 @@ from bugalink_backend import settings
 from rest_framework import mixins, status, viewsets
 import os
 from django.shortcuts import redirect
-
+import paypalrestsdk
 import stripe
 from trips.serializers import TripRequestSerializer
 from trips.models import TripRequest, Trip
@@ -145,4 +145,61 @@ class PaymentViewSet(
             balance.amount -= price
             balance.save()
             return TripRequestViewSet.create(self, trip.id, user.id, note)   # Si todo está correcto, se crea el triprequest
-            
+    
+    ''' FUTURE IMPLEMENTATION def pay_with_paypal(self, request, *args, **kwargs):
+    
+        paypal_client_id = "AdWSL48duytv4qy76be71a2S3Tt5nTYn-1gGv-53vL_dxNWYzZpAGrUZYrZBvGjkNwOSxJE1s_RSCkL8"
+        paypal_secret_key = "EHps0LO5OsQsUOrDTu9J6BY_mD0OkcF9aNzOT7rkRtDYKCOxoiqCUXsnz-nkhZX5rhlA741NosbaxBpb"
+
+        # Set up PayPal API credentials
+        paypalrestsdk.configure(
+            {
+                "mode": "sandbox",
+                "client_id": paypal_client_id,
+                "client_secret": paypal_secret_key,
+            }
+        )
+
+        paypal_url = (
+            "https://app.bugalink.es"
+            if os.environ.get("IS_APP_ENGINE")
+            else "http://localhost:3000"
+        )
+
+        # Create a payment object
+        payment = paypalrestsdk.Payment(
+            {
+                "intent": "sale",
+                "payer": {
+                    "payment_method": "paypal",
+                },
+                "redirect_urls": {
+                    "return_url": paypal_url,
+                    "cancel_url": paypal_url,
+                },
+                "transactions": [
+                    {
+                        "amount": {
+                            "total": str(price),
+                            "currency": "EUR",
+                        },
+                        "description": "Payment for your trip with Bugalink",
+                    }
+                ],
+            }
+        )
+
+        # Create payment
+        if payment.create():
+            # Redirect the user to PayPal for payment approval
+            for link in payment.links:
+                if link.method == "REDIRECT":
+                    redirect_url = link.href
+                    return redirect(redirect_url)
+
+        else:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={"error": "Failed to create PayPal payment"},
+            )
+    '''

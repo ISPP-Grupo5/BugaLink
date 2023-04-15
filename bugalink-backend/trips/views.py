@@ -1,6 +1,5 @@
 import os
-import paypalrestsdk
-import stripe
+
 from bugalink_backend import settings
 from django.db import transaction
 from django.db.models import Q

@@ -1,6 +1,5 @@
 from django.urls import include, path
 from rest_framework import routers
-from trips.views import ReportIssueViewSet
 from users.views import (
     BecomeDriverView,
     UserRatingView,

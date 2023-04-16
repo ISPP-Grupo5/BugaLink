@@ -15,9 +15,11 @@ from rest_framework.response import Response
 from transactions.models import Transaction
 from trips.models import Trip, TripRequest
 from trips.serializers import (
+    TripReportSerializer,
     TripRequestCreateSerializer,
     TripRequestSerializer,
     TripSerializer,
+    TripUsersSerializer,
 )
 from users.models import User
 from users.serializers import UserSerializer
@@ -378,13 +380,11 @@ class TripRateViewSet(
             return Response({"message": str(e)})
 
 
-class ReportIssueViewSet(
-    mixins.RetrieveModelMixin,
-    mixins.DestroyModelMixin,
+class ReportIssuePostViewSet(
     viewsets.GenericViewSet,
 ):
     queryset = Trip.objects.all()
-    serializer_class = TripSerializer
+    serializer_class = TripReportSerializer
 
     @action(detail=True, methods=["post"])
     def post(self, request, trip_id, *args, **kwargs):
@@ -410,21 +410,15 @@ class ReportIssueViewSet(
                 reported_is_driver=reported_is_driver,
                 note=note,
             )
-            return Response({"message": "Usuario reportado con exito"})
+            return Response(
+                {"message": "Report creado con exito"}, status=status.HTTP_201_CREATED
+            )
+
+
+class ReportIssueGetViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
+    queryset = Trip.objects.all()
+    serializer_class = TripUsersSerializer
 
     @action(detail=True, methods=["get"])
-    def get(self, request, trip_id, *args, **kwargs):
-        try:
-            trip = Trip.objects.get(id=trip_id)
-            trip_requests = TripRequest.objects.filter(trip=trip)
-            trip_requests_id = []
-            for trip_request in trip_requests:
-                trip_requests_id.append(trip_request.passenger.id)
-            users = User.objects.filter(
-                id=trip.driver_routine.driver.user.id
-            ) | User.objects.filter(id__in=trip_requests_id)
-            return Response(
-                UserSerializer(users, many=True).data, status=status.HTTP_201_CREATED
-            )
-        except Exception as e:
-            return Response({"message": str(e)})
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)

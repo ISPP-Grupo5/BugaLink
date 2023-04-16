@@ -1,7 +1,13 @@
 from driver_routines.serializers import DriverRoutineSerializer
+from ratings.models import Report
 from rest_framework import serializers
 from trips.models import Trip, TripRequest
-from users.serializers import DriverAsUserSerializer, PassengerAsUserSerializer
+from users.models import User
+from users.serializers import (
+    DriverAsUserSerializer,
+    PassengerAsUserSerializer,
+    UserSerializer,
+)
 
 
 class SimpleTripSerializer(serializers.ModelSerializer):
@@ -24,6 +30,20 @@ class SimpleTripSerializer(serializers.ModelSerializer):
     def get_driver(self, obj) -> DriverAsUserSerializer():
         driver_routine = obj.driver_routine
         return DriverAsUserSerializer(driver_routine.driver).data
+
+
+class TripUsersSerializer(serializers.ModelSerializer):
+    users = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Trip
+        fields = ("users",)
+
+    def get_users(self, obj) -> UserSerializer(many=True):
+        accepted_requests = TripRequest.objects.filter(trip=obj, status="ACCEPTED")
+        users = [t_r.passenger.user for t_r in accepted_requests]
+        users.append(obj.driver_routine.driver.user)
+        return UserSerializer(users, many=True).data
 
 
 class TripSerializer(serializers.ModelSerializer):
@@ -81,3 +101,9 @@ class TripRequestCreateSerializer(serializers.ModelSerializer):
         return TripRequest.objects.create(
             passenger=passenger, trip=trip, note=note, price=price
         )
+
+
+class TripReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Report
+        fields = ("reported_user_id", "note")

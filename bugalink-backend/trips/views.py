@@ -393,6 +393,8 @@ class ReportIssueViewSet(
         trip_request = TripRequest.objects.filter(
             trip=trip, passenger__user=user
         ).first()
+        # Trip request solo existe si el user es un passenger, de forma que aqui se comprueba si es passenger o driver del viaje, si no lo es
+        # no puede reportar
         if trip_request or trip.driver_routine.driver.user == user:
             reported_user_id = request.POST.get("reported_user_id")
             reported_user = User.objects.get(id=reported_user_id)

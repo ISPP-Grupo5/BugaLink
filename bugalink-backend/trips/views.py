@@ -98,9 +98,9 @@ class TripRequestViewSet(
 
         trip = Trip.objects.get(id=trip_id)
         user = User.objects.get(id=user_id)
-        price = trip.driver_routine.price 
+        price = trip.driver_routine.price
         passenger = Passenger.objects.get(user=user)
-    
+
         Transaction.objects.create(
             sender=user,
             receiver=trip.driver_routine.driver.user,
@@ -110,14 +110,23 @@ class TripRequestViewSet(
         trip_request = TripRequest.objects.create(
             trip=trip,
             status="PENDING",
-            note = note,
-            reject_note = "",
-            passenger = passenger,
-            price = price,
+            note=note,
+            reject_note="",
+            passenger=passenger,
+            price=price,
         )
 
         return Response(self.get_serializer(trip_request).data, status=status.HTTP_201_CREATED)
-        
+
+    # GET /trip-requests/pending/count/ (For a driver to get the number of pending requests)
+    def count(self, request, *args, **kwargs):
+        num_pending_requests = TripRequest.objects.filter(
+            trip__driver_routine__driver__user=request.user,
+            trip__status="PENDING",
+            status="PENDING",
+        )
+        return Response({"count": num_pending_requests.count()})
+
     # PUT /trip-requests/<pk>/accept/ (For a driver to accept a trip request)
 
     @action(detail=True, methods=["put"])

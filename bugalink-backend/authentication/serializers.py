@@ -65,4 +65,5 @@ class EnrichedTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["photo"] = user.photo.url if user.photo else None
         token["verified"] = user.verified
         token["is_validated_driver"] = user.is_validated_driver
+        token["is_pilotuser"] = user.is_pilotuser
         return token

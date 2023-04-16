@@ -41,9 +41,11 @@ export default function Pay() {
         setIsPaying(false);
       }
     }
-  }
+  };
 
-  const payWithCreditCard = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const payWithCreditCard = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     if (!isPaying) {
       event.preventDefault();
       setIsPaying(true);
@@ -80,7 +82,7 @@ export default function Pay() {
   };
 
   return (
-    <AnimatedLayout className="flex flex-col justify-between">
+    <AnimatedLayout className="justify-between flex flex-col">
       <BackButtonText text="Pago del viaje" />
       <div className="flex h-full flex-col overflow-y-scroll bg-white px-4 pb-4">
         <div className="flex flex-col">

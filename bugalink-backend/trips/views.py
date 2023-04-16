@@ -6,18 +6,24 @@ from bugalink_backend import settings
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import redirect
+import django.core.exceptions
 from passenger_routines.models import PassengerRoutine
 from payment_methods.models import Balance
+from ratings.models import DriverRating, Report
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from transactions.models import Transaction
 from trips.models import Trip, TripRequest
 from trips.serializers import (
+    TripReportSerializer,
     TripRequestCreateSerializer,
     TripRequestSerializer,
     TripSerializer,
+    TripUsersSerializer,
 )
+from users.models import User
+from users.serializers import UserSerializer
 
 from .utils import (
     check_allows_pets,
@@ -35,6 +41,8 @@ from .utils import (
     check_prefers_talk,
     get_recommendations,
 )
+
+query_format_exception_message = "Existe algún valor inadecuado"
 
 
 class TripViewSet(
@@ -292,47 +300,143 @@ class TripSearchViewSet(
 
     @action(detail=True, methods=["get"])
     def get(self, request, *args, **kwargs):
-        # Se busca entre los viajes pendientes
-        trips = Trip.objects.filter(status="PENDING")
-        # Comprobacion de campos obligatorios
-        if not request.GET.get("origin") or not request.GET.get("destination"):
+        try:
+            # Se busca entre los viajes pendientes
+            trips = Trip.objects.filter(status="PENDING")
+            # Comprobacion de campos obligatorios
+            if not request.GET.get("origin") or not request.GET.get("destination"):
+                return Response(
+                    {"message": "El origen y el destino son obligatorios"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            filter_checks = {
+                "days": check_days,
+                "min_price": check_minprice,
+                "max_price": check_maxprice,
+                "date_from": check_date_from,
+                "date_to": check_date_to,
+                "hour_from": check_hour_from,
+                "hour_to": check_hour_to,
+                "prefers_music": check_prefers_music,
+                "prefers_talk": check_prefers_talk,
+                "allows_pets": check_allows_pets,
+                "allows_smoking": check_allows_smoking,
+            }
+
+            # Apply all filters on the QuerySet
+            for key, func in filter_checks.items():
+                if request.GET.get(key):
+                    trips = func(trips, request.GET.get(key))
+
+            # Comprobacion de distancia
+            trips = check_distance(
+                trips, request.GET.get("origin"), request.GET.get("destination")
+            )
+
+            # Comprobacion de minStars
+            if request.GET.get("min_stars"):
+                trips = check_minstars(trips, request.GET.get("min_stars"))
+
+            trips = Trip.objects.filter(Q(pk__in=[trip.pk for trip in trips])).order_by(
+                "-departure_datetime"
+            )[:10]
+
             return Response(
-                {"message": "El origen y el destino son obligatorios"},
+                TripSerializer(trips, many=True).data, status=status.HTTP_200_OK
+            )
+        except ValueError:
+            return Response(
+                {"message": query_format_exception_message},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except django.core.exceptions.FieldError:
+            return Response(
+                {"message": query_format_exception_message},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except django.core.exceptions.ValidationError:
+            return Response(
+                {"message": query_format_exception_message},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        filter_checks = {
-            "days": check_days,
-            "min_price": check_minprice,
-            "max_price": check_maxprice,
-            "date_from": check_date_from,
-            "date_to": check_date_to,
-            "hour_from": check_hour_from,
-            "hour_to": check_hour_to,
-            "prefers_music": check_prefers_music,
-            "prefers_talk": check_prefers_talk,
-            "allows_pets": check_allows_pets,
-            "allows_smoking": check_allows_smoking,
-        }
+class TripRateViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = TripRequest.objects.all()
+    serializer_class = TripRequestSerializer
 
-        # Apply all filters on the QuerySet
-        for key, func in filter_checks.items():
-            if request.GET.get(key):
-                trips = func(trips, request.GET.get(key))
+    @action(detail=True, methods=["post"])
+    def post(self, request, trip_id, *args, **kwargs):
+        try:
+            trip = Trip.objects.get(id=trip_id)
+            if trip.status == "FINISHED":
+                trip_request = TripRequest.objects.filter(
+                    trip=trip, status="ACCEPTED", passenger__user=request.user
+                ).first()
+            if trip_request:
+                rating = request.POST.get("rating")
+                is_good_driver = request.POST.get("is_good_driver")
+                is_pleasant_driver = request.POST.get("is_pleasant_driver")
+                already_knew = request.POST.get("already_knew")
 
-        # Comprobacion de distancia
-        trips = check_distance(
-            trips, request.GET.get("origin"), request.GET.get("destination")
-        )
+                DriverRating.objects.create(
+                    trip_request=TripRequest.objects.get(id=trip_request.id),
+                    rating=rating,
+                    is_good_driver=is_good_driver,
+                    is_pleasant_driver=is_pleasant_driver,
+                    already_knew=already_knew,
+                )
 
-        # Comprobacion de minStars
-        if request.GET.get("min_stars"):
-            trips = check_minstars(trips, request.GET.get("min_stars"))
+                return Response({"message": "Valoración realizada con exito"})
+            else:
+                return Response({"message": "No has participado en este viaje"})
+        except Exception as e:
+            return Response({"message": str(e)})
 
-        trips = Trip.objects.filter(Q(pk__in=[trip.pk for trip in trips])).order_by(
-            "-departure_datetime"
-        )[:10]
 
-        return Response(
-            TripSerializer(trips, many=True).data, status=status.HTTP_200_OK
-        )
+class ReportIssuePostViewSet(
+    viewsets.GenericViewSet,
+):
+    queryset = Report.objects.all()
+    serializer_class = TripReportSerializer
+
+    @action(detail=True, methods=["post"])
+    def post(self, request, trip_id, *args, **kwargs):
+        trip = Trip.objects.get(id=trip_id, status="FINISHED")
+        user = request.user
+        trip_request = TripRequest.objects.filter(
+            trip=trip, passenger__user=user
+        ).first()
+        # Trip request solo existe si el user es un passenger, de forma que aqui se comprueba si es passenger o driver del viaje, si no lo es
+        # no puede reportar
+        if trip_request or trip.driver_routine.driver.user == user:
+            reported_user_id = request.POST.get("reported_user_id")
+            reported_user = User.objects.get(id=reported_user_id)
+            reporter_is_driver = user == trip.driver_routine.driver.user
+            reported_is_driver = reported_user == trip.driver_routine.driver.user
+
+            note = request.POST.get("note")
+            Report.objects.create(
+                trip=trip,
+                reporter_user=user,
+                reported_user=reported_user,
+                reporter_is_driver=reporter_is_driver,
+                reported_is_driver=reported_is_driver,
+                note=note,
+            )
+            return Response(
+                {"message": "Report creado con exito"}, status=status.HTTP_201_CREATED
+            )
+
+
+class ReportIssueGetViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
+    queryset = Trip.objects.all()
+    serializer_class = TripUsersSerializer
+
+    @action(detail=True, methods=["get"])
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)

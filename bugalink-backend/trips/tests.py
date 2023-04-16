@@ -3,12 +3,14 @@ import json
 
 from django.test import TestCase
 from passenger_routines.models import PassengerRoutine
-from ratings.models import DriverRating
+from payment_methods.models import Balance
+from ratings.models import DriverRating, Report
 from rest_framework.test import APIClient
 from trips.models import Trip, TripRequest
 from users.tests import load_complex_data
 from payment_methods.models import Balance
 from passengers.models import Passenger
+
 
 class GetTripRecommendationTest(TestCase):
     def setUp(self):
@@ -60,6 +62,7 @@ class TripSearchTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data[0]["id"], self.trip_2.id)
 
+
 ''' DONT WORK - PLEASE CHECK THIS OUT ABRAHAM
 class TripRateTest(TestCase):
     def setUp(self):
@@ -84,3 +87,67 @@ class TripRateTest(TestCase):
             DriverRating.objects.get(trip_request=self.trip_request).rating, 2.3
         )
 '''
+
+
+class RequestTrip(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        load_complex_data(self)
+        self.balance = Balance.objects.create(user=self.user_2, amount=100)
+        self.client.force_authenticate(user=self.user_2)
+
+    def test_request_trip_balance(self):
+        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
+        response = self.client.post(
+            url, data={"payment_method": "Balance", "note": "I need a ride"}
+        )
+
+        self.assertEqual(response.status_code, 201)
+
+    def test_request_trip_card(self):
+        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
+        response = self.client.post(
+            url,
+            data={
+                "payment_method": "CreditCard",
+                "note": "I need a ride",
+                "credit_car_number": "4242424242424242",
+                "expiration_month": 12,
+                "expiration_year": 2023,
+                "cvc": "123",
+            },
+        )
+
+        self.assertEqual(response.status_code, 201)
+
+    def test_request_trip_paypal(self):
+        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
+        response = self.client.post(
+            url, data={"payment_method": "PayPal", "note": "I need a ride"}
+        )
+
+        self.assertEqual(response.status_code, 201)
+
+
+class ReportTripUserTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        load_complex_data(self)
+        self.client.force_authenticate(user=self.user)
+
+    def test_report_trip_user(self):
+        url = "/api/v1/trips/" + str(self.trip.id) + "/report-issue/"
+        self.client.post(
+            url,
+            data={
+                "reported_user_id": self.user_2.id,
+                "note": "note",
+            },
+        )
+        self.assertEqual(Report.objects.get(id=1).note, "note")
+
+    def test_report_trip_get_users(self):
+        url = "/api/v1/trips/" + str(self.trip.id) + "/users/"
+        response = self.client.get(url)
+        data = json.loads(response.content)
+        self.assertEqual(len(data.get("users")), 2)

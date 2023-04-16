@@ -7,9 +7,6 @@ import { TransactionList } from '@/components/cards/transactions';
 import Link from 'next/link';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import useBalance from '@/hooks/useBalance';
-import LastTransactionsI from '@/interfaces/lastTransactions';
-import { useSession } from 'next-auth/react';
-import { User } from 'next-auth';
 
 export default function Wallet() {
   const { balance } = useBalance();

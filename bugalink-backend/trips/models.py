@@ -35,7 +35,7 @@ class Trip(models.Model):
 
 @receiver(post_save, sender=Trip)
 def create_task(sender, instance, created, **kwargs):
-    if created:
+    if created and instance.driver_routine.is_recurrent:
         set_trip_finished.apply_async(
             (instance.id,), eta=instance.arrival_datetime, task_id=str(instance.id)
         )

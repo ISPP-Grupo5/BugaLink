@@ -1,34 +1,38 @@
 import useLastTransactions from "@/hooks/useLastTransactions";
 import LastTransactionsI from "@/interfaces/lastTransactions";
+import UserI from "@/interfaces/user";
+import { parseDateFromDate, shortenName } from "@/utils/formatters";
 import { User } from "next-auth";
 import { useSession } from "next-auth/react";
 
 //Transactions list
 export function TransactionList() {
-  const { lastTransactions } = useLastTransactions();
   const { data } = useSession();
   const me = data?.user as User;
-  const isReceiver = (transaction: LastTransactionsI) => (transaction.receiver.user_id === me.user_id);
+  const { lastTransactions } = useLastTransactions();
+  //Logged user is receiver?
+  const isReceiver = (transaction: LastTransactionsI) => (transaction.receiver.id == me.user_id);
   const isPending = (transaction: LastTransactionsI) => (transaction.status === 'PENDING');
   
   return (
     <div className="divide-y-2 divide-light-gray overflow-y-scroll bg-white">
       { lastTransactions?.map((transaction: LastTransactionsI) => {
         //By default the user is the driver. aka: receiver
-        var color = "text-green",
-            sign = "+",
-            type = "Pasajero",
-            notMe = transaction.sender;
+        let color = "text-green",
+        sign = "+",
+        type = "Pasajero",
+        notMe = transaction.sender;
         const pending = isPending(transaction);
         const imReceiver = isReceiver(transaction);
+        
+        const date = parseDateFromDate(transaction.date);
         const amount = Number.parseFloat(transaction.amount).toLocaleString(
           "es-ES",
           {
             style: "currency",
             currency: "EUR",
           }
-        );
-
+          );
         if (!imReceiver) {
           color = "text-red";
           sign = "-";
@@ -40,10 +44,11 @@ export function TransactionList() {
 
         return (
           <Transaction
+            key={transaction.id}
             notMe={notMe}
             travelType={type}
             //TO-DO: change to the date of the transaction
-            date={"8 Marzo"}
+            date={date}
             className={color}
             money={sign + amount}
             isPending={pending}
@@ -56,7 +61,7 @@ export function TransactionList() {
 
 //Single transaction
 type Params = {
-  notMe: User;
+  notMe: UserI;
   travelType?: string;
   date: string;
   className: string;
@@ -73,7 +78,6 @@ export function Transaction({
   isPending = false,
 }: Params) {
 
-  const completeName= notMe.first_name + " " + notMe.last_name;
   const icon= notMe.photo? notMe.photo: "/icons/Vista-Principal/hombre.png";
 
   return (
@@ -83,7 +87,7 @@ export function Transaction({
       </div>
 
       <div className="col-span-2 text-ellipsis py-4">
-        <p className=" text-lg font-bold text-black">{completeName}</p>
+        <p className=" text-lg font-bold text-black">{shortenName(notMe.first_name, notMe.last_name)}</p>
         <p className="text-base text-gray">
           {travelType} - {date}
         </p>
@@ -97,4 +101,4 @@ export function Transaction({
   );
 }
 
-export default [ Transaction ];
+export default [ TransactionList ];

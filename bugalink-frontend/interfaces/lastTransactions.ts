@@ -1,12 +1,14 @@
 import { User } from "next-auth";
+import UserI from "./user";
 
 type LastTransactionsI = {
     id: number;
-    sender: User;
-    receiver: User;
+    sender: UserI;
+    receiver: UserI;
     status: 'PENDING' | 'ACCEPTED' | 'DECLINED';
     is_refund : boolean;
     amount: string;
+    date: string;
 }
 
 export default LastTransactionsI;

@@ -13,15 +13,10 @@ import { User } from 'next-auth';
 
 export default function Wallet() {
   const { balance } = useBalance();
-  const { data } = useSession();
-  const me = data?.user as User;
   const amount = balance? Number.parseFloat(balance.amount).toLocaleString('es-ES', {
     style: 'currency',
     currency: 'EUR',
   }): '--,-- €';
-  const isPending = (transaction: LastTransactionsI) => (transaction.status === 'PENDING');
-  const isSender = (transaction: LastTransactionsI) => (transaction.sender.user_id === me.user_id)
-
 
   return (
     <AnimatedLayout className="flex flex-col overflow-y-scroll">
@@ -32,7 +27,9 @@ export default function Wallet() {
           <p className="text-3xl font-bold text-black">{amount}</p>
         </div>
 
-        {/* <div className="text-center">
+        {/*
+          TO-DO: worth it?
+          <div className="text-center">
           <p className="text-xs text-gray">Pendiente por cobrar</p>
           <p className="text-xl font-bold text-black">3,75€</p>
         </div> */}

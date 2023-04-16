@@ -379,30 +379,27 @@ class ReportIssueViewSet(
 
     @action(detail=True, methods=["post"])
     def post(self, request, trip_id, *args, **kwargs):
-        try:
-            trip = Trip.objects.get(id=trip_id, status="FINISHED")
-            user = request.user
-            trip_request = TripRequest.objects.filter(
-                trip=trip, passenger__user=user
-            ).first()
-            if trip_request or trip.driver_routine.driver.user == user:
-                reported_user_id = request.POST.get("reported_user_id")
-                reported_user = User.objects.get(id=reported_user_id)
-                reporter_is_driver = user == trip.driver_routine.driver.user
-                reported_is_driver = reported_user == trip.driver_routine.driver.user
+        trip = Trip.objects.get(id=trip_id, status="FINISHED")
+        user = request.user
+        trip_request = TripRequest.objects.filter(
+            trip=trip, passenger__user=user
+        ).first()
+        if trip_request or trip.driver_routine.driver.user == user:
+            reported_user_id = request.POST.get("reported_user_id")
+            reported_user = User.objects.get(id=reported_user_id)
+            reporter_is_driver = user == trip.driver_routine.driver.user
+            reported_is_driver = reported_user == trip.driver_routine.driver.user
 
-                note = request.POST.get("note")
-                Report.objects.create(
-                    trip=trip,
-                    reporter_user=user,
-                    reported_user=reported_user,
-                    reporter_is_driver=reporter_is_driver,
-                    reported_is_driver=reported_is_driver,
-                    note=note,
-                )
-                return Response({"message": "Usuario reportado con exito"})
-        except Exception as e:
-            return Response({"message": str(e)})
+            note = request.POST.get("note")
+            Report.objects.create(
+                trip=trip,
+                reporter_user=user,
+                reported_user=reported_user,
+                reporter_is_driver=reporter_is_driver,
+                reported_is_driver=reported_is_driver,
+                note=note,
+            )
+            return Response({"message": "Usuario reportado con exito"})
 
     @action(detail=True, methods=["get"])
     def get(self, request, trip_id, *args, **kwargs):
@@ -416,7 +413,7 @@ class ReportIssueViewSet(
                 id=trip.driver_routine.driver.user.id
             ) | User.objects.filter(id__in=trip_requests_id)
             return Response(
-                UserSerializer(users, many=True).data, status=status.HTTP_200_OK
+                UserSerializer(users, many=True).data, status=status.HTTP_201_CREATED
             )
         except Exception as e:
             return Response({"message": str(e)})

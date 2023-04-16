@@ -137,8 +137,6 @@ class ReportTripUserTest(TestCase):
             url,
             data={
                 "reported_user_id": self.user_2.id,
-                "reporter_is_driver": True,
-                "reported_is_driver": False,
                 "note": "note",
             },
         )

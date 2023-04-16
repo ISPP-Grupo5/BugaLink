@@ -4,9 +4,12 @@ import CTAButton from '@/components/buttons/CTA';
 import DialogDeleteAccount from '@/components/dialogs/deleteAccount';
 import TextField from '@/components/forms/TextField';
 import AnimatedLayout from '@/components/layouts/animated';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 import useUser from '@/hooks/useUser';
 import UserI from '@/interfaces/user';
+import { axiosAuth } from '@/lib/axios';
 import { GetServerSideProps } from 'next';
+import router from 'next/router';
 import Pencil from 'public/assets/edit.svg';
 import { useEffect, useRef, useState } from 'react';
 
@@ -44,11 +47,14 @@ export default function EditProfile({ data }) {
   }, [user]);
   const [name, setName] = useState<string>('');
   const [surname, setSurname] = useState<string>('');
+  const [photo, setPhoto] = useState<File>();
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const [errors, setErrors] = useState<FormErrors>({});
 
   const formRef = useRef<HTMLFormElement>(null);
+
+  const [isSendingForm, setIsSendingForm] = useState(false);
 
   const validateForm = (values: FormValues) => {
     const errors: FormErrors = {};
@@ -67,6 +73,7 @@ export default function EditProfile({ data }) {
   };
 
   const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setIsSendingForm(true);
     event.preventDefault();
     if (formRef.current) {
       const formData = new FormData(formRef.current);
@@ -79,9 +86,25 @@ export default function EditProfile({ data }) {
       setErrors(errors);
       if (Object.keys(errors).length === 0) {
         // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites
-        console.log(
-          'Los datos del formulario son válidos. ¡Enviando formulario!'
-        );
+        const url = `users/${user.id}/edit`;
+
+        const request_data = {
+          photo: photo,
+          first_name: name,
+          last_name: surname,
+        }
+
+        console.log(request_data);
+        axiosAuth
+          .put(url, request_data)
+          .then((res) => {
+            router.push(NEXT_ROUTES.PROFILE(userId));
+          })
+          .catch((err) => {
+            setIsSendingForm(false);
+          });
+      } else{
+        setIsSendingForm(false);
       }
     }
   };
@@ -118,6 +141,8 @@ export default function EditProfile({ data }) {
                   img.src = e.target.result as string;
                 };
                 reader.readAsDataURL(file);
+
+                setPhoto(file);
                 // Set to state
               }}
             />
@@ -174,7 +199,7 @@ export default function EditProfile({ data }) {
             </p>
             <CTAButton
               className="w-11/12"
-              text="GUARDAR"
+              text={isSendingForm ? "PROCESANDO..." :"GUARDAR"}
               onClick={handleSubmit}
             />
           </div>

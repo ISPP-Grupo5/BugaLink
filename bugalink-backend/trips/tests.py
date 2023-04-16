@@ -233,7 +233,7 @@ class TripSearchTest(TestCase):
 
     # Filtrando por localización, no es la localización exacta, encuentra un viaje
     def test_get_trip_filter_by_near_location(self):
-        url = "/api/v1/trips/search/?origin=49.1231231,123.11118945&destination=61.1223121231,14.467800675"
+        url = "/api/v1/trips/search/?origin=50.1201231,123.11118945&destination=61.1223121231,14.467800675"
         response = self.client.get(url)
         data = json.loads(response.content)
         self.assertEqual(len(data), 1)  # cantidad de viajes obtenidos

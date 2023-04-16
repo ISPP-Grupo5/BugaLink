@@ -6,6 +6,7 @@ from bugalink_backend import settings
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import redirect
+import django.core.exceptions
 from passenger_routines.models import PassengerRoutine
 from payment_methods.models import Balance
 from rest_framework import mixins, status, viewsets
@@ -35,6 +36,8 @@ from .utils import (
     check_prefers_talk,
     get_recommendations,
 )
+
+query_format_exception_message = "Existe algún valor inadecuado"
 
 
 class TripViewSet(
@@ -283,47 +286,63 @@ class TripSearchViewSet(
 
     @action(detail=True, methods=["get"])
     def get(self, request, *args, **kwargs):
-        # Se busca entre los viajes pendientes
-        trips = Trip.objects.filter(status="PENDING")
-        # Comprobacion de campos obligatorios
-        if not request.GET.get("origin") or not request.GET.get("destination"):
-            return Response(
-                {"message": "El origen y el destino son obligatorios"},
-                status=status.HTTP_400_BAD_REQUEST,
+        try:
+            # Se busca entre los viajes pendientes
+            trips = Trip.objects.filter(status="PENDING")
+            # Comprobacion de campos obligatorios
+            if not request.GET.get("origin") or not request.GET.get("destination"):
+                return Response(
+                    {"message": "El origen y el destino son obligatorios"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            filter_checks = {
+                "days": check_days,
+                "min_price": check_minprice,
+                "max_price": check_maxprice,
+                "date_from": check_date_from,
+                "date_to": check_date_to,
+                "hour_from": check_hour_from,
+                "hour_to": check_hour_to,
+                "prefers_music": check_prefers_music,
+                "prefers_talk": check_prefers_talk,
+                "allows_pets": check_allows_pets,
+                "allows_smoking": check_allows_smoking,
+            }
+
+            # Apply all filters on the QuerySet
+            for key, func in filter_checks.items():
+                if request.GET.get(key):
+                    trips = func(trips, request.GET.get(key))
+
+            # Comprobacion de distancia
+            trips = check_distance(
+                trips, request.GET.get("origin"), request.GET.get("destination")
             )
 
-        filter_checks = {
-            "days": check_days,
-            "min_price": check_minprice,
-            "max_price": check_maxprice,
-            "date_from": check_date_from,
-            "date_to": check_date_to,
-            "hour_from": check_hour_from,
-            "hour_to": check_hour_to,
-            "prefers_music": check_prefers_music,
-            "prefers_talk": check_prefers_talk,
-            "allows_pets": check_allows_pets,
-            "allows_smoking": check_allows_smoking,
-        }
+            # Comprobacion de minStars
+            if request.GET.get("min_stars"):
+                trips = check_minstars(trips, request.GET.get("min_stars"))
 
-        # Apply all filters on the QuerySet
-        for key, func in filter_checks.items():
-            if request.GET.get(key):
-                trips = func(trips, request.GET.get(key))
+            trips = Trip.objects.filter(Q(pk__in=[trip.pk for trip in trips])).order_by(
+                "-departure_datetime"
+            )[:10]
 
-        # Comprobacion de distancia
-        trips = check_distance(
-            trips, request.GET.get("origin"), request.GET.get("destination")
-        )
-
-        # Comprobacion de minStars
-        if request.GET.get("min_stars"):
-            trips = check_minstars(trips, request.GET.get("min_stars"))
-
-        trips = Trip.objects.filter(Q(pk__in=[trip.pk for trip in trips])).order_by(
-            "-departure_datetime"
-        )[:10]
-
-        return Response(
-            TripSerializer(trips, many=True).data, status=status.HTTP_200_OK
-        )
+            return Response(
+                TripSerializer(trips, many=True).data, status=status.HTTP_200_OK
+            )
+        except ValueError:
+            return Response(
+                {"message": query_format_exception_message},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except django.core.exceptions.FieldError:
+            return Response(
+                {"message": query_format_exception_message},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except django.core.exceptions.ValidationError:
+            return Response(
+                {"message": query_format_exception_message},
+                status=status.HTTP_400_BAD_REQUEST,
+            )

@@ -6,25 +6,46 @@ import Progress from '/public/assets/progress.svg';
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import useMapCoordinates from '@/hooks/useMapCoordinates';
+import useTrip from '@/hooks/useTrip';
+import { GetServerSideProps } from 'next';
 
 export const LeafletMap = dynamic(() => import('@/components/maps/map'), {
   ssr: false,
 });
 
-export default function RideMap() {
-  const origin = 'Calle Concha Vargas, Lebrija, Spain';
-  const destination = 'Calle Fuengirola, 18, Dos Hermanas, 41702 Sevilla';
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { id } = context.query;
+
+  const data = {
+    id: id,
+  };
+
+  return {
+    props: { data },
+  };
+};
+
+export default function RideMap({ data }) {
+  const tripId = data.id;
+  const { trip, isLoading, isError } = useTrip(tripId);
+
+  const origin = trip?.driver_routine.origin.address;
+  const destination = trip?.driver_routine.destination.address;
+
   const [time, setTime] = useState<number>(0);
   const originCoords = useMapCoordinates(origin);
   const destinationCoords = useMapCoordinates(destination);
 
-  // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
-  const startTime = new Date('2021-05-01T21:00:00');
-  const endTime = new Date('2021-05-01T21:00:00');
+  const startTime = new Date(trip?.departure_datetime);
+  const endTime = new Date(trip?.departure_datetime);
   endTime.setMinutes(endTime.getMinutes() + time);
 
+  if (isLoading)
+    return <p>Loading...</p>; // TODO: make skeleton
+  if (isError) return <p>Error</p>; // TODO: make error message
+
   return (
-    <AnimatedLayout className="justify-between flex flex-col">
+    <AnimatedLayout className="flex flex-col justify-between">
       <BackButton className="absolute left-2 top-2 bg-base-origin py-3 pr-2 shadow-xl" />
       <div className="-mb-8 h-full w-full">
         <LeafletMap

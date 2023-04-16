@@ -258,6 +258,15 @@ class TripRequestViewSet(
             headers=headers,
         )
 
+    # GET /trip-requests/pending/count/ (For a driver to get the number of pending requests)
+    def count(self, request, *args, **kwargs):
+        num_pending_requests = TripRequest.objects.filter(
+            trip__driver_routine__driver__user=request.user,
+            trip__status="PENDING",
+            status="PENDING",
+        )
+        return Response({"count": num_pending_requests.count()})
+
     # PUT /trip-requests/<pk>/accept/ (For a driver to accept a trip request)
 
     @action(detail=True, methods=["put"])

@@ -7,8 +7,8 @@ from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import redirect
 from passenger_routines.models import PassengerRoutine
-from payment_methods.models import Balance, Report
-from ratings.models import DriverRating
+from payment_methods.models import Balance
+from ratings.models import DriverRating, Report
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response

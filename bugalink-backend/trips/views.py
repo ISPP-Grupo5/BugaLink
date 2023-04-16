@@ -1,5 +1,8 @@
 import os
 
+from ratings.serializers import DriverRatingSerializer
+from .serializers import TripRateSerializer
+
 import paypalrestsdk
 import stripe
 from bugalink_backend import settings
@@ -342,40 +345,62 @@ class TripSearchViewSet(
 
 
 class TripRateViewSet(
-    mixins.RetrieveModelMixin,
-    mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
     queryset = TripRequest.objects.all()
-    serializer_class = TripRequestSerializer
+    serializer_class = TripRateSerializer
 
     @action(detail=True, methods=["post"])
     def post(self, request, trip_id, *args, **kwargs):
-        try:
-            trip = Trip.objects.get(id=trip_id)
-            if trip.status == "FINISHED":
-                trip_request = TripRequest.objects.filter(
-                    trip=trip, status="ACCEPTED", passenger__user=request.user
-                ).first()
-            if trip_request:
-                rating = request.POST.get("rating")
-                is_good_driver = request.POST.get("is_good_driver")
-                is_pleasant_driver = request.POST.get("is_pleasant_driver")
-                already_knew = request.POST.get("already_knew")
+        serializer = TripRateSerializer(data=request.data)
+        
+        trip = Trip.objects.get(id=trip_id)
+        trip_request = None
+        if trip.status != "FINISHED":
+             return Response({"message": "No se puede valorar un viaje que no ha terminado"}, status = status.HTTP_403_FORBIDDEN)
+        trip_request = TripRequest.objects.filter(
+            trip=trip, status="ACCEPTED", passenger__user=request.user
+        ).first()
+        driver_rating = DriverRating.objects.filter(trip_request = trip_request)
+        if len(driver_rating)>0:
+            return Response({"message": "Ya ha valorado este viaje"}, status = status.HTTP_400_BAD_REQUEST)
+        if trip_request:
+            driver_rating = serializer.create(trip_request)
+            response_serializer = DriverRatingSerializer(driver_rating)
+            print(response_serializer.data)
+            return Response(
+            response_serializer.data,
+            status=status.HTTP_201_CREATED
+        )
+        else:
+            return Response({"message": "No has participado en este viaje "})
+        
+       
+        # try:
+        #     trip = Trip.objects.get(id=trip_id)
+        #     if trip.status == "FINISHED":
+        #         trip_request = TripRequest.objects.filter(
+        #             trip=trip, status="ACCEPTED", passenger__user=request.user
+        #         ).first()
+        #     if trip_request:
+        #         rating = request.POST.get("rating")
+        #         is_good_driver = request.POST.get("is_good_driver")
+        #         is_pleasant_driver = request.POST.get("is_pleasant_driver")
+        #         already_knew = request.POST.get("already_knew")
 
-                DriverRating.objects.create(
-                    trip_request=TripRequest.objects.get(id=trip_request.id),
-                    rating=rating,
-                    is_good_driver=is_good_driver,
-                    is_pleasant_driver=is_pleasant_driver,
-                    already_knew=already_knew,
-                )
+        #         DriverRating.objects.create(
+        #             trip_request=TripRequest.objects.get(id=trip_request.id),
+        #             rating=rating,
+        #             is_good_driver=is_good_driver,
+        #             is_pleasant_driver=is_pleasant_driver,
+        #             already_knew=already_knew,
+        #         )
 
-                return Response({"message": "Valoración realizada con exito"})
-            else:
-                return Response({"message": "No has participado en este viaje"})
-        except Exception as e:
-            return Response({"message": str(e)})
+        #         return Response({"message": "Valoración realizada con exito"})
+        #     else:
+        #         return Response({"message": "No has participado en este viaje"})
+        # except Exception as e:
+        #     return Response({"message": str(e)})
 
 
 class ReportIssueViewSet(

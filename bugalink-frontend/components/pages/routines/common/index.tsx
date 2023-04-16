@@ -7,8 +7,16 @@ import TimePicker from '@/components/forms/TimePicker';
 import AnimatedLayout from '@/components/layouts/animated';
 import PlacesAutocomplete from '@/components/maps/placesAutocomplete';
 import NEXT_ROUTES from '@/constants/nextRoutes';
+import useDriver from '@/hooks/useDriver';
+import usePassenger from '@/hooks/usePassenger';
+import DriverRoutineI from '@/interfaces/driverRoutine';
+import GenericRoutineI from '@/interfaces/genericRoutine';
+import PassengerRoutineI from '@/interfaces/passengerRoutine';
 import { axiosAuth } from '@/lib/axios';
+import { parseDate } from '@/utils/formatters';
 import { useLoadScript } from '@react-google-maps/api';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useMemo, useRef, useState } from 'react';
@@ -34,6 +42,26 @@ export const EmptyLeafletMap = dynamic(
   () => import('@/components/maps/emptyMap'),
   { ssr: false }
 );
+
+const mergeRoutines = (
+  passengerRoutines: PassengerRoutineI[],
+  driverRoutines: DriverRoutineI[]
+): GenericRoutineI[] => {
+  const allRoutines = [];
+  for (const routine of [...passengerRoutines, ...driverRoutines]) {
+    // We add a card for each day of the week the routine is repeated
+    allRoutines.push({
+      id: routine.id,
+      origin: routine.origin,
+      destination: routine.destination,
+      day: routine.day_of_week,
+      departure_time_start: parseDate(routine.departure_time_start), // 18:00:00 -> 18:00
+      departure_time_end: parseDate(routine.departure_time_end), // 18:00:00 -> 18:00
+      type: routine.type,
+    });
+  }
+  return allRoutines;
+};
 
 interface FormErrors {
   origin?: string;
@@ -77,6 +105,50 @@ export default function NewRoutine({
 
   const [isSendingForm, setIsSendingForm] = useState(false);
 
+  const { data } = useSession();
+  const user = data?.user as User;
+  const {
+    passenger,
+    isLoading: passengerIsLoading,
+    isError: passengerIsError,
+  } = usePassenger(user?.passenger_id);
+  const {
+    driver,
+    isLoading: driverIsLoading,
+    isError: driverIsError,
+  } = useDriver(user?.driver_id);
+
+  const passengerRoutines = passenger?.routines || [];
+  const driverRoutines = driver?.routines || [];
+  const allRoutines = mergeRoutines(passengerRoutines, driverRoutines);
+
+  const addZero = (i: any) => {
+    if (i < 10) {i = "0" + i}
+    return i;
+  }
+
+  const validateRoutineForm = (values: FormValues) => {
+    const errors: FormErrors = {};
+    const daysOfWeek = [];
+    for (const day in selectedDays) {
+      daysOfWeek.push(daysToApi[days.indexOf(selectedDays[day])]);
+    }
+    daysOfWeek.forEach((day) => {
+      const existingRoutine = allRoutines.find(
+        (routine) =>
+          routine.day === day &&
+          `${addZero(routine.departure_time_start.getHours())}:${addZero(routine.departure_time_start.getMinutes())}` === values.pickTimeFrom &&
+          `${addZero(routine.departure_time_end.getHours())}:${addZero(routine.departure_time_end.getMinutes())}` === values.pickTimeTo
+      );
+      if (existingRoutine) {
+        errors.selectedDays = `Ya existe una rutina para esta hora y día: ${days[daysToApi.indexOf(day)]}`;
+        errors.pickTimeFrom = 'Ya existe una rutina para esta hora y día';
+        errors.pickTimeTo = 'Ya existe una rutina para esta hora y día';
+      }
+    });
+    setErrors(errors)
+    return errors;
+  };
   //arrivalTime.setMinutes
   const validateForm = (values: FormValues) => {
     const errors: FormErrors = {};
@@ -163,9 +235,11 @@ export default function NewRoutine({
         pickTimeTo: formData.get('pickTimeTo') as string,
         price: formData.get('price') as unknown as number,
       };
-
-      const errors = validateForm(values);
+      const duplicatedRoutineErrors = validateRoutineForm(values);
+      const errorsForm = validateForm(values);
+      const errors = Object.assign({}, errorsForm, duplicatedRoutineErrors);
       setErrors(errors);
+      console.log(errors)
       if (Object.keys(errors).length === 0) {
         // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites
         const daysOfWeek = [];

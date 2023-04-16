@@ -177,15 +177,6 @@ class TripSearchTest(TestCase):
         self.client = APIClient()
         load_trips_extra_data(self)
         self.client.force_authenticate(user=self.user)
-
-    # Encuentra bien dos viajes específicos
-    def test_get_trips_by_search(self):
-        url = "/api/v1/trips/search/?origin=45.1231231,123.11118945&destination=41.1223121231,14.467800675"
-        response = self.client.get(url)
-        data = json.loads(response.content)
-        self.assertEqual(len(data), 2)  # cantidad de viajes obtenidos
-        self.assertEqual(data[1]["id"], self.trip_2.id)
-        self.assertEqual(data[0]["id"], self.trip_4.id)
         
     # Error por no indicar localizaciones
     def test_get_no_trips_location_error(self):

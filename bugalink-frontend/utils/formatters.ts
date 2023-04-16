@@ -1,5 +1,3 @@
-import { start } from "repl";
-
 export const formatDatetime = (datetime: string) => {
   // 2023-04-03T19:20:00Z -> Martes 3 de Abril, 2023 a las 19:20
   const date = new Date(datetime);

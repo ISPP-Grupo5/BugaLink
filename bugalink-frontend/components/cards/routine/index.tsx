@@ -11,8 +11,8 @@ import Link from 'next/link';
 
 type Props = {
   id: number;
-  departureHourStart: Date;
-  departureHourEnd: Date;
+  departureHourStart: string;
+  departureHourEnd: string;
   type: 'driverRoutine' | 'passengerRoutine';
   origin: string;
   destination: string;
@@ -28,7 +28,9 @@ export default function RoutineCard({
 }: Props) {
   const isDriver = type === 'driverRoutine';
   const [isDeleted, setIsDeleted] = useState(false);
-  const editLink = isDriver ? NEXT_ROUTES.NEW_ROUTINE_DRIVER : NEXT_ROUTES.NEW_ROUTINE_PASSENGER;
+  const editLink = isDriver
+    ? NEXT_ROUTES.NEW_ROUTINE_DRIVER
+    : NEXT_ROUTES.NEW_ROUTINE_PASSENGER;
 
   async function deleteRoutine() {
     const url = isDriver ? 'driver-routines' : 'passenger-routines';
@@ -53,12 +55,12 @@ export default function RoutineCard({
       <div className="relative grid w-full grid-cols-2 grid-rows-2 gap-2.5 p-1.5 pb-0">
         <Entry title={'Hora de salida'}>
           🕓️{' '}
-          {departureHourStart.toLocaleTimeString('es-ES', {
+          {new Date(departureHourStart).toLocaleTimeString('es-ES', {
             hour: '2-digit',
             minute: '2-digit',
           })}{' '}
           —{' '}
-          {departureHourEnd.toLocaleTimeString('es-ES', {
+          {new Date(departureHourEnd).toLocaleTimeString('es-ES', {
             hour: '2-digit',
             minute: '2-digit',
           })}
@@ -91,9 +93,7 @@ export default function RoutineCard({
         </Entry>
         <ThreeDotsMenu>
           <MenuItem>
-            <Link
-              href={`${editLink}?id=${id}`}    
-            >
+            <Link href={`${editLink}?id=${id}`}>
               <p>Editar</p>
             </Link>
           </MenuItem>

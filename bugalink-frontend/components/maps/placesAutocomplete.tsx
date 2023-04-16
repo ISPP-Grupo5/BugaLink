@@ -7,7 +7,7 @@ export default function PlacesAutocomplete({
   placeholder,
   name,
   error,
-  defaultValue
+  defaultValue,
 }: {
   onAddressSelect?: (address: string) => void;
   placeholder?: string;
@@ -28,7 +28,6 @@ export default function PlacesAutocomplete({
   });
 
   const [showSuggestions, setShowSuggestions] = useState(false);
-
   const handleInputClick = () => {
     setShowSuggestions(true);
   };
@@ -44,15 +43,17 @@ export default function PlacesAutocomplete({
 
   useEffect(() => {
     document.addEventListener('click', handleClickOutside);
-    
+
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
-  
+
   useEffect(() => {
-    if (defaultValue) setValue(defaultValue);
-  }, [defaultValue])
+    if (defaultValue) {
+      setValue(defaultValue);
+    }
+  }, [defaultValue]);
 
   const renderSuggestions = () => {
     return data.map((suggestion) => {
@@ -85,7 +86,7 @@ export default function PlacesAutocomplete({
       <TextField
         type={'text'}
         fieldName={placeholder}
-        content={value || defaultValue}
+        content={value}
         setContent={setValue}
         inputClassName="w-full"
         disabled={!ready}

@@ -1,3 +1,4 @@
+from payment_methods.views import RechargeViewSet
 from django.urls import include, path
 from rest_framework import routers
 
@@ -22,9 +23,9 @@ urlpatterns = [
     path("webhook-paypal/",
          PaymentViewSet.as_view({"post": "webhook_paypal_view"}, name='webhook-paypal')),
     # Recharge
-    path("recharge/credit-card/", PaymentViewSet.as_view(
+    path("recharge/credit-card/", RechargeViewSet.as_view(
         {"post": "recharge_with_credit_card"}, name='recharge-with-credit-card')),
     path("recharge/paypal/",
-         PaymentViewSet.as_view({"post": "recharge_with_paypal"}, name='recharge-with-paypal')),
+         RechargeViewSet.as_view({"post": "recharge_with_paypal"}, name='recharge-with-paypal')),
 
 ]

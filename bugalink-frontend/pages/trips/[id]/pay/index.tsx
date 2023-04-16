@@ -107,14 +107,14 @@ export default function Pay() {
             <PayMethod
               logo={<VisaMastercard height="100%" />}
               name="VISA/Mastercard"
-              data="**** **** **** 5678"
+              data=""
               onClick={payWithCreditCard}
               disabled={isPaying}
             />
             <PayMethod
               logo={<Paypal height="100%" />}
               name="Paypal"
-              data="pedro@gmail.com"
+              data=""
               onClick={payWithPaypal}
               disabled={isPaying}
             />

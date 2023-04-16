@@ -1,3 +1,4 @@
+import decimal
 from trips.views import TripRequestViewSet
 from django.http import HttpResponse
 from bugalink_backend import settings
@@ -200,17 +201,17 @@ class PaymentViewSet(
                 event['data']['object']['id'],
                 expand=['line_items'],
             )
-            if (session.line_items.price_data.product_data.name == 'Carpooling'):  # Pagar un viaje
+            if (session.line_items.data[0].description == 'Carpooling'):  # Pagar un viaje
                 note = session.metadata.note if session.metadata.note != "None" else None
                 return TripRequestViewSet.create(self, session.metadata.trip_id, session.metadata.user_id, note)
-            elif (session.line_items.price_data.product_data.name == 'Recharge'):  # Recargar saldo
-                try:
-                    user = User.objects.get(id=session.metadata.user_id)
-                    balance = Balance.objects.get(user=user)
-                    balance.amount += float(int(session.line_items.price_data.unit_amount)) / 100
-                    return HttpResponse(status=200)
-                except:
-                    return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+            elif (session.line_items.data[0].description == 'Recharge'):  # Recargar saldo
+
+                user = User.objects.get(id=session.metadata.user_id)
+                balance = Balance.objects.get(user=user)
+                amount = decimal.Decimal(int(session.amount_total)) / 100
+                balance.amount += amount
+                balance.save()
+                return HttpResponse(status=200)
 
         # ... handle other event types
         else:
@@ -270,7 +271,7 @@ class RechargeViewSet(
                     "payment_method": "paypal",
                 },
                 "redirect_urls": {
-                    "return_url": URL,  # TODO hacer vistas de pago aceptado
+                    "return_url": URL + "/wallet",  # TODO hacer vistas de pago aceptado
                     "cancel_url": URL,  # TODO hacer vistas de pago cancelado
                 },
                 "transactions": [
@@ -298,6 +299,7 @@ class RechargeViewSet(
                 data={"error": "Failed to create PayPal payment"},
             )
 
+    # POST /recharge/credit-card/
     def recharge_with_credit_card(self, request, *args, **kwargs):
         stripe.api_key = settings.STRIPE_SECRET_KEY
         user = request.user
@@ -323,7 +325,7 @@ class RechargeViewSet(
                 'user_id': user.id,
             },
             mode='payment',
-            success_url=URL,  # TODO crear pantalla de pagado
+            success_url=URL + "/wallet",  # TODO crear pantalla de pagado
             cancel_url=URL,  # TODO pantalla de cancelado
         )
 

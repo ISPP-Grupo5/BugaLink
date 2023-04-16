@@ -200,9 +200,18 @@ class PaymentViewSet(
                 event['data']['object']['id'],
                 expand=['line_items'],
             )
+            if (session.line_items.price_data.product_data.name == 'Carpooling'):  # Pagar un viaje
+                note = session.metadata.note if session.metadata.note != "None" else None
+                return TripRequestViewSet.create(self, session.metadata.trip_id, session.metadata.user_id, note)
+            elif (session.line_items.price_data.product_data.name == 'Recharge'):  # Recargar saldo
+                try:
+                    user = User.objects.get(id=session.metadata.user_id)
+                    balance = Balance.objects.get(user=user)
+                    balance.amount += float(int(session.line_items.price_data.unit_amount)) / 100
+                    return HttpResponse(status=200)
+                except:
+                    return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
-            note = session.metadata.note if session.metadata.note != "None" else None
-            return TripRequestViewSet.create(self, session.metadata.trip_id, session.metadata.user_id, note)
         # ... handle other event types
         else:
             print('Unhandled event type {}'.format(event['type']))
@@ -291,12 +300,12 @@ class RechargeViewSet(
 
     def recharge_with_credit_card(self, request, *args, **kwargs):
         stripe.api_key = settings.STRIPE_SECRET_KEY
+        user = request.user
 
         # El post recibe la cantidad en centimos integer
         amount = int(float(request.data.get("amount")) * 100)
 
         # Si no hay texto da error al intentar acceder a este dato
-        note = note if note else "None"
         URL = "https://app.bugalink.es" if settings.APP_ENGINE else "http://127.0.0.1:3000"
 
         session = stripe.checkout.Session.create(
@@ -310,6 +319,9 @@ class RechargeViewSet(
                 },
                 'quantity': 1,
             }],
+            metadata={
+                'user_id': user.id,
+            },
             mode='payment',
             success_url=URL,  # TODO crear pantalla de pagado
             cancel_url=URL,  # TODO pantalla de cancelado

@@ -7,10 +7,16 @@ import { TransactionList } from '@/components/cards/transactions';
 import Link from 'next/link';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import useBalance from '@/hooks/useBalance';
+import usePendingBalance from '@/hooks/usePendingBalance';
 
 export default function Wallet() {
   const { balance } = useBalance();
+  const { pendingBalance } = usePendingBalance();
   const amount = balance? Number.parseFloat(balance.amount).toLocaleString('es-ES', {
+    style: 'currency',
+    currency: 'EUR',
+  }): '--,-- €';
+  const pendingBalanceAmount = pendingBalance? Number.parseFloat(pendingBalance).toLocaleString('es-ES', {
     style: 'currency',
     currency: 'EUR',
   }): '--,-- €';
@@ -24,12 +30,11 @@ export default function Wallet() {
           <p className="text-3xl font-bold text-black">{amount}</p>
         </div>
 
-        {/*
-          TO-DO: worth it?
+        {
           <div className="text-center">
           <p className="text-xs text-gray">Pendiente por cobrar</p>
-          <p className="text-xl font-bold text-black">3,75€</p>
-        </div> */}
+          <p className="text-xl font-bold text-black">{pendingBalanceAmount}</p>
+        </div> }
       </div>
       <div className="justify-between my-5 flex space-x-2 px-4">
         <div className="flex-1">

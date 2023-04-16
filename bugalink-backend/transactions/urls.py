@@ -8,5 +8,6 @@ router.register(r"transactions", TransactionViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
-    path('users/<int:user_id>/transactions/get_last_transactions/', TransactionViewSet.as_view({'get': 'get_last_transactions'}), name='get_last_transactions')
+    path('users/<int:user_id>/transactions/get_last_transactions/', TransactionViewSet.as_view({'get': 'get_last_transactions'}), name='get_last_transactions'),
+    path('users/<int:user_id>/transactions/get_pending_balance/', TransactionViewSet.as_view({'get': 'get_pending_balance'}), name='get_pending_balance')
 ]

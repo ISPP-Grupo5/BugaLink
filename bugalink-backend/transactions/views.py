@@ -32,3 +32,18 @@ class TransactionViewSet(
         serializer = self.serializer_class(transactions, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(detail=False, methods=['get'])
+    def get_pending_balance(self, request, *args, **kwargs):
+        user_id = kwargs["user_id"]
+        user = User.objects.get(id=user_id)
+
+        transactions = Transaction.objects.filter(Q(sender=user) | Q(receiver=user) | Q(status="PENDING"))
+        balance = 0
+        for transaction in transactions:
+            if transaction.is_refund:
+                balance -= transaction.amount
+            else:
+                balance += transaction.amount
+
+        return Response(balance, status=status.HTTP_200_OK)

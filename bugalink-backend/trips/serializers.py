@@ -1,5 +1,5 @@
 from driver_routines.serializers import DriverRoutineSerializer
-from ratings.models import Report
+from ratings.models import DriverRating, Report
 from rest_framework import serializers
 from trips.models import Trip, TripRequest
 from users.models import User
@@ -107,3 +107,30 @@ class TripReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
         fields = ("reported_user_id", "note")
+
+
+class TripRateSerializer(serializers.ModelSerializer):
+    rating = serializers.FloatField()
+    is_good_driver = serializers.BooleanField()
+    is_pleasant_driver = serializers.BooleanField()
+    already_knew = serializers.BooleanField()
+
+    class Meta:
+        model = DriverRating
+        fields = ("rating", "is_good_driver", "is_pleasant_driver", "already_knew")
+
+    def create(self, trip_request):
+        self.is_valid(raise_exception=True)
+        validated_data = self.validated_data
+        rating = validated_data.pop("rating")
+        is_good_driver = validated_data.pop("is_good_driver")
+        is_pleasant_driver = validated_data.pop("is_pleasant_driver")
+        already_knew = validated_data.pop("already_knew")
+        driver_rating = DriverRating.objects.create(
+            trip_request=trip_request,
+            rating=rating,
+            is_good_driver=is_good_driver,
+            is_pleasant_driver=is_pleasant_driver,
+            already_knew=already_knew,
+        )
+        return driver_rating

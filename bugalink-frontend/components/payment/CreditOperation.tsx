@@ -87,9 +87,7 @@ export default function CreditOperation({
               logo={<Paypal />}
               name="Paypal"
               data=""
-              onClick={() => {
-                return;
-              }}
+              onClick={rechargeWithPayPal}
               disabled={isPaying}
             />
           </div>

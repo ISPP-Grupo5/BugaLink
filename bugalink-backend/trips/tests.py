@@ -377,6 +377,87 @@ class GetTripRecommendationTest(TestCase):
             day_of_week="Tue",
         )
 
+        ###### Caso rutina similar pero fecha incorrecta
+
+        # Pasajero
+        self.user_11 = User.objects.create(
+            email="test11@test.com",
+            first_name="Eleventh User",
+            last_name="lastNameTest11",
+            is_passenger=True,
+            is_driver=False,
+        )
+        self.passenger_11 = Passenger.objects.create(user=self.user_11)
+
+        # Conductor
+        self.user_12 = User.objects.create(
+            email="test12@test.com",
+            first_name="Twelveth User",
+            last_name="lastNameTest12",
+            is_passenger=True,
+            is_driver=True,
+        )
+        self.passenger_12 = Passenger.objects.create(user=self.user_12)
+        self.driver_12 = Driver.objects.create(user=self.user_12)
+
+        # Origen driver
+        self.location_origin_12 = Location.objects.create(
+            address="Mi casa", latitude=200.1231231, longitude=200.11118945
+        )
+
+        # Destino driver
+        self.location_destination_12 = Location.objects.create(
+            address="Mi casa", latitude=200.1231231, longitude=200.11118945
+        )
+
+        # Driver routine
+        self.driver_routine_12 = DriverRoutine.objects.create(
+            driver=self.driver_12,
+            price=1,
+            is_recurrent=True,
+            available_seats=1,
+            departure_time_start=datetime.datetime.now().time(),
+            departure_time_end=datetime.datetime.now().time(),
+            arrival_time=datetime.datetime.now().time(),
+            origin=self.location_origin_8,
+            destination=self.location_destination_8,
+            day_of_week="Tue",
+        )
+
+        # Trip
+        self.trip_12 = Trip.objects.create(
+            driver_routine=self.driver_routine_8,
+            departure_datetime=datetime.datetime.now() + datetime.timedelta(days=1),
+            arrival_datetime=datetime.datetime.now()
+            + datetime.timedelta(days=1, hours=1),
+            status="PENDING",
+        )
+
+        # Origen pasajero
+        self.location_close_origin_11 = Location.objects.create(
+            address="Al lado de mi casa", latitude=200.1241231, longitude=200.11118945
+        )
+
+        # Destino pasajero
+        self.location_close_destination_11 = Location.objects.create(
+            address="Al lado de mi casa", latitude=200.1241231, longitude=200.11118945
+        )
+
+        # Passenger Routine
+        self.passenger_routine_11 = PassengerRoutine.objects.create(
+            passenger=self.passenger_11,
+            departure_time_start=(
+                datetime.datetime.now() - datetime.timedelta(days=1)
+            ).time(),
+            departure_time_end=(
+                datetime.datetime.now() + datetime.timedelta(days=1)
+            ).time(),
+            arrival_time=(datetime.datetime.now() + datetime.timedelta(days=1)).time(),
+            origin=self.location_close_origin_7,
+            destination=self.location_close_destination_7,
+            day_of_week="Tue",
+        )
+
     def test_get_two_trip_recommendations(self):
         self.client.force_authenticate(user=self.user_2)
         url = "/api/v1/trips/recommendations/"
@@ -414,6 +495,13 @@ class GetTripRecommendationTest(TestCase):
 
     def test_get_trip_recommendations_trip_finished(self):
         self.client.force_authenticate(user=self.user_9)
+        url = "/api/v1/trips/recommendations/"
+        response = self.client.get(url)
+        data = json.loads(response.content)
+        self.assertEqual(len(data), 0)  # Ninguna recomendacion disponible
+
+    def test_get_trip_recommendations_wrong_date(self):
+        self.client.force_authenticate(user=self.user_11)
         url = "/api/v1/trips/recommendations/"
         response = self.client.get(url)
         data = json.loads(response.content)

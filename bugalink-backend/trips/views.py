@@ -9,16 +9,21 @@ from django.shortcuts import redirect
 import django.core.exceptions
 from passenger_routines.models import PassengerRoutine
 from payment_methods.models import Balance
+from ratings.models import DriverRating, Report
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from transactions.models import Transaction
 from trips.models import Trip, TripRequest
 from trips.serializers import (
+    TripReportSerializer,
     TripRequestCreateSerializer,
     TripRequestSerializer,
     TripSerializer,
+    TripUsersSerializer,
 )
+from users.models import User
+from users.serializers import UserSerializer
 
 from .utils import (
     check_allows_pets,
@@ -258,6 +263,15 @@ class TripRequestViewSet(
             headers=headers,
         )
 
+    # GET /trip-requests/pending/count/ (For a driver to get the number of pending requests)
+    def count(self, request, *args, **kwargs):
+        num_pending_requests = TripRequest.objects.filter(
+            trip__driver_routine__driver__user=request.user,
+            trip__status="PENDING",
+            status="PENDING",
+        )
+        return Response({"count": num_pending_requests.count()})
+
     # PUT /trip-requests/<pk>/accept/ (For a driver to accept a trip request)
 
     @action(detail=True, methods=["put"])
@@ -346,3 +360,83 @@ class TripSearchViewSet(
                 {"message": query_format_exception_message},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+class TripRateViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = TripRequest.objects.all()
+    serializer_class = TripRequestSerializer
+
+    @action(detail=True, methods=["post"])
+    def post(self, request, trip_id, *args, **kwargs):
+        try:
+            trip = Trip.objects.get(id=trip_id)
+            if trip.status == "FINISHED":
+                trip_request = TripRequest.objects.filter(
+                    trip=trip, status="ACCEPTED", passenger__user=request.user
+                ).first()
+            if trip_request:
+                rating = request.POST.get("rating")
+                is_good_driver = request.POST.get("is_good_driver")
+                is_pleasant_driver = request.POST.get("is_pleasant_driver")
+                already_knew = request.POST.get("already_knew")
+
+                DriverRating.objects.create(
+                    trip_request=TripRequest.objects.get(id=trip_request.id),
+                    rating=rating,
+                    is_good_driver=is_good_driver,
+                    is_pleasant_driver=is_pleasant_driver,
+                    already_knew=already_knew,
+                )
+
+                return Response({"message": "Valoración realizada con exito"})
+            else:
+                return Response({"message": "No has participado en este viaje"})
+        except Exception as e:
+            return Response({"message": str(e)})
+
+
+class ReportIssuePostViewSet(
+    viewsets.GenericViewSet,
+):
+    queryset = Report.objects.all()
+    serializer_class = TripReportSerializer
+
+    @action(detail=True, methods=["post"])
+    def post(self, request, trip_id, *args, **kwargs):
+        trip = Trip.objects.get(id=trip_id, status="FINISHED")
+        user = request.user
+        trip_request = TripRequest.objects.filter(
+            trip=trip, passenger__user=user
+        ).first()
+        # Trip request solo existe si el user es un passenger, de forma que aqui se comprueba si es passenger o driver del viaje, si no lo es
+        # no puede reportar
+        if trip_request or trip.driver_routine.driver.user == user:
+            reported_user_id = request.POST.get("reported_user_id")
+            reported_user = User.objects.get(id=reported_user_id)
+            reporter_is_driver = user == trip.driver_routine.driver.user
+            reported_is_driver = reported_user == trip.driver_routine.driver.user
+
+            note = request.POST.get("note")
+            Report.objects.create(
+                trip=trip,
+                reporter_user=user,
+                reported_user=reported_user,
+                reporter_is_driver=reporter_is_driver,
+                reported_is_driver=reported_is_driver,
+                note=note,
+            )
+            return Response(
+                {"message": "Report creado con exito"}, status=status.HTTP_201_CREATED
+            )
+
+
+class ReportIssueGetViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
+    queryset = Trip.objects.all()
+    serializer_class = TripUsersSerializer
+
+    @action(detail=True, methods=["get"])
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)

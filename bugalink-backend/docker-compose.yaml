@@ -24,7 +24,7 @@ services:
     container_name: bugalink_backend
     environment:
       IS_DOCKER: 1
-    command: bash -c "python /code/manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python /code/manage.py runserver 0.0.0.0:8000 & python -m celery -A bugalink_backend worker -E"
     volumes:
       - .:/code
     ports:

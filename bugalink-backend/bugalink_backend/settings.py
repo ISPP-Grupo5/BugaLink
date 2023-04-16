@@ -199,7 +199,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "files")
 MEDIA_URL = "/media/"
 STATICFILES_DIRS = []
 
-
+CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND")
+CELERY_BROKER_URL = config("CELERY_BROKER_URL")
 # TODO: only allow cors requests from the frontend (localhost:3000 or the deployed url)
 CORS_ORIGIN_ALLOW_ALL = True
 

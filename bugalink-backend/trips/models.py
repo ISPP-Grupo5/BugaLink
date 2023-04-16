@@ -1,6 +1,12 @@
+import datetime
+
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from driver_routines.models import DriverRoutine
 from passengers.models import Passenger
+
+from .tasks import set_trip_finished
 
 
 class Trip(models.Model):
@@ -24,6 +30,14 @@ class Trip(models.Model):
     def get_avaliable_seats(self):
         return self.driver_routine.available_seats - len(
             TripRequest.objects.filter(trip=self, status="ACCEPTED")
+        )
+
+
+@receiver(post_save, sender=Trip)
+def create_task(sender, instance, created, **kwargs):
+    if created:
+        set_trip_finished.apply_async(
+            (instance.id,), eta=instance.arrival_datetime, task_id=str(instance.id)
         )
 
 

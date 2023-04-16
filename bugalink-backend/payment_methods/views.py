@@ -205,13 +205,15 @@ class PaymentViewSet(
                 note = session.metadata.note if session.metadata.note != "None" else None
                 return TripRequestViewSet.create(self, session.metadata.trip_id, session.metadata.user_id, note)
             elif (session.line_items.data[0].description == 'Recharge'):  # Recargar saldo
-
-                user = User.objects.get(id=session.metadata.user_id)
-                balance = Balance.objects.get(user=user)
-                amount = decimal.Decimal(int(session.amount_total)) / 100
-                balance.amount += amount
-                balance.save()
-                return HttpResponse(status=200)
+                try:
+                    user = User.objects.get(id=session.metadata.user_id)
+                    balance = Balance.objects.get(user=user)
+                    amount = decimal.Decimal(int(session.amount_total)) / 100
+                    balance.amount += amount
+                    balance.save()
+                    return HttpResponse(status=200)
+                except:
+                    return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
         # ... handle other event types
         else:

@@ -1,4 +1,3 @@
-import { User } from "next-auth";
 import UserI from "./user";
 
 type LastTransactionsI = {

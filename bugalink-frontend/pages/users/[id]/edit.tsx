@@ -1,29 +1,23 @@
 import Avatar from '@/components/avatar';
 import { BackButtonText } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
+import DialogDeleteAccount from '@/components/dialogs/deleteAccount';
 import TextField from '@/components/forms/TextField';
 import AnimatedLayout from '@/components/layouts/animated';
-import NEXT_ROUTES from '@/constants/nextRoutes';
 import useUser from '@/hooks/useUser';
 import UserI from '@/interfaces/user';
-import { axiosAuth } from '@/lib/axios';
 import { GetServerSideProps } from 'next';
-import { signOut } from 'next-auth/react';
 import Pencil from 'public/assets/edit.svg';
 import { useEffect, useRef, useState } from 'react';
 
 interface FormErrors {
   name?: string;
   surname?: string;
-  email?: string;
-  password?: string;
 }
 
 interface FormValues {
   name: string;
   surname: string;
-  email: string;
-  password: string;
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -47,15 +41,11 @@ export default function EditProfile({ data }) {
     if (!user) return;
     setName(user.first_name);
     setSurname(user.last_name);
-    setEmail(user.email);
   }, [user]);
   const [name, setName] = useState<string>('');
   const [surname, setSurname] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [isDeleteConfirmation, setIsDeleteConfirmation] = useState(false);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
-  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -71,29 +61,6 @@ export default function EditProfile({ data }) {
       errors.surname = 'Por favor, ingrese sus apellidos';
     }
 
-    const emailRegex = /^\S+@\S+$/i;
-    if (!values.email) {
-      errors.email = 'Por favor, ingrese su correo electrónico';
-    } else if (!emailRegex.test(values.email)) {
-      errors.email = 'Por favor, ingrese un correo electrónico válido';
-    }
-
-    const passwordRegex =
-      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
-    if (!values.password) {
-      errors.password = 'La contraseña es obligatoria';
-    } else if (values.password.length < 8) {
-      errors.password = 'La contraseña debe tener al menos 8 caracteres';
-    } else if (values.password.length > 20) {
-      errors.password = 'La contraseña debe tener menos de 20 caracteres';
-    } else if (values.password.includes('contraseña')) {
-      errors.password =
-        'La contraseña no puede contener la palabra "contraseña"';
-    } else if (!passwordRegex.test(values.password)) {
-      errors.password =
-        'La contraseña debe tener al menos una mayúscula, una minúscula, un número y un símbolo.';
-    }
-
     setErrors(errors);
 
     return errors;
@@ -106,8 +73,6 @@ export default function EditProfile({ data }) {
       const values: FormValues = {
         name: formData.get('name') as string,
         surname: formData.get('surname') as string,
-        email: formData.get('email') as string,
-        password: formData.get('password') as string,
       };
 
       const errors = validateForm(values);
@@ -125,23 +90,7 @@ export default function EditProfile({ data }) {
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
-    setIsDeleteConfirmation(true);
-  };
-
-  const handleDeleteAccount = async (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-    try {
-      const response = await axiosAuth.delete(`/users/${user.id}`);
-      if (response.status === 204) {
-        await signOut({
-          callbackUrl: NEXT_ROUTES.LOGIN,
-        });
-      }
-    } catch (error) {
-      alert(error?.response?.data?.error || 'Error al eliminar la cuenta');
-    }
+    setOpenDialog(true);
   };
 
   return (
@@ -210,44 +159,11 @@ export default function EditProfile({ data }) {
               parentClassName="w-10/12 flex flex-col items-center"
               inputClassName="w-full focus:text-black text-gray"
             />
-
-            <hr className="mx-2 w-11/12 text-light-gray" />
-
-            <TextField
-              fieldName="Correo electrónico"
-              name="email"
-              content={email}
-              setContent={setEmail}
-              type="email"
-              error={errors.email}
-              disabled
-              parentClassName="w-10/12 flex flex-col items-center"
-              inputClassName="w-full focus:text-black text-gray"
-            />
-
-            <TextField
-              fieldName="Contraseña"
-              name="password"
-              content={password}
-              setContent={setPassword}
-              type="password"
-              error={errors.password}
-              parentClassName="w-10/12 flex flex-col items-center"
-              inputClassName="w-full focus:text-black text-gray"
-              showPassword={showPassword}
-              setShowPassword={setShowPassword}
-            />
           </div>
           <div className="my-5 flex w-full flex-col items-center justify-center">
-            {isDeleteConfirmation ? (
-              <button className="text-red" onClick={handleDeleteAccount}>
-                Pulsa de nuevo para eliminar tu cuenta
-              </button>
-            ) : (
-              <button className="text-red" onClick={handleDeleteConfirmation}>
-                Solicita la eliminación de tu cuenta
-              </button>
-            )}
+            <button className="text-red" onClick={handleDeleteConfirmation}>
+              Solicita la eliminación de tu cuenta
+            </button>
             <p className="mb-2 text-sm font-semibold text-gray">
               Usuario desde el{' '}
               {new Date(user.date_joined).toLocaleDateString('es-ES', {
@@ -264,6 +180,11 @@ export default function EditProfile({ data }) {
           </div>
         </form>
       </div>
+      <DialogDeleteAccount
+        userId={user.id}
+        open={openDialog}
+        setOpen={setOpenDialog}
+      />
     </AnimatedLayout>
   );
 }

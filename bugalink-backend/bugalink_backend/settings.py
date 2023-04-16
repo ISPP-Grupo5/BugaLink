@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "transactions",
     # Third-party packages
     "paypal",
+    "paypalrestsdk",
     "drf_spectacular",
     "rest_framework",
     "channels",

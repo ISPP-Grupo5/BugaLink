@@ -267,7 +267,7 @@ class RechargeViewSet(
                 "transactions": [
                     {
                         "amount": {
-                            "total": str(price),
+                            "total": str(amount),
                             "currency": "EUR",
                         },
                         "description": "Payment for your trip with Bugalink",

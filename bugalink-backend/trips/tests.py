@@ -143,8 +143,7 @@ class ReportTripUserTest(TestCase):
         self.assertEqual(Report.objects.get(id=1).note, "note")
 
     def test_report_trip_get_users(self):
-        url = "/api/v1/trips/1/users/"
-        print("AQUI" + url)
+        url = "/api/v1/trips/" + str(self.trip.id) + "/users/"
         response = self.client.get(url)
         data = json.loads(response.content)
-        self.assertEqual(len(data), 2)
+        self.assertEqual(len(data.get("users")), 2)

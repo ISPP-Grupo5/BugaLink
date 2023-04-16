@@ -192,6 +192,38 @@ export default function Details({ data }) {
                   }
                 )}
               </p>
+              <p className="text-sm font-normal">Precio final (+15%)</p>
+              {!user.is_pilotuser ? (
+                <p className="text-xl font-bold">
+                  {(
+                    Number.parseFloat(trip.driver_routine.price) +
+                    0.15 * Number.parseFloat(trip.driver_routine.price)
+                  ).toLocaleString('es-ES', {
+                    style: 'currency',
+                    currency: 'EUR',
+                  })}
+                </p>
+              ) : (
+                <div className="flex">
+                  <p className="text-red text-xl font-bold line-through">
+                    {(
+                      Number.parseFloat(trip.driver_routine.price) +
+                      0.15 * Number.parseFloat(trip.driver_routine.price)
+                    ).toLocaleString('es-ES', {
+                      style: 'currency',
+                      currency: 'EUR',
+                    })}
+                  </p>
+                  <p className="ml-4 text-xl font-bold">
+                    {Number.parseFloat(
+                      trip.driver_routine.price
+                    ).toLocaleString('es-ES', {
+                      style: 'currency',
+                      currency: 'EUR',
+                    })}
+                  </p>
+                </div>
+              )}
             </div>
             <div className="flex flex-col">
               <p className="text-sm font-normal">Plazas ocupadas</p>

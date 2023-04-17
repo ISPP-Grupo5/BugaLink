@@ -11,7 +11,6 @@ import { Drawer } from '@mui/material';
 import { GetServerSideProps } from 'next';
 import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
-import { redirect } from 'next/dist/server/api-utils';
 import { useEffect, useState } from 'react';
 import ReportProblem from '../new/problem';
 
@@ -56,9 +55,6 @@ export default function RatingScreen({ data }) {
       already_knew: knewEachOther,
     };
 
-    // transform to asnyc await
-    //const response = await axios.post('trips/' + tripId + '/rate/', datos);
-    //console.log(response.data);
     const url = 'trips/' + tripId + '/rate/';
         axiosAuth
           .post(url, datos)

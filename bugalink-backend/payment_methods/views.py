@@ -68,7 +68,7 @@ class PaymentViewSet(
         trip = Trip.objects.get(id=kwargs["trip_id"])
         user = request.user
         # El post recibe la cantidad en centimos integer
-        price = int(float(trip.driver_routine.price) * 100)
+        price = int(float(trip.driver_routine.price) * 115)
 
         # Si no hay texto da error al intentar acceder a este dato
         note = note if note else "None"
@@ -102,7 +102,7 @@ class PaymentViewSet(
         trip = Trip.objects.get(id=kwargs["trip_id"])
 
         user = request.user
-        price = trip.driver_routine.price
+        price = trip.driver_routine.price * decimal.Decimal(1.15)
         note = request.data.get("note")
 
         balance = Balance.objects.get(user=user)
@@ -120,9 +120,8 @@ class PaymentViewSet(
     def pay_with_paypal(self, request, *args, **kwargs):
         note = request.data.get("note")
         trip = Trip.objects.get(id=kwargs["trip_id"])
-        user = request.user
         # El post recibe la cantidad en centimos integer
-        price = trip.driver_routine.price
+        price = trip.driver_routine.price * decimal.Decimal(1.15)
 
         URL = "https://app.bugalink.es" if settings.APP_ENGINE else "http://127.0.0.1:3000"
 
@@ -177,7 +176,7 @@ class PaymentViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
                 data={"error": "Failed to create PayPal payment"},
             )
-        
+
     def recharge_balance(self, session):
         try:
             user = User.objects.get(id=session.metadata.user_id)
@@ -188,7 +187,7 @@ class PaymentViewSet(
             return True
         except:
             return False
-        
+
     @csrf_exempt
     def webhook_view(self, request):
         endpoint_secret = settings.WEBHOOK_SECRET
@@ -216,7 +215,7 @@ class PaymentViewSet(
                 note = session.metadata.note if session.metadata.note != "None" else None
                 return TripRequestViewSet.create(self, session.metadata.trip_id, session.metadata.user_id, note)
             elif (session.line_items.data[0].description == 'Recharge'):  # Recargar saldo
-                recharge_with_sucess = PaymentViewSet.recharge_balance(session)
+                recharge_with_sucess = PaymentViewSet.recharge_balance(self, session)
                 if recharge_with_sucess:
                     return HttpResponse(status=200)
                 else:

@@ -1,12 +1,12 @@
 import os
 
+import django.core.exceptions
 import paypalrestsdk
 import stripe
 from bugalink_backend import settings
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import redirect
-import django.core.exceptions
 from passenger_routines.models import PassengerRoutine
 from payment_methods.models import Balance
 from ratings.models import DriverRating, Report
@@ -25,6 +25,7 @@ from trips.serializers import (
 )
 from users.models import User
 from users.serializers import UserSerializer
+
 from .serializers import TripRateSerializer
 from .utils import (
     check_allows_pets,
@@ -362,6 +363,7 @@ class TripSearchViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+
 class TripRateViewSet(
     viewsets.GenericViewSet,
 ):
@@ -405,50 +407,46 @@ class ReportIssuePostViewSet(
     def post(self, request, trip_id, *args, **kwargs):
         serializer = TripReportSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        reported_user_id = serializer.data['reported_user_id']
-        
+        # reported_user_id = serializer.data["reported_user_id"]
+
         # 404 validations
         try:
             trip = Trip.objects.get(id=trip_id)
-            reported_user = User.objects.get(id=reported_user_id)
+            # reported_user = User.objects.get(id=reported_user_id)
         except Trip.DoesNotExist:
             return Response(
                 {"message": "El viaje no existe"}, status=status.HTTP_404_NOT_FOUND
             )
         except User.DoesNotExist:
             return Response(
-                {"message": "El usuario al que intenta reportar no existe"}, status=status.HTTP_404_NOT_FOUND
+                {"message": "El usuario al que intenta reportar no existe"},
+                status=status.HTTP_404_NOT_FOUND,
             )
         except Exception as e:
             return Response(
                 {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-        
+
         trip_request = TripRequest.objects.filter(
-            trip=trip, passenger__user = request.user, status="ACCEPTED"
+            trip=trip, passenger__user=request.user, status="ACCEPTED"
         ).first()
 
-        if trip_request == None and trip.driver_routine.driver.user != request.user:
+        if trip_request is None and trip.driver_routine.driver.user != request.user:
             return Response(
-                {"message": "No has participado en este viaje"}, status=status.HTTP_401_UNAUTHORIZED
-            )
-        
-        if trip.status != "FINISHED":
-            return Response(
-                {"message": "No se puede reportar un viaje que no ha terminado"}, status=status.HTTP_400_BAD_REQUEST
+                {"message": "No has participado en este viaje"},
+                status=status.HTTP_401_UNAUTHORIZED,
             )
 
-        else:           
-            report = serializer.create(
-                trip = trip,
-                reporter_user = request.user
-                )
-            response_serializer = ReportSerializer(report)
+        if trip.status != "FINISHED":
             return Response(
-                response_serializer.data,
-                status=status.HTTP_201_CREATED
+                {"message": "No se puede reportar un viaje que no ha terminado"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
-    
+
+        else:
+            report = serializer.create(trip=trip, reporter_user=request.user)
+            response_serializer = ReportSerializer(report)
+            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
 
 class ReportIssueGetViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):

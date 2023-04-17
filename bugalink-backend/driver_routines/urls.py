@@ -5,7 +5,6 @@ from driver_routines.views import DriverRoutineViewSet
 
 router = routers.DefaultRouter()
 router.register(r"driver-routines", DriverRoutineViewSet)
-# router.register(r"driver-routines", DriverRoutineViewSet, basename="driver-routines")
 
 urlpatterns = [
     path("driver-routines/<int:pk>/update/", DriverRoutineViewSet.as_view({"put": "update"})),

@@ -1,8 +1,6 @@
 import os
 
 import django.core.exceptions
-import paypalrestsdk
-import stripe
 from bugalink_backend import settings
 from django.db import transaction
 from django.db.models import Q
@@ -16,6 +14,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from transactions.models import Transaction
 from trips.models import Trip, TripRequest
+from users.models import User
+from passengers.models import Passenger
+
 from trips.serializers import (
     TripReportSerializer,
     TripRequestCreateSerializer,
@@ -103,151 +104,12 @@ class TripRequestViewSet(
 
     # POST /trips/<id>/request/ (For a passenger to request a trip)
     @transaction.atomic
-    def create(self, request, *args, **kwargs):
-        def pay_with_balance(balance, price):
-            if balance.amount < price:
-                return False  # No se ha pagado
-            balance.amount -= price
-            balance.save()
-            return True  # Se ha pagado
+    def create(self, trip_id, user_id, note):
 
-        def pay_with_credit_card(
-            price, credit_car_number, expiration_month, expiration_year, cvc
-        ):
-            stripe.api_key = settings.STRIPE_SECRET_KEY
-
-            amount = int(price * 100)  # Stripe expects amount in cents
-
-            try:
-                # Create a PaymentMethod
-                payment_method = stripe.PaymentMethod.create(
-                    type="card",
-                    card={
-                        "number": credit_car_number,
-                        "exp_month": expiration_month,
-                        "exp_year": expiration_year,
-                        "cvc": cvc,
-                    },
-                )
-
-                # Confirm the PaymentMethod to complete the payment
-                payment_intent = stripe.PaymentIntent.create(
-                    payment_method=payment_method.id,
-                    amount=amount,
-                    currency="eur",
-                    confirmation_method="manual",
-                    confirm=True,
-                )
-
-                # Check if the payment is succeeded
-                if payment_intent.status == "succeeded":
-                    print("Payment succeeded!")
-                else:
-                    return Response(
-                        status=status.HTTP_400_BAD_REQUEST,
-                        data={"error": "Método de pago fallido"},
-                    )
-
-            except stripe.error.StripeError:
-                return Response(
-                    status=status.HTTP_400_BAD_REQUEST,
-                    data={"error": "Stripe error"},
-                )
-
-        def pay_with_paypal(price):
-            paypal_client_id = "AdWSL48duytv4qy76be71a2S3Tt5nTYn-1gGv-53vL_dxNWYzZpAGrUZYrZBvGjkNwOSxJE1s_RSCkL8"
-            paypal_secret_key = "EHps0LO5OsQsUOrDTu9J6BY_mD0OkcF9aNzOT7rkRtDYKCOxoiqCUXsnz-nkhZX5rhlA741NosbaxBpb"
-
-            # Set up PayPal API credentials
-            paypalrestsdk.configure(
-                {
-                    "mode": "sandbox",
-                    "client_id": paypal_client_id,
-                    "client_secret": paypal_secret_key,
-                }
-            )
-
-            paypal_url = (
-                "https://app.bugalink.es"
-                if os.environ.get("IS_APP_ENGINE")
-                else "http://localhost:3000"
-            )
-
-            # Create a payment object
-            payment = paypalrestsdk.Payment(
-                {
-                    "intent": "sale",
-                    "payer": {
-                        "payment_method": "paypal",
-                    },
-                    "redirect_urls": {
-                        "return_url": paypal_url,
-                        "cancel_url": paypal_url,
-                    },
-                    "transactions": [
-                        {
-                            "amount": {
-                                "total": str(price),
-                                "currency": "EUR",
-                            },
-                            "description": "Payment for your trip with Bugalink",
-                        }
-                    ],
-                }
-            )
-
-            # Create payment
-            if payment.create():
-                # Redirect the user to PayPal for payment approval
-                for link in payment.links:
-                    if link.method == "REDIRECT":
-                        redirect_url = link.href
-                        return redirect(redirect_url)
-
-            else:
-                return Response(
-                    status=status.HTTP_400_BAD_REQUEST,
-                    data={"error": "Failed to create PayPal payment"},
-                )
-
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        trip = Trip.objects.get(id=kwargs["trip_id"])
-
-        user = request.user
-        payment_method = request.data.get("payment_method")
+        trip = Trip.objects.get(id=trip_id)
+        user = User.objects.get(id=user_id)
         price = trip.driver_routine.price
-
-        if payment_method == "Balance":
-            balance = Balance.objects.get(user=user)
-            paid = pay_with_balance(balance, price)
-
-            if not paid:
-                return Response(
-                    {"error": "Saldo insuficiente"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-        elif payment_method == "CreditCard":
-            credit_car_number = request.data.get("credit_car_number")
-            expiration_month = request.data.get("expiration_month")
-            expiration_year = request.data.get("expiration_year")
-            cvc = request.data.get("cvc")
-            pay_with_credit_card(
-                price, credit_car_number, expiration_month, expiration_year, cvc
-            )
-
-        elif payment_method == "PayPal":
-            pay_with_paypal(price)
-
-        else:
-            return Response(
-                status=status.HTTP_400_BAD_REQUEST,
-                data={"error": "Método de pago inválido"},
-            )
-
-        serializer.save()
+        passenger = Passenger.objects.get(user=user)
 
         Transaction.objects.create(
             sender=user,
@@ -255,15 +117,16 @@ class TripRequestViewSet(
             amount=price,
         )
 
-        created_id = serializer.instance.id
-        headers = self.get_success_headers(serializer.data)
-
-        return Response(
-            {"id": created_id, **serializer.data},
-            # self.get_serializer(driver_routine).data,
-            status=status.HTTP_201_CREATED,
-            headers=headers,
+        trip_request = TripRequest.objects.create(
+            trip=trip,
+            status="PENDING",
+            note=note,
+            reject_note="",
+            passenger=passenger,
+            price=price,
         )
+
+        return Response(self.get_serializer(trip_request).data, status=status.HTTP_201_CREATED)
 
     # GET /trip-requests/pending/count/ (For a driver to get the number of pending requests)
     def count(self, request, *args, **kwargs):

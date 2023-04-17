@@ -22,15 +22,15 @@ jobs:
         uses: actions/setup-node@v3
 
       - run: |
-          cd bugalink-frontend
-          echo NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }} >> .env
-          echo NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} >> .env
-
-      - run: |
           cd bugalink-backend
           echo SECRET_KEY="${{ secrets.SECRET_KEY }}" >> .env
           echo PASSWORD=${{ secrets.DATABASE_PASSWORD }} >> .env
+          echo WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }} >> .env
           echo STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }} >> .env
+      - run: |
+          cd bugalink-frontend
+          echo NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }} >> .env
+          echo NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} >> .env
 
       - name: Deploy to App Engine
         id: deploy

@@ -177,7 +177,18 @@ class PaymentViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
                 data={"error": "Failed to create PayPal payment"},
             )
-
+        
+    def recharge_balance(self, session):
+        try:
+            user = User.objects.get(id=session.metadata.user_id)
+            balance = Balance.objects.get(user=user)
+            amount = decimal.Decimal(int(session.amount_total)) / 100
+            balance.amount += amount
+            balance.save()
+            return True
+        except:
+            return False
+        
     @csrf_exempt
     def webhook_view(self, request):
         endpoint_secret = settings.WEBHOOK_SECRET
@@ -205,14 +216,10 @@ class PaymentViewSet(
                 note = session.metadata.note if session.metadata.note != "None" else None
                 return TripRequestViewSet.create(self, session.metadata.trip_id, session.metadata.user_id, note)
             elif (session.line_items.data[0].description == 'Recharge'):  # Recargar saldo
-                try:
-                    user = User.objects.get(id=session.metadata.user_id)
-                    balance = Balance.objects.get(user=user)
-                    amount = decimal.Decimal(int(session.amount_total)) / 100
-                    balance.amount += amount
-                    balance.save()
+                recharge_with_sucess = PaymentViewSet.recharge_balance(session)
+                if recharge_with_sucess:
                     return HttpResponse(status=200)
-                except:
+                else:
                     return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
         # ... handle other event types
@@ -249,7 +256,6 @@ class RechargeViewSet(
 
     # POST /recharge/paypal/
     def recharge_with_paypal(self, request, *args, **kwargs):
-
         amount = request.data.get("amount")
         URL = "https://app.bugalink.es" if settings.APP_ENGINE else "http://127.0.0.1:3000"
 

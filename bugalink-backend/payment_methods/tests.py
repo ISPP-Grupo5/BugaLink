@@ -175,7 +175,7 @@ class RequestTripPayment(TestCase):
 
         self.assertEqual(response.status_code, 200)
         
-        # Can't test the url because it's a random string depending of params as time just like stripe
+        # Can't test the url because it's a random string depending of params as time 
         #self.assertEqual(response.data['url'], expected_url)
        
         # Assert that the url is a valid url

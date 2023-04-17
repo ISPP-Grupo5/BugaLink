@@ -150,18 +150,18 @@ class GetTripRecommendationTest(TestCase):
         # Viaje de test unitario original
         self.trip_3 = Trip.objects.create(
             driver_routine=self.driver_routine,
-            departure_datetime=datetime.datetime.now() + datetime.timedelta(days=1),
-            arrival_datetime=datetime.datetime.now()
-            + datetime.timedelta(days=1, hours=1),
+            departure_datetime=datetime.now() + timedelta(days=1),
+            arrival_datetime=datetime.now()
+            + timedelta(days=1, hours=1),
             status="PENDING",
         )
 
         # Viaje similar asociado a una misma rutina, para devolucion de varios viajes
         self.trip_4 = Trip.objects.create(
             driver_routine=self.driver_routine,
-            departure_datetime=datetime.datetime.now() + datetime.timedelta(days=1),
-            arrival_datetime=datetime.datetime.now()
-            + datetime.timedelta(days=1, hours=1),
+            departure_datetime=datetime.now() + timedelta(days=1),
+            arrival_datetime=datetime.now()
+            + timedelta(days=1, hours=1),
             status="PENDING",
         )
 
@@ -169,12 +169,12 @@ class GetTripRecommendationTest(TestCase):
         self.passenger_routine_1 = PassengerRoutine.objects.create(
             passenger=self.passenger_2,
             departure_time_start=(
-                datetime.datetime.now() - datetime.timedelta(hours=1)
+                datetime.now() - timedelta(hours=1)
             ).time(),
             departure_time_end=(
-                datetime.datetime.now() + datetime.timedelta(hours=1)
+                datetime.now() + timedelta(hours=1)
             ).time(),
-            arrival_time=(datetime.datetime.now() + datetime.timedelta(hours=1)).time(),
+            arrival_time=(datetime.now() + timedelta(hours=1)).time(),
             origin=self.location_1,
             destination=self.location_2,
             day_of_week="Mon",
@@ -219,9 +219,9 @@ class GetTripRecommendationTest(TestCase):
             price=1,
             is_recurrent=True,
             available_seats=1,
-            departure_time_start=datetime.datetime.now().time(),
-            departure_time_end=datetime.datetime.now().time(),
-            arrival_time=datetime.datetime.now().time(),
+            departure_time_start=datetime.now().time(),
+            departure_time_end=datetime.now().time(),
+            arrival_time=datetime.now().time(),
             origin=self.location_origin_4,
             destination=self.location_destination_4,
             day_of_week="Mon",
@@ -230,9 +230,9 @@ class GetTripRecommendationTest(TestCase):
         # Trip
         self.trip_5 = Trip.objects.create(
             driver_routine=self.driver_routine_4,
-            departure_datetime=datetime.datetime.now() + datetime.timedelta(days=1),
-            arrival_datetime=datetime.datetime.now()
-            + datetime.timedelta(days=1, hours=1),
+            departure_datetime=datetime.now() + timedelta(days=1),
+            arrival_datetime=datetime.now()
+            + timedelta(days=1, hours=1),
             status="PENDING",
         )
 
@@ -250,12 +250,12 @@ class GetTripRecommendationTest(TestCase):
         self.passenger_routine_3 = PassengerRoutine.objects.create(
             passenger=self.passenger_3,
             departure_time_start=(
-                datetime.datetime.now() - datetime.timedelta(hours=1)
+                datetime.now() - timedelta(hours=1)
             ).time(),
             departure_time_end=(
-                datetime.datetime.now() + datetime.timedelta(hours=1)
+                datetime.now() + timedelta(hours=1)
             ).time(),
-            arrival_time=(datetime.datetime.now() + datetime.timedelta(hours=1)).time(),
+            arrival_time=(datetime.now() + timedelta(hours=1)).time(),
             origin=self.location_close_origin_3,
             destination=self.location_close_destination_3,
             day_of_week="Mon",
@@ -300,9 +300,9 @@ class GetTripRecommendationTest(TestCase):
             price=1,
             is_recurrent=True,
             available_seats=1,
-            departure_time_start=datetime.datetime.now().time(),
-            departure_time_end=datetime.datetime.now().time(),
-            arrival_time=datetime.datetime.now().time(),
+            departure_time_start=datetime.now().time(),
+            departure_time_end=datetime.now().time(),
+            arrival_time=datetime.now().time(),
             origin=self.location_origin_6,
             destination=self.location_destination_6,
             day_of_week="Mon",
@@ -311,9 +311,9 @@ class GetTripRecommendationTest(TestCase):
         # Trip
         self.trip_6 = Trip.objects.create(
             driver_routine=self.driver_routine_6,
-            departure_datetime=datetime.datetime.now() + datetime.timedelta(days=1),
-            arrival_datetime=datetime.datetime.now()
-            + datetime.timedelta(days=1, hours=1),
+            departure_datetime=datetime.now() + timedelta(days=1),
+            arrival_datetime=datetime.now()
+            + timedelta(days=1, hours=1),
             status="PENDING",
         )
 
@@ -331,12 +331,12 @@ class GetTripRecommendationTest(TestCase):
         self.passenger_routine_5 = PassengerRoutine.objects.create(
             passenger=self.passenger_5,
             departure_time_start=(
-                datetime.datetime.now() - datetime.timedelta(hours=1)
+                datetime.now() - timedelta(hours=1)
             ).time(),
             departure_time_end=(
-                datetime.datetime.now() + datetime.timedelta(hours=1)
+                datetime.now() + timedelta(hours=1)
             ).time(),
-            arrival_time=(datetime.datetime.now() + datetime.timedelta(hours=1)).time(),
+            arrival_time=(datetime.now() + timedelta(hours=1)).time(),
             origin=self.location_far_origin_5,
             destination=self.location_far_destination_5,
             day_of_week="Mon",
@@ -381,9 +381,9 @@ class GetTripRecommendationTest(TestCase):
             price=1,
             is_recurrent=True,
             available_seats=1,
-            departure_time_start=datetime.datetime.now().time(),
-            departure_time_end=datetime.datetime.now().time(),
-            arrival_time=datetime.datetime.now().time(),
+            departure_time_start=datetime.now().time(),
+            departure_time_end=datetime.now().time(),
+            arrival_time=datetime.now().time(),
             origin=self.location_origin_8,
             destination=self.location_destination_8,
             day_of_week="Mon",
@@ -392,9 +392,9 @@ class GetTripRecommendationTest(TestCase):
         # Trip
         self.trip_8 = Trip.objects.create(
             driver_routine=self.driver_routine_8,
-            departure_datetime=datetime.datetime.now() + datetime.timedelta(days=1),
-            arrival_datetime=datetime.datetime.now()
-            + datetime.timedelta(days=1, hours=1),
+            departure_datetime=datetime.now() + timedelta(days=1),
+            arrival_datetime=datetime.now()
+            + timedelta(days=1, hours=1),
             status="PENDING",
         )
 
@@ -412,12 +412,12 @@ class GetTripRecommendationTest(TestCase):
         self.passenger_routine_7 = PassengerRoutine.objects.create(
             passenger=self.passenger_7,
             departure_time_start=(
-                datetime.datetime.now() - datetime.timedelta(hours=1)
+                datetime.now() - timedelta(hours=1)
             ).time(),
             departure_time_end=(
-                datetime.datetime.now() + datetime.timedelta(hours=1)
+                datetime.now() + timedelta(hours=1)
             ).time(),
-            arrival_time=(datetime.datetime.now() + datetime.timedelta(hours=1)).time(),
+            arrival_time=(datetime.now() + timedelta(hours=1)).time(),
             origin=self.location_close_origin_7,
             destination=self.location_close_destination_7,
             day_of_week="Tue",
@@ -462,9 +462,9 @@ class GetTripRecommendationTest(TestCase):
             price=1,
             is_recurrent=True,
             available_seats=1,
-            departure_time_start=datetime.datetime.now().time(),
-            departure_time_end=datetime.datetime.now().time(),
-            arrival_time=datetime.datetime.now().time(),
+            departure_time_start=datetime.now().time(),
+            departure_time_end=datetime.now().time(),
+            arrival_time=datetime.now().time(),
             origin=self.location_origin_8,
             destination=self.location_destination_8,
             day_of_week="Tue",
@@ -473,9 +473,9 @@ class GetTripRecommendationTest(TestCase):
         # Trip
         self.trip_10 = Trip.objects.create(
             driver_routine=self.driver_routine_8,
-            departure_datetime=datetime.datetime.now() + datetime.timedelta(days=1),
-            arrival_datetime=datetime.datetime.now()
-            + datetime.timedelta(days=1, hours=1),
+            departure_datetime=datetime.now() + timedelta(days=1),
+            arrival_datetime=datetime.now()
+            + timedelta(days=1, hours=1),
             status="FINISHED",
         )
 
@@ -493,12 +493,12 @@ class GetTripRecommendationTest(TestCase):
         self.passenger_routine_9 = PassengerRoutine.objects.create(
             passenger=self.passenger_9,
             departure_time_start=(
-                datetime.datetime.now() - datetime.timedelta(hours=1)
+                datetime.now() - timedelta(hours=1)
             ).time(),
             departure_time_end=(
-                datetime.datetime.now() + datetime.timedelta(hours=1)
+                datetime.now() + timedelta(hours=1)
             ).time(),
-            arrival_time=(datetime.datetime.now() + datetime.timedelta(hours=1)).time(),
+            arrival_time=(datetime.now() + timedelta(hours=1)).time(),
             origin=self.location_close_origin_7,
             destination=self.location_close_destination_7,
             day_of_week="Tue",
@@ -543,9 +543,9 @@ class GetTripRecommendationTest(TestCase):
             price=1,
             is_recurrent=True,
             available_seats=1,
-            departure_time_start=datetime.datetime.now().time(),
-            departure_time_end=datetime.datetime.now().time(),
-            arrival_time=datetime.datetime.now().time(),
+            departure_time_start=datetime.now().time(),
+            departure_time_end=datetime.now().time(),
+            arrival_time=datetime.now().time(),
             origin=self.location_origin_8,
             destination=self.location_destination_8,
             day_of_week="Tue",
@@ -554,9 +554,9 @@ class GetTripRecommendationTest(TestCase):
         # Trip
         self.trip_12 = Trip.objects.create(
             driver_routine=self.driver_routine_8,
-            departure_datetime=datetime.datetime.now() + datetime.timedelta(days=1),
-            arrival_datetime=datetime.datetime.now()
-            + datetime.timedelta(days=1, hours=1),
+            departure_datetime=datetime.now() + timedelta(days=1),
+            arrival_datetime=datetime.now()
+            + timedelta(days=1, hours=1),
             status="PENDING",
         )
 
@@ -574,12 +574,12 @@ class GetTripRecommendationTest(TestCase):
         self.passenger_routine_11 = PassengerRoutine.objects.create(
             passenger=self.passenger_11,
             departure_time_start=(
-                datetime.datetime.now() - datetime.timedelta(days=1)
+                datetime.now() - timedelta(days=1)
             ).time(),
             departure_time_end=(
-                datetime.datetime.now() + datetime.timedelta(days=1)
+                datetime.now() + timedelta(days=1)
             ).time(),
-            arrival_time=(datetime.datetime.now() + datetime.timedelta(days=1)).time(),
+            arrival_time=(datetime.now() + timedelta(days=1)).time(),
             origin=self.location_close_origin_7,
             destination=self.location_close_destination_7,
             day_of_week="Tue",

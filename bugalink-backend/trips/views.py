@@ -10,7 +10,7 @@ import django.core.exceptions
 from passenger_routines.models import PassengerRoutine
 from payment_methods.models import Balance
 from ratings.models import DriverRating, Report
-from ratings.serializers import DriverRatingSerializer
+from ratings.serializers import DriverRatingSerializer, ReportSerializer
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -391,7 +391,6 @@ class TripRateViewSet(
         if trip_request:
             driver_rating = serializer.create(trip_request)
             response_serializer = DriverRatingSerializer(driver_rating)
-            print(response_serializer.data)
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response({"message": "No has participado en este viaje "})
@@ -400,36 +399,56 @@ class TripRateViewSet(
 class ReportIssuePostViewSet(
     viewsets.GenericViewSet,
 ):
-    queryset = Trip.objects.all()
     serializer_class = TripReportSerializer
 
     @action(detail=True, methods=["post"])
     def post(self, request, trip_id, *args, **kwargs):
-        trip = Trip.objects.get(id=trip_id, status="FINISHED")
-        user = request.user
-        trip_request = TripRequest.objects.filter(
-            trip=trip, passenger__user=user
-        ).first()
-        # Trip request solo existe si el user es un passenger, de forma que aqui se comprueba si es passenger o driver del viaje, si no lo es
-        # no puede reportar
-        if trip_request or trip.driver_routine.driver.user == user:
-            reported_user_id = request.POST.get("reported_user_id")
+        serializer = TripReportSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        reported_user_id = serializer.data['reported_user_id']
+        
+        # 404 validations
+        try:
+            trip = Trip.objects.get(id=trip_id)
             reported_user = User.objects.get(id=reported_user_id)
-            reporter_is_driver = user == trip.driver_routine.driver.user
-            reported_is_driver = reported_user == trip.driver_routine.driver.user
-
-            note = request.POST.get("note")
-            Report.objects.create(
-                trip=trip,
-                reporter_user=user,
-                reported_user=reported_user,
-                reporter_is_driver=reporter_is_driver,
-                reported_is_driver=reported_is_driver,
-                note=note,
-            )
+        except Trip.DoesNotExist:
             return Response(
-                {"message": "Report creado con exito"}, status=status.HTTP_201_CREATED
+                {"message": "El viaje no existe"}, status=status.HTTP_404_NOT_FOUND
             )
+        except User.DoesNotExist:
+            return Response(
+                {"message": "El usuario al que intenta reportar no existe"}, status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        
+        trip_request = TripRequest.objects.filter(
+            trip=trip, passenger__user = request.user, status="ACCEPTED"
+        ).first()
+
+        if trip_request == None and trip.driver_routine.driver.user != request.user:
+            return Response(
+                {"message": "No has participado en este viaje"}, status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        if trip.status != "FINISHED":
+            return Response(
+                {"message": "No se puede reportar un viaje que no ha terminado"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        else:           
+            report = serializer.create(
+                trip = trip,
+                reporter_user = request.user
+                )
+            response_serializer = ReportSerializer(report)
+            return Response(
+                response_serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+    
 
 
 class ReportIssueGetViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):

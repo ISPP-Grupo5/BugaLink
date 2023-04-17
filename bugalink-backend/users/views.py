@@ -74,7 +74,7 @@ class UserViewSet(
         user.email = new_email
         user.first_name = "Usuario eliminado"
         user.last_name = ""
-        user.photo = ""
+        user.photo = user.photo.delete()
         user.is_passenger = False
         user.is_driver = False
         user.is_active = False
@@ -99,14 +99,24 @@ class UserViewSet(
 class UserUpdateView(APIView):
     @transaction.atomic
     def put(self, request, id):
+        user = request.user
         if request.user.id != id:
             return Response(
                 data={"error": "No tienes permiso para editar esta información"},
                 status=status.HTTP_403_FORBIDDEN,
             )
         serializer = UserUpdateSerializer(request.user, data=request.data)
+
         if serializer.is_valid():
-            serializer.save()
+            if "photo" in request.data:
+                request.user.photo = request.data["photo"]
+                extension = request.data["photo"].name.split(".")[-1]
+                new_filename = f"avatar.{extension}"
+                user.photo.save(new_filename, request.data["photo"]) 
+            user.first_name = request.data["first_name"]
+            user.last_name = request.data["last_name"]
+            user.save()
+
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

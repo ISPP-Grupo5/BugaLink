@@ -11,6 +11,7 @@ import AvatarSkeleton from '@/components/skeletons/Avatar';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
+import useUser from '@/hooks/useUser';
 import Link from 'next/link';
 import Destino from 'public/icons/Vista-Principal/destino.svg';
 import { useState } from 'react';
@@ -20,6 +21,7 @@ export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { data } = useSession();
   const user = data?.user as User;
+  const userPhoto = useUser().user;
 
   return (
     <AnimatedLayout className="max-h-full overflow-y-scroll">
@@ -43,7 +45,7 @@ export default function Home() {
             className="aspect-square h-14"
             href={NEXT_ROUTES.PROFILE(user?.user_id)}
           >
-            {user ? <Avatar src={user.photo} /> : <AvatarSkeleton />}
+            {user ? <Avatar src={userPhoto.photo} /> : <AvatarSkeleton />}
           </Link>
         </span>
 

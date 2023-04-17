@@ -9,6 +9,7 @@ import useUser from '@/hooks/useUser';
 import UserI from '@/interfaces/user';
 import { axiosAuth } from '@/lib/axios';
 import { GetServerSideProps } from 'next';
+import { signOut } from 'next-auth/react';
 import router from 'next/router';
 import Pencil from 'public/assets/edit.svg';
 import { useEffect, useRef, useState } from 'react';
@@ -49,7 +50,7 @@ export default function EditProfile({ data }) {
 
   const [name, setName] = useState<string>('');
   const [surname, setSurname] = useState<string>('');
-  const [photo, setPhoto] = useState<File>();
+  const [file, setFile] = useState<File>();
   const [photoURL, setPhotoURL] = useState<string>('');
 
   const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -93,17 +94,18 @@ export default function EditProfile({ data }) {
         // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites
         const url = `users/${user.id}/edit`;
 
-        const request_data = {
-          photo: photo,
-          first_name: name,
-          last_name: surname,
-        }
+        const formData = new FormData();
+        formData.append('photo', file);
+        formData.append('first_name', name);
+        formData.append('last_name', surname);
 
-        console.log(request_data);
+        
         axiosAuth
-          .put(url, request_data)
+          .put(url, formData)
           .then((res) => {
-            router.push(NEXT_ROUTES.PROFILE(userId));
+            signOut({
+              callbackUrl: NEXT_ROUTES.LOGIN,
+            })
           })
           .catch((err) => {
             setIsSendingForm(false);
@@ -146,8 +148,10 @@ export default function EditProfile({ data }) {
                   img.src = e.target.result as string;
                 };
                 reader.readAsDataURL(file);
-                setPhoto(file);
+                setFile(file);
                 setPhotoURL(URL.createObjectURL(file));
+
+                
               }}
             />
             <Avatar

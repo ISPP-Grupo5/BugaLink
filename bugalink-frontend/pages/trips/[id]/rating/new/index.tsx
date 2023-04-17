@@ -3,39 +3,68 @@ import CTAButton from '@/components/buttons/CTA';
 import RatingButton from '@/components/buttons/Ratings';
 import AnimatedLayout from '@/components/layouts/animated';
 import StarRating from '@/components/starRating';
-import axios from '@/lib/axios';
+import NEXT_ROUTES from '@/constants/nextRoutes';
+import useTrip from '@/hooks/useTrip';
+import useUserStats from '@/hooks/useUserStats';
+import axios, { axiosAuth } from '@/lib/axios';
 import { Drawer } from '@mui/material';
-import { useState } from 'react';
+import { GetServerSideProps } from 'next';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 import ReportProblem from '../new/problem';
 
-export default function RatingScreen() {
-  const [rating, setRating] = useState(3);
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { id } = context.query;
+
+  const data = {
+    id: id,
+  };
+
+  return {
+    props: { data },
+  };
+};
+
+export default function RatingScreen({ data }) {
+  const authUser = useSession().data?.user as User;
+
+  const tripId = data.id;
+
+
+
+  const { trip, isLoading, isError } = useTrip(tripId);
+
+  const driver= trip? trip.driver : null;
+  const user = trip? driver.user: null;
+  const username =trip? user.first_name +" "+ user.last_name: null;
+  const photo = trip? user.photo: null;
+
+
+
+  const [ratingValue, setRating] = useState(3);
   const [goodConduction, setGoodConduction] = useState(false);
   const [friendlyDriver, setFriendlyDriver] = useState(true);
   const [knewEachOther, setKnewEachOther] = useState(false);
   const [drawerReport, setDrawerReport] = useState(false);
-
-  const driverId = 1; //TODO: change this to the id of the driver
-  const passengerId = 2; //TODO: change this to the passenger's id
-  const individualRideId = 1; //TODO: change this to the individual ride id
-  const userId = 2; //TODO: change this to the user id
-
   const handleSubmit = async () => {
-    const data = {
-      rating_type: 'driver',
-      driver: driverId,
-      passenger: passengerId,
-      IndividualRide: individualRideId,
-      user_id: userId,
-      rating: rating,
+    const datos = {
+      rating: ratingValue,
       is_good_driver: friendlyDriver,
       is_pleasant_driver: goodConduction,
-      already_known: knewEachOther,
+      already_knew: knewEachOther,
     };
 
-    // transform to asnyc await
-    const response = await axios.post('/users' + driverId + '/reviews/', data);
-    console.log(response.data);
+    const url = 'trips/' + tripId + '/rate/';
+        axiosAuth
+          .post(url, datos)
+          .then((response) => {
+            console.log(response.data);
+            window.location.href = NEXT_ROUTES.HOME;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
 
     //Set values to default just in case so there is no problem in future ratings (see if can bedeleted)
 
@@ -48,11 +77,11 @@ export default function RatingScreen() {
     <AnimatedLayout className="flex flex-col items-center justify-around bg-white px-6 sm:px-14">
       <BackButtonText text="¿Cómo ha ido el viaje?" />
       <div className="flex flex-col items-center space-y-4">
-        <img src="/assets/mocks/avatar1.png" className="rounded-full " />
-        <p className="text-xl font-bold">Pablo D. López</p>
+        <img src={photo? photo: "/assets/mocks/avatar1.png"} className="rounded-full " />
+        <p className="text-xl font-bold">{username}</p>
       </div>
       <div className="flex flex-col items-center space-y-3">
-        <StarRating value={rating} setValue={setRating} />
+        <StarRating value={ratingValue} setValue={setRating} />
         <p className="text-center text-sm">
           No te preocupes, las valoraciones son anónimas
         </p>

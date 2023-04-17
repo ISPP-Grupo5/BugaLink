@@ -41,9 +41,14 @@ export default function EditProfile({ data }) {
     if (!user) return;
     setName(user.first_name);
     setSurname(user.last_name);
+    setPhotoURL(user.photo);
   }, [user]);
+
   const [name, setName] = useState<string>('');
   const [surname, setSurname] = useState<string>('');
+  const [photo, setPhoto] = useState<File>();
+  const [photoURL, setPhotoURL] = useState<string>('');
+
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -73,6 +78,7 @@ export default function EditProfile({ data }) {
       const values: FormValues = {
         name: formData.get('name') as string,
         surname: formData.get('surname') as string,
+        // TODO: handle submit photo as binary (file itself). Be inspired by become-driver page
       };
 
       const errors = validateForm(values);
@@ -94,7 +100,7 @@ export default function EditProfile({ data }) {
   };
 
   return (
-    <AnimatedLayout className="justify-between flex h-screen flex-col items-center bg-white">
+    <AnimatedLayout className="flex h-screen flex-col items-center justify-between bg-white">
       <BackButtonText text="Mi perfil" />
       <div className="flex h-full w-full flex-col items-center overflow-y-scroll">
         <div className="mb-5 h-24 w-24">
@@ -118,12 +124,13 @@ export default function EditProfile({ data }) {
                   img.src = e.target.result as string;
                 };
                 reader.readAsDataURL(file);
-                // Set to state
+                setPhoto(file);
+                setPhotoURL(URL.createObjectURL(file));
               }}
             />
             <Avatar
               id="profilePicture"
-              src={user.photo}
+              src={photoURL}
               className="my-2 w-full outline outline-8 outline-white"
             />
             <div id="check" className="absolute -bottom-2 -right-2">
@@ -135,7 +142,7 @@ export default function EditProfile({ data }) {
         </div>
         <form
           ref={formRef}
-          className="justify-between flex h-full w-full flex-col items-center"
+          className="flex h-full w-full flex-col items-center justify-between"
         >
           <div className="mt-5 flex w-full flex-col items-center space-y-6">
             <TextField
@@ -166,7 +173,7 @@ export default function EditProfile({ data }) {
             </button>
             <p className="mb-2 text-sm font-semibold text-gray">
               Usuario desde el{' '}
-              {new Date(user.date_joined).toLocaleDateString('es-ES', {
+              {new Date(user?.date_joined).toLocaleDateString('es-ES', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
@@ -181,7 +188,7 @@ export default function EditProfile({ data }) {
         </form>
       </div>
       <DialogDeleteAccount
-        userId={user.id}
+        userId={user?.id}
         open={openDialog}
         setOpen={setOpenDialog}
       />

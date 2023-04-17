@@ -5,7 +5,6 @@ export default function Withdraw() {
     <CreditOperation
       textBackButton="Retirar saldo"
       title="Métodos para retirar saldo"
-      textAddButton="Añadir método para retirar saldo"
     />
   );
 }

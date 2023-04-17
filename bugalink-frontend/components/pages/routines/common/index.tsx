@@ -7,23 +7,35 @@ import TimePicker from '@/components/forms/TimePicker';
 import AnimatedLayout from '@/components/layouts/animated';
 import PlacesAutocomplete from '@/components/maps/placesAutocomplete';
 import NEXT_ROUTES from '@/constants/nextRoutes';
+import DriverRoutineI from '@/interfaces/driverRoutine';
+import GenericRoutineI from '@/interfaces/genericRoutine';
+import PassengerRoutineI from '@/interfaces/passengerRoutine';
 import { axiosAuth } from '@/lib/axios';
 import { useLoadScript } from '@react-google-maps/api';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { getGeocode, getLatLng } from 'use-places-autocomplete';
 
 const MIN_FREE_SEATS = 1;
 const MAX_FREE_SEATS = 8;
 
-const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-const daysToApi = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const DAYS_TO_SPANISH = {
+  Mon: 'L',
+  Tue: 'M',
+  Wed: 'X',
+  Thu: 'J',
+  Fri: 'V',
+  Sat: 'S',
+  Sun: 'D',
+};
 
 type Props = {
   userType: 'passenger' | 'driver';
   freeSeatsNumber?: number;
   setFreeSeatsNumber?: (freeSeats: number) => void;
+  routineDetailsDriver?: DriverRoutineI;
+  routineDetailsPassenger?: PassengerRoutineI;
 };
 
 export const LeafletMap = dynamic(() => import('@/components/maps/map'), {
@@ -56,26 +68,29 @@ export default function NewRoutine({
   userType,
   freeSeatsNumber,
   setFreeSeatsNumber,
+  routineDetailsDriver,
+  routineDetailsPassenger,
 }: Props) {
   const [pickTimeFrom, setPickTimeFrom] = useState('12:00');
   const [pickTimeTo, setPickTimeTo] = useState('12:10');
   const [time, setTime] = useState<number>(0);
-  const [selectedDays, setSeletedDays] = useState([]);
-  const arrivalTime = new Date(Date.now());
-  arrivalTime.setHours(Number(pickTimeFrom?.split(':')[0]));
-  arrivalTime.setMinutes(Number(pickTimeFrom?.split(':')[1]) + time);
+  const [selectedDays, setSelectedDays] = useState([]);
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
 
   const [originCoords, setOriginCoords] = useState(undefined);
   const [destinationCoords, setDestinationCoords] = useState(undefined);
   const [totalDistance, setTotalDistance] = useState<number>(0);
-  const [price, setPrice] = useState('');
+  const [price, setPrice] = useState(
+    routineDetailsDriver ? routineDetailsDriver.price : ''
+  );
   const [errors, setErrors] = useState<FormErrors>({});
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
 
   const [isSendingForm, setIsSendingForm] = useState(false);
+
+  const isEdit = routineDetailsDriver || routineDetailsPassenger;
 
   //arrivalTime.setMinutes
   const validateForm = (values: FormValues) => {
@@ -140,16 +155,14 @@ export default function NewRoutine({
   };
 
   const libraries = useMemo(() => ['places'], []);
-  const [note, setNote] = useState('');
+  const [note, setNote] = useState(
+    routineDetailsDriver ? routineDetailsDriver.note : ''
+  );
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     libraries: libraries as any,
   });
-
-  if (!isLoaded) {
-    return <p>Loading...</p>;
-  }
 
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setIsSendingForm(true);
@@ -168,10 +181,10 @@ export default function NewRoutine({
       setErrors(errors);
       if (Object.keys(errors).length === 0) {
         // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites
-        const daysOfWeek = [];
-        for (const day in selectedDays) {
-          daysOfWeek.push(daysToApi[days.indexOf(selectedDays[day])]);
-        }
+        const arrivalTime = new Date(Date.now());
+        arrivalTime.setHours(Number(pickTimeFrom?.split(':')[0]));
+        arrivalTime.setMinutes(Number(pickTimeFrom?.split(':')[1]) + time);
+
         const data = {
           origin: {
             address: origin,
@@ -183,7 +196,7 @@ export default function NewRoutine({
             latitude: destinationCoords.lat.toString(),
             longitude: destinationCoords.lng.toString(),
           },
-          days_of_week: daysOfWeek,
+          days_of_week: selectedDays,
           departure_time_start: pickTimeFrom,
           departure_time_end: pickTimeTo,
           arrival_time:
@@ -194,21 +207,68 @@ export default function NewRoutine({
           available_seats: freeSeatsNumber,
         };
 
-        const url =
-          userType === 'driver' ? 'driver-routines/' : 'passenger-routines/';
-        axiosAuth
-          .post(url, data)
-          .then((response) => {
-            router.push(NEXT_ROUTES.MY_ROUTINES);
-          })
-          .catch((error) => {
-            setIsSendingForm(false);
-          });
+        if (isEdit) {
+          const url =
+            userType === 'driver'
+              ? `driver-routines/${routineDetailsDriver.id}/update/`
+              : `passenger-routines/${routineDetailsPassenger.id}/update/`;
+          axiosAuth
+            .put(url, data)
+            .then((response) => {
+              router.push(NEXT_ROUTES.MY_ROUTINES);
+            })
+            .catch((error) => {
+              setIsSendingForm(false);
+            });
+        } else {
+          const url =
+            userType === 'driver' ? 'driver-routines/' : 'passenger-routines/';
+          axiosAuth
+            .post(url, data)
+            .then((response) => {
+              router.push(NEXT_ROUTES.MY_ROUTINES);
+            })
+            .catch((error) => {
+              setIsSendingForm(false);
+            });
+        }
       } else {
         setIsSendingForm(false);
       }
     }
   };
+
+  useEffect(() => {
+    if (!routineDetailsDriver && !routineDetailsPassenger) return;
+    const routine = (routineDetailsDriver ||
+      routineDetailsPassenger) as GenericRoutineI;
+
+    setOrigin(routine.origin.address);
+    setDestination(routine.destination.address);
+    setOriginCoords({
+      lat: routine.origin.latitude,
+      lng: routine.origin.longitude,
+    });
+    setDestinationCoords({
+      lat: routine.destination.latitude,
+      lng: routine.destination.longitude,
+    });
+    setPickTimeFrom(routine.departure_time_start.length > 5 ? routine.departure_time_start.substring(0, 5) : routine.departure_time_start);
+    setPickTimeTo(routine.departure_time_end.length > 5 ? routine.departure_time_end.substring(0, 5) : routine.departure_time_end);
+    setSelectedDays([routine.day_of_week]);
+
+    if (routineDetailsDriver) {
+      const driverRoutine = routine as DriverRoutineI;
+
+      setPrice(driverRoutine.price);
+      setNote(driverRoutine.note);
+      setFreeSeatsNumber(driverRoutine.available_seats);
+    }
+  }, [routineDetailsDriver, routineDetailsPassenger]);
+
+  if (!isLoaded) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <AnimatedLayout className="bg-white">
@@ -230,6 +290,7 @@ export default function NewRoutine({
         <form
           ref={formRef}
           className="flex w-full flex-none flex-col rounded-t-3xl bg-white px-10 pb-4 pt-8"
+          autoComplete="off"
         >
           <PlacesAutocomplete
             onAddressSelect={(address) => {
@@ -241,6 +302,7 @@ export default function NewRoutine({
             }}
             placeholder="Desde"
             name="origin"
+            defaultValue={origin}
             error={errors.origin}
           />
 
@@ -254,6 +316,7 @@ export default function NewRoutine({
             }}
             placeholder="Hasta"
             name="destination"
+            defaultValue={destination}
             error={errors.destination}
           />
           <div className="mb-4 flex flex-col">
@@ -292,24 +355,31 @@ export default function NewRoutine({
                 : 'divide-light-gray border-light-gray'
             }`}
           >
-            {days.map((day: string) => (
-              <p
-                key={day}
-                className={`h-full w-full py-2 transition-colors duration-300 ${
-                  selectedDays.includes(day) ? 'bg-turquoise text-white' : ''
-                }`}
-                onClick={() => {
-                  delete errors.selectedDays;
-                  if (selectedDays.includes(day)) {
-                    setSeletedDays(selectedDays.filter((d) => d !== day));
-                  } else {
-                    setSeletedDays([...selectedDays, day]);
-                  }
-                }}
-              >
-                {day}
-              </p>  
-            ))}
+            {Object.entries(DAYS_TO_SPANISH).map(
+              (
+                [day, shortDay] // L, M, X...
+              ) => (
+                <p
+                  key={day}
+                  className={`h-full w-full py-2 transition-colors duration-300 ${
+                    selectedDays.includes(day) ? 'bg-turquoise text-white' : ''
+                  } ${isEdit ? 'grayscale' : ''}
+                `}
+                  onClick={() => {
+                    if (isEdit) return; // Don't allow editing days
+                    delete errors.selectedDays;
+
+                    if (selectedDays.includes(day)) {
+                      setSelectedDays(selectedDays.filter((d) => d !== day));
+                    } else {
+                      setSelectedDays([...selectedDays, day]);
+                    }
+                  }}
+                >
+                  {shortDay}
+                </p>
+              )
+            )}
           </span>
           {errors.selectedDays && (
             <div className="mt-1 text-xs font-medium text-red">
@@ -334,11 +404,14 @@ export default function NewRoutine({
                   )
                 }
               />
-
-              <div className="mt-2 flex flex-row place-content-center items-center space-x-4">
-                <input type="checkbox" className="h-5 w-5" />
-                <label className="text-xl font-bold">No repetir el viaje</label>
-              </div>
+              {!isEdit && (
+                <div className="mt-2 flex flex-row place-content-center items-center space-x-4">
+                  <input type="checkbox" className="h-5 w-5" />
+                  <label className="text-xl font-bold">
+                    No repetir el viaje
+                  </label>
+                </div>
+              )}
               <label className="mt-4 text-xl font-bold">
                 Establece un precio por pasajero
               </label>
@@ -376,7 +449,13 @@ export default function NewRoutine({
             </div>
           )}
           <CTAButton
-            text={isSendingForm ? 'PROCESANDO...' : 'CREAR'}
+            text={
+              isSendingForm
+                ? 'PROCESANDO...'
+                : routineDetailsDriver || routineDetailsPassenger
+                ? 'Editar'
+                : 'CREAR'
+            }
             disabled={isSendingForm}
             className="mt-4 w-full"
             onClick={handleButtonClick}

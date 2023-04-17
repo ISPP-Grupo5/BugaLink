@@ -20,7 +20,8 @@ def start_convo(
     try:
         participant = User.objects.get(email=email)
     except User.DoesNotExist:
-        return Response({"message": "You cannot chat with a non existent user"})
+        return Response({"message": "You cannot chat with a non existent user"},
+                        status=status.HTTP_404_NOT_FOUND,)
 
     conversation = Conversation.objects.filter(
         Q(initiator=request.user, receiver=participant)

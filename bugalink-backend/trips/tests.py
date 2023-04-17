@@ -464,13 +464,37 @@ class RequestTrip(TestCase):
         self.balance = Balance.objects.create(user=self.user_2, amount=100)
         self.client.force_authenticate(user=self.user_2)
 
+    # Intenta pagar usando el método de "Balance" y funciona
     def test_request_trip_balance(self):
         url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
+        
+        balance1 = Balance.objects.get(user=self.user_2).amount
+        price = self.trip.driver_routine.price
+        
         response = self.client.post(
             url, data={"payment_method": "Balance", "note": "I need a ride"}
         )
+        
+        balance2 = Balance.objects.get(user=self.user_2).amount
 
         self.assertEqual(response.status_code, 201)
+        self.assertEqual(balance2, balance1 - price)    # Revisamos que el balance se haya actualizado correctamente
+
+    def test_request_trip_balance_not_enough_money(self):
+        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
+        
+        balance = Balance.objects.get(user=self.user_2).amount
+        self.balance.amount = 0
+        self.balance.save()
+        
+        response = self.client.post(
+            url, data={"payment_method": "Balance", "note": "I need a ride"}
+        )
+        
+        self.balance.amount = balance
+        self.balance.save()
+
+        self.assertEqual(response.status_code, 400)
 
     def test_request_trip_card(self):
         url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
@@ -495,6 +519,14 @@ class RequestTrip(TestCase):
         )
 
         self.assertEqual(response.status_code, 201)
+
+    def test_request_trip_wrong_payment_method(self):
+        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
+        response = self.client.post(
+            url, data={"payment_method": "helloworld", "note": "I need a ride"}
+        )
+
+        self.assertEqual(response.status_code, 400)
 
 
 class ReportTripUserTest(TestCase):

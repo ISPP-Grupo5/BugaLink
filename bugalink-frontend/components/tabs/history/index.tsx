@@ -113,7 +113,7 @@ const HistoryList = ({ trips, type, isLoading, isError }) => {
               destination={tripRequest.trip.driver_routine.destination.address}
               date={tripRequest.trip.departure_datetime}
               price={Number.parseFloat(tripRequest.trip.driver_routine.price)}
-              href={NEXT_ROUTES.RATING_TRIP(USER_ID)}
+              href={NEXT_ROUTES.RATING_TRIP(tripRequest.trip.id)}
               isHistory
             />
           ))}

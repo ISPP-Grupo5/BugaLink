@@ -3,13 +3,15 @@ import CTAButton from '@/components/buttons/CTA';
 import RatingButton from '@/components/buttons/Ratings';
 import AnimatedLayout from '@/components/layouts/animated';
 import StarRating from '@/components/starRating';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 import useTrip from '@/hooks/useTrip';
 import useUserStats from '@/hooks/useUserStats';
-import axios from '@/lib/axios';
+import axios, { axiosAuth } from '@/lib/axios';
 import { Drawer } from '@mui/material';
 import { GetServerSideProps } from 'next';
 import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
+import { redirect } from 'next/dist/server/api-utils';
 import { useEffect, useState } from 'react';
 import ReportProblem from '../new/problem';
 
@@ -48,16 +50,25 @@ export default function RatingScreen({ data }) {
   const [drawerReport, setDrawerReport] = useState(false);
   const handleSubmit = async () => {
     const datos = {
-      user_id: authUser.user_id,
       rating: ratingValue,
       is_good_driver: friendlyDriver,
       is_pleasant_driver: goodConduction,
-      already_known: knewEachOther,
+      already_knew: knewEachOther,
     };
 
     // transform to asnyc await
-    const response = await axios.post('trips/' + tripId + '/rate/', datos);
-    console.log(response.data);
+    //const response = await axios.post('trips/' + tripId + '/rate/', datos);
+    //console.log(response.data);
+    const url = 'trips/' + tripId + '/rate/';
+        axiosAuth
+          .post(url, datos)
+          .then((response) => {
+            console.log(response.data);
+            window.location.href = NEXT_ROUTES.HOME;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
 
     //Set values to default just in case so there is no problem in future ratings (see if can bedeleted)
 

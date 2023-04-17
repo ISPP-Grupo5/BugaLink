@@ -21,7 +21,7 @@ export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { data } = useSession();
   const user = data?.user as User;
-  const userPhoto = useUser().user;
+  const userPhoto = useUser(user?.user_id).user;
 
   return (
     <AnimatedLayout className="max-h-full overflow-y-scroll">
@@ -45,7 +45,7 @@ export default function Home() {
             className="aspect-square h-14"
             href={NEXT_ROUTES.PROFILE(user?.user_id)}
           >
-            {user ? <Avatar src={userPhoto.photo} /> : <AvatarSkeleton />}
+            {user ? <Avatar src={userPhoto?.photo} /> : <AvatarSkeleton />}
           </Link>
         </span>
 

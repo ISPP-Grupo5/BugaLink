@@ -104,9 +104,29 @@ class TripRequestCreateSerializer(serializers.ModelSerializer):
 
 
 class TripReportSerializer(serializers.ModelSerializer):
+    reported_user_id = serializers.IntegerField()
+    note = serializers.CharField()
+
     class Meta:
         model = Report
         fields = ("reported_user_id", "note")
+
+    def create(self, trip, reporter_user):
+        self.is_valid(raise_exception=True)
+        validated_data = self.validated_data
+        reported_user_id = validated_data.pop("reported_user_id")
+        note = validated_data.pop("note")
+        reported_user = User.objects.get(id=reported_user_id)
+        reporter_is_driver = reporter_user == trip.driver_routine.driver.user
+        reported_is_driver = reported_user == trip.driver_routine.driver.user
+        return Report.objects.create(
+            reported_user_id=reported_user_id,
+            reporter_user_id=reporter_user.pk,
+            note=note,
+            reporter_is_driver=reporter_is_driver,
+            reported_is_driver=reported_is_driver,
+            trip_id=trip.pk,
+        )
 
 
 class TripRateSerializer(serializers.ModelSerializer):
@@ -120,17 +140,17 @@ class TripRateSerializer(serializers.ModelSerializer):
         fields = ("rating", "is_good_driver", "is_pleasant_driver", "already_knew")
 
     def create(self, trip_request):
-        self.is_valid(raise_exception=True)
-        validated_data = self.validated_data
-        rating = validated_data.pop("rating")
-        is_good_driver = validated_data.pop("is_good_driver")
-        is_pleasant_driver = validated_data.pop("is_pleasant_driver")
-        already_knew = validated_data.pop("already_knew")
-        driver_rating = DriverRating.objects.create(
-            trip_request=trip_request,
-            rating=rating,
-            is_good_driver=is_good_driver,
-            is_pleasant_driver=is_pleasant_driver,
-            already_knew=already_knew,
-        )
-        return driver_rating
+        if self.is_valid():
+            validated_data = self.validated_data
+            rating = validated_data.pop("rating")
+            is_good_driver = validated_data.pop("is_good_driver")
+            is_pleasant_driver = validated_data.pop("is_pleasant_driver")
+            already_knew = validated_data.pop("already_knew")
+            driver_rating = DriverRating.objects.create(
+                trip_request=trip_request,
+                rating=rating,
+                is_good_driver=is_good_driver,
+                is_pleasant_driver=is_pleasant_driver,
+                already_knew=already_knew,
+            )
+            return driver_rating

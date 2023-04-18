@@ -74,7 +74,7 @@ class UserViewSet(
         user.email = new_email
         user.first_name = "Usuario eliminado"
         user.last_name = ""
-        user.photo = user.photo.delete()
+        user.photo.delete()
         user.is_passenger = False
         user.is_driver = False
         user.is_active = False

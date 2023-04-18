@@ -77,7 +77,7 @@ export default function EditProfile({ data }) {
     return errors;
   };
 
-  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
     setIsSendingForm(true);
     event.preventDefault();
     if (formRef.current) {
@@ -100,7 +100,7 @@ export default function EditProfile({ data }) {
         formData.append('last_name', surname);
 
         
-        axiosAuth
+        await axiosAuth
           .put(url, formData)
           .then((res) => {
             signOut({

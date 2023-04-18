@@ -10,19 +10,21 @@ import AnimatedLayout from '@/components/layouts/animated';
 import AvatarSkeleton from '@/components/skeletons/Avatar';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import { User } from 'next-auth';
-import { useSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import useUser from '@/hooks/useUser';
 import Link from 'next/link';
 import Destino from 'public/icons/Vista-Principal/destino.svg';
 import { useState } from 'react';
 import MagnifyingGlass from '/public/icons/Vista-Principal/glass.svg';
+import UserI from '@/interfaces/user';
+import Image from 'next/image';
+
 
 export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { data } = useSession();
   const user = data?.user as User;
-  const userPhoto = useUser(user?.user_id).user;
-
+  const urlPhoto = "http://localhost:8000".concat(user?.photo);
   return (
     <AnimatedLayout className="max-h-full overflow-y-scroll">
       <div className="flex flex-col pb-24">
@@ -45,7 +47,7 @@ export default function Home() {
             className="aspect-square h-14"
             href={NEXT_ROUTES.PROFILE(user?.user_id)}
           >
-            {user ? <Avatar src={userPhoto?.photo} /> : <AvatarSkeleton />}
+            {user ? <Avatar src={urlPhoto} /> : <AvatarSkeleton />}
           </Link>
         </span>
 

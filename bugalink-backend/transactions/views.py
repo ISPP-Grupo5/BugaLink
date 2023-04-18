@@ -1,7 +1,9 @@
+import datetime
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Q
+from django.utils import timezone
 
 from transactions.models import Transaction
 from users.models import User
@@ -38,12 +40,16 @@ class TransactionViewSet(
         user_id = kwargs["user_id"]
         user = User.objects.get(id=user_id)
 
-        transactions = Transaction.objects.filter(Q(sender=user) | Q(receiver=user) | Q(status="PENDING"))
-        balance = 0
+        start_date = timezone.now().date() - datetime.timedelta(days=timezone.now().weekday())
+        end_date = start_date + datetime.timedelta(days=6)
+
+        transactions = Transaction.objects.filter(
+            Q(sender=user) & (Q(status="PENDING") | Q(status="ACCEPTED")),
+            date__range=[start_date, end_date])   
+        
+        balance = 0.0
         for transaction in transactions:
-            if transaction.is_refund:
-                balance -= transaction.amount
-            else:
+            if transaction.sender == user:
                 balance += transaction.amount
 
         return Response(balance, status=status.HTTP_200_OK)

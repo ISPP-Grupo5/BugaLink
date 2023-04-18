@@ -32,7 +32,7 @@ export default function Wallet() {
 
         {
           <div className="text-center">
-          <p className="text-xs text-gray">Pendiente por cobrar</p>
+          <p className="text-xs text-gray">Gastos semanales</p>
           <p className="text-xl font-bold text-black">{pendingBalanceAmount}</p>
         </div> }
       </div>

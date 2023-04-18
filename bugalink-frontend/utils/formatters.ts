@@ -1,6 +1,7 @@
 export const formatDatetime = (datetime: string) => {
   // 2023-04-03T19:20:00Z -> Martes 3 de Abril, 2023 a las 19:20
   const date = new Date(datetime);
+  date.setHours(date.getHours() - 2);
   const dayLower = date.toLocaleDateString('es-ES', { weekday: 'long' });
   const day = capitalize(dayLower); // Capitalized day
   const dayNumber = date.toLocaleDateString('es-ES', { day: 'numeric' });

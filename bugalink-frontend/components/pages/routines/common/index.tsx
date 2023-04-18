@@ -97,11 +97,11 @@ export default function NewRoutine({
     const errors: FormErrors = {};
 
     if (!values.origin) {
-      errors.origin = 'Por favor, ingresa una dirección de origen';
+      errors.origin = 'Por favor, ingrese una dirección de origen';
     }
 
     if (!values.destination) {
-      errors.destination = 'Por favor, ingresa una dirección de destino';
+      errors.destination = 'Por favor, ingrese una dirección de destino';
     }
 
     if (values.origin && values.destination) {

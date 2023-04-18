@@ -6,18 +6,20 @@ import React, { useEffect, useState } from 'react';
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
+  hourFrom: string;
+  hourTo: string;
+  setHourFrom: (hourFrom: string) => void;
+  setHourTo: (hourTo: string) => void;
 };
 
-export default function HourFilter({ open, setOpen }: Props) {
-  const [pickTimeFrom, setPickTimeFrom] = useState('--:--');
-  const [pickTimeTo, setPickTimeTo] = useState('--:--');
+export default function HourFilter({ open, setOpen, hourFrom, hourTo, setHourFrom, setHourTo }: Props) {
   const [errorPickTime, setErrorPickTime] = useState<string | null>();
 
   useEffect(() => {
-    const pickTimeFromHour = parseInt(pickTimeFrom.split(':')[0]);
-    const pickTimeFromMinutes = parseInt(pickTimeFrom.split(':')[1]);
-    const pickTimeToHour = parseInt(pickTimeTo.split(':')[0]);
-    const pickTimeToMinutes = parseInt(pickTimeTo.split(':')[1]);
+    const pickTimeFromHour = parseInt(hourFrom.split(':')[0]);
+    const pickTimeFromMinutes = parseInt(hourFrom.split(':')[1]);
+    const pickTimeToHour = parseInt(hourTo.split(':')[0]);
+    const pickTimeToMinutes = parseInt(hourTo.split(':')[1]);
 
     if (
       pickTimeFromHour > pickTimeToHour ||
@@ -28,12 +30,12 @@ export default function HourFilter({ open, setOpen }: Props) {
     } else {
       setErrorPickTime(null);
     }
-  }, [pickTimeFrom, pickTimeTo]);
+  }, [hourFrom, hourTo]);
 
   const onCloseDrawerHour = () => {
     if (errorPickTime) {
-      setPickTimeFrom('--:--');
-      setPickTimeTo('--:--');
+      setHourFrom('--:--');
+      setHourTo('--:--');
     }
 
     setOpen(false);
@@ -59,11 +61,11 @@ export default function HourFilter({ open, setOpen }: Props) {
           <p className="font-lato text-xl font-bold">Hora de salida</p>
           <p className="text-xs">Define el rango de hora de salida</p>
           <span className="mt-4 flex items-center justify-center space-x-2 text-xl font-bold">
-            <TimePicker time={pickTimeFrom} setTime={setPickTimeFrom} />
+            <TimePicker time={hourFrom} setTime={setHourFrom} />
             <p> — </p>
             <TimePicker
-              time={pickTimeTo}
-              setTime={setPickTimeTo}
+              time={hourTo}
+              setTime={setHourTo}
               error={errorPickTime}
             />
           </span>

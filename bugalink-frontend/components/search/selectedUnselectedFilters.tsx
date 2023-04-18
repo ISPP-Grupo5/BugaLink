@@ -22,7 +22,7 @@ const SelectedUnselectedFilter = ({ filter }) => {
               onClick={() => setDrawerPrice(true)}
               className="flex-grow-1 flex-shrink-0"
             >
-              <TagsButton text={filter.selectedValue} selected />
+              <TagsButton text={filter.name} selected />
             </div>
           ) : (
             <div
@@ -32,7 +32,7 @@ const SelectedUnselectedFilter = ({ filter }) => {
               <TagsButton text={filter.name} />
             </div>
           )}
-          <PriceFilter open={drawerPrice} setOpen={setDrawerPrice} />
+          <PriceFilter open={drawerPrice} setOpen={setDrawerPrice} minPrice={filter.minPrice} maxPrice={filter.maxPrice} setMinPrice={filter.setMinPrice} setMaxPrice={filter.setMaxPrice} />
         </>
       );
     case 'Hora':
@@ -43,7 +43,7 @@ const SelectedUnselectedFilter = ({ filter }) => {
               onClick={() => setDrawerHour(true)}
               className="flex-grow-1 flex-shrink-0"
             >
-              <TagsButton text={filter.selectedValue} selected />
+              <TagsButton text={filter.name} selected />
             </div>
           ) : (
             <div
@@ -53,7 +53,14 @@ const SelectedUnselectedFilter = ({ filter }) => {
               <TagsButton text={filter.name} />
             </div>
           )}
-          <HourFilter open={drawerHour} setOpen={setDrawerHour} />
+          <HourFilter
+            open={drawerHour}
+            setOpen={setDrawerHour}
+            hourFrom={filter.hourFrom}
+            hourTo={filter.hourTo}
+            setHourFrom={filter.setHourFrom}
+            setHourTo={filter.setHourTo}
+          />
         </>
       );
     case 'Valoración':
@@ -64,7 +71,7 @@ const SelectedUnselectedFilter = ({ filter }) => {
               onClick={() => setDrawerRating(true)}
               className="flex-grow-1 flex-shrink-0"
             >
-              <TagsButton text={filter.selectedValue} selected />
+              <TagsButton text={filter.name} selected />
             </div>
           ) : (
             <div
@@ -74,7 +81,7 @@ const SelectedUnselectedFilter = ({ filter }) => {
               <TagsButton text={filter.name} />
             </div>
           )}
-          <RatingFilter open={drawerRating} setOpen={setDrawerRating} />
+          <RatingFilter open={drawerRating} setOpen={setDrawerRating} minStars={filter.minStars} />
         </>
       );
     case 'Preferencias':
@@ -85,7 +92,7 @@ const SelectedUnselectedFilter = ({ filter }) => {
               onClick={() => setDrawerPreferences(true)}
               className="flex-grow-1 flex-shrink-0"
             >
-              <TagsButton text="Preferencias" selected />
+              <TagsButton text={filter.name} selected />
             </div>
           ) : (
             <div
@@ -98,6 +105,14 @@ const SelectedUnselectedFilter = ({ filter }) => {
           <PreferencesFilter
             open={drawerPreferences}
             setOpen={setDrawerPreferences}
+            allowsPets={filter.allowsPets}
+            allowsSmoking={filter.allowsSmoking}
+            prefersTalk={filter.prefersTalk}
+            prefersMusic={filter.prefersMusic}
+            setAllowsPets={filter.setAllowsPets}
+            setAllowsSmoking={filter.setAllowsSmoking}
+            setPrefersMusic={filter.setPrefersMusic}
+            setPrefersTalk={filter.setPrefersTalk}
           />
         </>
       );
@@ -109,7 +124,7 @@ const SelectedUnselectedFilter = ({ filter }) => {
               onClick={() => setDrawerDay(true)}
               className="flex-grow-1 flex-shrink-0"
             >
-              <TagsButton text={filter.selectedValue} selected />
+              <TagsButton text={filter.name} selected />
             </div>
           ) : (
             <div
@@ -119,7 +134,14 @@ const SelectedUnselectedFilter = ({ filter }) => {
               <TagsButton text={filter.name} />
             </div>
           )}
-          <DayFilter open={drawerDay} setOpen={setDrawerDay} />
+          <DayFilter
+            open={drawerDay}
+            setOpen={setDrawerDay}
+            dateFrom={filter.dateFrom}
+            dateTo={filter.dateTo}
+            setDateFrom={filter.setDateFrom}
+            setDateTo={filter.setDateTo}
+          />
         </>
       );
     default:

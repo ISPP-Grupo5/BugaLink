@@ -1,19 +1,59 @@
 import CTAButton from '@/components/buttons/CTA';
 import { Drawer } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { preferences } from '@/constants/preferences';
 import PreferenceBox from '@/components/preferences/box';
 
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
+  allowsSmoking: boolean | string;
+  allowsPets: boolean | string;
+  prefersTalk: boolean | string;
+  prefersMusic: boolean | string;
+  setAllowsPets: (allowsPets: string) => void;
+  setAllowsSmoking: (allowsSmoking: string) => void;
+  setPrefersMusic: (prefersMusic: string) => void;
+  setPrefersTalk: (prefersTalk: string) => void;
 };
 
-export default function PreferencesFilter({ open, setOpen }: Props) {
-  const [allowSmoke, setAllowSmoke] = useState(false);
-  const [allowPets, setAllowPets] = useState(false);
-  const [preferMusic, setPreferMusic] = useState(false);
-  const [preferTalk, setPreferTalk] = useState(false);
+export default function PreferencesFilter({ open, setOpen, allowsPets, allowsSmoking, prefersMusic, prefersTalk, setAllowsPets, setAllowsSmoking, setPrefersMusic, setPrefersTalk }: Props) {
+  const [allowSmoke, setAllowSmoke] = useState(allowsSmoking === 'True');
+  const [allowPets, setAllowPets] = useState(allowsPets === 'True');
+  const [preferMusic, setPreferMusic] = useState(prefersMusic === 'True');
+  const [preferTalk, setPreferTalk] = useState(prefersTalk === 'True');
+
+  useEffect(() => {
+    if (allowSmoke) {
+      setAllowsSmoking('True')
+    } else {
+      setAllowsSmoking('')
+    }
+
+    if (allowPets) {
+      setAllowsPets('True')
+    } else {
+      setAllowsPets('')
+    }
+
+    if (preferMusic) {
+      setPrefersMusic('True')
+    } else {
+      setPrefersMusic('')
+    }
+
+    if (preferTalk) {
+      setPrefersTalk('True')
+    } else {
+      setPrefersTalk('')
+    }
+
+  }, [allowSmoke, allowPets, preferMusic, preferTalk]);
+
+  allowsSmoking = allowsSmoking ==='True'
+  allowsPets = allowsPets === 'True'
+  prefersMusic = prefersMusic === 'True'
+  prefersTalk = prefersTalk === 'True'
 
   return (
     <Drawer

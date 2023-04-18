@@ -6,13 +6,22 @@ import Slider from '@mui/material/Slider';
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
+  minPrice: string;
+  maxPrice: string;
+  setMinPrice: (minPrice: string) => void;
+  setMaxPrice: (maxPrice: string) => void;
 };
 
-export default function PriceFilter({ open, setOpen }: Props) {
-  const [priceRange, setPriceRange] = useState<number[]>([0, 0]);
+export default function PriceFilter({ open, setOpen, minPrice, maxPrice, setMinPrice, setMaxPrice }: Props) {
+  const [priceRange, setPriceRange] = useState<number[]>([
+    minPrice === "" ? 0 : parseInt(minPrice),
+    maxPrice === "" ? 0 : parseInt(maxPrice),
+  ]);
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     setPriceRange(newValue as number[]);
+    setMinPrice(newValue[0])
+    setMaxPrice(newValue[1])
   };
 
   function valuetext(value: number) {

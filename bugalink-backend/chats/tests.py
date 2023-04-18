@@ -59,23 +59,6 @@ class TripConversationTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(response.status_code, 400)
         
-    # Empieza una conversación con otro usuario
-    def test_post_conversation(self):
-        url = "/api/v1/conversations/start/"
-        response = self.client.post(url,data={"email" : self.user_3.email})
-        data = json.loads(response.content)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(Conversation.objects.all()), 2) # Se espera que se cree una conversación nueva
-        self.assertEqual(Conversation.objects.get(receiver=self.user_3).initiator, self.user) # Se espera que la conversación nueva tenga al usuario 1 como iniciador
-        
-    # Intenta empezar una conversación con un usuario no existente
-    def test_post_conversation_non_existant_user(self):
-        url = "/api/v1/conversations/start/"
-        response = self.client.post(url,data={"email" : "helloworld"})
-        data = json.loads(response.content)
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(len(Conversation.objects.all()), 1) # Se espera que no se cree una conversación nueva
-        
     # Obtene la lista de conversaciones del usuario, luego crea una nueva, y verifica que se ha incrementado el número de conversaciones
     def test_get_conversations(self):
         url = "/api/v1/conversations/"

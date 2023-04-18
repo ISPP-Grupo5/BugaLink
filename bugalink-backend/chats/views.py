@@ -10,33 +10,6 @@ from .models import Conversation
 from .serializers import ConversationListSerializer, ConversationSerializer
 
 
-# Create your views here.
-@api_view(["POST"])
-def start_convo(
-    request,
-):
-    data = request.data
-    email = data.get("email")
-    try:
-        participant = User.objects.get(email=email)
-    except User.DoesNotExist:
-        return Response({"message": "You cannot chat with a non existent user"},
-                        status=status.HTTP_404_NOT_FOUND,)
-
-    conversation = Conversation.objects.filter(
-        Q(initiator=request.user, receiver=participant)
-        | Q(initiator=participant, receiver=request.user)
-    )
-    if conversation.exists():
-        return redirect(reverse("get_conversation", args=(conversation[0].id,)))
-    else:
-        conversation = Conversation.objects.create(
-            initiator=request.user, receiver=participant
-        )
-        return Response(ConversationSerializer(instance=conversation).data)
-
-
-
 class GetConversationView(viewsets.GenericViewSet):
     serializer_class=ConversationSerializer
 

@@ -52,10 +52,10 @@ export default function DateFilter({
     // it stays in the previous day
     // The current workaround is to add 12 hours but it's not the optimal solution
     dateFromProvisional &&
+      !isNaN(dateFromProvisional.date()) &&
       setDateFrom(
         dateFromProvisional.add(12, 'hours').toISOString().split('T')[0]
       );
-    console.log(isNaN(dateToProvisional.date()))
     dateToProvisional &&
       !isNaN(dateToProvisional.date()) &&
       setDateTo(dateToProvisional.add(12, 'hours').toISOString().split('T')[0]);

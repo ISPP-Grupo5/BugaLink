@@ -18,7 +18,7 @@ const NEXT_ROUTES = {
   NEW_ROUTINE_PASSENGER: '/routines/passenger/new',
   BECOME_DRIVER: '/become-driver',
   ACCEPT_TRIP_REQUEST: (tripId) => `/requests/${tripId}`,
-  SEARCH_RESULTS: '/search/result',
+  SEARCH_RESULTS: '/search',
   PENDING_REQUESTS: '/requests/pending',
   CHAT_LIST: '/chats',
   CHAT: (userId) => `/users/${userId}/chat`,

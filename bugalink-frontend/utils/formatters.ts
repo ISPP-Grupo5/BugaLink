@@ -22,6 +22,14 @@ export const parseDate = (time: string) => {
   return date;
 };
 
+export const shortenDate = (date: string) => {
+  // 2023-04-03T19:20:00Z -> 3 abr
+  const dateObj = new Date(date);
+  const dayNumber = dateObj.toLocaleDateString('es-ES', { day: 'numeric' });
+  const month = dateObj.toLocaleDateString('es-ES', { month: 'short' });
+  return `${dayNumber} ${month}`;
+};
+
 export const shortenName = (firstName: string, lastName: string) => {
   if (!firstName || !lastName) return '';
   // Pablo López Benítez' -> 'Pablo López'

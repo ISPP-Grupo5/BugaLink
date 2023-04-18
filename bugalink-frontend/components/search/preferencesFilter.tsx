@@ -33,7 +33,7 @@ export default function PreferencesFilter({ open, setOpen }: Props) {
       <div className="rounded-t-lg bg-white">
         <div className="ml-6 mt-2 mr-5">
           <p className="font-lato text-xl font-bold">Preferencias y normas</p>
-          <p className="text-xs">
+          <p className="mb-6 text-sm">
             En base a las preferencias y normas de los conductores
           </p>
           {/* TODO: This code is copypasted from the profile, make a component!! */}

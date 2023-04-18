@@ -7,6 +7,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import redirect
 from passenger_routines.models import PassengerRoutine
+from passengers.models import Passenger
 from payment_methods.models import Balance
 from ratings.models import DriverRating, Report
 from ratings.serializers import DriverRatingSerializer, ReportSerializer
@@ -15,9 +16,6 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from transactions.models import Transaction
 from trips.models import Trip, TripRequest
-from users.models import User
-from passengers.models import Passenger
-
 from trips.serializers import (
     TripReportSerializer,
     TripRequestCreateSerializer,
@@ -104,33 +102,35 @@ class TripRequestViewSet(
         return self.retrieve(request, *args, **kwargs)
 
     # POST /trips/<id>/request/ (For a passenger to request a trip)
+    # POST /trips/<id>/request/ (For a passenger to request a trip)
     @transaction.atomic
     def create(self, trip_id, user_id, note):
+        try:
+            trip = Trip.objects.get(id=trip_id)
+            user = User.objects.get(id=user_id)
+            price = trip.driver_routine.price if user.is_pilotuser else trip.driver_routine.price * \
+                decimal.Decimal(1.15)
+            passenger = Passenger.objects.get(user=user)
+            Transaction.objects.create(
+                sender=user,
+                receiver=trip.driver_routine.driver.user,
+                amount=price,
+            )
 
-        trip = Trip.objects.get(id=trip_id)
-        user = User.objects.get(id=user_id)
-        price = trip.driver_routine.price if user.is_pilotuser else trip.driver_routine.price * \
-            decimal.Decimal(1.15)
-        passenger = Passenger.objects.get(user=user)
-
-        Transaction.objects.create(
-            sender=user,
-            receiver=trip.driver_routine.driver.user,
-            amount=price,
-        )
-
-        trip_request = TripRequest.objects.create(
-            trip=trip,
-            status="PENDING",
-            note=note,
-            reject_note="",
-            passenger=passenger,
-            price=price,
-        )
-
-        return Response(self.get_serializer(trip_request).data, status=status.HTTP_201_CREATED)
+            TripRequest.objects.create(
+                trip=trip,
+                status="PENDING",
+                note=note,
+                reject_note="",
+                passenger=passenger,
+                price=price,
+            )
+            return True
+        except django.core.exceptions.ObjectDoesNotExist:
+            return False
 
     # GET /trip-requests/pending/count/ (For a driver to get the number of pending requests)
+
     def count(self, request, *args, **kwargs):
         num_pending_requests = TripRequest.objects.filter(
             trip__driver_routine__driver__user=request.user,

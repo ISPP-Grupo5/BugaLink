@@ -37,6 +37,7 @@ type ConversationPreviewI = {
   initiator: UserI;
   receiver: UserI;
   last_message: MessageI | null;
+  unread_messages_count: number;
 };
 
 export default ConversationPreviewI;

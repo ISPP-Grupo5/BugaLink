@@ -303,7 +303,7 @@ export default function SearchResults() {
           searchResults.map((trip) => (
             <Link
               key={trip.name}
-              href="/ride/V1StGXR8_Z5jdHi6B-myT/details?requested=false"
+              href={NEXT_ROUTES.TRIP_DETAILS(trip.id)}
               className="w-full"
             >
               <TripCard

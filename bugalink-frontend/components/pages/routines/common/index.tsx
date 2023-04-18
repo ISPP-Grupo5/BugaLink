@@ -253,8 +253,8 @@ export default function NewRoutine({
       lat: routine.destination.latitude,
       lng: routine.destination.longitude,
     });
-    setPickTimeFrom(routine.departure_time_start);
-    setPickTimeTo(routine.departure_time_end);
+    setPickTimeFrom(routine.departure_time_start.length > 5 ? routine.departure_time_start.substring(0, 5) : routine.departure_time_start);
+    setPickTimeTo(routine.departure_time_end.length > 5 ? routine.departure_time_end.substring(0, 5) : routine.departure_time_end);
     setSelectedDays([routine.day_of_week]);
 
     if (routineDetailsDriver) {

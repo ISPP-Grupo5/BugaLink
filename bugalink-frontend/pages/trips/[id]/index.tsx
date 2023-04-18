@@ -72,7 +72,7 @@ export default function Details({ data }) {
   return (
     <AnimatedLayout>
       <div className="flex h-screen flex-col items-center justify-center">
-        <span className="justify-between flex w-full items-center bg-white px-2">
+        <span className="flex w-full items-center justify-between bg-white px-2">
           <BackButtonText text="Detalles del viaje" />
           <BookmarkTripButton className="mr-2 scale-125" trip={trip} />
         </span>
@@ -173,7 +173,7 @@ export default function Details({ data }) {
         </div>
         {/* Trip request */}
         <div className="w-full rounded-t-xl bg-white py-6 px-5 shadow-t-md">
-          <div className="justify-between flex flex-row items-center">
+          <div className="flex flex-row items-center justify-between">
             <div className="flex flex-col">
               <p className="text-sm font-normal">Tipo de viaje</p>
               <p className="text-xl font-bold">
@@ -181,31 +181,13 @@ export default function Details({ data }) {
               </p>
             </div>
             <div className="flex flex-col">
-              <p className="text-sm font-normal">Precio por asiento</p>
-              <p className="text-xl font-bold">
-                {/* TODO: price should come as a float */}
-                {Number.parseFloat(trip.driver_routine.price).toLocaleString(
-                  'es-ES',
-                  {
-                    style: 'currency',
-                    currency: 'EUR',
-                  }
-                )}
+              <p className="text-sm font-normal">
+                {/* Non-pilot users have a 15% fee in the usage */}
+                Precio final {!user.is_pilotuser && '(+15%)'}
               </p>
-              <p className="text-sm font-normal">Precio final (+15%)</p>
-              {!user.is_pilotuser ? (
-                <p className="text-xl font-bold">
-                  {(
-                    Number.parseFloat(trip.driver_routine.price) +
-                    0.15 * Number.parseFloat(trip.driver_routine.price)
-                  ).toLocaleString('es-ES', {
-                    style: 'currency',
-                    currency: 'EUR',
-                  })}
-                </p>
-              ) : (
-                <div className="flex">
-                  <p className="text-red text-xl font-bold line-through">
+              <div className="flex space-x-2">
+                {!user.is_pilotuser ? (
+                  <p className="text-xl font-bold">
                     {(
                       Number.parseFloat(trip.driver_routine.price) +
                       0.15 * Number.parseFloat(trip.driver_routine.price)
@@ -214,16 +196,28 @@ export default function Details({ data }) {
                       currency: 'EUR',
                     })}
                   </p>
-                  <p className="ml-4 text-xl font-bold">
-                    {Number.parseFloat(
-                      trip.driver_routine.price
-                    ).toLocaleString('es-ES', {
-                      style: 'currency',
-                      currency: 'EUR',
-                    })}
-                  </p>
-                </div>
-              )}
+                ) : (
+                  <div className="flex">
+                    <p className="text-xl font-bold text-red line-through">
+                      {(
+                        Number.parseFloat(trip.driver_routine.price) +
+                        0.15 * Number.parseFloat(trip.driver_routine.price)
+                      ).toLocaleString('es-ES', {
+                        style: 'currency',
+                        currency: 'EUR',
+                      })}
+                    </p>
+                    <p className="ml-4 text-xl font-bold">
+                      {Number.parseFloat(
+                        trip.driver_routine.price
+                      ).toLocaleString('es-ES', {
+                        style: 'currency',
+                        currency: 'EUR',
+                      })}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
             <div className="flex flex-col">
               <p className="text-sm font-normal">Plazas ocupadas</p>

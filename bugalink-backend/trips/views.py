@@ -6,6 +6,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import redirect
 from passenger_routines.models import PassengerRoutine
+from passengers.models import Passenger
 from payment_methods.models import Balance
 from ratings.models import DriverRating, Report
 from ratings.serializers import DriverRatingSerializer, ReportSerializer
@@ -14,9 +15,6 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from transactions.models import Transaction
 from trips.models import Trip, TripRequest
-from users.models import User
-from passengers.models import Passenger
-
 from trips.serializers import (
     TripReportSerializer,
     TripRequestCreateSerializer,
@@ -104,10 +102,10 @@ class TripRequestViewSet(
 
     # POST /trips/<id>/request/ (For a passenger to request a trip)
     @transaction.atomic
-    def create(self, trip_id, user_id, note):
-
+    def create(self, request, trip_id):
         trip = Trip.objects.get(id=trip_id)
-        user = User.objects.get(id=user_id)
+        user = request.user
+        note = request.POST.get("note")
         price = trip.driver_routine.price
         passenger = Passenger.objects.get(user=user)
 
@@ -126,7 +124,9 @@ class TripRequestViewSet(
             price=price,
         )
 
-        return Response(self.get_serializer(trip_request).data, status=status.HTTP_201_CREATED)
+        return Response(
+            self.get_serializer(trip_request).data, status=status.HTTP_201_CREATED
+        )
 
     # GET /trip-requests/pending/count/ (For a driver to get the number of pending requests)
     def count(self, request, *args, **kwargs):

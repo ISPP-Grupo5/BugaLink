@@ -7,7 +7,7 @@ import { TransactionList } from '@/components/cards/transactions';
 import Link from 'next/link';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import useBalance from '@/hooks/useBalance';
-import useExpectedExpense from '@/hooks/useexpectedExpense';
+import useExpectedExpense from '@/hooks/useExpectedExpense';
 
 export default function Wallet() {
   const { balance } = useBalance();

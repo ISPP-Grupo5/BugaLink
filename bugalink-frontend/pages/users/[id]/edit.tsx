@@ -4,9 +4,12 @@ import CTAButton from '@/components/buttons/CTA';
 import DialogDeleteAccount from '@/components/dialogs/deleteAccount';
 import TextField from '@/components/forms/TextField';
 import AnimatedLayout from '@/components/layouts/animated';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 import useUser from '@/hooks/useUser';
 import UserI from '@/interfaces/user';
+import { axiosAuth } from '@/lib/axios';
 import { GetServerSideProps } from 'next';
+import { signOut } from 'next-auth/react';
 import Pencil from 'public/assets/edit.svg';
 import { useEffect, useRef, useState } from 'react';
 
@@ -46,7 +49,7 @@ export default function EditProfile({ data }) {
 
   const [name, setName] = useState<string>('');
   const [surname, setSurname] = useState<string>('');
-  const [photo, setPhoto] = useState<File>();
+  const [file, setFile] = useState<File>();
   const [photoURL, setPhotoURL] = useState<string>('');
 
   const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -54,6 +57,8 @@ export default function EditProfile({ data }) {
   const [errors, setErrors] = useState<FormErrors>({});
 
   const formRef = useRef<HTMLFormElement>(null);
+
+  const [isSendingForm, setIsSendingForm] = useState(false);
 
   const validateForm = (values: FormValues) => {
     const errors: FormErrors = {};
@@ -71,7 +76,8 @@ export default function EditProfile({ data }) {
     return errors;
   };
 
-  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    setIsSendingForm(true);
     event.preventDefault();
     if (formRef.current) {
       const formData = new FormData(formRef.current);
@@ -85,9 +91,26 @@ export default function EditProfile({ data }) {
       setErrors(errors);
       if (Object.keys(errors).length === 0) {
         // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites
-        console.log(
-          'Los datos del formulario son válidos. ¡Enviando formulario!'
-        );
+        const url = `users/${user.id}/edit`;
+
+        const formData = new FormData();
+        formData.append('photo', file);
+        formData.append('first_name', name);
+        formData.append('last_name', surname);
+
+        
+        await axiosAuth
+          .put(url, formData)
+          .then((res) => {
+            signOut({
+              callbackUrl: NEXT_ROUTES.LOGIN,
+            })
+          })
+          .catch((err) => {
+            setIsSendingForm(false);
+          });
+      } else{
+        setIsSendingForm(false);
       }
     }
   };
@@ -124,8 +147,10 @@ export default function EditProfile({ data }) {
                   img.src = e.target.result as string;
                 };
                 reader.readAsDataURL(file);
-                setPhoto(file);
+                setFile(file);
                 setPhotoURL(URL.createObjectURL(file));
+
+                
               }}
             />
             <Avatar
@@ -181,7 +206,7 @@ export default function EditProfile({ data }) {
             </p>
             <CTAButton
               className="w-11/12"
-              text="GUARDAR"
+              text={isSendingForm ? "PROCESANDO..." :"GUARDAR"}
               onClick={handleSubmit}
             />
           </div>

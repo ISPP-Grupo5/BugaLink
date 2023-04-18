@@ -15,5 +15,9 @@ module.exports = withPWA({
   images: {
     domains: ['localhost', '127.0.0.1', 'app.bugalink.es'],
   },
+  export :{
+    BACKEND_URL: process.env.BACKEND_URL,
+  } 
+  
 });
 

@@ -10,21 +10,19 @@ import AnimatedLayout from '@/components/layouts/animated';
 import AvatarSkeleton from '@/components/skeletons/Avatar';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import { User } from 'next-auth';
-import { getSession, useSession } from 'next-auth/react';
-import useUser from '@/hooks/useUser';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Destino from 'public/icons/Vista-Principal/destino.svg';
 import { useState } from 'react';
 import MagnifyingGlass from '/public/icons/Vista-Principal/glass.svg';
-import UserI from '@/interfaces/user';
-import Image from 'next/image';
 
 
 export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { data } = useSession();
   const user = data?.user as User;
-  const urlPhoto = "http://localhost:8000".concat(user?.photo);
+  // const urlPhoto = "http://localhost:8000".concat(user?.photo);
+  const urlPhoto = process.env.NEXT_PUBLIC_API_URL.concat(user?.photo);
   return (
     <AnimatedLayout className="max-h-full overflow-y-scroll">
       <div className="flex flex-col pb-24">

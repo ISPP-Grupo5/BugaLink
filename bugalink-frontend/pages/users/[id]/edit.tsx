@@ -10,7 +10,6 @@ import UserI from '@/interfaces/user';
 import { axiosAuth } from '@/lib/axios';
 import { GetServerSideProps } from 'next';
 import { signOut } from 'next-auth/react';
-import router from 'next/router';
 import Pencil from 'public/assets/edit.svg';
 import { useEffect, useRef, useState } from 'react';
 

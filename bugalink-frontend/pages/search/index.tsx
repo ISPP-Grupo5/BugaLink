@@ -4,7 +4,7 @@ import TripCard from '@/components/cards/recommendation';
 import AnimatedLayout from '@/components/layouts/animated';
 import PlacesAutocomplete from '@/components/maps/placesAutocomplete';
 import DateFilter from '@/components/search/dateFilter';
-import DayFilter from '@/components/search/dayFIlter';
+import DayFilter from '@/components/search/dayFilter';
 import HourFilter from '@/components/search/hourFilter';
 import PriceFilter from '@/components/search/priceFilter';
 import RatingFilter from '@/components/search/ratingFilter';

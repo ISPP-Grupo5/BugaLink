@@ -21,8 +21,9 @@ export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { data } = useSession();
   const user = data?.user as User;
-  // const urlPhoto = "http://localhost:8000".concat(user?.photo);
-  const urlPhoto = process.env.NEXT_PUBLIC_API_URL.concat(user?.photo);
+  const host = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const urlPhoto = user?.photo ? host+user?.photo : "";
+
   return (
     <AnimatedLayout className="max-h-full overflow-y-scroll">
       <div className="flex flex-col pb-24">

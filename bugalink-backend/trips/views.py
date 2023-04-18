@@ -1,3 +1,4 @@
+import decimal
 import os
 
 import django.core.exceptions
@@ -108,7 +109,8 @@ class TripRequestViewSet(
 
         trip = Trip.objects.get(id=trip_id)
         user = User.objects.get(id=user_id)
-        price = trip.driver_routine.price
+        price = trip.driver_routine.price if user.is_pilotuser else trip.driver_routine.price * \
+            decimal.Decimal(1.15)
         passenger = Passenger.objects.get(user=user)
 
         Transaction.objects.create(

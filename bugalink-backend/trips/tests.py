@@ -836,7 +836,6 @@ class TripSearchTest(TestCase):
         self.assertEqual(response.status_code, 400)
 
 
-""" DONT WORK - PLEASE CHECK THIS OUT ABRAHAM
 class TripRateTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -860,7 +859,7 @@ class TripRateTest(TestCase):
             DriverRating.objects.get(trip_request=self.trip_request).rating, 2.3
         )
 
-"""
+
 class ReportTripUserTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -883,7 +882,8 @@ class ReportTripUserTest(TestCase):
         response = self.client.get(url)
         data = json.loads(response.content)
         self.assertEqual(len(data.get("users")), 2)
-        
+
+
 class TripRequestsTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -899,24 +899,22 @@ class TripRequestsTest(TestCase):
 
     # Comprueba cuántos trip_requests se obtienen alterando varias veces los datos
     def test_get_trip_count_request(self):
-        trip_status = self.trip.status
-        trip_request_status = self.trip_request.status
-        trip_request_2_status = self.trip_request_2.status
-        
         url = "/api/v1/trip-requests/pending/count/"
         response = self.client.get(url)
         data = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data["count"], 1) #En principio, debería devolver sólo uno
-        
+        self.assertEqual(data["count"], 1)  # En principio, debería devolver sólo uno
+
         self.trip_request_2.status = "ACCEPTED"
         self.trip_request_2.save()
         url = "/api/v1/trip-requests/pending/count/"
         response = self.client.get(url)
         data = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data["count"], 0) #Si el trip_request queda aceptado (o rechazado), dejará de contarse
-        
+        self.assertEqual(
+            data["count"], 0
+        )  # Si el trip_request queda aceptado (o rechazado), dejará de contarse
+
         self.trip.status = "PENDING"
         self.trip.save()
         self.trip_request.status = "PENDING"
@@ -927,14 +925,16 @@ class TripRequestsTest(TestCase):
         response = self.client.get(url)
         data = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data["count"], 2) #Si tanto los trip_requests como los trips están "PENDING", deberían contarse
-        
+        self.assertEqual(
+            data["count"], 2
+        )  # Si tanto los trip_requests como los trips están "PENDING", deberían contarse
+
     def test_put_accept_trip_request(self):
         _id = self.trip_request_2.id
         url = "/api/v1/trip-requests/" + str(_id) + "/accept/"
         self.client.put(url)
         self.assertEqual(TripRequest.objects.get(id=_id).status, "ACCEPTED")
-        
+
     def test_put_reject_trip_request(self):
         _id = self.trip_request_2.id
         url = "/api/v1/trip-requests/" + str(_id) + "/reject/"

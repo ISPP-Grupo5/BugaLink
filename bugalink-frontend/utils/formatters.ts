@@ -23,6 +23,14 @@ export const parseDate = (time: string) => {
   return date;
 };
 
+export const parseDateFromDate = (dateS: string) => {
+  // Date(2023-04-10T19:20:00Z) -> 10-Abr-2023
+  const date = new Date(dateS);
+  const day = date.toLocaleDateString('es-ES', { day: 'numeric' });
+  const month = capitalize(date.toLocaleDateString('es-ES', { month: 'short' }));
+  const year = date.getFullYear().toString().slice(-2);
+  return `${day}-${month}-${year}`;
+}
 export const shortenDate = (date: string) => {
   // 2023-04-03T19:20:00Z -> 3 abr
   const dateObj = new Date(date);

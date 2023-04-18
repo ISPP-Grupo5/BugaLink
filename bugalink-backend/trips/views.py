@@ -1,3 +1,4 @@
+import decimal
 import os
 
 import django.core.exceptions
@@ -107,9 +108,9 @@ class TripRequestViewSet(
         try:
             trip = Trip.objects.get(id=trip_id)
             user = User.objects.get(id=user_id)
-            price = trip.driver_routine.price
+            price = trip.driver_routine.price if user.is_pilotuser else trip.driver_routine.price * \
+                decimal.Decimal(1.15)
             passenger = Passenger.objects.get(user=user)
-
             Transaction.objects.create(
                 sender=user,
                 receiver=trip.driver_routine.driver.user,
@@ -127,9 +128,9 @@ class TripRequestViewSet(
             return True
         except django.core.exceptions.ObjectDoesNotExist:
             return False
-            
 
     # GET /trip-requests/pending/count/ (For a driver to get the number of pending requests)
+
     def count(self, request, *args, **kwargs):
         num_pending_requests = TripRequest.objects.filter(
             trip__driver_routine__driver__user=request.user,

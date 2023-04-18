@@ -7,7 +7,7 @@ import useSWR from 'swr';
 export default function useLastTransactions() {
     const user = useSession().data?.user as User;
     const { data, error, isLoading } = useSWR(
-        user && `/users/${user.user_id}/transactions/get_last_transactions`,
+        user && `/users/${user.user_id}/transactions/recent`,
         fetcherAuth
     );
     return {

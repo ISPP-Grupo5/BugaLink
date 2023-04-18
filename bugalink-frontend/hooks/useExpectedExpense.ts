@@ -3,15 +3,15 @@ import { User } from "next-auth";
 import { useSession } from "next-auth/react";
 import useSWR from 'swr';
 
-export default function usePendingBalance() {
+export default function useExpectedExpense() {
     const user = useSession().data?.user as User;
     const { data, error, isLoading } = useSWR(
-        user && `/users/${user.user_id}/transactions/get_pending_balance`,
+        user && `/users/${user.user_id}/transactions/expected-expense`,
         fetcherAuth
     );
     return {
-        pendingBalance: data as string,
-        isLoadingPendingBalance: isLoading,
-        isErrorPendingBalance: error,
+        expectedExpense: data as string,
+        isLoadingExpectedExpense: isLoading,
+        isErrorExpectedExpense: error,
     };
 }

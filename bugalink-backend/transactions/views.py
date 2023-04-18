@@ -24,9 +24,8 @@ class TransactionViewSet(
         return self.update(request, *args, **kwargs)
     
     @action(detail=False, methods=['get'])
-    def get_last_transactions(self, request, *args, **kwargs):
+    def list_recent_transactions(self, request, *args, **kwargs):
         user_id = kwargs["user_id"]
-        #print(user_id)
         user = User.objects.get(id=user_id)
 
         transactions = Transaction.objects.filter(Q(sender=user) | Q(receiver=user))[:10]
@@ -36,7 +35,7 @@ class TransactionViewSet(
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(detail=False, methods=['get'])
-    def get_pending_balance(self, request, *args, **kwargs):
+    def get_expected_expense(self, request, *args, **kwargs):
         user_id = kwargs["user_id"]
         user = User.objects.get(id=user_id)
 

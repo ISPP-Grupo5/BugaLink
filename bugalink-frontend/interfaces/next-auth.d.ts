@@ -27,6 +27,7 @@ declare module 'next-auth' {
     verified: boolean;
     is_validated_driver: boolean;
     iat?: number;
+    is_pilotuser: boolean;
   }
   export { NextAuthOptions, getServerSession, Session, User };
   export default NextAuth;

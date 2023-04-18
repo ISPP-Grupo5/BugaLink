@@ -1,21 +1,15 @@
+import { fetcherAuth } from '@/utils/fetcher';
+import useSWR from 'swr';
+
 export default function useNumPendingChats() {
-  // const userId = useAuth().userId;
-
-  // TODO: implement when we have the backend endpoint
-  // const { data, error, isLoading } = useSWR(
-  //   `/users/${userId}/chats/pending/count`,
-  //   fetcher
-  // );
-
-  // return {
-  //   numPendingChats: data,
-  //   isLoading,
-  //   isError: error,
-  // };
+  const { data, error, isLoading } = useSWR(
+    `/conversations/pending/count/`,
+    fetcherAuth
+  );
 
   return {
-    numPendingChats: 0,
-    isLoading: false,
-    isError: false,
+    numPendingChats: data?.count as number,
+    isLoading,
+    isError: error,
   };
 }

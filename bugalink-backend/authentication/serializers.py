@@ -6,12 +6,13 @@ from passengers.models import Passenger
 from payment_methods.models import Balance
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
+import os
 
 # https://dj-rest-auth.readthedocs.io/en/latest/configuration.html#register-serializer
 class CustomRegisterSerializer(RegisterSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
+    
 
     def get_cleaned_data(self):
         super().get_cleaned_data()
@@ -53,6 +54,7 @@ class EnrichedTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super(EnrichedTokenObtainPairSerializer, cls).get_token(user)
+        backend_url = os.environ.get("BACKEND_URL", "http://localhost:8000")
 
         # Add custom claims
         # NOTE: we add more data to the JWT so that we can use it in the frontend
@@ -62,7 +64,8 @@ class EnrichedTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["driver_id"] = user.driver.id if user.is_driver else None
         token["first_name"] = user.first_name
         token["last_name"] = user.last_name
-        token["photo"] = user.photo.url if user.photo else None
+        token["photo"] = backend_url + user.photo.url if user.photo else None
         token["verified"] = user.verified
         token["is_validated_driver"] = user.is_validated_driver
+        token["is_pilotuser"] = user.is_pilotuser
         return token

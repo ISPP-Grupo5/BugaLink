@@ -7,5 +7,6 @@ router = routers.DefaultRouter()
 router.register(r"passenger-routines", PassengerRoutineViewSet)
 
 urlpatterns = [
+    path("passenger-routines/<int:pk>/update/", PassengerRoutineViewSet.as_view({"put": "update"})),
     path("", include(router.urls)),
 ]

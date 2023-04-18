@@ -55,7 +55,9 @@ export default function DateFilter({
       setDateFrom(
         dateFromProvisional.add(12, 'hours').toISOString().split('T')[0]
       );
+    console.log(isNaN(dateToProvisional.date()))
     dateToProvisional &&
+      !isNaN(dateToProvisional.date()) &&
       setDateTo(dateToProvisional.add(12, 'hours').toISOString().split('T')[0]);
     setOpen(false);
   };

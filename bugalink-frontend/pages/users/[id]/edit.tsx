@@ -1,6 +1,7 @@
 import Avatar from '@/components/avatar';
 import { BackButtonText } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
+import DialogDeleteAccount from '@/components/dialogs/deleteAccount';
 import TextField from '@/components/forms/TextField';
 import AnimatedLayout from '@/components/layouts/animated';
 import NEXT_ROUTES from '@/constants/nextRoutes';
@@ -15,15 +16,11 @@ import { useEffect, useRef, useState } from 'react';
 interface FormErrors {
   name?: string;
   surname?: string;
-  email?: string;
-  password?: string;
 }
 
 interface FormValues {
   name: string;
   surname: string;
-  email: string;
-  password: string;
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -47,18 +44,21 @@ export default function EditProfile({ data }) {
     if (!user) return;
     setName(user.first_name);
     setSurname(user.last_name);
-    setEmail(user.email);
+    setPhotoURL(user.photo);
   }, [user]);
+
   const [name, setName] = useState<string>('');
   const [surname, setSurname] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [isDeleteConfirmation, setIsDeleteConfirmation] = useState(false);
+  const [file, setFile] = useState<File>();
+  const [photoURL, setPhotoURL] = useState<string>('');
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+
   const [errors, setErrors] = useState<FormErrors>({});
 
   const formRef = useRef<HTMLFormElement>(null);
+
+  const [isSendingForm, setIsSendingForm] = useState(false);
 
   const validateForm = (values: FormValues) => {
     const errors: FormErrors = {};
@@ -71,52 +71,46 @@ export default function EditProfile({ data }) {
       errors.surname = 'Por favor, ingrese sus apellidos';
     }
 
-    const emailRegex = /^\S+@\S+$/i;
-    if (!values.email) {
-      errors.email = 'Por favor, ingrese su correo electrónico';
-    } else if (!emailRegex.test(values.email)) {
-      errors.email = 'Por favor, ingrese un correo electrónico válido';
-    }
-
-    const passwordRegex =
-      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
-    if (!values.password) {
-      errors.password = 'La contraseña es obligatoria';
-    } else if (values.password.length < 8) {
-      errors.password = 'La contraseña debe tener al menos 8 caracteres';
-    } else if (values.password.length > 20) {
-      errors.password = 'La contraseña debe tener menos de 20 caracteres';
-    } else if (values.password.includes('contraseña')) {
-      errors.password =
-        'La contraseña no puede contener la palabra "contraseña"';
-    } else if (!passwordRegex.test(values.password)) {
-      errors.password =
-        'La contraseña debe tener al menos una mayúscula, una minúscula, un número y un símbolo.';
-    }
-
     setErrors(errors);
 
     return errors;
   };
 
-  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    setIsSendingForm(true);
     event.preventDefault();
     if (formRef.current) {
       const formData = new FormData(formRef.current);
       const values: FormValues = {
         name: formData.get('name') as string,
         surname: formData.get('surname') as string,
-        email: formData.get('email') as string,
-        password: formData.get('password') as string,
+        // TODO: handle submit photo as binary (file itself). Be inspired by become-driver page
       };
 
       const errors = validateForm(values);
       setErrors(errors);
       if (Object.keys(errors).length === 0) {
         // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites
-        console.log(
-          'Los datos del formulario son válidos. ¡Enviando formulario!'
-        );
+        const url = `users/${user.id}/edit`;
+
+        const formData = new FormData();
+        formData.append('photo', file);
+        formData.append('first_name', name);
+        formData.append('last_name', surname);
+
+        
+        await axiosAuth
+          .put(url, formData)
+          .then((res) => {
+            signOut({
+              callbackUrl: NEXT_ROUTES.LOGIN,
+            })
+          })
+          .catch((err) => {
+            setIsSendingForm(false);
+          });
+      } else{
+        setIsSendingForm(false);
       }
     }
   };
@@ -125,27 +119,11 @@ export default function EditProfile({ data }) {
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
-    setIsDeleteConfirmation(true);
-  };
-
-  const handleDeleteAccount = async (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-    try {
-      const response = await axiosAuth.delete(`/users/${user.id}`);
-      if (response.status === 204) {
-        await signOut({
-          callbackUrl: NEXT_ROUTES.LOGIN,
-        });
-      }
-    } catch (error) {
-      alert(error?.response?.data?.error || 'Error al eliminar la cuenta');
-    }
+    setOpenDialog(true);
   };
 
   return (
-    <AnimatedLayout className="justify-between flex h-screen flex-col items-center bg-white">
+    <AnimatedLayout className="flex h-screen flex-col items-center justify-between bg-white">
       <BackButtonText text="Mi perfil" />
       <div className="flex h-full w-full flex-col items-center overflow-y-scroll">
         <div className="mb-5 h-24 w-24">
@@ -169,12 +147,15 @@ export default function EditProfile({ data }) {
                   img.src = e.target.result as string;
                 };
                 reader.readAsDataURL(file);
-                // Set to state
+                setFile(file);
+                setPhotoURL(URL.createObjectURL(file));
+
+                
               }}
             />
             <Avatar
               id="profilePicture"
-              src={user.photo}
+              src={photoURL}
               className="my-2 w-full outline outline-8 outline-white"
             />
             <div id="check" className="absolute -bottom-2 -right-2">
@@ -186,7 +167,7 @@ export default function EditProfile({ data }) {
         </div>
         <form
           ref={formRef}
-          className="justify-between flex h-full w-full flex-col items-center"
+          className="flex h-full w-full flex-col items-center justify-between"
         >
           <div className="mt-5 flex w-full flex-col items-center space-y-6">
             <TextField
@@ -210,47 +191,14 @@ export default function EditProfile({ data }) {
               parentClassName="w-10/12 flex flex-col items-center"
               inputClassName="w-full focus:text-black text-gray"
             />
-
-            <hr className="mx-2 w-11/12 text-light-gray" />
-
-            <TextField
-              fieldName="Correo electrónico"
-              name="email"
-              content={email}
-              setContent={setEmail}
-              type="email"
-              error={errors.email}
-              disabled
-              parentClassName="w-10/12 flex flex-col items-center"
-              inputClassName="w-full focus:text-black text-gray"
-            />
-
-            <TextField
-              fieldName="Contraseña"
-              name="password"
-              content={password}
-              setContent={setPassword}
-              type="password"
-              error={errors.password}
-              parentClassName="w-10/12 flex flex-col items-center"
-              inputClassName="w-full focus:text-black text-gray"
-              showPassword={showPassword}
-              setShowPassword={setShowPassword}
-            />
           </div>
           <div className="my-5 flex w-full flex-col items-center justify-center">
-            {isDeleteConfirmation ? (
-              <button className="text-red" onClick={handleDeleteAccount}>
-                Pulsa de nuevo para eliminar tu cuenta
-              </button>
-            ) : (
-              <button className="text-red" onClick={handleDeleteConfirmation}>
-                Solicita la eliminación de tu cuenta
-              </button>
-            )}
+            <button className="text-red" onClick={handleDeleteConfirmation}>
+              Solicita la eliminación de tu cuenta
+            </button>
             <p className="mb-2 text-sm font-semibold text-gray">
               Usuario desde el{' '}
-              {new Date(user.date_joined).toLocaleDateString('es-ES', {
+              {new Date(user?.date_joined).toLocaleDateString('es-ES', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
@@ -258,12 +206,17 @@ export default function EditProfile({ data }) {
             </p>
             <CTAButton
               className="w-11/12"
-              text="GUARDAR"
+              text={isSendingForm ? "PROCESANDO..." :"GUARDAR"}
               onClick={handleSubmit}
             />
           </div>
         </form>
       </div>
+      <DialogDeleteAccount
+        userId={user?.id}
+        open={openDialog}
+        setOpen={setOpenDialog}
+      />
     </AnimatedLayout>
   );
 }

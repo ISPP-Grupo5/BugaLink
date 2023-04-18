@@ -15,6 +15,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
+CSRF_TRUSTED_ORIGINS = ["https://app.bugalink.es", "https://www.app.bugalink.es"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -38,6 +39,8 @@ INSTALLED_APPS = [
     "chats",
     "transactions",
     # Third-party packages
+    "paypal",
+    "paypalrestsdk",
     "drf_spectacular",
     "rest_framework",
     "channels",
@@ -89,7 +92,9 @@ WSGI_APPLICATION = "bugalink_backend.wsgi.application"
 # Database
 # If you wish to use some other database other than the default sqlite
 # Make sure to update the value of DATABASE_URL in your .env file
+APP_ENGINE = False
 if os.environ.get("IS_APP_ENGINE"):
+    APP_ENGINE = True
     DATABASES = {
         "default": {
             "ENGINE": config("ENGINE"),
@@ -180,7 +185,10 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 }
 
 ALLOWED_HOSTS = ["*"]
-
+STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
+WEBHOOK_SECRET = config("WEBHOOK_SECRET")
+PAYPAL_CLIENT_ID = config("PAYPAL_CLIENT_ID")
+PAYPAL_SECRET_KEY = config("PAYPAL_SECRET_KEY")
 
 LANGUAGE_CODE = "en-us"
 
@@ -192,11 +200,11 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_ROOT = "static"
-STATIC_URL = "/static/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "files")
 MEDIA_URL = "/media/"
+STATIC_ROOT = "static"
+STATIC_URL = "/static/"
 STATICFILES_DIRS = []
 
 

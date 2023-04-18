@@ -1,19 +1,15 @@
-export default function useNumPendingRequests() {
-  // TODO: implement when we have the backend endpoint
-  // const userId = useAuth().userId;
-  // const { data, error, isLoading } = useSWR(
-  //   `/users/${userId}/requests/pending/count`,
-  //   fetcher
-  // );
+import { fetcherAuth } from '@/utils/fetcher';
+import useSWR from 'swr';
 
-  // return {
-  //   numPendingRequests: data,
-  //   isLoading,
-  //   isError: error,
-  // };
+export default function useNumPendingRequests() {
+  const { data, error, isLoading } = useSWR(
+    `/trip-requests/pending/count/`,
+    fetcherAuth
+  );
+
   return {
-    numPendingRequests: 0,
-    isLoading: false,
-    isError: false,
+    numPendingRequests: data?.count as number,
+    isLoading,
+    isError: error,
   };
 }

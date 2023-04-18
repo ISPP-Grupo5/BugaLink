@@ -74,7 +74,7 @@ class UserViewSet(
         user.email = new_email
         user.first_name = "Usuario eliminado"
         user.last_name = ""
-        user.photo = ""
+        user.photo.delete()
         user.is_passenger = False
         user.is_driver = False
         user.is_active = False
@@ -99,14 +99,24 @@ class UserViewSet(
 class UserUpdateView(APIView):
     @transaction.atomic
     def put(self, request, id):
+        user = request.user
         if request.user.id != id:
             return Response(
                 data={"error": "No tienes permiso para editar esta información"},
                 status=status.HTTP_403_FORBIDDEN,
             )
         serializer = UserUpdateSerializer(request.user, data=request.data)
+
         if serializer.is_valid():
-            serializer.save()
+            if "photo" in request.data:
+                request.user.photo = request.data["photo"]
+                extension = request.data["photo"].name.split(".")[-1]
+                new_filename = f"avatar.{extension}"
+                user.photo.save(new_filename, request.data["photo"]) 
+            user.first_name = request.data["first_name"]
+            user.last_name = request.data["last_name"]
+            user.save()
+
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -146,6 +156,7 @@ class UserTripsView(APIView):
         # If the status is not in the query params, don't filter by it
         request_status_param = request.query_params.get("requestStatus")
         trip_status_param = request.query_params.get("tripStatus")
+        distinct_param = request.query_params.get("distinct")
 
         request_status_list = (
             request_status_param.split(",") if request_status_param else []
@@ -185,9 +196,16 @@ class UserTripsView(APIView):
             trips_by_trip_status.filter(status__in=request_status_list)
             if request_status_list
             else trips_by_trip_status
-        ).distinct("trip")
+        )
 
-        return trips_matching_status
+        # Filter out repeated trips if required
+        trips_matching_distinct = (
+            trips_matching_status.distinct("trip")
+            if distinct_param and distinct_param.lower() == "true"
+            else trips_matching_status
+        )
+
+        return trips_matching_distinct
 
     def get(self, request, id):
         # If the user is not the same as the one in the URL, return a 403 status code

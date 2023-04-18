@@ -10,7 +10,7 @@ from .models import Conversation, Message
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        exclude = ("conversation_id",)
+        exclude = ("conversation",)
 
 
 class ConversationListSerializer(serializers.ModelSerializer):

@@ -199,7 +199,7 @@ const Entry = ({ title, children }) => {
   );
 };
 
-export const CheckMark = () => <p className="text-dark-gray">✓ </p>;
+export const CheckMark = () => <p className="pl-[0.62rem] text-dark-gray">✔</p>;
 export const DoubleCheckMark = () => (
-  <p className="-tracking-widest text-blue-select">✓✓</p>
+  <p className="-tracking-widest text-blue-select">✔✔</p>
 );

@@ -3,14 +3,16 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from passengers.models import Passenger
+from payment_methods.models import Balance
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
+import os
 
 # https://dj-rest-auth.readthedocs.io/en/latest/configuration.html#register-serializer
 class CustomRegisterSerializer(RegisterSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
+    
 
     def get_cleaned_data(self):
         super().get_cleaned_data()
@@ -38,6 +40,10 @@ class CustomRegisterSerializer(RegisterSerializer):
         passenger.routines.set([])
         passenger.save()
 
+        # create the user's wallet when they register
+        balance = Balance.objects.create(user=user, amount=0)
+        balance.save()
+
         user.passenger = passenger
         setup_user_email(request, user, [])
         return user
@@ -48,6 +54,7 @@ class EnrichedTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super(EnrichedTokenObtainPairSerializer, cls).get_token(user)
+        backend_url = os.environ.get("BACKEND_URL", "http://localhost:8000")
 
         # Add custom claims
         # NOTE: we add more data to the JWT so that we can use it in the frontend
@@ -57,7 +64,8 @@ class EnrichedTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["driver_id"] = user.driver.id if user.is_driver else None
         token["first_name"] = user.first_name
         token["last_name"] = user.last_name
-        token["photo"] = user.photo.url if user.photo else None
+        token["photo"] = backend_url + user.photo.url if user.photo else None
         token["verified"] = user.verified
         token["is_validated_driver"] = user.is_validated_driver
+        token["is_pilotuser"] = user.is_pilotuser
         return token

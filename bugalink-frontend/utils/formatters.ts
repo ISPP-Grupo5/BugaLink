@@ -1,6 +1,7 @@
 export const formatDatetime = (datetime: string) => {
   // 2023-04-03T19:20:00Z -> Martes 3 de Abril, 2023 a las 19:20
   const date = new Date(datetime);
+  date.setHours(date.getHours() - 2);
   const dayLower = date.toLocaleDateString('es-ES', { weekday: 'long' });
   const day = capitalize(dayLower); // Capitalized day
   const dayNumber = date.toLocaleDateString('es-ES', { day: 'numeric' });
@@ -20,6 +21,22 @@ export const parseDate = (time: string) => {
   date.setMinutes(Number.parseInt(minutes));
   date.setSeconds(Number.parseInt(seconds));
   return date;
+};
+
+export const parseDateFromDate = (dateS: string) => {
+  // Date(2023-04-10T19:20:00Z) -> 10-Abr-2023
+  const date = new Date(dateS);
+  const day = date.toLocaleDateString('es-ES', { day: 'numeric' });
+  const month = capitalize(date.toLocaleDateString('es-ES', { month: 'short' }));
+  const year = date.getFullYear().toString().slice(-2);
+  return `${day}-${month}-${year}`;
+}
+export const shortenDate = (date: string) => {
+  // 2023-04-03T19:20:00Z -> 3 abr
+  const dateObj = new Date(date);
+  const dayNumber = dateObj.toLocaleDateString('es-ES', { day: 'numeric' });
+  const month = dateObj.toLocaleDateString('es-ES', { month: 'short' });
+  return `${dayNumber} ${month}`;
 };
 
 export const shortenName = (firstName: string, lastName: string) => {

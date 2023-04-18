@@ -1,13 +1,21 @@
 from driver_routines.serializers import DriverRoutineSerializer
+from ratings.models import DriverRating, Report
 from rest_framework import serializers
 from trips.models import Trip, TripRequest
-from users.serializers import DriverAsUserSerializer, PassengerAsUserSerializer
+from users.models import User
+from users.serializers import (
+    DriverAsUserSerializer,
+    PassengerAsUserSerializer,
+    UserSerializer,
+)
+
 
 class SimpleTripSerializer(serializers.ModelSerializer):
     driver_routine = DriverRoutineSerializer()
     driver = serializers.SerializerMethodField()
     departure_datetime = serializers.DateTimeField()
     arrival_datetime = serializers.DateTimeField()
+
     class Meta:
         model = Trip
         fields = (
@@ -18,9 +26,25 @@ class SimpleTripSerializer(serializers.ModelSerializer):
             "arrival_datetime",
             "status",
         )
+
     def get_driver(self, obj) -> DriverAsUserSerializer():
         driver_routine = obj.driver_routine
         return DriverAsUserSerializer(driver_routine.driver).data
+
+
+class TripUsersSerializer(serializers.ModelSerializer):
+    users = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Trip
+        fields = ("users",)
+
+    def get_users(self, obj) -> UserSerializer(many=True):
+        accepted_requests = TripRequest.objects.filter(trip=obj, status="ACCEPTED")
+        users = [t_r.passenger.user for t_r in accepted_requests]
+        users.append(obj.driver_routine.driver.user)
+        return UserSerializer(users, many=True).data
+
 
 class TripSerializer(serializers.ModelSerializer):
     driver_routine = DriverRoutineSerializer()
@@ -69,11 +93,64 @@ class TripRequestCreateSerializer(serializers.ModelSerializer):
     # TODO: Verificar que no se solicita un viaje a si mismo y que no lo ha solicitado ya
     def create(self, validated_data):
         # Get the trip from the URL path
-        trip_id = self.context["view"].kwargs["id"]
+        trip_id = self.context["view"].kwargs["trip_id"]
         trip = Trip.objects.get(id=trip_id)
         passenger = self.context["request"].user.passenger
         price = trip.driver_routine.price
-        note = validated_data.pop("note")
+        note = validated_data.get("note", None)  # Note is optional
         return TripRequest.objects.create(
             passenger=passenger, trip=trip, note=note, price=price
         )
+
+
+class TripReportSerializer(serializers.ModelSerializer):
+    reported_user_id = serializers.IntegerField()
+    note = serializers.CharField()
+
+    class Meta:
+        model = Report
+        fields = ("reported_user_id", "note")
+
+    def create(self, trip, reporter_user):
+        self.is_valid(raise_exception=True)
+        validated_data = self.validated_data
+        reported_user_id = validated_data.pop("reported_user_id")
+        note = validated_data.pop("note")
+        reported_user = User.objects.get(id=reported_user_id)
+        reporter_is_driver = reporter_user == trip.driver_routine.driver.user
+        reported_is_driver = reported_user == trip.driver_routine.driver.user
+        return Report.objects.create(
+            reported_user_id=reported_user_id,
+            reporter_user_id=reporter_user.pk,
+            note=note,
+            reporter_is_driver=reporter_is_driver,
+            reported_is_driver=reported_is_driver,
+            trip_id=trip.pk,
+        )
+
+
+class TripRateSerializer(serializers.ModelSerializer):
+    rating = serializers.FloatField()
+    is_good_driver = serializers.BooleanField()
+    is_pleasant_driver = serializers.BooleanField()
+    already_knew = serializers.BooleanField()
+
+    class Meta:
+        model = DriverRating
+        fields = ("rating", "is_good_driver", "is_pleasant_driver", "already_knew")
+
+    def create(self, trip_request):
+        if self.is_valid():
+            validated_data = self.validated_data
+            rating = validated_data.pop("rating")
+            is_good_driver = validated_data.pop("is_good_driver")
+            is_pleasant_driver = validated_data.pop("is_pleasant_driver")
+            already_knew = validated_data.pop("already_knew")
+            driver_rating = DriverRating.objects.create(
+                trip_request=trip_request,
+                rating=rating,
+                is_good_driver=is_good_driver,
+                is_pleasant_driver=is_pleasant_driver,
+                already_knew=already_knew,
+            )
+            return driver_rating

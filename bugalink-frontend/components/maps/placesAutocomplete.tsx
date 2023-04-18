@@ -1,17 +1,24 @@
 import { useEffect, useState } from 'react';
 import usePlacesAutocomplete from 'use-places-autocomplete';
 import TextField from '@/components/forms/TextField';
+import cn from 'classnames';
 
 export default function PlacesAutocomplete({
   onAddressSelect,
   placeholder,
   name,
   error,
+  defaultValue,
+  isSearch,
+  className = '',
 }: {
   onAddressSelect?: (address: string) => void;
   placeholder?: string;
   name?: string;
   error?: string;
+  defaultValue?: string;
+  isSearch?: boolean;
+  className?: string;
 }) {
   const {
     ready,
@@ -26,7 +33,6 @@ export default function PlacesAutocomplete({
   });
 
   const [showSuggestions, setShowSuggestions] = useState(false);
-
   const handleInputClick = () => {
     setShowSuggestions(true);
   };
@@ -47,6 +53,12 @@ export default function PlacesAutocomplete({
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (defaultValue) {
+      setValue(defaultValue);
+    }
+  }, [defaultValue]);
 
   const renderSuggestions = () => {
     return data.map((suggestion) => {
@@ -75,24 +87,44 @@ export default function PlacesAutocomplete({
   };
 
   return (
-    <div className="mb-6">
-      <TextField
-        type={'text'}
-        fieldName={placeholder}
-        content={value}
-        setContent={setValue}
-        inputClassName="w-full"
-        disabled={!ready}
-        onClick={handleInputClick}
-        parentClassName="mb-1"
-        name={name}
-        error={error}
-      />
-
+    <div className={className}>
+      {isSearch ? (
+        <input
+          type="search"
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => {
+            setValue(e.target.value);
+          }}
+          onClick={handleInputClick}
+          name={name}
+          className={cn(
+            'ml-2 mr-2 w-full rounded-full bg-base-origin p-4 text-sm',
+            className
+          )}
+          // {...params}
+        />
+      ) : (
+        <TextField
+          type="text"
+          fieldName={placeholder}
+          content={value}
+          setContent={setValue}
+          inputClassName="w-full"
+          disabled={!ready}
+          onClick={handleInputClick}
+          parentClassName="mb-6"
+          name={name}
+          error={error}
+        />
+      )}
+      {isSearch && error && (
+        <div className="mt-1 text-xs font-medium text-red">{error}</div>
+      )}
       {showSuggestions && status === 'OK' && (
         <ul
           tabIndex={-1}
-          className="absolute z-10 mr-9 divide-y divide-light-gray rounded-lg border border-light-gray bg-white"
+          className="absolute z-50 mr-9 divide-y divide-light-gray rounded-lg border border-light-gray bg-white"
         >
           {renderSuggestions()}
         </ul>

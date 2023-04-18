@@ -131,7 +131,7 @@ export default function RatingScreen({ data }) {
             },
           }}
         >
-          <ReportProblem />
+          <ReportProblem data={tripId}/>
         </Drawer>
       </div>
     </AnimatedLayout>

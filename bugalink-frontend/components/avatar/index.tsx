@@ -7,11 +7,14 @@ export default function Avatar({
   className = '',
   ...props
 }) {
+  const host = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const urlPhoto = host+src;
+
   return (
     <Image
       width={100}
       height={100}
-      src={src || '/assets/anonymous-avatar.png'}
+      src={src ? urlPhoto : '/assets/anonymous-avatar.png'}
       alt={alt}
       className={cn('aspect-square rounded-full object-cover', className)}
       {...props}

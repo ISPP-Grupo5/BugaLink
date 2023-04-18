@@ -1,14 +1,14 @@
 import { fetcherAuth } from '@/utils/fetcher';
 import useSWR from 'swr';
 
-export default function useNumPendingChats() {
+export default function useRating(userId) {
   const { data, error, isLoading } = useSWR(
-    `/conversations/pending/count/`,
+    userId && `/users/${userId}/rating/`,
     fetcherAuth
   );
 
   return {
-    numPendingChats: data?.count as number,
+    rating: data,
     isLoading,
     isError: error,
   };

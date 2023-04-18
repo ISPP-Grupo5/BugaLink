@@ -1,15 +1,15 @@
 import os
 
-import paypalrestsdk
-import stripe
+import django.core.exceptions
 from bugalink_backend import settings
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import redirect
-import django.core.exceptions
 from passenger_routines.models import PassengerRoutine
+from passengers.models import Passenger
 from payment_methods.models import Balance
 from ratings.models import DriverRating, Report
+from ratings.serializers import DriverRatingSerializer, ReportSerializer
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -25,6 +25,7 @@ from trips.serializers import (
 from users.models import User
 from users.serializers import UserSerializer
 
+from .serializers import TripRateSerializer
 from .utils import (
     check_allows_pets,
     check_allows_smoking,
@@ -100,168 +101,33 @@ class TripRequestViewSet(
         return self.retrieve(request, *args, **kwargs)
 
     # POST /trips/<id>/request/ (For a passenger to request a trip)
+    # POST /trips/<id>/request/ (For a passenger to request a trip)
     @transaction.atomic
-    def create(self, request, *args, **kwargs):
-        def pay_with_balance(balance, price):
-            if balance.amount < price:
-                return False  # No se ha pagado
-            balance.amount -= price
-            balance.save()
-            return True  # Se ha pagado
+    def create(self, trip_id, user_id, note):
+        try:
+            trip = Trip.objects.get(id=trip_id)
+            user = User.objects.get(id=user_id)
+            price = trip.driver_routine.price
+            passenger = Passenger.objects.get(user=user)
 
-        def pay_with_credit_card(
-            price, credit_car_number, expiration_month, expiration_year, cvc
-        ):
-            stripe.api_key = settings.STRIPE_SECRET_KEY
-
-            amount = int(price * 100)  # Stripe expects amount in cents
-
-            try:
-                # Create a PaymentMethod
-                payment_method = stripe.PaymentMethod.create(
-                    type="card",
-                    card={
-                        "number": credit_car_number,
-                        "exp_month": expiration_month,
-                        "exp_year": expiration_year,
-                        "cvc": cvc,
-                    },
-                )
-
-                # Confirm the PaymentMethod to complete the payment
-                payment_intent = stripe.PaymentIntent.create(
-                    payment_method=payment_method.id,
-                    amount=amount,
-                    currency="eur",
-                    confirmation_method="manual",
-                    confirm=True,
-                )
-
-                # Check if the payment is succeeded
-                if payment_intent.status == "succeeded":
-                    print("Payment succeeded!")
-                else:
-                    return Response(
-                        status=status.HTTP_400_BAD_REQUEST,
-                        data={"error": "Método de pago fallido"},
-                    )
-
-            except stripe.error.StripeError:
-                return Response(
-                    status=status.HTTP_400_BAD_REQUEST,
-                    data={"error": "Stripe error"},
-                )
-
-        def pay_with_paypal(price):
-            paypal_client_id = "AdWSL48duytv4qy76be71a2S3Tt5nTYn-1gGv-53vL_dxNWYzZpAGrUZYrZBvGjkNwOSxJE1s_RSCkL8"
-            paypal_secret_key = "EHps0LO5OsQsUOrDTu9J6BY_mD0OkcF9aNzOT7rkRtDYKCOxoiqCUXsnz-nkhZX5rhlA741NosbaxBpb"
-
-            # Set up PayPal API credentials
-            paypalrestsdk.configure(
-                {
-                    "mode": "sandbox",
-                    "client_id": paypal_client_id,
-                    "client_secret": paypal_secret_key,
-                }
+            Transaction.objects.create(
+                sender=user,
+                receiver=trip.driver_routine.driver.user,
+                amount=price,
             )
 
-            paypal_url = (
-                "https://app.bugalink.es"
-                if os.environ.get("IS_APP_ENGINE")
-                else "http://localhost:3000"
+            TripRequest.objects.create(
+                trip=trip,
+                status="PENDING",
+                note=note,
+                reject_note="",
+                passenger=passenger,
+                price=price,
             )
-
-            # Create a payment object
-            payment = paypalrestsdk.Payment(
-                {
-                    "intent": "sale",
-                    "payer": {
-                        "payment_method": "paypal",
-                    },
-                    "redirect_urls": {
-                        "return_url": paypal_url,
-                        "cancel_url": paypal_url,
-                    },
-                    "transactions": [
-                        {
-                            "amount": {
-                                "total": str(price),
-                                "currency": "EUR",
-                            },
-                            "description": "Payment for your trip with Bugalink",
-                        }
-                    ],
-                }
-            )
-
-            # Create payment
-            if payment.create():
-                # Redirect the user to PayPal for payment approval
-                for link in payment.links:
-                    if link.method == "REDIRECT":
-                        redirect_url = link.href
-                        return redirect(redirect_url)
-
-            else:
-                return Response(
-                    status=status.HTTP_400_BAD_REQUEST,
-                    data={"error": "Failed to create PayPal payment"},
-                )
-
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        trip = Trip.objects.get(id=kwargs["trip_id"])
-
-        user = request.user
-        payment_method = request.data.get("payment_method")
-        price = trip.driver_routine.price
-
-        if payment_method == "Balance":
-            balance = Balance.objects.get(user=user)
-            paid = pay_with_balance(balance, price)
-
-            if not paid:
-                return Response(
-                    {"error": "Saldo insuficiente"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-        elif payment_method == "CreditCard":
-            credit_car_number = request.data.get("credit_car_number")
-            expiration_month = request.data.get("expiration_month")
-            expiration_year = request.data.get("expiration_year")
-            cvc = request.data.get("cvc")
-            pay_with_credit_card(
-                price, credit_car_number, expiration_month, expiration_year, cvc
-            )
-
-        elif payment_method == "PayPal":
-            pay_with_paypal(price)
-
-        else:
-            return Response(
-                status=status.HTTP_400_BAD_REQUEST,
-                data={"error": "Método de pago inválido"},
-            )
-
-        serializer.save()
-
-        Transaction.objects.create(
-            sender=user,
-            receiver=trip.driver_routine.driver.user,
-            amount=price,
-        )
-
-        created_id = serializer.instance.id
-        headers = self.get_success_headers(serializer.data)
-
-        return Response(
-            {"id": created_id, **serializer.data},
-            # self.get_serializer(driver_routine).data,
-            status=status.HTTP_201_CREATED,
-            headers=headers,
-        )
+            return True
+        except django.core.exceptions.ObjectDoesNotExist:
+            return False
+            
 
     # GET /trip-requests/pending/count/ (For a driver to get the number of pending requests)
     def count(self, request, *args, **kwargs):
@@ -361,76 +227,90 @@ class TripSearchViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+
 class TripRateViewSet(
-    mixins.RetrieveModelMixin,
-    mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
     queryset = TripRequest.objects.all()
-    serializer_class = TripRequestSerializer
+    serializer_class = TripRateSerializer
 
     @action(detail=True, methods=["post"])
     def post(self, request, trip_id, *args, **kwargs):
-        try:
-            trip = Trip.objects.get(id=trip_id)
-            if trip.status == "FINISHED":
-                trip_request = TripRequest.objects.filter(
-                    trip=trip, status="ACCEPTED", passenger__user=request.user
-                ).first()
-            if trip_request:
-                rating = request.POST.get("rating")
-                is_good_driver = request.POST.get("is_good_driver")
-                is_pleasant_driver = request.POST.get("is_pleasant_driver")
-                already_knew = request.POST.get("already_knew")
+        serializer = TripRateSerializer(data=request.data)
 
-                DriverRating.objects.create(
-                    trip_request=TripRequest.objects.get(id=trip_request.id),
-                    rating=rating,
-                    is_good_driver=is_good_driver,
-                    is_pleasant_driver=is_pleasant_driver,
-                    already_knew=already_knew,
-                )
-
-                return Response({"message": "Valoración realizada con exito"})
-            else:
-                return Response({"message": "No has participado en este viaje"})
-        except Exception as e:
-            return Response({"message": str(e)})
+        trip = Trip.objects.get(id=trip_id)
+        trip_request = None
+        if trip.status != "FINISHED":
+            return Response(
+                {"message": "No se puede valorar un viaje que no ha terminado"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        trip_request = TripRequest.objects.filter(
+            trip=trip, status="ACCEPTED", passenger__user=request.user
+        ).first()
+        driver_rating = DriverRating.objects.filter(trip_request=trip_request)
+        if len(driver_rating) > 0:
+            return Response(
+                {"message": "Ya ha valorado este viaje"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if trip_request:
+            driver_rating = serializer.create(trip_request)
+            response_serializer = DriverRatingSerializer(driver_rating)
+            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"message": "No has participado en este viaje "})
 
 
 class ReportIssuePostViewSet(
     viewsets.GenericViewSet,
 ):
-    queryset = Report.objects.all()
     serializer_class = TripReportSerializer
 
     @action(detail=True, methods=["post"])
     def post(self, request, trip_id, *args, **kwargs):
-        trip = Trip.objects.get(id=trip_id, status="FINISHED")
-        user = request.user
-        trip_request = TripRequest.objects.filter(
-            trip=trip, passenger__user=user
-        ).first()
-        # Trip request solo existe si el user es un passenger, de forma que aqui se comprueba si es passenger o driver del viaje, si no lo es
-        # no puede reportar
-        if trip_request or trip.driver_routine.driver.user == user:
-            reported_user_id = request.POST.get("reported_user_id")
-            reported_user = User.objects.get(id=reported_user_id)
-            reporter_is_driver = user == trip.driver_routine.driver.user
-            reported_is_driver = reported_user == trip.driver_routine.driver.user
+        serializer = TripReportSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # reported_user_id = serializer.data["reported_user_id"]
 
-            note = request.POST.get("note")
-            Report.objects.create(
-                trip=trip,
-                reporter_user=user,
-                reported_user=reported_user,
-                reporter_is_driver=reporter_is_driver,
-                reported_is_driver=reported_is_driver,
-                note=note,
-            )
+        # 404 validations
+        try:
+            trip = Trip.objects.get(id=trip_id)
+            # reported_user = User.objects.get(id=reported_user_id)
+        except Trip.DoesNotExist:
             return Response(
-                {"message": "Report creado con exito"}, status=status.HTTP_201_CREATED
+                {"message": "El viaje no existe"}, status=status.HTTP_404_NOT_FOUND
             )
+        except User.DoesNotExist:
+            return Response(
+                {"message": "El usuario al que intenta reportar no existe"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        trip_request = TripRequest.objects.filter(
+            trip=trip, passenger__user=request.user, status="ACCEPTED"
+        ).first()
+
+        if trip_request is None and trip.driver_routine.driver.user != request.user:
+            return Response(
+                {"message": "No has participado en este viaje"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        if trip.status != "FINISHED":
+            return Response(
+                {"message": "No se puede reportar un viaje que no ha terminado"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        else:
+            report = serializer.create(trip=trip, reporter_user=request.user)
+            response_serializer = ReportSerializer(report)
+            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
 
 class ReportIssueGetViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):

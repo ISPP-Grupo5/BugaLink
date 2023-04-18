@@ -32,7 +32,7 @@ describe('Navigation tests', () => {
   it('should navigate to search page', () => {
     cy.visit('/');
     cy.get('[data-cy="search-btn"]').click();
-    cy.location('pathname').should('match', /^\/search\/result$/);
+    cy.location('pathname').should('match', /^\/search$/);
   });
 
   // /history

@@ -40,7 +40,6 @@ export default function ReportProblem({ data }) {
   }
 
   const handleSubmit = async () => {
-    debugger;
 
     const url = 'trips/' + data + '/report-issue/';
         axiosAuth

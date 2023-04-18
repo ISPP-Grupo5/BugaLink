@@ -3,8 +3,6 @@ const withPWA = require('next-pwa')({
   dest: 'public',
 });
 
-require('dotenv').config();
-
 module.exports = withPWA({
   webpack(config) {
     config.module.rules.push({
@@ -16,9 +14,6 @@ module.exports = withPWA({
   },
   images: {
     domains: ['localhost', '127.0.0.1', 'app.bugalink.es'],
-  },
-  env: {
-    NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
   },
 });
 

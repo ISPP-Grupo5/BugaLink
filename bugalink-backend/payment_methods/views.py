@@ -115,7 +115,17 @@ class PaymentViewSet(
             balance.amount -= price
             balance.save()
             # Si todo está correcto, se crea el triprequest
-            return TripRequestViewSet.create(self, trip.id, user.id, note)
+            noErrors = TripRequestViewSet.create(self, trip.id, user.id, note)
+            if noErrors:
+                return Response(
+                    {"message": "Pago realizado con éxito"},
+                    status=status.HTTP_201_CREATED,
+                )
+            else:
+                return Response(
+                    {"error": "Error al realizar el pago"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
     def pay_with_paypal(self, request, *args, **kwargs):
         note = request.data.get("note")

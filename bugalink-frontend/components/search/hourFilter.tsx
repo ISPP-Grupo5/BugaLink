@@ -6,18 +6,29 @@ import React, { useEffect, useState } from 'react';
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
+  hourFrom: string;
+  setHourFrom: (value: string) => void;
+  hourTo: string;
+  setHourTo: (value: string) => void;
 };
 
-export default function HourFilter({ open, setOpen }: Props) {
-  const [pickTimeFrom, setPickTimeFrom] = useState('--:--');
-  const [pickTimeTo, setPickTimeTo] = useState('--:--');
+export default function HourFilter({
+  open,
+  setOpen,
+  hourFrom,
+  setHourFrom,
+  hourTo,
+  setHourTo,
+}: Props) {
+  const [timeFromProvisional, setTimeFromProvisional] = useState(hourFrom);
+  const [timeToProvisional, setTimeToProvisional] = useState(hourTo);
   const [errorPickTime, setErrorPickTime] = useState<string | null>();
 
   useEffect(() => {
-    const pickTimeFromHour = parseInt(pickTimeFrom.split(':')[0]);
-    const pickTimeFromMinutes = parseInt(pickTimeFrom.split(':')[1]);
-    const pickTimeToHour = parseInt(pickTimeTo.split(':')[0]);
-    const pickTimeToMinutes = parseInt(pickTimeTo.split(':')[1]);
+    const pickTimeFromHour = parseInt(timeFromProvisional.split(':')[0]);
+    const pickTimeFromMinutes = parseInt(timeFromProvisional.split(':')[1]);
+    const pickTimeToHour = parseInt(timeToProvisional.split(':')[0]);
+    const pickTimeToMinutes = parseInt(timeToProvisional.split(':')[1]);
 
     if (
       pickTimeFromHour > pickTimeToHour ||
@@ -28,14 +39,12 @@ export default function HourFilter({ open, setOpen }: Props) {
     } else {
       setErrorPickTime(null);
     }
-  }, [pickTimeFrom, pickTimeTo]);
+  }, [timeFromProvisional, timeToProvisional]);
 
-  const onCloseDrawerHour = () => {
-    if (errorPickTime) {
-      setPickTimeFrom('--:--');
-      setPickTimeTo('--:--');
-    }
-
+  const handleApplyFilters = () => {
+    if (errorPickTime) return;
+    setHourFrom(timeFromProvisional);
+    setHourTo(timeToProvisional);
     setOpen(false);
   };
 
@@ -43,7 +52,7 @@ export default function HourFilter({ open, setOpen }: Props) {
     <Drawer
       anchor="bottom"
       open={open}
-      onClose={onCloseDrawerHour}
+      onClose={() => setOpen(false)}
       SlideProps={{
         style: {
           minWidth: '320px',
@@ -57,23 +66,30 @@ export default function HourFilter({ open, setOpen }: Props) {
       <div className="rounded-t-lg bg-white">
         <div className="ml-6 mt-2">
           <p className="font-lato text-xl font-bold">Hora de salida</p>
-          <p className="text-xs">Define el rango de hora de salida</p>
+          <p className="mb-6 text-sm">Define el rango de hora de salida</p>
           <span className="mt-4 flex items-center justify-center space-x-2 text-xl font-bold">
-            <TimePicker time={pickTimeFrom} setTime={setPickTimeFrom} />
+            <TimePicker
+              time={timeFromProvisional}
+              setTime={setTimeFromProvisional}
+            />
             <p> — </p>
             <TimePicker
-              time={pickTimeTo}
-              setTime={setPickTimeTo}
+              time={timeToProvisional}
+              setTime={setTimeToProvisional}
               error={errorPickTime}
             />
           </span>
-          <span className="flex items-center justify-center text-xs text-red">
+          <span className="mt-1 flex items-center justify-center text-sm text-red">
             {errorPickTime}
           </span>
         </div>
         <div className="my-5 flex flex-col items-center">
           {/* TODO: If there are errors, it should not let you filter */}
-          <CTAButton className="w-11/12" text={'FILTRAR'} />
+          <CTAButton
+            className="w-11/12"
+            text={'FILTRAR'}
+            onClick={handleApplyFilters}
+          />
         </div>
       </div>
     </Drawer>

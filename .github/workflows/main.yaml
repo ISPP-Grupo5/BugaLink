@@ -27,6 +27,8 @@ jobs:
           echo PASSWORD=${{ secrets.DATABASE_PASSWORD }} >> .env
           echo WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }} >> .env
           echo STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }} >> .env
+          echo PAYPAL_CLIENT_ID=${{ secrets.PAYPAL_CLIENT_ID }} >> .env
+          echo PAYPAL_SECRET_KEY=${{ secrets.PAYPAL_SECRET_KEY }} >> .env
       - run: |
           cd bugalink-frontend
           echo NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }} >> .env

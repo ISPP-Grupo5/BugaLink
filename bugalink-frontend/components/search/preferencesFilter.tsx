@@ -15,9 +15,22 @@ type Props = {
   setAllowsSmoking: (allowsSmoking: string) => void;
   setPrefersMusic: (prefersMusic: string) => void;
   setPrefersTalk: (prefersTalk: string) => void;
+  handleSearch;
 };
 
-export default function PreferencesFilter({ open, setOpen, allowsPets, allowsSmoking, prefersMusic, prefersTalk, setAllowsPets, setAllowsSmoking, setPrefersMusic, setPrefersTalk }: Props) {
+export default function PreferencesFilter({
+  open,
+  setOpen,
+  allowsPets,
+  allowsSmoking,
+  prefersMusic,
+  prefersTalk,
+  setAllowsPets,
+  setAllowsSmoking,
+  setPrefersMusic,
+  setPrefersTalk,
+  handleSearch,
+}: Props) {
   const [allowSmoke, setAllowSmoke] = useState(allowsSmoking === 'True');
   const [allowPets, setAllowPets] = useState(allowsPets === 'True');
   const [preferMusic, setPreferMusic] = useState(prefersMusic === 'True');
@@ -25,35 +38,34 @@ export default function PreferencesFilter({ open, setOpen, allowsPets, allowsSmo
 
   useEffect(() => {
     if (allowSmoke) {
-      setAllowsSmoking('True')
+      setAllowsSmoking('True');
     } else {
-      setAllowsSmoking('')
+      setAllowsSmoking('');
     }
 
     if (allowPets) {
-      setAllowsPets('True')
+      setAllowsPets('True');
     } else {
-      setAllowsPets('')
+      setAllowsPets('');
     }
 
     if (preferMusic) {
-      setPrefersMusic('True')
+      setPrefersMusic('True');
     } else {
-      setPrefersMusic('')
+      setPrefersMusic('');
     }
 
     if (preferTalk) {
-      setPrefersTalk('True')
+      setPrefersTalk('True');
     } else {
-      setPrefersTalk('')
+      setPrefersTalk('');
     }
-
   }, [allowSmoke, allowPets, preferMusic, preferTalk]);
 
-  allowsSmoking = allowsSmoking ==='True'
-  allowsPets = allowsPets === 'True'
-  prefersMusic = prefersMusic === 'True'
-  prefersTalk = prefersTalk === 'True'
+  allowsSmoking = allowsSmoking === 'True';
+  allowsPets = allowsPets === 'True';
+  prefersMusic = prefersMusic === 'True';
+  prefersTalk = prefersTalk === 'True';
 
   return (
     <Drawer
@@ -101,7 +113,7 @@ export default function PreferencesFilter({ open, setOpen, allowsPets, allowsSmo
           </div>
         </div>
         <div className="my-5 flex flex-col items-center">
-          <CTAButton className="w-11/12" text={'FILTRAR'} />
+          <CTAButton className="w-11/12" text={'FILTRAR'} onClick={handleSearch}/>
         </div>
       </div>
     </Drawer>

@@ -10,9 +10,10 @@ type Props = {
   hourTo: string;
   setHourFrom: (hourFrom: string) => void;
   setHourTo: (hourTo: string) => void;
+  handleSearch;
 };
 
-export default function HourFilter({ open, setOpen, hourFrom, hourTo, setHourFrom, setHourTo }: Props) {
+export default function HourFilter({ open, setOpen, hourFrom, hourTo, setHourFrom, setHourTo, handleSearch }: Props) {
   const [errorPickTime, setErrorPickTime] = useState<string | null>();
 
   useEffect(() => {
@@ -75,7 +76,7 @@ export default function HourFilter({ open, setOpen, hourFrom, hourTo, setHourFro
         </div>
         <div className="my-5 flex flex-col items-center">
           {/* TODO: If there are errors, it should not let you filter */}
-          <CTAButton className="w-11/12" text={'FILTRAR'} />
+          <CTAButton className="w-11/12" text={'FILTRAR'} onClick={handleSearch}/>
         </div>
       </div>
     </Drawer>

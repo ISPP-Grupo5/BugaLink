@@ -44,53 +44,6 @@ export default function SearchResults() {
   const [minPrice, setMinPrice] = useState(router.query.min_price || '');
   const [maxPrice, setMaxPrice] = useState(router.query.max_price || '');
 
-  const filters = [
-    {
-      name: 'Precio',
-      selected: minPrice !== '' || maxPrice !== '',
-      minPrice: minPrice,
-      maxPrice: maxPrice,
-      setMinPrice: setMinPrice,
-      setMaxPrice: setMaxPrice,
-    },
-    {
-      name: 'Valoración',
-      selected: minStars !== '',
-      minStars: minStars,
-    },
-    {
-      name: 'Hora',
-      selected: hourFrom !== '--:--' || hourTo !== '--:--',
-      hourFrom: hourFrom,
-      hourTo: hourTo,
-      setHourFrom: setHourFrom,
-      setHourTo: setHourTo,
-    },
-    {
-      name: 'Preferencias',
-      selected: allowsSmoking || allowsPets || prefersMusic || prefersTalk,
-      allowsSmoking: allowsSmoking,
-      allowsPets: allowsPets,
-      prefersMusic: prefersMusic,
-      prefersTalk: prefersTalk,
-      setAllowsSmoking: setAllowsSmoking,
-      setAllowsPets: setAllowsPets,
-      setPrefersMusic: setPrefersMusic,
-      setPrefersTalk: setPrefersTalk,
-    },
-    {
-      name: 'Día',
-      selected: dateFrom !== '' || dateTo !== '',
-      dateFrom: dateFrom,
-      dateTo: dateTo,
-      setDateFrom: setDateFrom,
-      setDateTo: setDateTo,
-    },
-  ];
-
-  const selectedFilters = filters.filter((filter) => filter.selected);
-  const unselectedFilters = filters.filter((filter) => !filter.selected);
-
   // TODO: remove this block once the API is integrated, it's to simulate the loading of the results
   ////////////////////////////////////////////////////////////////////////////////////////////////////
   const [searchResults, setSearchResults] = useState([]);
@@ -205,6 +158,57 @@ export default function SearchResults() {
     }
   };
 
+  const filters = [
+    {
+      name: 'Precio',
+      selected: minPrice !== '' || maxPrice !== '',
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+      setMinPrice: setMinPrice,
+      setMaxPrice: setMaxPrice,
+      handleSearch: handleSearch,
+    },
+    // {
+    //   name: 'Valoración',
+    //   selected: minStars !== '',
+    //   minStars: minStars,
+    // },
+    {
+      name: 'Hora',
+      selected: hourFrom !== '--:--' || hourTo !== '--:--',
+      hourFrom: hourFrom,
+      hourTo: hourTo,
+      setHourFrom: setHourFrom,
+      setHourTo: setHourTo,
+      handleSearch: handleSearch,
+    },
+    {
+      name: 'Preferencias',
+      selected: allowsSmoking || allowsPets || prefersMusic || prefersTalk,
+      allowsSmoking: allowsSmoking,
+      allowsPets: allowsPets,
+      prefersMusic: prefersMusic,
+      prefersTalk: prefersTalk,
+      setAllowsSmoking: setAllowsSmoking,
+      setAllowsPets: setAllowsPets,
+      setPrefersMusic: setPrefersMusic,
+      setPrefersTalk: setPrefersTalk,
+      handleSearch: handleSearch,
+    },
+    {
+      name: 'Día',
+      selected: dateFrom !== '' || dateTo !== '',
+      dateFrom: dateFrom,
+      dateTo: dateTo,
+      setDateFrom: setDateFrom,
+      setDateTo: setDateTo,
+      handleSearch: handleSearch,
+    },
+  ];
+
+  const selectedFilters = filters.filter((filter) => filter.selected);
+  const unselectedFilters = filters.filter((filter) => !filter.selected);
+
   const libraries = useMemo(() => ['places'], []);
 
   const { isLoaded } = useLoadScript({
@@ -238,7 +242,6 @@ export default function SearchResults() {
               placeholder="Desde"
               name="origin"
               error={errors.origin}
-              // defaultValue={origin}
             />
           </div>
 

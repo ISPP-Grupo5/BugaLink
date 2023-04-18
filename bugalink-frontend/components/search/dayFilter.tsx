@@ -3,7 +3,6 @@ import { Drawer } from '@mui/material';
 import React, { useState } from 'react';
 import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import moment, { Moment } from 'moment';
 import dayjs, {Dayjs} from 'dayjs';
 
 type Props = {
@@ -13,9 +12,10 @@ type Props = {
   dateTo: string;
   setDateFrom: (dateFrom: string) => void;
   setDateTo: (dateTo: string) => void;
+  handleSearch;
 };
 
-export default function DayFilter({ open, setOpen, dateFrom, dateTo, setDateFrom, setDateTo }: Props) {
+export default function DayFilter({ open, setOpen, dateFrom, dateTo, setDateFrom, setDateTo, handleSearch }: Props) {
   const [from, setFrom] = useState<Dayjs | null>(
     dateFrom ? dayjs(dateFrom) : null
   );
@@ -25,6 +25,11 @@ export default function DayFilter({ open, setOpen, dateFrom, dateTo, setDateFrom
     setFrom(newValue)
     setDateFrom(newValue.format('YYYY-MM-DD'))
   }
+
+  const handleChangeTo = async (newValue) => {
+    setTo(newValue);
+    setDateTo(newValue.format('YYYY-MM-DD'));
+  };
 
   return (
     <Drawer
@@ -66,7 +71,7 @@ export default function DayFilter({ open, setOpen, dateFrom, dateTo, setDateFrom
               <MobileDatePicker
                 label="Hasta"
                 value={to}
-                onChange={(newValue) => setTo(newValue)}
+                onChange={(newValue) => handleChangeTo(newValue)}
                 sx={{
                   fontFamily: 'Lato, sans-serif',
                   '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
@@ -82,7 +87,7 @@ export default function DayFilter({ open, setOpen, dateFrom, dateTo, setDateFrom
           </span>
         </div>
         <div className="my-5 flex flex-col items-center">
-          <CTAButton className="w-11/12" text={'FILTRAR'} />
+          <CTAButton className="w-11/12" text={'FILTRAR'} onClick={handleSearch}/>
         </div>
       </div>
     </Drawer>

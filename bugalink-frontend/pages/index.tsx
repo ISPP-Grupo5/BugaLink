@@ -24,28 +24,30 @@ export default function Home() {
   return (
     <AnimatedLayout className="max-h-full overflow-y-scroll">
       <div className="flex flex-col pb-24">
-        <span className="my-8 flex items-center space-x-4 px-4 md:px-5">
-          <form className="flex w-full items-center rounded-full bg-white px-4 py-3">
-            <Destino className="h-5 w-5 flex-none translate-y-0.5 scale-125 fill-light-turquoise stroke-light-turquoise" />
-            <input
-              type="search"
-              placeholder="Dónde quieres ir?"
-              className="ml-2 h-full w-full rounded-full pl-2 outline-none"
-            />
-            <Link href={NEXT_ROUTES.SEARCH_RESULTS}>
-              <button data-cy="search-btn" type="submit" className="flex">
-                <MagnifyingGlass className="fill-turquoise" />
-              </button>
-            </Link>
-          </form>
-          <Link
-            data-cy="profile-link"
-            className="aspect-square h-14"
-            href={NEXT_ROUTES.PROFILE(user?.user_id)}
-          >
-            {user ? <Avatar src={user.photo} /> : <AvatarSkeleton />}
-          </Link>
-        </span>
+        <Link href={NEXT_ROUTES.SEARCH_RESULTS}>
+          <span className="my-8 flex items-center space-x-4 px-4 md:px-5">
+            <form className="flex w-full items-center rounded-full bg-white px-4 py-3">
+              <Destino className="h-5 w-5 flex-none translate-y-0.5 scale-125 fill-light-turquoise stroke-light-turquoise" />
+              <input
+                type="search"
+                placeholder="Dónde quieres ir?"
+                className="ml-2 h-full w-full rounded-full pl-2 outline-none"
+              />
+              <Link href={NEXT_ROUTES.SEARCH_RESULTS}>
+                <button data-cy="search-btn" type="submit" className="flex">
+                  <MagnifyingGlass className="fill-turquoise" />
+                </button>
+              </Link>
+            </form>
+            {/* <Link
+              data-cy="profile-link"
+              className="aspect-square h-14"
+              href={NEXT_ROUTES.PROFILE(user?.user_id)}
+            > */}
+              {user ? <Avatar src={user.photo} /> : <AvatarSkeleton />}
+            {/* </Link> */}
+          </span>
+        </Link>
 
         {user?.is_validated_driver && (
           <OptionButton

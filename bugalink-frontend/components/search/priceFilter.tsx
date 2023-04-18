@@ -10,9 +10,10 @@ type Props = {
   maxPrice: string;
   setMinPrice: (minPrice: string) => void;
   setMaxPrice: (maxPrice: string) => void;
+  handleSearch;
 };
 
-export default function PriceFilter({ open, setOpen, minPrice, maxPrice, setMinPrice, setMaxPrice }: Props) {
+export default function PriceFilter({ open, setOpen, minPrice, maxPrice, setMinPrice, setMaxPrice, handleSearch }: Props) {
   const [priceRange, setPriceRange] = useState<number[]>([
     minPrice === "" ? 0 : parseInt(minPrice),
     maxPrice === "" ? 0 : parseInt(maxPrice),
@@ -68,7 +69,7 @@ export default function PriceFilter({ open, setOpen, minPrice, maxPrice, setMinP
           </div>
         </div>
         <div className="my-5 flex flex-col items-center">
-          <CTAButton className="w-11/12" text={'FILTRAR'} />
+          <CTAButton className="w-11/12" text={'FILTRAR'} onClick={handleSearch}/>
         </div>
       </div>
     </Drawer>

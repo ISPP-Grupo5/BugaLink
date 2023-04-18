@@ -32,7 +32,15 @@ const SelectedUnselectedFilter = ({ filter }) => {
               <TagsButton text={filter.name} />
             </div>
           )}
-          <PriceFilter open={drawerPrice} setOpen={setDrawerPrice} minPrice={filter.minPrice} maxPrice={filter.maxPrice} setMinPrice={filter.setMinPrice} setMaxPrice={filter.setMaxPrice} />
+          <PriceFilter
+            open={drawerPrice}
+            setOpen={setDrawerPrice}
+            minPrice={filter.minPrice}
+            maxPrice={filter.maxPrice}
+            setMinPrice={filter.setMinPrice}
+            setMaxPrice={filter.setMaxPrice}
+            handleSearch={filter.handleSearch}
+          />
         </>
       );
     case 'Hora':
@@ -60,6 +68,7 @@ const SelectedUnselectedFilter = ({ filter }) => {
             hourTo={filter.hourTo}
             setHourFrom={filter.setHourFrom}
             setHourTo={filter.setHourTo}
+            handleSearch={filter.handleSearch}
           />
         </>
       );
@@ -81,7 +90,11 @@ const SelectedUnselectedFilter = ({ filter }) => {
               <TagsButton text={filter.name} />
             </div>
           )}
-          <RatingFilter open={drawerRating} setOpen={setDrawerRating} minStars={filter.minStars} />
+          <RatingFilter
+            open={drawerRating}
+            setOpen={setDrawerRating}
+            minStars={filter.minStars}
+          />
         </>
       );
     case 'Preferencias':
@@ -113,6 +126,7 @@ const SelectedUnselectedFilter = ({ filter }) => {
             setAllowsSmoking={filter.setAllowsSmoking}
             setPrefersMusic={filter.setPrefersMusic}
             setPrefersTalk={filter.setPrefersTalk}
+            handleSearch={filter.handleSearch}
           />
         </>
       );
@@ -141,6 +155,7 @@ const SelectedUnselectedFilter = ({ filter }) => {
             dateTo={filter.dateTo}
             setDateFrom={filter.setDateFrom}
             setDateTo={filter.setDateTo}
+            handleSearch={filter.handleSearch}
           />
         </>
       );

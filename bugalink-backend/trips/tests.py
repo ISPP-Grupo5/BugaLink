@@ -875,10 +875,6 @@ class RequestTrip(TestCase):
             url, data={"payment_method": "Balance", "note": "I need a ride"}
         )
 
-        response = self.client.post(
-            url, data={"payment_method": "Balance", "note": "I need a ride"}
-        )
-
         self.assertEqual(response.status_code, 201)
 
     def test_request_trip_card(self):

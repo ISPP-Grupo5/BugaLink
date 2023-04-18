@@ -39,10 +39,12 @@ class RequestTripPayment(TestCase):
             self.trip.driver_routine.price,
         )
 
-        self.assertEqual(
+        self.assertAlmostEqual(
             Balance.objects.get(user=self.user_2).amount,
-            1.15
-            * (Decimal(self.balance.amount) - Decimal(self.trip.driver_routine.price)),
+            (
+                Decimal(self.balance.amount)
+                - Decimal(1.15) * Decimal(self.trip.driver_routine.price)
+            ),
         )
 
         self.assertIsNotNone(

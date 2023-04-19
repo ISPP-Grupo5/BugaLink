@@ -130,7 +130,7 @@ const MessageBubble = ({
       <span className="flex flex-row items-end space-x-2">
         {!isMine && <Avatar className="h-8 w-8" />}
         <div
-          className={`flex max-w-xs flex-row items-center rounded-2xl py-2 px-3 ${
+          className={`flex max-w-xs flex-row items-center justify-between rounded-2xl py-2 px-3 ${
             isMine
               ? 'rounded-br-none bg-pale-green'
               : 'rounded-bl-none bg-light-gray'
@@ -145,6 +145,14 @@ const MessageBubble = ({
           >
             {message.text}
           </p>
+          {message.timestamp && (
+            <p className="ml-2 flex-none place-self-end pb-0.5 text-xs text-gray">
+              {new Date(message.timestamp).toLocaleTimeString('es-ES', {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </p>
+          )}
         </div>
         {isMine &&
           (message.read_by_recipient ? <DoubleCheckMark /> : <CheckMark />)}

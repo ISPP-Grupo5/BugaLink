@@ -1,3 +1,4 @@
+import datetime
 import os
 
 import django.core.exceptions
@@ -5,18 +6,17 @@ from bugalink_backend import settings
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import redirect
+from django.utils.timezone import timezone
 from passenger_routines.models import PassengerRoutine
+from passengers.models import Passenger
 from payment_methods.models import Balance
 from ratings.models import DriverRating, Report
 from ratings.serializers import DriverRatingSerializer, ReportSerializer
 from rest_framework import mixins, status, viewsets
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from transactions.models import Transaction
 from trips.models import Trip, TripRequest
-from users.models import User
-from passengers.models import Passenger
-
 from trips.serializers import (
     TripReportSerializer,
     TripRequestCreateSerializer,
@@ -105,7 +105,6 @@ class TripRequestViewSet(
     # POST /trips/<id>/request/ (For a passenger to request a trip)
     @transaction.atomic
     def create(self, trip_id, user_id, note):
-
         trip = Trip.objects.get(id=trip_id)
         user = User.objects.get(id=user_id)
         price = trip.driver_routine.price
@@ -126,7 +125,9 @@ class TripRequestViewSet(
             price=price,
         )
 
-        return Response(self.get_serializer(trip_request).data, status=status.HTTP_201_CREATED)
+        return Response(
+            self.get_serializer(trip_request).data, status=status.HTTP_201_CREATED
+        )
 
     # GET /trip-requests/pending/count/ (For a driver to get the number of pending requests)
     def count(self, request, *args, **kwargs):
@@ -319,3 +320,72 @@ class ReportIssueGetViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
     @action(detail=True, methods=["get"])
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
+
+
+class CreateNextWeekTrip(viewsets.GenericViewSet):
+    @action(detail=True, methods=["post"])
+    def post(self, request, *args, **kwargs):
+        try:
+            trips = Trip.objects.filter(
+                Q(departure_datetime__lt=datetime.datetime.now())
+                & ~Q(status="FINISHED")
+            )
+            week_begin_date = (
+                datetime.date.today()
+                - datetime.timedelta(days=datetime.date.today().isoweekday() % 7)
+                + datetime.timedelta(days=1)
+            )
+            day_mapper = {
+                "Mon": 0,
+                "Tue": 1,
+                "Wed": 2,
+                "Thu": 3,
+                "Fri": 4,
+                "Sat": 5,
+                "Sun": 6,
+            }
+            print(len(trips))
+            for trip in trips:
+                trip.status = "FINISHED"
+                trip.save()
+
+                departure_date = week_begin_date + datetime.timedelta(
+                    days=day_mapper[trip.driver_routine.day_of_week]
+                )
+                arrival_date = week_begin_date + datetime.timedelta(
+                    days=day_mapper[trip.driver_routine.day_of_week]
+                )
+
+                if (
+                    trip.driver_routine.departure_time_start
+                    > trip.driver_routine.arrival_time
+                ):
+                    arrival_date = arrival_date + datetime.timedelta(days=1)
+
+                departure_datetime = datetime.datetime.combine(
+                    departure_date, trip.driver_routine.departure_time_start
+                )
+                arrival_datetime = datetime.datetime.combine(
+                    arrival_date, trip.driver_routine.arrival_time
+                )
+
+                trip_already_created = Trip.objects.filter(
+                    driver_routine=trip.driver_routine,
+                    departure_datetime=departure_datetime,
+                    arrival_datetime=arrival_datetime,
+                )
+
+                if not trip_already_created.exists():
+                    Trip.objects.create(
+                        driver_routine=trip.driver_routine,
+                        arrival_datetime=arrival_datetime,
+                        departure_datetime=departure_datetime,
+                    )
+        except Exception as e:
+            return Response(
+                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        return Response(
+            {"log": "All next week trips has been created."}, status=status.HTTP_200_OK
+        )

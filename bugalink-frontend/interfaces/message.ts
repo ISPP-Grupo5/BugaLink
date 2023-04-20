@@ -11,8 +11,8 @@ type MessageI = {
   id: number;
   text: string;
   attachment: string;
-  timestamp: string;
-  sender: number;
+  timestamp: string; // 2023-04-20T18:53:54.001266Z
+  sender?: number;
   read_by_recipient: boolean;
 };
 

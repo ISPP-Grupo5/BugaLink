@@ -37,7 +37,7 @@ class Message(models.Model):
         null=True,
         related_name="message_sender",
     )
-    text = models.CharField(max_length=200)
+    text = models.CharField(max_length=2000)
     attachment = models.FileField(blank=True)
     conversation = models.ForeignKey(
         Conversation, on_delete=models.CASCADE, related_name="message_set"

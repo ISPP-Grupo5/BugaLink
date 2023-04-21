@@ -143,9 +143,9 @@ export default function NewRoutine({
         errors.price = 'El precio no debe ser un valor negativo';
       } else if (!values.price) {
         errors.price = 'Por favor, ingrese un precio';
-      } else if (values.price > totalDistance * 0.1 * 2) {
+      } else if (values.price < 0.3) {
         errors.price =
-          'El precio no puede ser mayor que el doble del precio recomendado';
+          'Se debe establecer un precio de al menos 30 céntimos';
       }
     }
 
@@ -417,9 +417,7 @@ export default function NewRoutine({
               </label>
               <p>
                 El precio recomendado para este trayecto (0.10€/km) es de{' '}
-                {Math.round((totalDistance * 0.1 + Number.EPSILON) * 1000) /
-                  1000}
-                €
+                {(totalDistance * 0.1).toFixed(2)} €
               </p>
               <div className="my-3 mt-4 flex flex-col">
                 <TextField

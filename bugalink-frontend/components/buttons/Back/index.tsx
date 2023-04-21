@@ -9,7 +9,7 @@ export function BackButton({ className }: BackButtonProps) {
   const router = useRouter();
   return (
     <button
-      onClick={() => router.back()}
+      onClick={() => router.push('/')}
       className={cn('z-50 rounded-full', className)}
     >
       <svg
@@ -47,7 +47,7 @@ export function BackButtonText({
       }
     >
       <button
-        onClick={router.back}
+        onClick={() => router.push('/')}
         className={'top-0 left-0 w-full text-left ' + className}
       >
         <svg

@@ -32,7 +32,7 @@ export default function AcceptRequest() {
     e.preventDefault();
     try {
       const response = await axiosAuth.put(`/trip-requests/${id}/accept/`);
-      if (response.status === 200) router.push(NEXT_ROUTES.HOME);
+      if (response.status === 200) router.push(NEXT_ROUTES.PENDING_REQUESTS);
     } catch (error) {
       console.log(error);
     }
@@ -46,7 +46,7 @@ export default function AcceptRequest() {
       const response = await axiosAuth.put(`/trip-requests/${id}/reject/`, {
         reject_note: rejectNote,
       });
-      if (response.status === 200) router.push(NEXT_ROUTES.HOME);
+      if (response.status === 200) router.push(NEXT_ROUTES.PENDING_REQUESTS);
     } catch (error) {
       console.log(error);
     }

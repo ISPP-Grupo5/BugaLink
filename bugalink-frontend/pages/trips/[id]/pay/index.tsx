@@ -20,9 +20,9 @@ export default function Pay() {
 
   const amount = balance
     ? Number.parseFloat(balance.amount).toLocaleString('es-ES', {
-        style: 'currency',
-        currency: 'EUR',
-      })
+      style: 'currency',
+      currency: 'EUR',
+    })
     : '--,-- €';
 
   const payWithBalance = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -30,12 +30,11 @@ export default function Pay() {
       event.preventDefault();
       setIsPaying(true);
       const data = {
-        payment_method: 'Balance',
         note,
       };
 
       try {
-        await axiosAuth.post(`trips/${id}/request/`, data);
+        await axiosAuth.post(`trips/${id}/checkout-balance/`, data);
         router.replace(NEXT_ROUTES.HOME);
       } catch (error) {
         alert('Saldo insuficiente o error en el pago');
@@ -52,10 +51,28 @@ export default function Pay() {
       setIsPaying(true);
 
       try {
-        const { data } = await axiosAuth.post(
-          `trips/${id}/create-checkout-session/`
-        );
-        console.log(data.url);
+        const dataPost = {
+          note,
+        };
+        const { data } = await axiosAuth.post(`trips/${id}/create-checkout-session/`, dataPost);
+        router.push(data.url);
+      } catch (error) {
+        alert('Error en el pago');
+        setIsPaying(false);
+      }
+    }
+  };
+
+  const payWithPaypal = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isPaying) {
+      event.preventDefault();
+      setIsPaying(true);
+
+      try {
+        const dataPost = {
+          note,
+        };
+        const { data } = await axiosAuth.post(`trips/${id}/create-paypal-session/`, dataPost);
         router.push(data.url);
       } catch (error) {
         alert('Error en el pago');
@@ -92,15 +109,15 @@ export default function Pay() {
             <PayMethod
               logo={<VisaMastercard height="100%" />}
               name="VISA/Mastercard"
-              data="**** **** **** 5678"
+              data=""
               onClick={payWithCreditCard}
               disabled={isPaying}
             />
             <PayMethod
               logo={<Paypal height="100%" />}
               name="Paypal"
-              data="pedro@gmail.com"
-              // href="#"
+              data=""
+              onClick={payWithPaypal}
               disabled={isPaying}
             />
           </div>

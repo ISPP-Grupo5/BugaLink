@@ -11,3 +11,4 @@ class Transaction(models.Model):
         ), default="PENDING")
     is_refund = models.BooleanField(default=False)
     amount = models.FloatField()
+    date= models.DateField(auto_now=True)

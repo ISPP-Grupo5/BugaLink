@@ -5,6 +5,8 @@ import NEXT_ROUTES from '@/constants/nextRoutes';
 import useHistoryTrips from '@/hooks/useHistoryTrips';
 import TripRequestI from '@/interfaces/tripRequest';
 import { AnimatePresence, motion } from 'framer-motion';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 const separateTrips = (historyTrips: TripRequestI[], userId: number) => {
@@ -22,7 +24,8 @@ const separateTrips = (historyTrips: TripRequestI[], userId: number) => {
 };
 
 export default function HistoryTabs() {
-  const USER_ID = 1;
+  const authUser = useSession().data?.user as User;
+
   const [tabIndex, setTabIndex] = useState(0);
   const handleTabClick = (index) => {
     setTabIndex(index);
@@ -30,7 +33,10 @@ export default function HistoryTabs() {
 
   const { historyTrips = [], isLoading, isError } = useHistoryTrips();
 
-  const { driverTrips, passengerTrips } = separateTrips(historyTrips, USER_ID);
+  const { driverTrips, passengerTrips } = separateTrips(
+    historyTrips,
+    authUser?.user_id
+  );
 
   return (
     <div className="h-full w-full space-y-2">
@@ -91,8 +97,6 @@ export default function HistoryTabs() {
   );
 }
 const HistoryList = ({ trips, type, isLoading, isError }) => {
-  const USER_ID = 1; // TODO: Get user id from context
-
   return (
     <div className="absolute w-full divide-y-2 divide-light-gray px-4">
       {!isLoading && !isError && trips && trips.length === 0 && (
@@ -113,7 +117,7 @@ const HistoryList = ({ trips, type, isLoading, isError }) => {
               destination={tripRequest.trip.driver_routine.destination.address}
               date={tripRequest.trip.departure_datetime}
               price={Number.parseFloat(tripRequest.trip.driver_routine.price)}
-              href={NEXT_ROUTES.RATING_TRIP(USER_ID)}
+              href={NEXT_ROUTES.RATING_TRIP(tripRequest.trip.id)}
               isHistory
             />
           ))}

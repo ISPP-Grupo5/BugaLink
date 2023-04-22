@@ -15,10 +15,10 @@ export default function TagsButton({
 }: Params) {
   return (
     <button
-      className={`flex-none rounded-3xl py-1.5 px-3 text-center text-sm ${
+      className={`flex-none whitespace-nowrap rounded-3xl py-1.5 px-3 text-center text-sm ${
         selected
           ? 'bg-turquoise text-white'
-          : 'border border-gray bg-white text-gray'
+          : 'bg-white text-gray outline outline-1 outline-gray'
       }
       ${className}`}
     >

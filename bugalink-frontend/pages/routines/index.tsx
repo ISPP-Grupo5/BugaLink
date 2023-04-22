@@ -30,7 +30,7 @@ const mergeRoutines = (
       id: routine.id,
       origin: routine.origin,
       destination: routine.destination,
-      day: routine.day_of_week,
+      day_of_week: routine.day_of_week,
       departure_time_start: parseDate(routine.departure_time_start), // 18:00:00 -> 18:00
       departure_time_end: parseDate(routine.departure_time_end), // 18:00:00 -> 18:00
       type: routine.type,
@@ -70,7 +70,9 @@ export default function MyRoutines() {
             {isLoading || isError
               ? [1, 2].map((id) => <RoutineCardSkeleton key={id} />)
               : allRoutines
-                  .filter((routine: GenericRoutineI) => routine.day === day)
+                  .filter(
+                    (routine: GenericRoutineI) => routine.day_of_week === day
+                  )
                   .map((routine: GenericRoutineI) => (
                     <RoutineCard
                       key={routine.id + routine.origin.address}
@@ -86,7 +88,7 @@ export default function MyRoutines() {
             {!isLoading &&
               !isError &&
               allRoutines.filter(
-                (routine: GenericRoutineI) => routine.day === day
+                (routine: GenericRoutineI) => routine.day_of_week === day
               ).length === 0 && (
                 <div className="w-full rounded-md border border-border-color py-2 text-center font-light text-gray">
                   No tienes horario para este día

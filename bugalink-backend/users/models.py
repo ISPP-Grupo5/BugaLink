@@ -1,5 +1,17 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.core.files.storage import FileSystemStorage
 from django.db import models
+
+def user_directory_path(instance, filename):
+    return "users/{0}/{1}".format(instance.id, filename)
+
+class OverwriteStorage(FileSystemStorage):
+    def get_available_name(self, name, max_length=None):
+        original_name=self.url(name).split(".")[0]
+        new_file_name = name.split(".")[0]
+        if original_name.__contains__(new_file_name):
+            self.delete(name)
+        return name
 
 
 class UserManager(BaseUserManager):
@@ -21,13 +33,16 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=150)
     date_joined = models.DateTimeField(auto_now_add=True)
     verified = models.BooleanField(default=False)
-    photo = models.ImageField(upload_to="users/profile_pictures/", blank=True)
+    photo = models.ImageField(
+        upload_to=user_directory_path, storage=OverwriteStorage(), blank=True
+    )
     is_passenger = models.BooleanField(default=True)
     # TODO: redundant now that we have is_validated_driver?
     is_driver = models.BooleanField(default=False)
     is_validated_driver = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    is_pilotuser = models.BooleanField(default=False)
     USERNAME_FIELD = "email"
 
     objects = UserManager()

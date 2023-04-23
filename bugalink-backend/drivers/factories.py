@@ -11,9 +11,6 @@ fake = Faker("es_ES")
 
 
 def random_bool():
-    # factory.LazyFunction(
-    # lambda x: fake.random_element(elements=(True, False))
-    # )
     return random.choice([True, False])
 
 
@@ -71,5 +68,5 @@ class DriverFactory(factory.django.DjangoModelFactory):
         obj.user.is_validated_driver = True
         obj.user.save()
 
-        for _ in range(5):
+        for _ in range(0, random.randint(0, 5)):
             DriverRoutineFactory.create(driver=obj)

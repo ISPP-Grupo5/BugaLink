@@ -4,17 +4,16 @@ import random
 import factory
 from faker import Faker
 from locations.models import Location
-from trips.factories import TripFactory
 
-from .models import DriverRoutine
+from .models import PassengerRoutine
 
 Faker.seed(69420)
 fake = Faker("es_ES")
 
 
-class DriverRoutineFactory(factory.django.DjangoModelFactory):
+class PassengerRoutineFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = DriverRoutine
+        model = PassengerRoutine
 
     class Params:
         today = datetime.date.today()
@@ -32,13 +31,9 @@ class DriverRoutineFactory(factory.django.DjangoModelFactory):
             lambda x: random.randint(10, 100)
         )
 
-    print("Creating driver routines...")
+    print("Creating passenger routines...")
 
-    # driver = factory.SubFactory("drivers.factories.DriverFactory")
-    price = factory.LazyAttribute(lambda x: random.randint(1, 10))
-    note = factory.LazyAttribute(lambda x: fake.text(max_nb_chars=2000))
-    is_recurrent = False
-    available_seats = factory.LazyAttribute(lambda x: random.randint(1, 6))
+    passenger = factory.SubFactory("passengers.factories.PassengerFactory")
 
     departure_time_start = factory.LazyAttribute(
         lambda x: x.departure_time_base
@@ -68,11 +63,3 @@ class DriverRoutineFactory(factory.django.DjangoModelFactory):
             elements=("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
         )
     )
-
-    @factory.post_generation
-    def create_related_objects(obj, create, extracted, **kwargs):
-        if not create:
-            return
-
-        # Create the first trip of the routine
-        TripFactory.create(driver_routine=obj)

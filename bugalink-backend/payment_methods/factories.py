@@ -1,3 +1,5 @@
+import random
+
 import factory
 from faker import Faker
 
@@ -13,5 +15,7 @@ class BalanceFactory(factory.django.DjangoModelFactory):
 
     print("Creating balances...")
 
-    amount = 0.0
+    amount = factory.LazyAttribute(
+        lambda x: random.randint(0, 2000) / 100
+    )  # 0.00 - 20.00 EUR
     user = factory.SubFactory("users.factories.UserFactory")

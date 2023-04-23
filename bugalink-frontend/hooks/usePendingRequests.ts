@@ -10,7 +10,7 @@ export default function usePendingRequests() {
 
   const { data, error, isLoading } = useSWR(
     user &&
-      `/users/${user.user_id}/trip-requests/?requestStatus=PENDING&role=driver`,
+      `/users/${user.user_id}/trip-requests/?requestStatus=PENDING&tripStatus=PENDING&role=driver`,
     fetcherAuth
   );
 

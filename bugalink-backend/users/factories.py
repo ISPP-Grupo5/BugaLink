@@ -37,6 +37,3 @@ class UserFactory(factory.django.DjangoModelFactory):
         PassengerFactory.create(user=obj)
         AuthenticationFactory.create(user=obj)  # For login
         BalanceFactory.create(user=obj)  # For payments
-
-        if random.randint(0, 1):
-            DriverFactory.create(user=obj)

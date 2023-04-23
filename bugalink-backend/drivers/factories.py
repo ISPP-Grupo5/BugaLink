@@ -67,6 +67,3 @@ class DriverFactory(factory.django.DjangoModelFactory):
         obj.user.is_driver = True
         obj.user.is_validated_driver = True
         obj.user.save()
-
-        for _ in range(0, random.randint(0, 5)):
-            DriverRoutineFactory.create(driver=obj)

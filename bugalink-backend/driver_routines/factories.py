@@ -34,7 +34,7 @@ class DriverRoutineFactory(factory.django.DjangoModelFactory):
 
     print("Creating driver routines...")
 
-    # driver = factory.SubFactory("drivers.factories.DriverFactory")
+    driver = factory.SubFactory("drivers.factories.DriverFactory")
     price = factory.LazyAttribute(lambda x: random.randint(1, 10))
     note = factory.LazyAttribute(lambda x: fake.text(max_nb_chars=2000))
     is_recurrent = False

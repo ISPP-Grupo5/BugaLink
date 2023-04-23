@@ -57,13 +57,6 @@ class TripFactory(factory.django.DjangoModelFactory):
         else:
             return "PENDING"
 
-    @factory.post_generation
-    def create_related_objects(obj, create, extracted, **kwargs):
-        # Create up to 5 requests for the trip if there are enough users in the database
-        if Passenger.objects.count() > 5:
-            for _ in range(0, random.randint(0, 5)):
-                TripRequestFactory.create(trip=obj)
-
 
 class TripRequestFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -118,11 +111,3 @@ class TripRequestFactory(factory.django.DjangoModelFactory):
             status=obj.status,
             amount=obj.price,
         )
-
-        # For 50% of the trip requests that comply, create a rating for the driver
-        if (
-            obj.status == "ACCEPTED"
-            and obj.trip.status == "FINISHED"
-            and random.randint(0, 1)
-        ):
-            DriverRatingFactory.create(trip_request=obj)

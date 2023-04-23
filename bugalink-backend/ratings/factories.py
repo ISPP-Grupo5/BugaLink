@@ -19,35 +19,6 @@ class DriverRatingFactory(factory.django.DjangoModelFactory):
     is_pleasant_driver = factory.LazyAttribute(lambda x: fake.boolean())
     already_knew = factory.LazyAttribute(lambda x: fake.boolean())
 
-    @factory.post_generation
-    def create_related_objects(obj, create, extracted, **kwargs):
-        if not create:
-            return
-
-        # For 20% of the ratings, create a report to another user
-        # TODO: make attributes dynamic so there is variety in the reports
-        if fake.boolean(chance_of_getting_true=100):
-            # 50% of the times, the driver will report the passenger
-            # The another half of the times, it will be the other way around
-            if fake.boolean(chance_of_getting_true=50):
-                reporter_user = obj.trip_request.trip.driver_routine.driver.user
-                reported_user = obj.trip_request.passenger.user
-                reporter_is_driver = True
-                reported_is_driver = False
-            else:
-                reporter_user = obj.trip_request.passenger.user
-                reported_user = obj.trip_request.trip.driver_routine.driver.user
-                reporter_is_driver = False
-                reported_is_driver = True
-
-            ReportFactory(
-                trip=obj.trip_request.trip,
-                reporter_user=reporter_user,
-                reported_user=reported_user,
-                reporter_is_driver=reporter_is_driver,
-                reported_is_driver=reported_is_driver,
-            )
-
 
 class ReportFactory(factory.django.DjangoModelFactory):
     class Meta:

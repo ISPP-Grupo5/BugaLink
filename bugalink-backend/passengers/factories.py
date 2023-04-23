@@ -18,11 +18,3 @@ class PassengerFactory(factory.django.DjangoModelFactory):
 
     user = factory.SubFactory("users.factories.UserFactory")
     # Add any other fields you want to generate for the Passenger model
-
-    @factory.post_generation
-    def create_related_objects(obj, create, extracted, **kwargs):
-        if not create:
-            return
-
-        for _ in range(0, random.randint(0, 5)):
-            PassengerRoutineFactory.create(passenger=obj)

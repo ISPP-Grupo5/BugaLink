@@ -5,35 +5,45 @@
       "first_name": "Federico",
       "last_name": "de los Palotes",
       "email": "federico@bugalink.com",
-      "is_driver": true
+      "is_driver": true,
+      "is_validated_driver": false,
+      "is_pilotuser": true
     },
     {
       "password": "pbkdf2_sha256$600000$LbkMRestsmHuPzQS98iiYD$471fl7AvnhcsfUvg6+ayeEl3zX+v7nTHh8LUQiy9RxI=",
       "first_name": "Ramón Antonio",
       "last_name": "Pérez González",
       "email": "ramonantonio@bugalink.com",
-      "is_driver": true
+      "is_driver": true,
+      "is_validated_driver": false,
+      "is_pilotuser": true
     },
     {
       "password": "M4r14",
       "first_name": "María Lucía",
       "last_name": "Hernández de la Roña",
       "email": "marialucia@bugalink.com",
-      "is_driver": true
+      "is_driver": true,
+      "is_validated_driver": false,
+      "is_pilotuser": true
     },
     {
       "password": "C0nch4",
       "first_name": "Concha Manuela",
       "last_name": "Sánchez del Río",
       "email": "conchamanuela@bugalink.com",
-      "is_driver": false
+      "is_driver": false,
+      "is_validated_driver": false,
+      "is_pilotuser": true
     },
     {
       "password": "Pr4d4",
       "first_name": "Ágata",
       "last_name": "Ruíz de la Prada",
       "email": "prada@bugalink.com",
-      "is_driver": false
+      "is_driver": false,
+      "is_validated_driver": false,
+      "is_pilotuser": true
     }
   ],
   "Passenger": [

@@ -15,6 +15,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useState } from 'react';
 
+
 export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { data } = useSession();
@@ -30,7 +31,7 @@ export default function Home() {
             className="aspect-square h-14"
             href={NEXT_ROUTES.PROFILE(user?.user_id)}
           >
-            {user ? <Avatar src={user.photo} /> : <AvatarSkeleton />}
+            {user ? <Avatar src={user?.photo} /> : <AvatarSkeleton />}
           </Link>
         </span>
 

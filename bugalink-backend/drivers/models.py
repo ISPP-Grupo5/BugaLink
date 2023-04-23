@@ -18,7 +18,9 @@ document_validation_choices = (
 
 class OverwriteStorage(FileSystemStorage):
     def get_available_name(self, name, max_length=None):
-        if self.exists(name):
+        original_name=self.url(name).split(".")[0]
+        new_file_name = name.split(".")[0]
+        if original_name.__contains__(new_file_name):
             self.delete(name)
         return name
 

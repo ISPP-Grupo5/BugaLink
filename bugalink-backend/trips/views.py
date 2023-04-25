@@ -144,6 +144,15 @@ class TripRequestViewSet(
     @action(detail=True, methods=["put"])
     def accept(self, request, *args, **kwargs):
         trip_request = TripRequest.objects.get(id=kwargs["pk"])
+        trip = Trip.objects.get(id=trip_request.trip.pk)
+        free_seats = trip.get_avaliable_seats()
+        if free_seats <= 0:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "error": "El viaje está lleno y no acepta más pasajeros"
+                },
+            )
         trip_request.status = "ACCEPTED"
         trip_request.save()
         return Response(self.get_serializer(trip_request).data)

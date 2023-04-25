@@ -15,6 +15,7 @@ import Arrow from 'public/assets/arrow-right.svg';
 import OriginPin from 'public/assets/origen-pin.svg';
 import { useState } from 'react';
 import DestinationPin from '/public/assets/map-pin.svg';
+import { createMessageSeparator } from '@/utils/objects';
 
 export default function Conversation() {
   const router = useRouter();
@@ -29,7 +30,38 @@ export default function Conversation() {
     user
   );
 
-  const allMessages = [...messageHistory, ...(conversation?.message_set || [])];
+  const allMessages = [...messageHistory, ...(conversation?.message_set || [])]
+    // Convert the array allMessages to an object where the keys are the timestamps of each message
+    // (both removes duplicates and sorts the messages by timestamp)
+    .reduce(
+      (acc, message) => ({ ...acc, [message.timestamp]: message }),
+      {}
+    ) as {
+    [key: string]: MessageI;
+  };
+
+  // Every time a message and the previous one are in a different day, we add a "date separator" message.
+  // It's another message, but the sender is undefined and the text is what we want to show (In this case, the
+  // date of the following messages).
+  const messagesSplitByDay = Object.values(allMessages).reduce(
+    (acc: MessageI[], message: MessageI) => {
+      // Compare the current message with the previous one
+      const messageDate = new Date(message.timestamp);
+      const nextMessage = acc[acc.length - 1];
+      const nextMessageDate = new Date(nextMessage?.timestamp);
+      if (
+        nextMessage?.sender !== undefined &&
+        message?.sender !== undefined &&
+        nextMessageDate.getDate() !== messageDate.getDate()
+      ) {
+        acc.push(createMessageSeparator(nextMessageDate));
+      }
+
+      acc.push(message);
+      return acc;
+    },
+    []
+  );
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error</p>;
@@ -41,13 +73,22 @@ export default function Conversation() {
         {/* This is a bottom spacer between the most recent message bubble and the message input bar */}
         <div className="h-6 w-full">&nbsp;</div>
         {/* This is the list of messages that come from the websocket connection (real-time, happening now, updated on the fly) */}
-        {allMessages.map((message: MessageI) => (
+        {messagesSplitByDay.map((message: MessageI) => (
           <MessageBubble
             key={message.id}
             message={message}
             isMine={message.sender === user.user_id}
           />
         ))}
+        {messagesSplitByDay.length > 0 && (
+          <InformativeChatMessage
+            message={createMessageSeparator(
+              new Date(
+                messagesSplitByDay[messagesSplitByDay.length - 1].timestamp
+              )
+            )}
+          />
+        )}
       </div>
       <TextInput
         sendJsonMessage={sendJsonMessage}
@@ -121,6 +162,9 @@ const MessageBubble = ({
   message: MessageI;
   isMine: boolean;
 }) => {
+  // Messages that are not sent by any user are informative messages (e.g. "Current date")
+  if (message.sender === undefined)
+    return <InformativeChatMessage message={message} />;
   return (
     <div
       className={`flex w-full flex-col items-start ${
@@ -130,7 +174,7 @@ const MessageBubble = ({
       <span className="flex flex-row items-end space-x-2">
         {!isMine && <Avatar className="h-8 w-8" />}
         <div
-          className={`flex max-w-xs flex-row items-center rounded-2xl py-2 px-3 ${
+          className={`flex max-w-xs flex-row items-center justify-between rounded-2xl py-2 px-3 ${
             isMine
               ? 'rounded-br-none bg-pale-green'
               : 'rounded-bl-none bg-light-gray'
@@ -145,6 +189,14 @@ const MessageBubble = ({
           >
             {message.text}
           </p>
+          {message.timestamp && (
+            <p className="ml-2 flex-none place-self-end pb-0.5 text-xs text-gray">
+              {new Date(message.timestamp).toLocaleTimeString('es-ES', {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </p>
+          )}
         </div>
         {isMine &&
           (message.read_by_recipient ? <DoubleCheckMark /> : <CheckMark />)}
@@ -153,9 +205,18 @@ const MessageBubble = ({
   );
 };
 
+const InformativeChatMessage = ({ message }: { message: MessageI }) => {
+  return (
+    <div className="flex w-full flex-col items-center">
+      <p className="text-xs text-gray">{message.text}</p>
+    </div>
+  );
+};
+
 const TextInput = ({ sendJsonMessage, connectionStatus }) => {
   const handleSubmitMessage = () => {
-    const trimmedMessage = message.trim();
+    const trimmedMessage = message.trim().substring(0, 2000);
+    // Messages are limited to 2000 chars in the backend
     if (trimmedMessage.length > 0) sendJsonMessage({ message: trimmedMessage });
     setMessage('');
   };
@@ -172,6 +233,7 @@ const TextInput = ({ sendJsonMessage, connectionStatus }) => {
             : 'Conectando...'
         }
         value={message}
+        maxLength={2000}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={(e) =>
           e.key == 'Enter' && !e.shiftKey && handleSubmitMessage()

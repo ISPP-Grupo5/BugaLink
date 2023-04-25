@@ -200,8 +200,7 @@ export default function Details({ data }) {
                   <div className="flex">
                     <p className="text-xl font-bold text-red line-through">
                       {(
-                        Number.parseFloat(trip.driver_routine.price) +
-                        0.15 * Number.parseFloat(trip.driver_routine.price)
+                        Number.parseFloat(trip.driver_routine.price) * 1.15
                       ).toLocaleString('es-ES', {
                         style: 'currency',
                         currency: 'EUR',

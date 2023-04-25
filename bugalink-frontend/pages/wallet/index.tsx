@@ -49,10 +49,10 @@ export default function Wallet() {
         </div>
       </div>
 
-      <p className="rounded-t-3xl bg-white py-5 pl-5 text-left text-3xl text-black">
+      <p className="rounded-t-3xl bg-white py-5 pl-5 text-left text-3xl text-black bg-bottom">
         Últimos movimientos
       </p>
-      <div className="divide-y-2 divide-light-gray overflow-y-scroll bg-white">
+      <div className="divide-y-2 divide-light-gray overflow-y-scroll grow bg-white ">
         <TransactionList />
       </div>
     </AnimatedLayout>

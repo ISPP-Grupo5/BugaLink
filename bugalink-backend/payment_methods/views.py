@@ -16,6 +16,7 @@ from .models import Balance
 from .serializers import BalanceSerializer
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
+import transactions.utils as TransactionUtils
 
 
 class BalanceViewSet(
@@ -68,7 +69,7 @@ class PaymentViewSet(
         trip = Trip.objects.get(id=kwargs["trip_id"])
         user = request.user
         # El post recibe la cantidad en centimos integer
-        price = int(float(trip.driver_routine.price) * 115)
+        price = int(TransactionUtils.is_pilot_user_price(user, trip.driver_routine.price) * 100)
 
         # Si no hay texto da error al intentar acceder a este dato
         note = note if note else "None"
@@ -102,7 +103,7 @@ class PaymentViewSet(
         trip = Trip.objects.get(id=kwargs["trip_id"])
 
         user = request.user
-        price = trip.driver_routine.price * decimal.Decimal(1.15)
+        price = TransactionUtils.is_pilot_user_price(user, trip.driver_routine.price)
         note = request.data.get("note")
 
         balance = Balance.objects.get(user=user)
@@ -115,7 +116,7 @@ class PaymentViewSet(
             balance.amount -= price
             balance.save()
             # Si todo está correcto, se crea el triprequest
-            noErrors = TripRequestViewSet.create(self, trip.id, user.id, note)
+            noErrors = TripRequestViewSet.create(self, trip.id, user.id, price, note)
             if noErrors:
                 return Response(
                     {"message": "Pago realizado con éxito"},
@@ -131,7 +132,8 @@ class PaymentViewSet(
         note = request.data.get("note")
         trip = Trip.objects.get(id=kwargs["trip_id"])
         # El post recibe la cantidad en centimos integer
-        price = trip.driver_routine.price * decimal.Decimal(1.15)
+        price = TransactionUtils.is_pilot_user_price(request.user, trip.driver_routine.price)
+
 
         URL = "https://app.bugalink.es" if settings.APP_ENGINE else "http://127.0.0.1:3000"
 

@@ -13,6 +13,7 @@ export function TransactionList() {
   //Logged user is receiver?
   const isReceiver = (transaction: LastTransactionsI) => (transaction.receiver.id == me.user_id);
   const isPending = (transaction: LastTransactionsI) => (transaction.status === 'PENDING');
+  const isRejected = (transaction: LastTransactionsI) => (transaction.status === 'DECLINED');
   
   return (
     <div className="divide-y-2 divide-light-gray overflow-y-scroll bg-white">
@@ -23,6 +24,7 @@ export function TransactionList() {
         type = "Pasajero",
         notMe = transaction.sender;
         const pending = isPending(transaction);
+        const rejected = isRejected(transaction);
         const imReceiver = isReceiver(transaction);
         
         const date = parseDateFromDate(transaction.date);
@@ -33,14 +35,15 @@ export function TransactionList() {
             currency: "EUR",
           }
           );
+
         if (!imReceiver) {
           color = "text-red";
           sign = "-";
           type = "Conductor";
           notMe = transaction.receiver;
         }
-
-        if (pending) color="text-yellow";
+        if (rejected) color = "text-gray";
+        if (pending) color= "text-yellow";
 
         return (
           <Transaction
@@ -52,6 +55,7 @@ export function TransactionList() {
             className={color}
             money={sign + amount}
             isPending={pending}
+            isRejected={rejected}
           />
         );
       })}
@@ -67,6 +71,7 @@ type Params = {
   className: string;
   money: string;
   isPending?: boolean;
+  isRejected?: boolean;
 };
 
 export function Transaction({
@@ -76,6 +81,7 @@ export function Transaction({
   className,
   money,
   isPending = false,
+  isRejected = false,
 }: Params) {
 
   const icon= notMe.photo? notMe.photo: "/icons/Vista-Principal/hombre.png";
@@ -95,7 +101,9 @@ export function Transaction({
 
       <div className="col-span-1 my-auto mx-auto pr-3 text-right ">
         <p className={'text-lg font-bold ' + className}>{money}</p>
-        {isPending && <p className="text-base text-yellow">Pendiente</p>}
+        {isPending && <p className={'text-base ' + className}>Pendiente</p>}
+        {isRejected && <p className={'text-base ' + className}>Rechazado</p>}
+        
       </div>
     </div>
   );

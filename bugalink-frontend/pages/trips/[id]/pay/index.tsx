@@ -20,9 +20,9 @@ export default function Pay() {
 
   const amount = balance
     ? Number.parseFloat(balance.amount).toLocaleString('es-ES', {
-      style: 'currency',
-      currency: 'EUR',
-    })
+        style: 'currency',
+        currency: 'EUR',
+      })
     : '--,-- €';
 
   const payWithBalance = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -54,7 +54,10 @@ export default function Pay() {
         const dataPost = {
           note,
         };
-        const { data } = await axiosAuth.post(`trips/${id}/create-checkout-session/`, dataPost);
+        const { data } = await axiosAuth.post(
+          `trips/${id}/create-checkout-session/`,
+          dataPost
+        );
         router.push(data.url);
       } catch (error) {
         alert('Error en el pago');
@@ -72,7 +75,10 @@ export default function Pay() {
         const dataPost = {
           note,
         };
-        const { data } = await axiosAuth.post(`trips/${id}/create-paypal-session/`, dataPost);
+        const { data } = await axiosAuth.post(
+          `trips/${id}/create-paypal-session/`,
+          dataPost
+        );
         router.push(data.url);
       } catch (error) {
         alert('Error en el pago');

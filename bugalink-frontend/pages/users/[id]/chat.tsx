@@ -67,7 +67,7 @@ export default function Conversation() {
   if (isError) return <p>Error</p>;
 
   return (
-    <AnimatedLayout className="flex flex-col justify-between bg-white px-4">
+    <AnimatedLayout className="justify-between flex flex-col bg-white px-4">
       <ChatHeader user={user} conversation={conversation} />
       <div className="-mb-6 flex h-full max-h-full flex-col-reverse space-y-3 overflow-y-scroll py-3">
         {/* This is a bottom spacer between the most recent message bubble and the message input bar */}
@@ -113,7 +113,7 @@ const ChatHeader = ({
 
   return (
     <div className="sticky -mx-4 flex flex-col bg-green px-6 py-5 text-white">
-      <span className="flex justify-between">
+      <span className="justify-between flex">
         <span className="flex items-center space-x-2 text-xl">
           <BackButton />
           {otherUser && (
@@ -174,7 +174,7 @@ const MessageBubble = ({
       <span className="flex flex-row items-end space-x-2">
         {!isMine && <Avatar className="h-8 w-8" />}
         <div
-          className={`flex max-w-xs flex-row items-center justify-between rounded-2xl py-2 px-3 ${
+          className={`justify-between flex max-w-xs flex-row items-center rounded-2xl py-2 px-3 ${
             isMine
               ? 'rounded-br-none bg-pale-green'
               : 'rounded-bl-none bg-light-gray'
@@ -224,7 +224,7 @@ const TextInput = ({ sendJsonMessage, connectionStatus }) => {
   const [message, setMessage] = useState('');
 
   return (
-    <div className="sticky bottom-0 mb-4 flex w-full flex-row items-center justify-between rounded-full bg-light-gray p-4">
+    <div className="justify-between sticky bottom-0 mb-4 flex w-full flex-row items-center rounded-full bg-light-gray p-4">
       <textarea
         className="h-8 w-full resize-none bg-transparent pl-1 pt-0.5 text-lg leading-none focus:outline-none"
         placeholder={

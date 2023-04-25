@@ -54,7 +54,7 @@ export default function Login() {
       } else if (!emailRegex.test(email)) {
         errors.email = 'Por favor, ingrese un correo electrónico válido';
       }
-      
+
       if (!password) {
         errors.password = 'Por favor, ingrese una contraseña';
       }
@@ -71,9 +71,9 @@ export default function Login() {
           });
         } catch (error) {
           setIsLoading(false);
-        }  
+        }
       } else {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
   };

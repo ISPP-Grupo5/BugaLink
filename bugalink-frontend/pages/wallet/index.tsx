@@ -12,14 +12,18 @@ import useExpectedExpense from '@/hooks/useExpectedExpense';
 export default function Wallet() {
   const { balance } = useBalance();
   const { expectedExpense } = useExpectedExpense();
-  const amount = balance ? Number.parseFloat(balance.amount).toLocaleString('es-ES', {
-    style: 'currency',
-    currency: 'EUR',
-  }) : '--,-- €';
-  const expectedExpenseAmount = expectedExpense ? Number.parseFloat(expectedExpense).toLocaleString('es-ES', {
-    style: 'currency',
-    currency: 'EUR',
-  }) : '--,-- €';
+  const amount = balance
+    ? Number.parseFloat(balance.amount).toLocaleString('es-ES', {
+        style: 'currency',
+        currency: 'EUR',
+      })
+    : '--,-- €';
+  const expectedExpenseAmount = expectedExpense
+    ? Number.parseFloat(expectedExpense).toLocaleString('es-ES', {
+        style: 'currency',
+        currency: 'EUR',
+      })
+    : '--,-- €';
 
   return (
     <AnimatedLayout className="flex flex-col overflow-y-scroll">
@@ -33,8 +37,11 @@ export default function Wallet() {
         {
           <div className="text-center">
             <p className="text-xs text-gray">Gasto esperado esta semana</p>
-            <p className="text-xl font-bold text-black">{expectedExpenseAmount}</p>
-          </div>}
+            <p className="text-xl font-bold text-black">
+              {expectedExpenseAmount}
+            </p>
+          </div>
+        }
       </div>
       <div className="justify-between my-5 flex space-x-2 px-4">
         <div className="flex-1">

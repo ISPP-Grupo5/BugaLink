@@ -46,14 +46,20 @@ export default function UpcomingTripsCarousel(props) {
   }, [emblaApi, setTweenValues]);
 
   useEffect(() => {
+    // Everytime upcomingTrips changes, we need to reinitialize the carousel
+    // so it can recalculate the number of slides and the scroll snap list
+    emblaApi?.reInit();
+  }, [upcomingTrips]);
+
+  useEffect(() => {
     if (!emblaApi || !upcomingTrips) return;
 
     onScroll();
     emblaApi.on('scroll', () => {
-      flushSync(() => onScroll());
+      flushSync(onScroll);
     });
     emblaApi.on('reInit', onScroll);
-  }, [emblaApi, onScroll, upcomingTrips]);
+  }, [emblaApi, onScroll]);
 
   // They are used for both skeleton and real cards so we can extract them to a variable here
   // cn is a library that allows you to conditionally concat classNames safely (avoid undefined, etc.)

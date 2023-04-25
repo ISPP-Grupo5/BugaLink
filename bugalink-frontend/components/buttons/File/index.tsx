@@ -56,7 +56,11 @@ export default function FileButton({
       >
         <p className="my-auto"> {text} </p>
         {status === 'Validated' && (
-          <GreenCheck className="fill-green stroke-green" />
+          <GreenCheck
+            className="fill-green stroke-green"
+            width="32"
+            height="32"
+          />
         )}
         {status === 'Waiting validation' && (
           <Hourglass className="stroke-yellow" />

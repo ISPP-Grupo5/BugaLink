@@ -1,9 +1,9 @@
-import useLastTransactions from "@/hooks/useLastTransactions";
-import LastTransactionsI from "@/interfaces/lastTransactions";
-import UserI from "@/interfaces/user";
-import { parseDateFromDate, shortenName } from "@/utils/formatters";
-import { User } from "next-auth";
-import { useSession } from "next-auth/react";
+import useLastTransactions from '@/hooks/useLastTransactions';
+import LastTransactionsI from '@/interfaces/lastTransactions';
+import UserI from '@/interfaces/user';
+import { parseDateFromDate, shortenName } from '@/utils/formatters';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
 
 //Transactions list
 export function TransactionList() {
@@ -11,36 +11,38 @@ export function TransactionList() {
   const me = data?.user as User;
   const { lastTransactions } = useLastTransactions();
   //Logged user is receiver?
-  const isReceiver = (transaction: LastTransactionsI) => (transaction.receiver.id == me.user_id);
-  const isPending = (transaction: LastTransactionsI) => (transaction.status === 'PENDING');
-  
+  const isReceiver = (transaction: LastTransactionsI) =>
+    transaction.receiver.id == me.user_id;
+  const isPending = (transaction: LastTransactionsI) =>
+    transaction.status === 'PENDING';
+
   return (
     <div className="divide-y-2 divide-light-gray overflow-y-scroll bg-white">
-      { lastTransactions?.map((transaction: LastTransactionsI) => {
+      {lastTransactions?.map((transaction: LastTransactionsI) => {
         //By default the user is the driver. aka: receiver
-        let color = "text-green",
-        sign = "+",
-        type = "Pasajero",
-        notMe = transaction.sender;
+        let color = 'text-green',
+          sign = '+',
+          type = 'Pasajero',
+          notMe = transaction.sender;
         const pending = isPending(transaction);
         const imReceiver = isReceiver(transaction);
-        
+
         const date = parseDateFromDate(transaction.date);
         const amount = Number.parseFloat(transaction.amount).toLocaleString(
-          "es-ES",
+          'es-ES',
           {
-            style: "currency",
-            currency: "EUR",
+            style: 'currency',
+            currency: 'EUR',
           }
-          );
+        );
         if (!imReceiver) {
-          color = "text-red";
-          sign = "-";
-          type = "Conductor";
+          color = 'text-red';
+          sign = '-';
+          type = 'Conductor';
           notMe = transaction.receiver;
         }
 
-        if (pending) color="text-yellow";
+        if (pending) color = 'text-yellow';
 
         return (
           <Transaction
@@ -77,8 +79,7 @@ export function Transaction({
   money,
   isPending = false,
 }: Params) {
-
-  const icon= notMe.photo? notMe.photo: "/icons/Vista-Principal/hombre.png";
+  const icon = notMe.photo ? notMe.photo : '/icons/Vista-Principal/hombre.png';
 
   return (
     <div className="grid grid-cols-4 place-content-center justify-between space-x-2">
@@ -87,7 +88,9 @@ export function Transaction({
       </div>
 
       <div className="col-span-2 text-ellipsis py-4">
-        <p className=" text-lg font-bold text-black">{shortenName(notMe.first_name, notMe.last_name)}</p>
+        <p className=" text-lg font-bold text-black">
+          {shortenName(notMe.first_name, notMe.last_name)}
+        </p>
         <p className="text-base text-gray">
           {travelType} - {date}
         </p>
@@ -101,4 +104,4 @@ export function Transaction({
   );
 }
 
-export default [ TransactionList ];
+export default [TransactionList];

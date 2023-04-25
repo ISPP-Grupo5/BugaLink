@@ -16,4 +16,3 @@ module.exports = withPWA({
     domains: ['localhost', '127.0.0.1', 'app.bugalink.es'],
   },
 });
-

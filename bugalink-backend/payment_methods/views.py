@@ -72,8 +72,8 @@ class PaymentViewSet(
 
         # Si no hay texto da error al intentar acceder a este dato
         note = note if note else "None"
-        URLSuccess = f"https://app.bugalink.es/trips/{kwargs['trip_id']}/pay/success" if settings.APP_ENGINE else f"http://127.0.0.1:3000/trips/{kwargs['trip_id']}/pay/success"
-        URLFail = f"https://app.bugalink.es/trips/{kwargs['trip_id']}/pay/fail" if settings.APP_ENGINE else f"http://127.0.0.1:3000/trips/{kwargs['trip_id']}/pay/fail"
+        url_success = f"https://app.bugalink.es/trips/{kwargs['trip_id']}/pay/success" if settings.APP_ENGINE else f"http://127.0.0.1:3000/trips/{kwargs['trip_id']}/pay/success"
+        url_fail = f"https://app.bugalink.es/trips/{kwargs['trip_id']}/pay/fail" if settings.APP_ENGINE else f"http://127.0.0.1:3000/trips/{kwargs['trip_id']}/pay/fail"
 
         session = stripe.checkout.Session.create(
             line_items=[{
@@ -92,8 +92,8 @@ class PaymentViewSet(
                 'note': note
             },
             mode='payment',
-            success_url=URLSuccess,
-            cancel_url=URLFail,
+            success_url=url_success,
+            cancel_url=url_fail,
         )
 
         return Response({'url': session.url})
@@ -134,8 +134,8 @@ class PaymentViewSet(
         # El post recibe la cantidad en centimos integer
         price = trip.driver_routine.price * decimal.Decimal(1.15)
 
-        URLSuccess = f"https://app.bugalink.es/trips/{kwargs['trip_id']}/pay/success" if settings.APP_ENGINE else f"http://127.0.0.1:3000/trips/{kwargs['trip_id']}/pay/success"
-        URLFail = f"https://app.bugalink.es/trips/{kwargs['trip_id']}/pay/fail" if settings.APP_ENGINE else f"http://127.0.0.1:3000/trips/{kwargs['trip_id']}/pay/fail"
+        url_success = f"https://app.bugalink.es/trips/{kwargs['trip_id']}/pay/success" if settings.APP_ENGINE else f"http://127.0.0.1:3000/trips/{kwargs['trip_id']}/pay/success"
+        url_fail = f"https://app.bugalink.es/trips/{kwargs['trip_id']}/pay/fail" if settings.APP_ENGINE else f"http://127.0.0.1:3000/trips/{kwargs['trip_id']}/pay/fail"
 
         # Si no hay texto da error al intentar acceder a este dato
         note = note if note else "None"
@@ -160,8 +160,8 @@ class PaymentViewSet(
                     "payment_method": "paypal",
                 },
                 "redirect_urls": {
-                    "return_url": URLSuccess,
-                    "cancel_url": URLFail,
+                    "return_url": url_success,
+                    "cancel_url": url_fail,
                 },
                 "transactions": [
                     {
@@ -268,8 +268,8 @@ class RechargeViewSet(
     # POST /recharge/paypal/
     def recharge_with_paypal(self, request, *args, **kwargs):
         amount = request.data.get("amount")
-        URLSuccess = "https://app.bugalink.es/wallet/success" if settings.APP_ENGINE else "http://127.0.0.1:3000/wallet/success"
-        URLFail = "https://app.bugalink.es/wallet/fail" if settings.APP_ENGINE else "http://127.0.0.1:3000/wallet/fail"
+        url_success = "https://app.bugalink.es/wallet/success" if settings.APP_ENGINE else "http://127.0.0.1:3000/wallet/success"
+        url_fail = "https://app.bugalink.es/wallet/fail" if settings.APP_ENGINE else "http://127.0.0.1:3000/wallet/fail"
 
         paypal_client_id = settings.PAYPAL_CLIENT_ID
         paypal_secret_key = settings.PAYPAL_SECRET_KEY
@@ -291,8 +291,8 @@ class RechargeViewSet(
                     "payment_method": "paypal",
                 },
                 "redirect_urls": {
-                    "return_url": URLSuccess,
-                    "cancel_url": URLFail
+                    "return_url": url_success,
+                    "cancel_url": url_fail
                 },
                 "transactions": [
                     {
@@ -328,8 +328,8 @@ class RechargeViewSet(
         amount = int(float(request.data.get("amount")) * 100)
 
         # Si no hay texto da error al intentar acceder a este dato
-        URLSuccess = "https://app.bugalink.es/wallet/success" if settings.APP_ENGINE else "http://127.0.0.1:3000/wallet/success"
-        URLFail = "https://app.bugalink.es/wallet/fail" if settings.APP_ENGINE else "http://127.0.0.1:3000/wallet/fail"
+        url_success = "https://app.bugalink.es/wallet/success" if settings.APP_ENGINE else "http://127.0.0.1:3000/wallet/success"
+        url_fail = "https://app.bugalink.es/wallet/fail" if settings.APP_ENGINE else "http://127.0.0.1:3000/wallet/fail"
 
         session = stripe.checkout.Session.create(
             line_items=[{
@@ -346,8 +346,8 @@ class RechargeViewSet(
                 'user_id': user.id,
             },
             mode='payment',
-            success_url=URLSuccess,
-            cancel_url=URLFail
+            success_url=url_success,
+            cancel_url=url_fail
         )
 
         return Response({'url': session.url})

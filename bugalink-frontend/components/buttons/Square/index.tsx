@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import cn from 'classnames';
 import { useState } from 'react';
-import DialogBecomeDriver from '@/components/dialogs/becomeDriver';
+import DialogComponent from '@/components/dialog';
+import router from 'next/router';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 
 type Params = {
   text: string;
@@ -48,7 +50,16 @@ export default function SquareButton({
         <p className="text-center text-lg">{text}</p>
       </button>
       {disabled && text === 'Solicitudes' && (
-        <DialogBecomeDriver open={openDialog} setOpen={setOpenDialog} />
+        <DialogComponent
+          title="Contenido no accesible"
+          description="No tienes acceso a este contenido al no ser conductor. ¿Quieres hacerte conductor?"
+          onClose={() => setOpenDialog(false)}
+          onCloseButton="Cancelar"
+          onAccept={() => router.push(NEXT_ROUTES.BECOME_DRIVER)}
+          onAcceptButton="Hazme conductor"
+          open={openDialog}
+          setOpen={setOpenDialog}
+        />
       )}
     </>
   );

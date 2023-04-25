@@ -1,7 +1,7 @@
 import { BackButton } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import PlusMinusCounter from '@/components/buttons/PlusMinusCounter';
-import DialogConfirmation from '@/components/dialogs/confirmation';
+import DialogComponent from '@/components/dialog';
 import TextAreaField from '@/components/forms/TextAreaField';
 import TextField from '@/components/forms/TextField';
 import TimePicker from '@/components/forms/TimePicker';
@@ -479,10 +479,13 @@ export default function NewRoutine({
           />
         </form>
       </div>
-      <DialogConfirmation
+      <DialogComponent
+        title="Acción realizada"
+        description="Tu rutina ha sido actualizada o creada con éxito."
+        onClose={onCloseDialog}
+        onCloseButton="Entendido"
         open={openDialog}
         setOpen={setOpenDialog}
-        onClose={onCloseDialog}
       />
     </AnimatedLayout>
   );

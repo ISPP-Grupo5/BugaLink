@@ -1,6 +1,6 @@
 import { BackButtonText } from '@/components/buttons/Back';
 import RoutineCard from '@/components/cards/routine';
-import DialogConfirmation from '@/components/dialogs/confirmation';
+import DialogComponent from '@/components/dialog';
 import AnimatedLayout from '@/components/layouts/animated';
 import RoutineCardSkeleton from '@/components/skeletons/Routine';
 import NEXT_ROUTES from '@/constants/nextRoutes';
@@ -102,10 +102,13 @@ export default function MyRoutines() {
         ))}
       </div>
       <AddRoutineMenu user={user} />
-      <DialogConfirmation
+      <DialogComponent
+        title="Rutina eliminada"
+        description="La rutina se ha eliminado correctamente."
+        onClose={() => setOpenDialog(false)}
+        onCloseButton="Entendido"
         open={openDialog}
         setOpen={setOpenDialog}
-        onClose={() => setOpenDialog(false)}
       />
     </AnimatedLayout>
   );

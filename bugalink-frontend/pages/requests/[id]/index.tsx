@@ -14,7 +14,7 @@ import { Drawer } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import useTrip from '@/hooks/useTrip';
-import DialogConfirmation from '@/components/dialogs/confirmation';
+import DialogComponent from '@/components/dialog';
 
 export default function AcceptRequest() {
   const router = useRouter();
@@ -32,10 +32,16 @@ export default function AcceptRequest() {
   const occupiedSeats = trip?.passengers.length;
   const freeSeats = trip?.driver_routine.available_seats - occupiedSeats;
 
-  const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [openDialogAccept, setOpenDialogAccept] = useState(false);
+  const [openDialogReject, setOpenDialogReject] = useState(false);
 
-  const onCloseDialogConfirmation = () => {
-    setOpenConfirmation(false);
+  const onCloseDialogAccept = () => {
+    setOpenDialogAccept(false);
+    router.push(NEXT_ROUTES.HOME);
+  };
+
+  const onCloseDialogReject = () => {
+    setOpenDialogReject(false);
     router.push(NEXT_ROUTES.HOME);
   };
 
@@ -45,7 +51,7 @@ export default function AcceptRequest() {
     e.preventDefault();
     try {
       const response = await axiosAuth.put(`/trip-requests/${id}/accept/`);
-      if (response.status === 200) setOpenConfirmation(true);
+      if (response.status === 200) setOpenDialogAccept(true);
     } catch (error) {
       console.log(error);
     }
@@ -59,7 +65,7 @@ export default function AcceptRequest() {
       const response = await axiosAuth.put(`/trip-requests/${id}/reject/`, {
         reject_note: rejectNote,
       });
-      if (response.status === 200) setOpenConfirmation(true);
+      if (response.status === 200) setOpenDialogReject(true);
     } catch (error) {
       console.log(error);
     }
@@ -185,10 +191,21 @@ export default function AcceptRequest() {
           <CTAButton className="w-11/12" text={'El viaje está lleno'} />
         )}
       </div>
-      <DialogConfirmation
-        open={openConfirmation}
-        setOpen={setOpenConfirmation}
-        onClose={onCloseDialogConfirmation}
+      <DialogComponent
+        title="Acción realizada"
+        description="El viaje se aceptó correctamente."
+        onClose={onCloseDialogAccept}
+        onCloseButton="Entendido"
+        open={openDialogAccept}
+        setOpen={setOpenDialogAccept}
+      />
+      <DialogComponent
+        title="Acción realizada"
+        description="El viaje rechazó correctamente."
+        onClose={onCloseDialogReject}
+        onCloseButton="Entendido"
+        open={openDialogReject}
+        setOpen={setOpenDialogReject}
       />
     </AnimatedLayout>
   );

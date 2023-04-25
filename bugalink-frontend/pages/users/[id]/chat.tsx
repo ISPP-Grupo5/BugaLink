@@ -174,7 +174,7 @@ const MessageBubble = ({
       <span className="flex flex-row items-end space-x-2">
         {!isMine && <Avatar className="h-8 w-8" />}
         <div
-          className={`flex max-w-xs flex-row items-center justify-between rounded-2xl py-2 px-3 ${
+          className={`justify-between flex max-w-xs flex-row items-center rounded-2xl py-2 px-3 ${
             isMine
               ? 'rounded-br-none bg-pale-green'
               : 'rounded-bl-none bg-light-gray'

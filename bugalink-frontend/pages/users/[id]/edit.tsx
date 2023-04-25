@@ -1,7 +1,7 @@
 import Avatar from '@/components/avatar';
 import { BackButtonText } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
-import DialogDeleteAccount from '@/components/dialogs/deleteAccount';
+import DialogComponent from '@/components/dialog';
 import TextField from '@/components/forms/TextField';
 import AnimatedLayout from '@/components/layouts/animated';
 import NEXT_ROUTES from '@/constants/nextRoutes';
@@ -121,6 +121,22 @@ export default function EditProfile({ data }) {
     setOpenDialog(true);
   };
 
+  const handleDeleteAccount = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    try {
+      const response = await axiosAuth.delete(`/users/${user.id}`);
+      if (response.status === 204) {
+        await signOut({
+          callbackUrl: NEXT_ROUTES.LOGIN,
+        });
+      }
+    } catch (error) {
+      alert(error?.response?.data?.error || 'Error al eliminar la cuenta');
+    }
+  };
+
   return (
     <AnimatedLayout className="justify-between flex h-screen flex-col items-center bg-white">
       <BackButtonText text="Mi perfil" />
@@ -209,8 +225,13 @@ export default function EditProfile({ data }) {
           </div>
         </form>
       </div>
-      <DialogDeleteAccount
-        userId={user?.id}
+      <DialogComponent
+        title="Eliminar mi cuenta"
+        description="Vas a eliminar tu cuenta, ¿estás seguro?"
+        onClose={() => setOpenDialog(false)}
+        onCloseButton="Cancelar"
+        onAccept={handleDeleteAccount}
+        onAcceptButton="Eliminar cuenta"
         open={openDialog}
         setOpen={setOpenDialog}
       />

@@ -14,6 +14,7 @@ import { Drawer } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import useTrip from '@/hooks/useTrip';
+import DialogConfirmation from '@/components/dialogs/confirmation';
 
 export default function AcceptRequest() {
   const router = useRouter();
@@ -31,13 +32,20 @@ export default function AcceptRequest() {
   const occupiedSeats = trip?.passengers.length;
   const freeSeats = trip?.driver_routine.available_seats - occupiedSeats;
 
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+
+  const onCloseDialogConfirmation = () => {
+    setOpenConfirmation(false);
+    router.push(NEXT_ROUTES.HOME);
+  };
+
   const handleAcceptTripRequest = async (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
     e.preventDefault();
     try {
       const response = await axiosAuth.put(`/trip-requests/${id}/accept/`);
-      if (response.status === 200) router.push(NEXT_ROUTES.HOME);
+      if (response.status === 200) setOpenConfirmation(true);
     } catch (error) {
       console.log(error);
     }
@@ -51,7 +59,7 @@ export default function AcceptRequest() {
       const response = await axiosAuth.put(`/trip-requests/${id}/reject/`, {
         reject_note: rejectNote,
       });
-      if (response.status === 200) router.push(NEXT_ROUTES.HOME);
+      if (response.status === 200) setOpenConfirmation(true);
     } catch (error) {
       console.log(error);
     }
@@ -68,9 +76,9 @@ export default function AcceptRequest() {
   const { origin, destination } = tripRequest.trip.driver_routine;
 
   return (
-    <AnimatedLayout className="flex flex-col justify-between">
+    <AnimatedLayout className="justify-between flex flex-col">
       <BackButtonText text="Solicitud de viaje" />
-      <div className="flex h-full flex-col justify-between overflow-y-scroll bg-white px-6 pb-4 pt-2">
+      <div className="justify-between flex h-full flex-col overflow-y-scroll bg-white px-6 pb-4 pt-2">
         <ProfileHeader user={userStats} />
         <p className="mt-4 text-justify text-sm font-normal text-dark-gray">
           Nota del pasajero
@@ -119,7 +127,7 @@ export default function AcceptRequest() {
         />
       </div>
       {/* Trip request */}
-      <div className="shadossw-t-md z-50 flex w-full flex-col items-center justify-between rounded-t-lg bg-white py-6 px-4">
+      <div className="shadossw-t-md justify-between z-50 flex w-full flex-col items-center rounded-t-lg bg-white py-6 px-4">
         <div className="flex flex-row pb-3">
           <p
             className="text-md cursor-pointer font-medium text-red-dark"
@@ -174,12 +182,14 @@ export default function AcceptRequest() {
             onClick={handleAcceptTripRequest}
           />
         ) : (
-          <CTAButton
-            className="w-11/12"
-            text={'El viaje está lleno'}
-          />
+          <CTAButton className="w-11/12" text={'El viaje está lleno'} />
         )}
       </div>
+      <DialogConfirmation
+        open={openConfirmation}
+        setOpen={setOpenConfirmation}
+        onClose={onCloseDialogConfirmation}
+      />
     </AnimatedLayout>
   );
 }

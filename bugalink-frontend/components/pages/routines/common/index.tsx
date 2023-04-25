@@ -1,6 +1,7 @@
 import { BackButton } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import PlusMinusCounter from '@/components/buttons/PlusMinusCounter';
+import DialogConfirmation from '@/components/dialogs/confirmation';
 import TextAreaField from '@/components/forms/TextAreaField';
 import TextField from '@/components/forms/TextField';
 import TimePicker from '@/components/forms/TimePicker';
@@ -91,6 +92,14 @@ export default function NewRoutine({
   const [isSendingForm, setIsSendingForm] = useState(false);
 
   const isEdit = routineDetailsDriver || routineDetailsPassenger;
+
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const onCloseDialog = () => {
+    setOpenDialog(false);
+
+    router.push(NEXT_ROUTES.MY_ROUTINES);
+  };
 
   //arrivalTime.setMinutes
   const validateForm = (values: FormValues) => {
@@ -215,7 +224,7 @@ export default function NewRoutine({
           axiosAuth
             .put(url, data)
             .then((response) => {
-              router.push(NEXT_ROUTES.MY_ROUTINES);
+              setOpenDialog(true);
             })
             .catch((error) => {
               setIsSendingForm(false);
@@ -226,7 +235,7 @@ export default function NewRoutine({
           axiosAuth
             .post(url, data)
             .then((response) => {
-              router.push(NEXT_ROUTES.MY_ROUTINES);
+              setOpenDialog(true);
             })
             .catch((error) => {
               setIsSendingForm(false);
@@ -253,8 +262,16 @@ export default function NewRoutine({
       lat: routine.destination.latitude,
       lng: routine.destination.longitude,
     });
-    setPickTimeFrom(routine.departure_time_start.length > 5 ? routine.departure_time_start.substring(0, 5) : routine.departure_time_start);
-    setPickTimeTo(routine.departure_time_end.length > 5 ? routine.departure_time_end.substring(0, 5) : routine.departure_time_end);
+    setPickTimeFrom(
+      routine.departure_time_start.length > 5
+        ? routine.departure_time_start.substring(0, 5)
+        : routine.departure_time_start
+    );
+    setPickTimeTo(
+      routine.departure_time_end.length > 5
+        ? routine.departure_time_end.substring(0, 5)
+        : routine.departure_time_end
+    );
     setSelectedDays([routine.day_of_week]);
 
     if (routineDetailsDriver) {
@@ -462,6 +479,11 @@ export default function NewRoutine({
           />
         </form>
       </div>
+      <DialogConfirmation
+        open={openDialog}
+        setOpen={setOpenDialog}
+        onClose={onCloseDialog}
+      />
     </AnimatedLayout>
   );
 }

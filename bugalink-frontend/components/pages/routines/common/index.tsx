@@ -143,9 +143,10 @@ export default function NewRoutine({
         errors.price = 'El precio no debe ser un valor negativo';
       } else if (!values.price) {
         errors.price = 'Por favor, ingrese un precio';
-      } else if (values.price < 0.3) {
-        errors.price =
-          'Se debe establecer un precio de al menos 30 céntimos';
+      } else if ((totalDistance * 0.1) > 0.3 && values.price > totalDistance * 0.1 * 2) {
+        errors.price = 'El precio no puede ser mayor que el doble del precio recomendado';
+      } else if (totalDistance * 0.1 < 0.3 && (values.price < 0.3 || values.price > 0.8)) {
+        errors.price = 'Para una distancia tan corta se debe establecer un precio de entre 30 y 80 céntimos';
       }
     }
 
@@ -416,8 +417,8 @@ export default function NewRoutine({
                 Establece un precio por pasajero
               </label>
               <p>
-                El precio recomendado para este trayecto (0.10€/km) es de{' '}
-                {(totalDistance * 0.1).toFixed(2)} €
+                El precio recomendado para este trayecto (0.10€/km) es de:{' '}
+                {(totalDistance * 0.1).toFixed(2) != '0.00' ? `${(totalDistance * 0.1).toFixed(2)}€` : "entre 30 y 80 céntimos"}
               </p>
               <div className="my-3 mt-4 flex flex-col">
                 <TextField

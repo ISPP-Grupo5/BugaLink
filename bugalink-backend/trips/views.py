@@ -335,6 +335,7 @@ class CreateNextWeekTrip(viewsets.GenericViewSet):
                 - datetime.timedelta(days=datetime.date.today().isoweekday() % 7)
                 + datetime.timedelta(days=1)
             )
+            week_end_date = week_begin_date + datetime.timedelta(days=6)
             day_mapper = {
                 "Mon": 0,
                 "Tue": 1,
@@ -344,16 +345,15 @@ class CreateNextWeekTrip(viewsets.GenericViewSet):
                 "Sat": 5,
                 "Sun": 6,
             }
-            print(len(trips))
             for trip in trips:
                 trip.status = "FINISHED"
-                trip.save()
+                trip.save()  # Quizas sea mejor actualizarlo despues de guardar el de la semana que viene.
 
                 departure_date = week_begin_date + datetime.timedelta(
-                    days=day_mapper[trip.driver_routine.day_of_week]
+                    days=7 + day_mapper[trip.driver_routine.day_of_week]
                 )
                 arrival_date = week_begin_date + datetime.timedelta(
-                    days=day_mapper[trip.driver_routine.day_of_week]
+                    days=7 + day_mapper[trip.driver_routine.day_of_week]
                 )
 
                 if (
@@ -371,11 +371,16 @@ class CreateNextWeekTrip(viewsets.GenericViewSet):
 
                 trip_already_created = Trip.objects.filter(
                     driver_routine=trip.driver_routine,
-                    departure_datetime=departure_datetime,
-                    arrival_datetime=arrival_datetime,
+                    departure_datetime__gt=(
+                        week_begin_date + datetime.timedelta(days=7)
+                    ),
+                    arrival_datetime__lt=(week_end_date + datetime.timedelta(days=7)),
                 )
 
-                if not trip_already_created.exists():
+                if (
+                    not trip_already_created.exists()
+                    and trip.driver_routine.is_recurrent
+                ):
                     Trip.objects.create(
                         driver_routine=trip.driver_routine,
                         arrival_datetime=arrival_datetime,

@@ -78,6 +78,7 @@ export default function NewRoutine({
   const [selectedDays, setSelectedDays] = useState([]);
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
+  const [repeatTrip, setRepeatTrip] = useState(false);
 
   const [originCoords, setOriginCoords] = useState(undefined);
   const [destinationCoords, setDestinationCoords] = useState(undefined);
@@ -212,7 +213,7 @@ export default function NewRoutine({
             '' + arrivalTime.getHours() + ':' + arrivalTime.getMinutes(),
           price: price,
           note: note,
-          is_recurrent: false,
+          is_recurrent: repeatTrip,
           available_seats: freeSeatsNumber,
         };
 
@@ -422,11 +423,16 @@ export default function NewRoutine({
                 }
               />
               {!isEdit && (
-                <div className="mt-2 flex flex-row place-content-center items-center space-x-4">
-                  <input type="checkbox" className="h-5 w-5" />
-                  <label className="text-xl font-bold">
-                    No repetir el viaje
-                  </label>
+                <div className="mt-4 flex flex-col items-center justify-center">
+                  <div className="mt-2 flex flex-row place-content-center items-center space-x-4">
+                    <input
+                      type="checkbox"
+                      className="h-5 w-5 accent-turquoise"
+                      onChange={() => setRepeatTrip(!repeatTrip)}
+                    />
+                    <label className="text-xl font-bold">¡Hazme rutina!</label>
+                  </div>
+                  <span>Repite este trayecto cada semana</span>
                 </div>
               )}
               <label className="mt-4 text-xl font-bold">

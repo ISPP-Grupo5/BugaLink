@@ -6,15 +6,14 @@ import SquareRequestsButton from '@/components/buttons/Square/Requests';
 import SquareRoutinesButton from '@/components/buttons/Square/Routines';
 import UpcomingTripsCarousel from '@/components/carousel';
 import RecommendationsDrawer from '@/components/drawers/Recommendations';
+import SearchBar from '@/components/forms/SearchBar';
 import AnimatedLayout from '@/components/layouts/animated';
 import AvatarSkeleton from '@/components/skeletons/Avatar';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import Destino from 'public/icons/Vista-Principal/destino.svg';
 import { useState } from 'react';
-import MagnifyingGlass from '/public/icons/Vista-Principal/glass.svg';
 
 export default function Home() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -25,25 +24,13 @@ export default function Home() {
     <AnimatedLayout className="max-h-full overflow-y-scroll">
       <div className="flex flex-col pb-24">
         <span className="my-8 flex items-center space-x-4 px-4 md:px-5">
-          <form className="flex w-full items-center rounded-full bg-white px-4 py-3">
-            <Destino className="h-5 w-5 flex-none translate-y-0.5 scale-125 fill-light-turquoise stroke-light-turquoise" />
-            <input
-              type="search"
-              placeholder="Dónde quieres ir?"
-              className="ml-2 h-full w-full rounded-full pl-2 outline-none"
-            />
-            <Link href={NEXT_ROUTES.SEARCH_RESULTS}>
-              <button data-cy="search-btn" type="submit" className="flex">
-                <MagnifyingGlass className="fill-turquoise" />
-              </button>
-            </Link>
-          </form>
+          <SearchBar />
           <Link
             data-cy="profile-link"
             className="aspect-square h-14"
             href={NEXT_ROUTES.PROFILE(user?.user_id)}
           >
-            {user ? <Avatar src={user.photo} /> : <AvatarSkeleton />}
+            {user ? <Avatar src={user?.photo} /> : <AvatarSkeleton />}
           </Link>
         </span>
 

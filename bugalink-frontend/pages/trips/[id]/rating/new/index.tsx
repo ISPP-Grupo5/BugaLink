@@ -31,16 +31,12 @@ export default function RatingScreen({ data }) {
 
   const tripId = data.id;
 
-
-
   const { trip, isLoading, isError } = useTrip(tripId);
 
-  const driver= trip? trip.driver : null;
-  const user = trip? driver.user: null;
-  const username =trip? user.first_name +" "+ user.last_name: null;
-  const photo = trip? user.photo: null;
-
-
+  const driver = trip ? trip.driver : null;
+  const user = trip ? driver.user : null;
+  const username = trip ? user.first_name + ' ' + user.last_name : null;
+  const photo = trip ? user.photo : null;
 
   const [ratingValue, setRating] = useState(3);
   const [goodConduction, setGoodConduction] = useState(false);
@@ -56,15 +52,15 @@ export default function RatingScreen({ data }) {
     };
 
     const url = 'trips/' + tripId + '/rate/';
-        axiosAuth
-          .post(url, datos)
-          .then((response) => {
-            console.log(response.data);
-            window.location.href = NEXT_ROUTES.HOME;
-          })
-          .catch((error) => {
-            console.error(error);
-          });
+    axiosAuth
+      .post(url, datos)
+      .then((response) => {
+        console.log(response.data);
+        window.location.href = NEXT_ROUTES.HOME;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 
     //Set values to default just in case so there is no problem in future ratings (see if can bedeleted)
 
@@ -77,7 +73,10 @@ export default function RatingScreen({ data }) {
     <AnimatedLayout className="flex flex-col items-center justify-around bg-white px-6 sm:px-14">
       <BackButtonText text="¿Cómo ha ido el viaje?" />
       <div className="flex flex-col items-center space-y-4">
-        <img src={photo? photo: "/assets/mocks/avatar1.png"} className="rounded-full " />
+        <img
+          src={photo ? photo : '/assets/mocks/avatar1.png'}
+          className="rounded-full "
+        />
         <p className="text-xl font-bold">{username}</p>
       </div>
       <div className="flex flex-col items-center space-y-3">

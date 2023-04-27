@@ -11,12 +11,17 @@ DAYS_OF_WEEK = (
 )
 
 
-def next_weekday(d, weekday):
-    day = get_int_day_of_week(weekday)
-    days_ahead = day - d.weekday()
-    if days_ahead <= 0:  # Target day already happened this week
+def next_weekday(today, desired_weekday, desired_time):
+    day = get_int_day_of_week(desired_weekday)
+    days_ahead = day - today.weekday()
+    if days_ahead < 0:  # Target day already happened this week
         days_ahead += 7
-    return d + datetime.timedelta(days_ahead)
+    elif days_ahead == 0:
+        # If it's the desired weekday, check the desired_time
+        now = today.time()
+        if desired_time <= now:
+            days_ahead += 7
+    return today + datetime.timedelta(days_ahead)
 
 
 

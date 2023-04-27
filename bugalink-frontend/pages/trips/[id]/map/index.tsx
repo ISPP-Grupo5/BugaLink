@@ -40,12 +40,11 @@ export default function RideMap({ data }) {
   const endTime = new Date(trip?.departure_datetime);
   endTime.setMinutes(endTime.getMinutes() + time);
 
-  if (isLoading)
-    return <p>Loading...</p>; // TODO: make skeleton
+  if (isLoading) return <p>Loading...</p>; // TODO: make skeleton
   if (isError) return <p>Error</p>; // TODO: make error message
 
   return (
-    <AnimatedLayout className="flex flex-col justify-between">
+    <AnimatedLayout className="justify-between flex flex-col">
       <BackButton className="absolute left-2 top-2 bg-base-origin py-3 pr-2 shadow-xl" />
       <div className="-mb-8 h-full w-full">
         <LeafletMap

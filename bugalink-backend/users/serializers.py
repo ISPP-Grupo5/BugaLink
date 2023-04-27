@@ -5,9 +5,11 @@ from ratings.models import DriverRating
 from rest_framework import serializers
 from trips.models import Trip, TripRequest
 from users.models import User
-
+import os
 
 class UserSerializer(serializers.ModelSerializer):
+    
+
     class Meta:
         model = User
         # NOTE: Add more fields as needed in the JSON response
@@ -22,6 +24,12 @@ class UserSerializer(serializers.ModelSerializer):
             "passenger",
             "driver",
         )
+
+    def to_representation(self, instance):
+        backend_url = os.environ.get("BACKEND_URL", "http://localhost:8000")
+        ret = super().to_representation(instance)
+        ret["photo"] = backend_url + instance.photo.url if instance.photo else None
+        return ret
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):

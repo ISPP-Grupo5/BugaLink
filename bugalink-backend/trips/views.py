@@ -1,4 +1,8 @@
+
 import datetime
+
+import decimal
+
 import os
 
 import django.core.exceptions
@@ -103,33 +107,36 @@ class TripRequestViewSet(
         return self.retrieve(request, *args, **kwargs)
 
     # POST /trips/<id>/request/ (For a passenger to request a trip)
+    # POST /trips/<id>/request/ (For a passenger to request a trip)
     @transaction.atomic
     def create(self, trip_id, user_id, note):
-        trip = Trip.objects.get(id=trip_id)
-        user = User.objects.get(id=user_id)
-        price = trip.driver_routine.price
-        passenger = Passenger.objects.get(user=user)
+        try:
+            trip = Trip.objects.get(id=trip_id)
+            user = User.objects.get(id=user_id)
+            price = trip.driver_routine.price if user.is_pilotuser else trip.driver_routine.price * \
+                decimal.Decimal(1.15)
+            passenger = Passenger.objects.get(user=user)
+            Transaction.objects.create(
+                sender=user,
+                receiver=trip.driver_routine.driver.user,
+                amount=price,
+            )
 
-        Transaction.objects.create(
-            sender=user,
-            receiver=trip.driver_routine.driver.user,
-            amount=price,
-        )
+            TripRequest.objects.create(
+                trip=trip,
+                status="PENDING",
+                note=note,
+                reject_note="",
+                passenger=passenger,
+                price=price,
+            )
+            return True
+        except django.core.exceptions.ObjectDoesNotExist:
+            return False
 
-        trip_request = TripRequest.objects.create(
-            trip=trip,
-            status="PENDING",
-            note=note,
-            reject_note="",
-            passenger=passenger,
-            price=price,
-        )
-
-        return Response(
-            self.get_serializer(trip_request).data, status=status.HTTP_201_CREATED
-        )
 
     # GET /trip-requests/pending/count/ (For a driver to get the number of pending requests)
+
     def count(self, request, *args, **kwargs):
         num_pending_requests = TripRequest.objects.filter(
             trip__driver_routine__driver__user=request.user,
@@ -143,6 +150,15 @@ class TripRequestViewSet(
     @action(detail=True, methods=["put"])
     def accept(self, request, *args, **kwargs):
         trip_request = TripRequest.objects.get(id=kwargs["pk"])
+        trip = Trip.objects.get(id=trip_request.trip.pk)
+        free_seats = trip.get_avaliable_seats()
+        if free_seats <= 0:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "error": "El viaje está lleno y no acepta más pasajeros"
+                },
+            )
         trip_request.status = "ACCEPTED"
         trip_request.save()
         return Response(self.get_serializer(trip_request).data)

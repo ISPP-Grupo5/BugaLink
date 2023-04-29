@@ -1,21 +1,22 @@
 import decimal
-from trips.views import TripRequestViewSet
-from django.http import HttpResponse
-from bugalink_backend import settings
-from rest_framework import mixins, status, viewsets
-import os
-from django.shortcuts import redirect
+from datetime import datetime
+
 import paypalrestsdk
 import stripe
-from trips.serializers import TripRequestSerializer
-from trips.models import TripRequest, Trip
+from bugalink_backend import settings
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import mixins, status, viewsets
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from transactions.models import Transaction
+from trips.models import Trip, TripRequest
+from trips.serializers import TripRequestSerializer
+from trips.views import TripRequestViewSet
 from users.models import User
 
 from .models import Balance
 from .serializers import BalanceSerializer
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.permissions import AllowAny
 
 
 class BalanceViewSet(
@@ -47,6 +48,58 @@ class BalanceViewSet(
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
+    def withdraw(self, request, *args, **kwargs):
+        user = request.user
+        # Check if the user has enough balance
+        balance = Balance.objects.get(user=user)
+        iban = request.data.get("iban")
+        requested_withdraw_amount = float(request.data.get("amount").replace(",", "."))
+        current_balance_cents = int(balance.amount * 100)
+        # Cents are used here because comparisons between float and decimal fail sometimes
+        # if the float has 2 decimals, maybe has to do something with floating point precision
+        # and arithmetics. https://docs.python.org/3/tutorial/floatingpoint.html
+        if current_balance_cents < int(requested_withdraw_amount * 100):
+            return Response(
+                {"error": "You don't have enough balance"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Check that the balance the user wants to withdraw is greater than 0
+        if requested_withdraw_amount <= 0:
+            return Response(
+                {"error": "The amount must be greater than 0"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Check that the balance the user wants to withdraw is less than 1000
+        if requested_withdraw_amount > 1000:
+            return Response(
+                {"error": "The amount must be less than 1000"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if iban is None:
+            return Response(
+                {"error": "IBAN not provided"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        balance.amount = float(balance.amount) - requested_withdraw_amount
+        balance.save()
+
+        Transaction.objects.create(
+            sender=user,
+            receiver=None,  # The receiver isn't any user, it's the bank
+            amount=requested_withdraw_amount,
+            date=datetime.now(),
+            status="ACCEPTED",
+        )
+
+        return Response(
+            {"message": "Your withdraw request has been accepted."},
+            status=status.HTTP_202_ACCEPTED,
+        )
+
 
 class PaymentViewSet(
     mixins.RetrieveModelMixin,
@@ -72,30 +125,33 @@ class PaymentViewSet(
 
         # Si no hay texto da error al intentar acceder a este dato
         note = note if note else "None"
-        URL = "https://app.bugalink.es" if settings.APP_ENGINE else "http://127.0.0.1:3000"
+        URL = (
+            "https://app.bugalink.es"
+            if settings.APP_ENGINE
+            else "http://127.0.0.1:3000"
+        )
 
         session = stripe.checkout.Session.create(
-            line_items=[{
-                'price_data': {
-                    'currency': 'eur',
-                    'product_data': {
-                        'name': 'Carpooling',
+            line_items=[
+                {
+                    "price_data": {
+                        "currency": "eur",
+                        "product_data": {
+                            "name": "Carpooling",
+                        },
+                        "unit_amount": price,
                     },
-                    'unit_amount': price,
-                },
-                'quantity': 1,
-            }],
-            metadata={
-                'user_id': user.id,
-                'trip_id': trip.id,
-                'note': note
-            },
-            mode='payment',
+                    "quantity": 1,
+                }
+            ],
+            metadata={"user_id": user.id, "trip_id": trip.id, "note": note},
+            mode="payment",
             success_url=URL,  # TODO crear pantalla de pagado
             cancel_url=URL,  # TODO pantalla de cancelado
         )
 
-        return Response({'url': session.url})
+        return Response({"url": session.url})
+
     # POST /trips/<id>/checkout-balance/ (For a passenger to request a trip)
 
     def pay_with_balance(self, request, *args, **kwargs):
@@ -111,21 +167,21 @@ class PaymentViewSet(
                 {"error": "Saldo insuficiente"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        balance.amount -= price
+        balance.save()
+        # Si todo está correcto, se crea el triprequest
+        no_errors = TripRequestViewSet.create(self, trip.id, user.id, note)
+        if no_errors:
+            return Response(
+                {"message": "Pago realizado con éxito"},
+                status=status.HTTP_201_CREATED,
+            )
         else:
-            balance.amount -= price
-            balance.save()
-            # Si todo está correcto, se crea el triprequest
-            noErrors = TripRequestViewSet.create(self, trip.id, user.id, note)
-            if noErrors:
-                return Response(
-                    {"message": "Pago realizado con éxito"},
-                    status=status.HTTP_201_CREATED,
-                )
-            else:
-                return Response(
-                    {"error": "Error al realizar el pago"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            return Response(
+                {"error": "Error al realizar el pago"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     def pay_with_paypal(self, request, *args, **kwargs):
         note = request.data.get("note")
@@ -133,7 +189,11 @@ class PaymentViewSet(
         # El post recibe la cantidad en centimos integer
         price = trip.driver_routine.price * decimal.Decimal(1.15)
 
-        URL = "https://app.bugalink.es" if settings.APP_ENGINE else "http://127.0.0.1:3000"
+        URL = (
+            "https://app.bugalink.es"
+            if settings.APP_ENGINE
+            else "http://127.0.0.1:3000"
+        )
 
         # Si no hay texto da error al intentar acceder a este dato
         note = note if note else "None"
@@ -179,7 +239,7 @@ class PaymentViewSet(
             for link in payment.links:
                 if link.method == "REDIRECT":
                     redirect_url = link.href
-                    return Response({'url': redirect_url})
+                    return Response({"url": redirect_url})
 
         else:
             return Response(
@@ -195,36 +255,38 @@ class PaymentViewSet(
             balance.amount += amount
             balance.save()
             return True
-        except:
+        except Exception:
             return False
 
     @csrf_exempt
     def webhook_view(self, request):
         endpoint_secret = settings.WEBHOOK_SECRET
         payload = request.body
-        sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+        sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
         event = None
 
         try:
-            event = stripe.Webhook.construct_event(
-                payload, sig_header, endpoint_secret
-            )
-        except ValueError as e:
+            event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+        except ValueError:
             # Invalid payload
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
-        except stripe.error.SignatureVerificationError as e:
+        except stripe.error.SignatureVerificationError:
             # Invalid signature
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
 
-        if event['type'] == 'checkout.session.completed':
+        if event["type"] == "checkout.session.completed":
             session = stripe.checkout.Session.retrieve(
-                event['data']['object']['id'],
-                expand=['line_items'],
+                event["data"]["object"]["id"],
+                expand=["line_items"],
             )
-            if (session.line_items.data[0].description == 'Carpooling'):  # Pagar un viaje
-                note = session.metadata.note if session.metadata.note != "None" else None
-                return TripRequestViewSet.create(self, session.metadata.trip_id, session.metadata.user_id, note)
-            elif (session.line_items.data[0].description == 'Recharge'):  # Recargar saldo
+            if session.line_items.data[0].description == "Carpooling":  # Pagar un viaje
+                note = (
+                    session.metadata.note if session.metadata.note != "None" else None
+                )
+                return TripRequestViewSet.create(
+                    self, session.metadata.trip_id, session.metadata.user_id, note
+                )
+            elif session.line_items.data[0].description == "Recharge":  # Recargar saldo
                 recharge_with_sucess = PaymentViewSet.recharge_balance(self, session)
                 if recharge_with_sucess:
                     return HttpResponse(status=200)
@@ -233,7 +295,7 @@ class PaymentViewSet(
 
         # ... handle other event types
         else:
-            print('Unhandled event type {}'.format(event['type']))
+            print("Unhandled event type {}".format(event["type"]))
 
         return HttpResponse(status=200)
 
@@ -247,7 +309,7 @@ class PaymentViewSet(
 
         payload = request.body
 
-        if payload['event_type'] == 'checkout.session.completed':
+        if payload["event_type"] == "checkout.session.completed":
             # No puedo testear esto bien con eventos reales TODO
             print(payload)
 
@@ -265,8 +327,12 @@ class RechargeViewSet(
 
     # POST /recharge/paypal/
     def recharge_with_paypal(self, request, *args, **kwargs):
-        amount = request.data.get("amount")
-        URL = "https://app.bugalink.es" if settings.APP_ENGINE else "http://127.0.0.1:3000"
+        amount = request.data.get("amount").replace(",", ".")
+        URL = (
+            "https://app.bugalink.es"
+            if settings.APP_ENGINE
+            else "http://127.0.0.1:3000"
+        )
 
         paypal_client_id = settings.PAYPAL_CLIENT_ID
         paypal_secret_key = settings.PAYPAL_SECRET_KEY
@@ -308,7 +374,7 @@ class RechargeViewSet(
             for link in payment.links:
                 if link.method == "REDIRECT":
                     redirect_url = link.href
-                    return Response({'url': redirect_url})
+                    return Response({"url": redirect_url})
 
         else:
             return Response(
@@ -322,28 +388,34 @@ class RechargeViewSet(
         user = request.user
 
         # El post recibe la cantidad en centimos integer
-        amount = int(float(request.data.get("amount")) * 100)
+        amount = int(float(request.data.get("amount").replace(",", ".")) * 100)
 
         # Si no hay texto da error al intentar acceder a este dato
-        URL = "https://app.bugalink.es" if settings.APP_ENGINE else "http://127.0.0.1:3000"
+        URL = (
+            "https://app.bugalink.es"
+            if settings.APP_ENGINE
+            else "http://127.0.0.1:3000"
+        )
 
         session = stripe.checkout.Session.create(
-            line_items=[{
-                'price_data': {
-                    'currency': 'eur',
-                    'product_data': {
-                        'name': 'Recharge',
+            line_items=[
+                {
+                    "price_data": {
+                        "currency": "eur",
+                        "product_data": {
+                            "name": "Recharge",
+                        },
+                        "unit_amount": amount,
                     },
-                    'unit_amount': amount,
-                },
-                'quantity': 1,
-            }],
+                    "quantity": 1,
+                }
+            ],
             metadata={
-                'user_id': user.id,
+                "user_id": user.id,
             },
-            mode='payment',
+            mode="payment",
             success_url=URL + "/wallet",  # TODO crear pantalla de pagado
             cancel_url=URL,  # TODO pantalla de cancelado
         )
 
-        return Response({'url': session.url})
+        return Response({"url": session.url})

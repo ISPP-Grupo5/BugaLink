@@ -6,7 +6,8 @@ const NEXT_ROUTES = {
   EDIT_PROFILE: (userId) => `/users/${userId}/edit`, // TODO: replace with /profile/edit to avoid people guessing other user's ids
   WALLET: '/wallet',
   RECHARGE_CREDIT: '/wallet/recharge',
-  WITHDRAW_CREDIT: '/wallet/withdraw',
+  WITHDRAW_BALANCE: '/wallet/withdraw',
+  WITHDRAW_CONFIRMATION: '/wallet/withdraw/success',
   MY_ROUTINES: `/routines`,
   TRIP_HISTORY: '/history',
   TRIP_DETAILS: (tripId) => `/trips/${tripId}`,

@@ -35,7 +35,7 @@ export default function Withdraw() {
       });
 
       if (response.status === 202) {
-        router.replace(NEXT_ROUTES.WITHDRAW_CONFIRMATION);
+        router.replace(NEXT_ROUTES.WITHDRAW_SUCCESS);
       }
     } catch (error) {
       console.log(error);

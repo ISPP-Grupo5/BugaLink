@@ -1,4 +1,4 @@
-import DialogNotAvailable from '@/components/dialogs/notAvailable';
+import DialogComponent from '@/components/dialog';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -17,7 +17,14 @@ export default function RoundedButton({ Icon, href }: Params) {
           {Icon}
         </button>
       </Link>
-      <DialogNotAvailable open={openDialog} setOpen={setOpenDialog} />
+      <DialogComponent
+        title="Funcionalidad no disponible"
+        description="Esta funcionalidad no está disponible en la versión actual de la aplicación."
+        onClose={() => setOpenDialog(false)}
+        onCloseButton="Entendido"
+        open={openDialog}
+        setOpen={setOpenDialog}
+      />
     </>
   );
 }

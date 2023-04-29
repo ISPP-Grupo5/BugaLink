@@ -36,11 +36,13 @@ export default function Withdraw() {
 
       if (response.status === 202) {
         router.replace(NEXT_ROUTES.WITHDRAW_SUCCESS);
+      } else {
+        setIsLoading(false);
       }
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const errors = {
@@ -78,16 +80,19 @@ export default function Withdraw() {
             placeholder="0,00€"
             className="w-1/2 rounded-md px-4 py-2 text-center text-4xl outline outline-1 outline-light-gray focus:outline-turquoise"
             onValueChange={(value) => setAmount(value)}
-            max={Number.parseFloat(balance?.amount)}
+            max={Math.min(1000, Number.parseFloat(balance?.amount))}
             setHasErrors={setMoneyError}
           />
           {balance !== undefined && (
             <span className="text-gray">
               Puedes retirar hasta{' '}
-              {Number.parseFloat(balance.amount).toLocaleString('es-ES', {
-                style: 'currency',
-                currency: 'EUR',
-              })}
+              {Math.min(1000, Number.parseFloat(balance.amount)).toLocaleString(
+                'es-ES',
+                {
+                  style: 'currency',
+                  currency: 'EUR',
+                }
+              )}
             </span>
           )}
 
@@ -108,7 +113,7 @@ export default function Withdraw() {
       <CTAButton
         className="mx-2 mb-4"
         text="SOLICITAR"
-        disabled={isLoading || ibanError || moneyError}
+        disabled={isLoading || ibanError || moneyError || !amount}
         onClick={handleWithdrawSubmit}
       />
     </AnimatedLayout>

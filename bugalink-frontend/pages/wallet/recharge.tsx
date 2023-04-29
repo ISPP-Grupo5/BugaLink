@@ -17,42 +17,45 @@ export default function Recharge() {
   const rechargeWithCreditCard = async (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
-    if (!isPaying) {
-      event.preventDefault();
-      setIsPaying(true);
+    if (isPaying || paymentIsDisabled) return;
 
-      try {
-        const payload = {
-          amount,
-        };
-        const { data } = await axiosAuth.post(`recharge/credit-card/`, payload);
-        router.push(data.url);
-      } catch (error) {
-        alert('Error en el pago');
-        setIsPaying(false);
-      }
+    event.preventDefault();
+    setIsPaying(true);
+
+    try {
+      const payload = {
+        amount,
+      };
+      const { data } = await axiosAuth.post(`recharge/credit-card/`, payload);
+      router.push(data.url);
+    } catch (error) {
+      alert('Error en el pago');
+      setIsPaying(false);
     }
   };
 
   const rechargeWithPayPal = async (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
-    if (!isPaying) {
-      event.preventDefault();
-      setIsPaying(true);
+    if (isPaying || paymentIsDisabled) return;
 
-      try {
-        const payload = {
-          amount,
-        };
-        const { data } = await axiosAuth.post(`recharge/paypal/`, payload);
-        router.push(data.url);
-      } catch (error) {
-        alert('Error en el pago');
-        setIsPaying(false);
-      }
+    event.preventDefault();
+    setIsPaying(true);
+
+    try {
+      const payload = {
+        amount,
+      };
+      const { data } = await axiosAuth.post(`recharge/paypal/`, payload);
+      router.push(data.url);
+    } catch (error) {
+      alert('Error en el pago');
+      setIsPaying(false);
     }
   };
+
+  const paymentIsDisabled = isPaying || !amount || hasErrors;
+
   return (
     <AnimatedLayout className="flex flex-col justify-between">
       <BackButtonText text="Recargar saldo" />
@@ -64,7 +67,13 @@ export default function Recharge() {
             onValueChange={(value) => setAmount(value)}
             setHasErrors={setHasErrors}
           />
-          <span className="text-gray">Cuánto dinero quieres recargar?</span>
+          <span className="text-gray">
+            Puedes recargar hasta{' '}
+            {Number(1000).toLocaleString('es-ES', {
+              style: 'currency',
+              currency: 'EUR',
+            })}{' '}
+          </span>
         </div>
         <br />
         <div className="flex flex-col">
@@ -75,14 +84,14 @@ export default function Recharge() {
               name="VISA/Mastercard"
               data=""
               onClick={rechargeWithCreditCard}
-              disabled={isPaying || !amount || hasErrors}
+              disabled={paymentIsDisabled}
             />
             <PayMethod
               logo={<Paypal />}
               name="Paypal"
               data=""
               onClick={rechargeWithPayPal}
-              disabled={isPaying || !amount || hasErrors}
+              disabled={paymentIsDisabled}
             />
           </div>
         </div>

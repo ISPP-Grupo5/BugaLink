@@ -68,7 +68,9 @@ class PaymentViewSet(
         trip = Trip.objects.get(id=kwargs["trip_id"])
         user = request.user
         # El post recibe la cantidad en centimos integer
-        price = int(float(trip.driver_routine.price) * 115)
+
+        price = int(float(trip.driver_routine.price)
+                    * 115) if not user.is_pilotuser else int(float(trip.driver_routine.price) * 100)
 
         # Si no hay texto da error al intentar acceder a este dato
         note = note if note else "None"
@@ -103,7 +105,8 @@ class PaymentViewSet(
         trip = Trip.objects.get(id=kwargs["trip_id"])
 
         user = request.user
-        price = trip.driver_routine.price * decimal.Decimal(1.15)
+        price = trip.driver_routine.price * \
+            decimal.Decimal(1.15) if not user.is_pilotuser else trip.driver_routine.price
         note = request.data.get("note")
 
         balance = Balance.objects.get(user=user)

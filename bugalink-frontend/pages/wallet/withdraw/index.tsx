@@ -105,8 +105,8 @@ export default function Withdraw() {
             error={ibanError}
           />
           <p>
-            Recibirás el dinero en tu cuenta bancaria en aproximadamente{' '}
-            <b>3 días laborables</b> después de solicitar la retirada de fondos.
+            Recibirás el dinero en tu cuenta bancaria en 24-48 horas después de
+            solicitar la retirada de fondos.
           </p>
         </div>
       </div>

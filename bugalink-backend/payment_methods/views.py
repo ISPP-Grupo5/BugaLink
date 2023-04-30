@@ -4,6 +4,7 @@ from datetime import datetime
 import paypalrestsdk
 import stripe
 from bugalink_backend import settings
+from django.db import transaction
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import mixins, status, viewsets
@@ -159,6 +160,7 @@ class PaymentViewSet(
 
     # POST /trips/<id>/checkout-balance/ (For a passenger to request a trip)
 
+    @transaction.atomic
     def pay_with_balance(self, request, *args, **kwargs):
         trip = Trip.objects.get(id=kwargs["trip_id"])
 
@@ -173,11 +175,11 @@ class PaymentViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        balance.amount -= price
-        balance.save()
-        # Si todo está correcto, se crea el triprequest
+        # Si todo está correcto, se crea el triprequest y se resta el saldo
         no_errors = TripRequestViewSet.create(self, trip.id, user.id, note)
         if no_errors:
+            balance.amount -= price
+            balance.save()
             return Response(
                 {"message": "Pago realizado con éxito"},
                 status=status.HTTP_201_CREATED,
@@ -188,6 +190,7 @@ class PaymentViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+    @transaction.atomic
     def pay_with_paypal(self, request, *args, **kwargs):
         note = request.data.get("note")
         trip = Trip.objects.get(id=kwargs["trip_id"])
@@ -336,6 +339,7 @@ class RechargeViewSet(
     serializer_class = BalanceSerializer
 
     # POST /recharge/paypal/
+    @transaction.atomic
     def recharge_with_paypal(self, request, *args, **kwargs):
         amount = request.data.get("amount").replace(",", ".")
         url_success = (
@@ -395,6 +399,7 @@ class RechargeViewSet(
             )
 
     # POST /recharge/credit-card/
+    @transaction.atomic
     def recharge_with_credit_card(self, request, *args, **kwargs):
         stripe.api_key = settings.STRIPE_SECRET_KEY
         user = request.user

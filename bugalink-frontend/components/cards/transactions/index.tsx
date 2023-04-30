@@ -1,3 +1,4 @@
+import Avatar from '@/components/avatar';
 import useLastTransactions from '@/hooks/useLastTransactions';
 import LastTransactionsI from '@/interfaces/lastTransactions';
 import UserI from '@/interfaces/user';
@@ -6,13 +7,13 @@ import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
 
 //Transactions list
-export function TransactionList() {
+export default function TransactionList() {
   const { data } = useSession();
   const me = data?.user as User;
   const { lastTransactions } = useLastTransactions();
   //Logged user is receiver?
   const isReceiver = (transaction: LastTransactionsI) =>
-    transaction.receiver.id == me.user_id;
+    transaction.receiver?.id == me.user_id;
   const isPending = (transaction: LastTransactionsI) =>
     transaction.status === 'PENDING';
 
@@ -26,6 +27,7 @@ export function TransactionList() {
           notMe = transaction.sender;
         const pending = isPending(transaction);
         const imReceiver = isReceiver(transaction);
+        const isWithdraw = transaction.receiver === null;
 
         const date = parseDateFromDate(transaction.date);
         const amount = Number.parseFloat(transaction.amount).toLocaleString(
@@ -44,6 +46,12 @@ export function TransactionList() {
 
         if (pending) color = 'text-yellow';
 
+        if (isWithdraw) {
+          color = 'text-red';
+          sign = '-';
+          type = '';
+        }
+
         return (
           <Transaction
             key={transaction.id}
@@ -54,6 +62,7 @@ export function TransactionList() {
             className={color}
             money={sign + amount}
             isPending={pending}
+            isWithdraw={isWithdraw}
           />
         );
       })}
@@ -69,6 +78,7 @@ type Params = {
   className: string;
   money: string;
   isPending?: boolean;
+  isWithdraw?: boolean;
 };
 
 export function Transaction({
@@ -78,30 +88,33 @@ export function Transaction({
   className,
   money,
   isPending = false,
+  isWithdraw = false,
 }: Params) {
-  const icon = notMe.photo ? notMe.photo : '/icons/Vista-Principal/hombre.png';
-
   return (
-    <div className="grid grid-cols-4 place-content-center justify-between space-x-2">
-      <div className="col-span-1 mx-auto flex scale-90 flex-row -space-x-16">
-        <img src={icon} className="z-10 h-20 w-20 scale-75 object-scale-down" />
+    <div className="flex items-center justify-between space-x-4 p-4">
+      <div className="flex space-x-4 truncate">
+        <Avatar
+          src={isWithdraw ? '/assets/bank.png' : notMe.photo}
+          className="h-14 w-14 place-self-center"
+        />
+        <div className="flex flex-col justify-center truncate">
+          <p className="truncate text-lg font-bold text-black">
+            {isWithdraw
+              ? 'Retirada de saldo'
+              : shortenName(notMe.first_name, notMe.last_name)}
+          </p>
+          <p className="text-base text-gray">
+            {travelType} - {date}
+          </p>
+        </div>
       </div>
 
-      <div className="col-span-2 text-ellipsis py-4">
-        <p className=" text-lg font-bold text-black">
-          {shortenName(notMe.first_name, notMe.last_name)}
-        </p>
-        <p className="text-base text-gray">
-          {travelType} - {date}
-        </p>
-      </div>
-
-      <div className="col-span-1 my-auto mx-auto pr-3 text-right ">
+      <div className="flex-none text-right">
         <p className={'text-lg font-bold ' + className}>{money}</p>
-        {isPending && <p className="text-base text-yellow">Pendiente</p>}
+        {!isWithdraw && isPending && (
+          <p className="text-base text-yellow">Pendiente</p>
+        )}
       </div>
     </div>
   );
 }
-
-export default [TransactionList];

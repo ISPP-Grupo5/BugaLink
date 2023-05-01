@@ -1,7 +1,7 @@
 import Avatar from '@/components/avatar';
 import { BackButtonText } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
-import DialogDeleteAccount from '@/components/dialogs/deleteAccount';
+import DialogComponent from '@/components/dialog';
 import TextField from '@/components/forms/TextField';
 import AnimatedLayout from '@/components/layouts/animated';
 import NEXT_ROUTES from '@/constants/nextRoutes';
@@ -98,18 +98,17 @@ export default function EditProfile({ data }) {
         formData.append('first_name', name);
         formData.append('last_name', surname);
 
-        
         await axiosAuth
           .put(url, formData)
           .then((res) => {
             signOut({
               callbackUrl: NEXT_ROUTES.LOGIN,
-            })
+            });
           })
           .catch((err) => {
             setIsSendingForm(false);
           });
-      } else{
+      } else {
         setIsSendingForm(false);
       }
     }
@@ -122,8 +121,24 @@ export default function EditProfile({ data }) {
     setOpenDialog(true);
   };
 
+  const handleDeleteAccount = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    try {
+      const response = await axiosAuth.delete(`/users/${user.id}`);
+      if (response.status === 204) {
+        await signOut({
+          callbackUrl: NEXT_ROUTES.LOGIN,
+        });
+      }
+    } catch (error) {
+      alert(error?.response?.data?.error || 'Error al eliminar la cuenta');
+    }
+  };
+
   return (
-    <AnimatedLayout className="flex h-screen flex-col items-center justify-between bg-white">
+    <AnimatedLayout className="justify-between flex h-screen flex-col items-center bg-white">
       <BackButtonText text="Mi perfil" />
       <div className="flex h-full w-full flex-col items-center overflow-y-scroll">
         <div className="mb-5 h-24 w-24">
@@ -149,8 +164,6 @@ export default function EditProfile({ data }) {
                 reader.readAsDataURL(file);
                 setFile(file);
                 setPhotoURL(URL.createObjectURL(file));
-
-                
               }}
             />
             <Avatar
@@ -167,7 +180,7 @@ export default function EditProfile({ data }) {
         </div>
         <form
           ref={formRef}
-          className="flex h-full w-full flex-col items-center justify-between"
+          className="justify-between flex h-full w-full flex-col items-center"
         >
           <div className="mt-5 flex w-full flex-col items-center space-y-6">
             <TextField
@@ -206,14 +219,19 @@ export default function EditProfile({ data }) {
             </p>
             <CTAButton
               className="w-11/12"
-              text={isSendingForm ? "PROCESANDO..." :"GUARDAR"}
+              text={isSendingForm ? 'PROCESANDO...' : 'GUARDAR'}
               onClick={handleSubmit}
             />
           </div>
         </form>
       </div>
-      <DialogDeleteAccount
-        userId={user?.id}
+      <DialogComponent
+        title="Eliminar mi cuenta"
+        description="Vas a eliminar tu cuenta, ¿estás seguro?"
+        onClose={() => setOpenDialog(false)}
+        onCloseButton="Cancelar"
+        onAccept={handleDeleteAccount}
+        onAcceptButton="Eliminar cuenta"
         open={openDialog}
         setOpen={setOpenDialog}
       />

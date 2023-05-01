@@ -13,6 +13,8 @@ import { capitalize } from '@/utils/formatters';
 import { Drawer } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import useTrip from '@/hooks/useTrip';
+import DialogComponent from '@/components/dialog';
 
 export default function AcceptRequest() {
   const router = useRouter();
@@ -25,6 +27,23 @@ export default function AcceptRequest() {
   const { userStats, isLoadingStats, isErrorStats } = useUserStats(
     tripRequest?.passenger
   );
+  const { trip } = useTrip(tripRequest?.trip.id);
+
+  const occupiedSeats = trip?.passengers.length;
+  const freeSeats = trip?.driver_routine.available_seats - occupiedSeats;
+
+  const [openDialogAccept, setOpenDialogAccept] = useState(false);
+  const [openDialogReject, setOpenDialogReject] = useState(false);
+
+  const onCloseDialogAccept = () => {
+    setOpenDialogAccept(false);
+    router.push(NEXT_ROUTES.PENDING_REQUESTS);
+  };
+
+  const onCloseDialogReject = () => {
+    setOpenDialogReject(false);
+    router.push(NEXT_ROUTES.PENDING_REQUESTS);
+  };
 
   const handleAcceptTripRequest = async (
     e: React.MouseEvent<HTMLButtonElement>
@@ -32,7 +51,7 @@ export default function AcceptRequest() {
     e.preventDefault();
     try {
       const response = await axiosAuth.put(`/trip-requests/${id}/accept/`);
-      if (response.status === 200) router.push(NEXT_ROUTES.PENDING_REQUESTS);
+      if (response.status === 200) setOpenDialogAccept(true);
     } catch (error) {
       console.log(error);
     }
@@ -46,7 +65,7 @@ export default function AcceptRequest() {
       const response = await axiosAuth.put(`/trip-requests/${id}/reject/`, {
         reject_note: rejectNote,
       });
-      if (response.status === 200) router.push(NEXT_ROUTES.PENDING_REQUESTS);
+      if (response.status === 200) setOpenDialogReject(true);
     } catch (error) {
       console.log(error);
     }
@@ -162,12 +181,32 @@ export default function AcceptRequest() {
             </div>
           </Drawer>
         </div>
-        <CTAButton
-          className="w-11/12"
-          text={'ACEPTAR'}
-          onClick={handleAcceptTripRequest}
-        />
+        {freeSeats > 0 ? (
+          <CTAButton
+            className="w-11/12"
+            text={'ACEPTAR'}
+            onClick={handleAcceptTripRequest}
+          />
+        ) : (
+          <CTAButton className="w-11/12" text={'El viaje está lleno'} />
+        )}
       </div>
+      <DialogComponent
+        title="Acción realizada"
+        description="El viaje se aceptó correctamente."
+        onClose={onCloseDialogAccept}
+        onCloseButton="Entendido"
+        open={openDialogAccept}
+        setOpen={setOpenDialogAccept}
+      />
+      <DialogComponent
+        title="Acción realizada"
+        description="El viaje rechazó correctamente."
+        onClose={onCloseDialogReject}
+        onCloseButton="Entendido"
+        open={openDialogReject}
+        setOpen={setOpenDialogReject}
+      />
     </AnimatedLayout>
   );
 }

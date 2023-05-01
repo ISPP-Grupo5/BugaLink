@@ -7,7 +7,6 @@ export default function Avatar({
   className = '',
   ...props
 }) {
-
   return (
     <Image
       width={100}

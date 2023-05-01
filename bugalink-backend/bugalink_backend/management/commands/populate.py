@@ -2,6 +2,7 @@ import os
 import shutil
 
 from django.core.management.base import BaseCommand
+from django.core.management import call_command
 from driver_routines.factories import DriverRoutineFactory
 from drivers.factories import DriverFactory
 from faker import Faker
@@ -12,6 +13,8 @@ from ratings.factories import DriverRatingFactory, ReportFactory
 from trips.factories import TripFactory, TripRequestFactory
 from users.factories import UserFactory
 
+
+call_command('flush', '--no-input')
 Faker.seed(69420)
 fake = Faker("es_ES")
 

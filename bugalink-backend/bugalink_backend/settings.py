@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Developer Apps
+    "bugalink_backend",
     "authentication",
     "driver_routines",
     "drivers",

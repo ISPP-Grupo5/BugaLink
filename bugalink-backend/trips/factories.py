@@ -37,14 +37,22 @@ class TripFactory(factory.django.DjangoModelFactory):
 
     departure_datetime = factory.LazyAttribute(
         lambda x: datetime.combine(
-            next_weekday(x.trip_day, x.driver_routine.day_of_week),
+            next_weekday(
+                x.trip_day,
+                x.driver_routine.day_of_week,
+                x.driver_routine.departure_time_start.time(),
+            ),
             x.driver_routine.departure_time_start.time(),
             timezone.utc,
         )
     )
     arrival_datetime = factory.LazyAttribute(
         lambda x: datetime.combine(
-            next_weekday(x.trip_day, x.driver_routine.day_of_week),
+            next_weekday(
+                x.trip_day,
+                x.driver_routine.day_of_week,
+                x.driver_routine.departure_time_start.time(),
+            ),
             x.driver_routine.arrival_time.time(),
             timezone.utc,
         )

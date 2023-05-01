@@ -6,7 +6,8 @@ describe('userLoginEditing.cy.js', () => {
   };
 
   afterEach(() => {
-    cy.clearCookies();
+    cy.clearAllCookies();
+    cy.clearLocalStorage();
     cy.reload();
   });
 
@@ -62,6 +63,7 @@ describe('userLoginEditing.cy.js', () => {
     cy.get('input[type="checkbox"]').click();
     cy.get('input[type="number"]').type('1.2');
     cy.get('textarea').type('This is a sample description');
+    cy.wait(2000);
     cy.get('button').contains('CREAR').click();
     cy.intercept('POST', '/api/v1/driver-routines').as('driver-routines');
     cy.wait('@driver-routines');
@@ -75,9 +77,10 @@ describe('userLoginEditing.cy.js', () => {
     cy.get('input[id="Correo electrónico"]').type(email);
     cy.get('input[id="Contraseña"]').type('1234Ejemplo?');
     cy.contains('INICIAR SESIÓN').click();
+    cy.wait(2000);
     cy.get('a[href="/routines"]', { timeout: 30000 }).click();
     cy.url({ timeout: 60000 }).should('include', '/routines');
-    cy.get['svg[labe="more"]'].click();
+    cy.get['svg[aria-label="more"]'].click();
     cy.get('p').contains('Editar').click();
     cy.url({ timeout: 60000 }).should('include', '/new');
     cy.get('input[name="origin"]').type('Utr');

@@ -37,12 +37,12 @@ export default function AcceptRequest() {
 
   const onCloseDialogAccept = () => {
     setOpenDialogAccept(false);
-    router.push(NEXT_ROUTES.HOME);
+    router.push(NEXT_ROUTES.PENDING_REQUESTS);
   };
 
   const onCloseDialogReject = () => {
     setOpenDialogReject(false);
-    router.push(NEXT_ROUTES.HOME);
+    router.push(NEXT_ROUTES.PENDING_REQUESTS);
   };
 
   const handleAcceptTripRequest = async (

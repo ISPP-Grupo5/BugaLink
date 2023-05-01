@@ -10,6 +10,8 @@ fake = Faker("es_ES")
 class LocationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Location
+        # Skip if exists
+        django_get_or_create = ("latitude", "longitude", "address")
 
     class Params:
         # https://faker.readthedocs.io/en/master/providers/faker.providers.geo.html#faker.providers.geo.Provider.local_latlng
@@ -22,14 +24,3 @@ class LocationFactory(factory.django.DjangoModelFactory):
     latitude = factory.LazyAttribute(lambda x: x.values[0])
     longitude = factory.LazyAttribute(lambda x: x.values[1])
     address = factory.LazyAttribute(lambda x: x.values[2])
-
-    @factory.post_generation
-    def remove_duplicate_locations(self, create, extracted, **kwargs):
-        if not create:
-            return
-
-        locations = Location.objects.all()
-
-        for location in locations:
-            if location.address == self.address:
-                location.delete()

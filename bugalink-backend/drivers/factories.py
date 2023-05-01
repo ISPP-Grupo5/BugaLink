@@ -38,16 +38,20 @@ class DriverFactory(factory.django.DjangoModelFactory):
     # TODO: not working, always returning true. Manage in a future
     if factory.LazyAttributeSequence(random_bool):
         dni_status = "Validated"
-        dni_front = factory.django.ImageField(color="blue")
-        dni_back = factory.django.ImageField(color="blue")
+        dni_front = factory.django.ImageField(color="blue", filename="dni_front.jpg")
+        dni_back = factory.django.ImageField(color="blue", filename="dni_back.jpg")
 
     if factory.LazyAttributeSequence(random_bool):
         driver_license_status = "Validated"
-        driver_license = factory.django.ImageField(color="blue")
+        driver_license = factory.django.ImageField(
+            color="blue", filename="driver_license.jpg"
+        )
 
     if factory.LazyAttributeSequence(random_bool):
         sworn_declaration_status = "Validated"
-        sworn_declaration = factory.django.ImageField(color="blue")
+        sworn_declaration = factory.django.ImageField(
+            color="blue", filename="sworn_declaration.jpg"
+        )
 
     if (
         dni_status == "Validated"

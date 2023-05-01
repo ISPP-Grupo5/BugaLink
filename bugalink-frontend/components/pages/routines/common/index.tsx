@@ -143,10 +143,20 @@ export default function NewRoutine({
         errors.price = 'El precio no debe ser un valor negativo';
       } else if (!values.price) {
         errors.price = 'Por favor, ingrese un precio';
-      } else if ((totalDistance * 0.1) > 0.3 && values.price > totalDistance * 0.1 * 2) {
-        errors.price = 'El precio no puede ser mayor que el doble del precio recomendado';
-      } else if (totalDistance * 0.1 < 0.3 && (values.price < 0.3 || values.price > 0.8)) {
-        errors.price = 'Para una distancia tan corta se debe establecer un precio de entre 30 y 80 céntimos';
+      } else if (!/^\d+(\.\d{1,2})?$/.test((values.price).toString())) {
+        errors.price = 'El precio debe tener máximo dos cifras decimales';
+      } else if (
+        totalDistance * 0.1 > 0.0 &&
+        (values.price > totalDistance * 0.1 * 2 ||
+          values.price < totalDistance * 0.1 / 2)
+      ) {
+        errors.price = 'El precio debe situarse entre la mitad y el doble del precio recomendado';
+      } else if (
+        totalDistance * 0.1 == 0.0 &&
+        (values.price < 0.3 || values.price > 0.8)
+      ) {
+        errors.price =
+          'Para una distancia tan corta se debe establecer un precio de entre 30 y 80 céntimos';
       }
     }
 

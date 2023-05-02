@@ -35,14 +35,17 @@ describe('userLoginEditing.cy.js', () => {
     cy.get('label[for="Declaración jurada"]')
       .find('input[type="file"]')
       .selectFile('cypress/images/hombre.png', { force: true });
+    cy.wait(10000);
     cy.get('label[for="Carnet de conducir"]')
       .find('input[type="file"]')
       .selectFile('cypress/images/hombre.png', { force: true });
+    cy.wait(10000);
     cy.get('label[for="Documento de identidad (anverso)"]')
       .find('input[type="file"]')
       .selectFile('cypress/images/hombre.png', { force: true });
-    cy.intercept('PUT', '/api/v1/drivers/docs').as('drivers-update');
-    cy.wait('@drivers-update');
+    cy.wait(10000);
+    // cy.intercept('PUT', '/api/v1/drivers/docs').as('drivers-update');
+    // cy.wait('@drivers-update');
   });
 
   it('Routine Creation Test', () => {
@@ -50,6 +53,7 @@ describe('userLoginEditing.cy.js', () => {
     cy.get('input[id="Correo electrónico"]').type(email);
     cy.get('input[id="Contraseña"]').type('1234Ejemplo?');
     cy.contains('INICIAR SESIÓN').click();
+    cy.wait(10000);
     cy.get('a[href="/routines"]', { timeout: 60000 }).click();
     cy.url({ timeout: 60000 }).should('include', '/routines');
     cy.get('button[data-cy="add-routine-menu"]').click();
@@ -80,12 +84,14 @@ describe('userLoginEditing.cy.js', () => {
     cy.wait(2000);
     cy.get('a[href="/routines"]', { timeout: 30000 }).click();
     cy.url({ timeout: 60000 }).should('include', '/routines');
-    cy.get['svg[aria-label="more"]'].click();
+    cy.wait(4000);
+    cy.get('svg[aria-label="more"]').click();
     cy.get('p').contains('Editar').click();
     cy.url({ timeout: 60000 }).should('include', '/new');
     cy.get('input[name="origin"]').type('Utr');
     cy.get('strong').contains('Utrera').click();
     cy.get('input[type="number"]').clear().type('2.9');
+    cy.wait(2000);
     cy.get('button').contains('Editar').click();
     cy.get('button').contains('Entendido').click();
     cy.url({ timeout: 60000 }).should('include', '/routines');

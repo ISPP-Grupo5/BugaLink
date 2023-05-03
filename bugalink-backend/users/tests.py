@@ -84,7 +84,7 @@ def load_complex_data(self):
 class UserUpdateViewTest(TestCase):
     def setUp(self):
         self.client = APIClient()
-        load_data(self)
+        load_complex_data(self)
         self.client.force_authenticate(user=self.user)
 
     def test_put_edit_profile(self):
@@ -98,6 +98,39 @@ class UserUpdateViewTest(TestCase):
         self.client.put(url, data=body)
         self.assertEqual(self.user.first_name, new_first_name)
         self.assertEqual(self.user.last_name, new_last_name)
+
+    def test_put_edit_profile_empty_name(self):
+        url = "/api/v1/users/" + str(self.user.pk) + "/edit/"
+        first_name = self.user.first_name
+        body = {
+            "first_name": "",
+        }
+        self.client.put(url, data=body)
+        self.assertEqual(self.user.first_name, first_name)
+
+    def test_put_edit_profile_non_user(self):
+        url = "/api/v1/users/99999/edit/"
+        body = {
+            "first_name": "",
+        }
+        self.client.put(url, data=body)
+        response = self.client.put(url, data=body)
+        data = json.loads(response.content)
+        self.assertEqual(
+            data["error"], "No tienes permiso para editar esta información"
+        )
+
+    def test_put_edit_profile_different_user(self):
+        url = "/api/v1/users/" + str(self.user_2.pk) + "/edit/"
+        body = {
+            "first_name": "New name",
+        }
+        self.client.put(url, data=body)
+        response = self.client.put(url, data=body)
+        data = json.loads(response.content)
+        self.assertEqual(
+            data["error"], "No tienes permiso para editar esta información"
+        )
 
 
 class UserStatsViewTest(TestCase):
@@ -140,6 +173,12 @@ class UserStatsViewTest(TestCase):
         self.assertEqual(data["number_ratings"], 0)
         self.assertEqual(data["rating"], 0)
 
+    def test_get_non_user_rating(self):
+        url = "/api/v1/users/9999/stats/"
+        response = self.client.get(url)
+        data = json.loads(response.content)
+        self.assertEqual(data["detail"], "Not found.")
+
 
 class UserRatingViewTest(TestCase):
     def setUp(self):
@@ -164,3 +203,9 @@ class UserRatingViewTest(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data["number_ratings"], 0)
         self.assertEqual(data["rating"], 0)
+
+    def test_get_non_user_rating(self):
+        url = "/api/v1/users/99999/rating/"
+        response = self.client.get(url)
+        data = json.loads(response.content)
+        self.assertEqual(data["detail"], "Not found.")

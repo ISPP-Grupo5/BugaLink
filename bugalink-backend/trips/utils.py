@@ -5,7 +5,7 @@ from django.utils import timezone
 from locations.models import Location
 from ratings.models import DriverRating
 
-from .models import Trip
+from .models import Trip, TripRequest
 from .serializers import TripSerializer
 
 
@@ -17,8 +17,12 @@ def get_recommendations(obj) -> TripSerializer(many=True):
 
     recommendable_trips = []
     for trip in trips:
+        has_requested = TripRequest.objects.filter(
+            Q(passenger__user=obj.passenger.user) & Q(trip=trip)
+        ).exists()
         if (
-            trip.get_avaliable_seats() > 0
+            not has_requested
+            and trip.get_avaliable_seats() > 0
             and trip.driver_routine.driver.user != obj.passenger.user
             and trip.driver_routine.departure_time_start <= obj.departure_time_end
             and trip.driver_routine.departure_time_end >= obj.departure_time_start

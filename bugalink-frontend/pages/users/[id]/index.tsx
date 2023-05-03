@@ -30,7 +30,6 @@ export default function Profile({ data }) {
 
   const profileUserId = data.id;
   const user = useUser(profileUserId).user as UserI;
-
   const { userStats } = useUserStats(profileUserId);
   const isMyProfile = authUser?.user_id.toString() === profileUserId;
 

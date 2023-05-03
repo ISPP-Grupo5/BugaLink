@@ -1,5 +1,6 @@
 import { BackButtonText } from '@/components/buttons/Back';
 import RoutineCard from '@/components/cards/routine';
+import DialogComponent from '@/components/dialog';
 import AnimatedLayout from '@/components/layouts/animated';
 import RoutineCardSkeleton from '@/components/skeletons/Routine';
 import NEXT_ROUTES from '@/constants/nextRoutes';
@@ -60,6 +61,8 @@ export default function MyRoutines() {
   const isLoading = passengerIsLoading || driverIsLoading;
   const isError = passengerIsError || driverIsError;
 
+  const [openDialog, setOpenDialog] = useState(false);
+
   return (
     <AnimatedLayout className="flex flex-col bg-white">
       <BackButtonText text={'Mi horario'} />
@@ -83,6 +86,7 @@ export default function MyRoutines() {
                       type={routine.type}
                       origin={routine.origin.address}
                       destination={routine.destination.address}
+                      setOpenDialog={setOpenDialog}
                     />
                   ))}
             {!isLoading &&
@@ -98,6 +102,14 @@ export default function MyRoutines() {
         ))}
       </div>
       <AddRoutineMenu user={user} />
+      <DialogComponent
+        title="Rutina eliminada"
+        description="La rutina se ha eliminado correctamente."
+        onClose={() => setOpenDialog(false)}
+        onCloseButton="Entendido"
+        open={openDialog}
+        setOpen={setOpenDialog}
+      />
     </AnimatedLayout>
   );
 }

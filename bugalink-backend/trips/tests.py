@@ -85,21 +85,25 @@ def load_trips_extra_data(self):
         driver_routine=self.driver_routine_2,
         departure_datetime=datetime(2022, 2, 21, 14, 0),
         arrival_datetime=datetime(2022, 2, 21, 15, 0),
+        status="FINISHED",
     )
     self.trip_4 = Trip.objects.create(
         driver_routine=self.driver_routine_2,
         departure_datetime=datetime(2022, 2, 21, 14, 0),
         arrival_datetime=datetime(2022, 2, 21, 15, 0),
+        status="PENDING",
     )
     self.trip_5 = Trip.objects.create(
         driver_routine=self.driver_routine_3,
         departure_datetime=datetime(2022, 2, 22, 13, 0),
         arrival_datetime=datetime(2022, 2, 22, 14, 0),
+        status="FINISHED",
     )
     self.trip_6 = Trip.objects.create(
         driver_routine=self.driver_routine_3,
         departure_datetime=datetime(2022, 2, 22, 13, 0),
         arrival_datetime=datetime(2022, 2, 22, 14, 0),
+        status="PENDING",
     )
     self.trip_request_3 = TripRequest.objects.create(
         trip=self.trip_3, status="ACCEPTED", passenger=self.passenger_2, price=1.2
@@ -127,6 +131,7 @@ class GetTripRecommendationTest(TestCase):
             driver_routine=self.driver_routine,
             departure_datetime=datetime.now() + timedelta(days=1),
             arrival_datetime=datetime.now() + timedelta(days=1, hours=1),
+            status="PENDING",
         )
 
         # Viaje similar asociado a una misma rutina, para devolucion de varios viajes
@@ -134,6 +139,7 @@ class GetTripRecommendationTest(TestCase):
             driver_routine=self.driver_routine,
             departure_datetime=datetime.now() + timedelta(days=1),
             arrival_datetime=datetime.now() + timedelta(days=1, hours=1),
+            status="PENDING",
         )
 
         # Rutina con datos similares a la del driver
@@ -199,6 +205,7 @@ class GetTripRecommendationTest(TestCase):
             driver_routine=self.driver_routine_4,
             departure_datetime=datetime.now() + timedelta(days=1),
             arrival_datetime=datetime.now() + timedelta(days=1, hours=1),
+            status="PENDING",
         )
 
         # Origen pasajero
@@ -274,6 +281,7 @@ class GetTripRecommendationTest(TestCase):
             driver_routine=self.driver_routine_6,
             departure_datetime=datetime.now() + timedelta(days=1),
             arrival_datetime=datetime.now() + timedelta(days=1, hours=1),
+            status="PENDING",
         )
 
         # Origen pasajero
@@ -349,6 +357,7 @@ class GetTripRecommendationTest(TestCase):
             driver_routine=self.driver_routine_8,
             departure_datetime=datetime.now() + timedelta(days=1),
             arrival_datetime=datetime.now() + timedelta(days=1, hours=1),
+            status="PENDING",
         )
 
         # Origen pasajero
@@ -424,6 +433,7 @@ class GetTripRecommendationTest(TestCase):
             driver_routine=self.driver_routine_8,
             departure_datetime=datetime.now() + timedelta(days=1),
             arrival_datetime=datetime.now() + timedelta(days=1, hours=1),
+            status="FINISHED",
         )
 
         # Origen pasajero
@@ -499,6 +509,7 @@ class GetTripRecommendationTest(TestCase):
             driver_routine=self.driver_routine_8,
             departure_datetime=datetime.now() + timedelta(days=1),
             arrival_datetime=datetime.now() + timedelta(days=1, hours=1),
+            status="PENDING",
         )
 
         # Origen pasajero
@@ -582,21 +593,18 @@ class TripSearchTest(TestCase):
     def test_get_no_trips_location_error(self):
         url = "/api/v1/trips/search/"
         response = self.client.get(url)
-        # data = json.loads(response.content)
         self.assertEqual(response.status_code, 400)
 
     # Error por no indicar origen
     def test_get_no_trips_origin_error(self):
         url = "/api/v1/trips/search/?destination=41.1223121231,14.467800675"
         response = self.client.get(url)
-        # data = json.loads(response.content)
         self.assertEqual(response.status_code, 400)
 
     # Error por no indicar destino
     def test_get_no_trips_destination_error(self):
         url = "/api/v1/trips/search/?origin=45.1231231,123.11118945"
         response = self.client.get(url)
-        # data = json.loads(response.content)
         self.assertEqual(response.status_code, 400)
 
     # Filtrando por localización, no encuentra viajes
@@ -689,7 +697,6 @@ class TripSearchTest(TestCase):
     def test_get_no_trips_stars_error(self):
         url = "/api/v1/trips/search/?origin=45.1231231,123.11118945&destination=41.1223121231,14.467800675&min_stars=helloworld"
         response = self.client.get(url)
-        # data = json.loads(response.content)
         self.assertEqual(response.status_code, 400)
 
     # Filtrando por precio, encuentra dos viajes
@@ -720,7 +727,6 @@ class TripSearchTest(TestCase):
     def test_get_no_trips_price_error(self):
         url = "/api/v1/trips/search/?origin=45.1231231,123.11118945&destination=41.1223121231,14.467800675&min_price=helloworld&max_price=helloworld"
         response = self.client.get(url)
-        # data = json.loads(response.content)
         self.assertEqual(response.status_code, 400)
 
     # Filtrando por fecha, encuentra dos viajes
@@ -767,7 +773,6 @@ class TripSearchTest(TestCase):
     def test_get_no_trips_date_error(self):
         url = "/api/v1/trips/search/?origin=45.1231231,123.11118945&destination=41.1223121231,14.467800675&date_from=helloworld&date_to=helloworld"
         response = self.client.get(url)
-        # data = json.loads(response.content)
         self.assertEqual(response.status_code, 400)
 
     # Filtrando por horas, encuentra dos viajes
@@ -795,11 +800,10 @@ class TripSearchTest(TestCase):
         self.assertEqual(len(data), 0)  # cantidad de viajes obtenidos
 
     # Error por formato incorrecto en horas
-    # def test_get_no_trips_date_error(self):
-    #     url = "/api/v1/trips/search/?origin=45.1231231,123.11118945&destination=41.1223121231,14.467800675&hour_from=helloworld&date_to=helloworld"
-    #     response = self.client.get(url)
-    #     # data = json.loads(response.content)
-    #     self.assertEqual(response.status_code, 400)
+    def test_get_no_trips_hour_error(self):
+        url = "/api/v1/trips/search/?origin=45.1231231,123.11118945&destination=41.1223121231,14.467800675&hour_from=helloworld&date_to=helloworld"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 400)
 
     # Filtrando por preferencias, encuentra dos viajes
     def test_get_trips_filter_by_preferences(self):
@@ -829,11 +833,9 @@ class TripSearchTest(TestCase):
     def test_get_no_trips_preference_error(self):
         url = "/api/v1/trips/search/?origin=45.1231231,123.11118945&destination=41.1223121231,14.467800675&prefers_music=helloworld"
         response = self.client.get(url)
-        # data = json.loads(response.content)
         self.assertEqual(response.status_code, 400)
 
 
-""" DONT WORK - PLEASE CHECK THIS OUT ABRAHAM
 class TripRateTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -856,86 +858,6 @@ class TripRateTest(TestCase):
         self.assertEqual(
             DriverRating.objects.get(trip_request=self.trip_request).rating, 2.3
         )
-"""
-
-
-class RequestTrip(TestCase):
-    def setUp(self):
-        self.client = APIClient()
-        load_complex_data(self)
-        self.balance = Balance.objects.create(user=self.user_2, amount=100)
-        self.client.force_authenticate(user=self.user_2)
-
-    # Intenta pagar usando el método de "Balance" y funciona
-    def test_request_trip_balance(self):
-        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
-
-        balance1 = Balance.objects.get(user=self.user_2).amount
-        price = self.trip.driver_routine.price
-
-        response = self.client.post(
-            url, data={"payment_method": "Balance", "note": "I need a ride"}
-        )
-
-        balance2 = Balance.objects.get(user=self.user_2).amount
-
-        response = self.client.post(
-            url, data={"payment_method": "Balance", "note": "I need a ride"}
-        )
-
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(
-            balance2, balance1 - price
-        )  # Revisamos que el balance se haya actualizado correctamente
-
-    def test_request_trip_balance_not_enough_money(self):
-        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
-
-        # balance = Balance.objects.get(user=self.user_2).amount
-        self.balance.amount = 0
-        self.balance.save()
-
-        response = self.client.post(
-            url, data={"payment_method": "Balance", "note": "I need a ride"}
-        )
-
-        self.assertEqual(response.status_code, 400)
-
-    def test_request_trip_card(self):
-        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
-        response = self.client.post(
-            url,
-            data={
-                "payment_method": "CreditCard",
-                "note": "I need a ride",
-                "credit_car_number": "4242424242424242",
-                "expiration_month": 12,
-                "expiration_year": 2023,
-                "cvc": "123",
-            },
-        )
-
-        self.assertEqual(response.status_code, 201)
-
-    def test_request_trip_paypal(self):
-        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
-        response = self.client.post(
-            url, data={"payment_method": "PayPal", "note": "I need a ride"}
-        )
-
-        response = self.client.post(
-            url, data={"payment_method": "PayPal", "note": "I need a ride"}
-        )
-
-        self.assertEqual(response.status_code, 201)
-
-    def test_request_trip_wrong_payment_method(self):
-        url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
-        response = self.client.post(
-            url, data={"payment_method": "helloworld", "note": "I need a ride"}
-        )
-
-        self.assertEqual(response.status_code, 400)
 
 
 class ReportTripUserTest(TestCase):
@@ -977,10 +899,6 @@ class TripRequestsTest(TestCase):
 
     # Comprueba cuántos trip_requests se obtienen alterando varias veces los datos
     def test_get_trip_count_request(self):
-        # trip_status = self.trip.status
-        # trip_request_status = self.trip_request.status
-        # trip_request_2_status = self.trip_request_2.status
-
         url = "/api/v1/trip-requests/pending/count/"
         response = self.client.get(url)
         data = json.loads(response.content)

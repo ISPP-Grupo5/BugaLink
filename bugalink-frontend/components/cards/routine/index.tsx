@@ -16,6 +16,7 @@ type Props = {
   type: 'driverRoutine' | 'passengerRoutine';
   origin: string;
   destination: string;
+  setOpenDialog?: (open: boolean) => void;
 };
 
 export default function RoutineCard({
@@ -25,6 +26,7 @@ export default function RoutineCard({
   type,
   origin,
   destination,
+  setOpenDialog,
 }: Props) {
   const isDriver = type === 'driverRoutine';
   const [isDeleted, setIsDeleted] = useState(false);
@@ -38,6 +40,7 @@ export default function RoutineCard({
       await axiosAuth.delete(`${url}/${id}`);
       //TODO Recargar tarjetas de manera correcta en un futuro
       setIsDeleted(true);
+      setOpenDialog(true);
     } catch (error) {
       console.error('Error:', error);
     }

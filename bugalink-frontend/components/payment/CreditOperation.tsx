@@ -21,8 +21,9 @@ export default function CreditOperation({
   const [isPaying, setIsPaying] = useState(false);
   const router = useRouter();
 
-
-  const rechargeWithCreditCard = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const rechargeWithCreditCard = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     if (!isPaying) {
       event.preventDefault();
       setIsPaying(true);
@@ -31,7 +32,10 @@ export default function CreditOperation({
         const dataPost = {
           amount,
         };
-        const { data } = await axiosAuth.post(`recharge/credit-card/`, dataPost);
+        const { data } = await axiosAuth.post(
+          `recharge/credit-card/`,
+          dataPost
+        );
         router.push(data.url);
       } catch (error) {
         alert('Error en el pago');
@@ -40,7 +44,9 @@ export default function CreditOperation({
     }
   };
 
-  const rechargeWithPayPal = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const rechargeWithPayPal = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     if (!isPaying) {
       event.preventDefault();
       setIsPaying(true);

@@ -1,3 +1,5 @@
+import os
+
 from django.db.models import Avg
 from django.utils import timezone
 from drivers.models import Driver
@@ -23,6 +25,12 @@ class UserSerializer(serializers.ModelSerializer):
             "passenger",
             "driver",
         )
+
+    def to_representation(self, instance):
+        backend_url = os.environ.get("BACKEND_URL", "http://localhost:8000")
+        ret = super().to_representation(instance)
+        ret["photo"] = backend_url + instance.photo.url if instance.photo else None
+        return ret
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):

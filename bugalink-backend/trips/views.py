@@ -6,7 +6,7 @@ from bugalink_backend import settings
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import redirect
-from django.utils import timezone
+from django.utils.timezone import timezone
 from passenger_routines.models import PassengerRoutine
 from passengers.models import Passenger
 from payment_methods.models import Balance
@@ -118,6 +118,7 @@ class TripRequestViewSet(
 
         trip_request = TripRequest.objects.create(
             trip=trip,
+            status="PENDING",
             note=note,
             reject_note="",
             passenger=passenger,
@@ -132,7 +133,7 @@ class TripRequestViewSet(
     def count(self, request, *args, **kwargs):
         num_pending_requests = TripRequest.objects.filter(
             trip__driver_routine__driver__user=request.user,
-            trip__departure_datetime__lt=timezone.now(),
+            trip__status="PENDING",
             status="PENDING",
         )
         return Response({"count": num_pending_requests.count()})
@@ -167,7 +168,7 @@ class TripSearchViewSet(
     def get(self, request, *args, **kwargs):
         try:
             # Se busca entre los viajes pendientes
-            trips = Trip.objects.filter(departure_datetime__lt=timezone.now())
+            trips = Trip.objects.filter(status="PENDING")
             # Comprobacion de campos obligatorios
             if not request.GET.get("origin") or not request.GET.get("destination"):
                 return Response(
@@ -239,7 +240,7 @@ class TripRateViewSet(
 
         trip = Trip.objects.get(id=trip_id)
         trip_request = None
-        if trip.departure_datetime < timezone.now():
+        if trip.status != "FINISHED":
             return Response(
                 {"message": "No se puede valorar un viaje que no ha terminado"},
                 status=status.HTTP_403_FORBIDDEN,
@@ -300,7 +301,7 @@ class ReportIssuePostViewSet(
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
-        if not (trip.departure_datetime > timezone.now()):
+        if trip.status != "FINISHED":
             return Response(
                 {"message": "No se puede reportar un viaje que no ha terminado"},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -324,60 +325,72 @@ class ReportIssueGetViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin):
 class CreateNextWeekTrip(viewsets.GenericViewSet):
     @action(detail=True, methods=["post"])
     def post(self, request, *args, **kwargs):
-        trips = Trip.objects.filter(
-            # Q(departure_datetime__lt=timezone.now())&
-            ~Q(status="FINISHED")
-        )
-        week_begin_date = (
-            datetime.date.today()
-            - datetime.timedelta(days=datetime.date.today().isoweekday() % 7)
-            + datetime.timedelta(days=1)
-        )
-        week_end_date = week_begin_date + datetime.timedelta(days=6)
-        day_mapper = {
-            "Mon": 0,
-            "Tue": 1,
-            "Wed": 2,
-            "Thu": 3,
-            "Fri": 4,
-            "Sat": 5,
-            "Sun": 6,
-        }
-        for trip in trips:
-            departure_date = week_begin_date + datetime.timedelta(
-                days=7 + day_mapper[trip.driver_routine.day_of_week]
+        try:
+            trips = Trip.objects.filter(
+                Q(departure_datetime__lt=datetime.datetime.now())
+                & ~Q(status="FINISHED")
             )
-            arrival_date = week_begin_date + datetime.timedelta(
-                days=7 + day_mapper[trip.driver_routine.day_of_week]
+            week_begin_date = (
+                datetime.date.today()
+                - datetime.timedelta(days=datetime.date.today().isoweekday() % 7)
+                + datetime.timedelta(days=1)
             )
+            week_end_date = week_begin_date + datetime.timedelta(days=6)
+            day_mapper = {
+                "Mon": 0,
+                "Tue": 1,
+                "Wed": 2,
+                "Thu": 3,
+                "Fri": 4,
+                "Sat": 5,
+                "Sun": 6,
+            }
+            for trip in trips:
+                trip.status = "FINISHED"
+                trip.save()  # Quizas sea mejor actualizarlo despues de guardar el de la semana que viene.
 
-            if (
-                trip.driver_routine.departure_time_start
-                > trip.driver_routine.arrival_time
-            ):
-                arrival_date = arrival_date + datetime.timedelta(days=1)
-
-            departure_datetime = datetime.datetime.combine(
-                departure_date, trip.driver_routine.departure_time_start
-            )
-            arrival_datetime = datetime.datetime.combine(
-                arrival_date, trip.driver_routine.arrival_time
-            )
-
-            trip_already_created = Trip.objects.filter(
-                driver_routine=trip.driver_routine,
-                departure_datetime__gt=(week_begin_date + datetime.timedelta(days=7)),
-                arrival_datetime__lt=(week_end_date + datetime.timedelta(days=7)),
-            )
-
-            if not trip_already_created.exists() and trip.driver_routine.is_recurrent:
-                Trip.objects.create(
-                    driver_routine=trip.driver_routine,
-                    arrival_datetime=arrival_datetime,
-                    departure_datetime=departure_datetime,
+                departure_date = week_begin_date + datetime.timedelta(
+                    days=7 + day_mapper[trip.driver_routine.day_of_week]
+                )
+                arrival_date = week_begin_date + datetime.timedelta(
+                    days=7 + day_mapper[trip.driver_routine.day_of_week]
                 )
 
+                if (
+                    trip.driver_routine.departure_time_start
+                    > trip.driver_routine.arrival_time
+                ):
+                    arrival_date = arrival_date + datetime.timedelta(days=1)
+
+                departure_datetime = datetime.datetime.combine(
+                    departure_date, trip.driver_routine.departure_time_start
+                )
+                arrival_datetime = datetime.datetime.combine(
+                    arrival_date, trip.driver_routine.arrival_time
+                )
+
+                trip_already_created = Trip.objects.filter(
+                    driver_routine=trip.driver_routine,
+                    departure_datetime__gt=(
+                        week_begin_date + datetime.timedelta(days=7)
+                    ),
+                    arrival_datetime__lt=(week_end_date + datetime.timedelta(days=7)),
+                )
+
+                if (
+                    not trip_already_created.exists()
+                    and trip.driver_routine.is_recurrent
+                ):
+                    Trip.objects.create(
+                        driver_routine=trip.driver_routine,
+                        arrival_datetime=arrival_datetime,
+                        departure_datetime=departure_datetime,
+                    )
+        except Exception as e:
+            return Response(
+                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
         return Response(
-            {"message": "All next week trips has been created."},
-            status=status.HTTP_201_CREATED,
+            {"log": "All next week trips has been created."}, status=status.HTTP_200_OK
         )

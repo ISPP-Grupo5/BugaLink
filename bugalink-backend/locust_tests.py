@@ -201,6 +201,8 @@ class BugalinkUser(HttpUser):
     passenger_id = None
     driver_id = None
     credentials = None
+    is_driver = False
+    is_passenger = False
 
     def generate_token(self, email, password):
         # hacer una solicitud HTTP para autenticar al usuario
@@ -237,7 +239,7 @@ class BugalinkUser(HttpUser):
         self.driver_id = self.user_data["driver"]
         # print(f"user_id {self.user_id} for user {email}: passenger {self.passenger_id}, driver {self.driver_id}")
 
-    @task(2)
+    @task(6)
     def get_base_page(self):
         self.client.get("/api/v1/conversations/pending/count/")
         self.client.get("/api/v1/trip-requests/pending/count/")
@@ -266,29 +268,20 @@ class BugalinkUser(HttpUser):
             )
 
         if (
-            random.randint(1, 3) == 1
-        ):  # Establezco que 1 de cada 3 veces se entra en las recomendaciones
+            self.is_passenger and random.randint(1, 3) == 1
+        ):  # Establezco que 1 de cada 3 veces se entra en las recomendaciones, sólo los passengers
             self.client.get("/api/v1/trips/recommendations/")
-
-    @task(1)
-    def get_profile(self):
-        self.client.get(
-            f"/api/v1/users/{self.user_id}/", name="/api/v1/users/{user_id}/"
-        )
-        self.client.get(
-            f"/api/v1/users/{self.user_id}/stats/",
-            name="/api/v1/users/{user_id}/stats/",
-        )
 
 
 class PassengerUser(BugalinkUser):
     wait_time = between(4, 10)
+    is_passenger = True
 
     def on_start(self):
         self.credentials = passenger_credentials
         super().on_start()
 
-    @task(1)
+    @task(2)
     def get_horario(self):
         self.client.get(
             f"/api/v1/passengers/{self.passenger_id}/",
@@ -315,7 +308,7 @@ class PassengerUser(BugalinkUser):
         }
         self.client.post("/api/v1/passenger-routines/", json=data)
 
-    @task(1)
+    @task(2)
     def search_trips_and_request_one(self):
         origin, destination = random.sample(locations, 2)
         origin_lat = origin["latitude"]
@@ -340,17 +333,31 @@ class PassengerUser(BugalinkUser):
             driver_user_id = trip["driver"]["user"]["id"]
             if balance > price and driver_user_id != self.user_id:
                 print(f"{self.user_id} ha solicitado un viaje a {driver_user_id}")
-                self.client.post(f"/api/v1/trips/{trip_id}/checkout-balance/")
+                self.client.post(
+                    f"/api/v1/trips/{trip_id}/checkout-balance/",
+                    name="/api/v1/trips/{trip_id}/checkout-balance/",
+                )
+
+    @task(3)
+    def get_profile(self):
+        self.client.get(
+            f"/api/v1/users/{self.user_id}/", name="/api/v1/users/{user_id}/"
+        )
+        self.client.get(
+            f"/api/v1/users/{self.user_id}/stats/",
+            name="/api/v1/users/{user_id}/stats/",
+        )
 
 
 class DriverUser(BugalinkUser):
     wait_time = between(4, 10)
+    is_driver = True
 
     def on_start(self):
         self.credentials = driver_credentials
         super().on_start()
 
-    @task(1)
+    @task(2)
     def get_horario(self):
         self.client.get(
             f"/api/v1/passengers/{self.passenger_id}/",
@@ -360,7 +367,7 @@ class DriverUser(BugalinkUser):
             f"/api/v1/drivers/{self.driver_id}/", name="/api/v1/drivers/{driver_id}/"
         )
 
-    @task(1)
+    @task(4)
     def get_pending_requests_and_accept_or_reject_one(self):
         pending_requests = self.client.get(
             f"/api/v1/users/{self.user_id}/trip-requests/?requestStatus=PENDING&role=driver",
@@ -431,3 +438,31 @@ class DriverUser(BugalinkUser):
             "available_seats": available_seats,
         }
         self.client.post("/api/v1/driver-routines/", json=data)
+
+    @task(3)
+    def get_profile(self):
+        self.client.get(
+            f"/api/v1/users/{self.user_id}/", name="/api/v1/users/{user_id}/"
+        )
+        self.client.get(
+            f"/api/v1/users/{self.user_id}/stats/",
+            name="/api/v1/users/{user_id}/stats/",
+        )
+        if (
+            random.randint(1, 10) == 1
+        ):  # Establezco que 1 de cada 10 veces actualizan el perfil
+            self.client.get(
+                f"/api/v1/drivers/{self.driver_id}/preferences/",
+                name="/api/v1/drivers/{driver_id}preferences/",
+            )
+            preferences = {
+                "prefers_talk": random.choice(["true", "false"]),
+                "prefers_music": random.choice(["true", "false"]),
+                "allows_pets": random.choice(["true", "false"]),
+                "allows_smoke": random.choice(["true", "false"]),
+            }
+            self.client.put(
+                f"/api/v1/drivers/{self.driver_id}/preferences/",
+                json=preferences,
+                name="/api/v1/drivers/{driver_id}preferences/",
+            )

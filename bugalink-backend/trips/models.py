@@ -1,6 +1,13 @@
+import datetime
+
 from django.db import models
+from django.utils import timezone
 from driver_routines.models import DriverRoutine
 from passengers.models import Passenger
+
+# class TripModelManager(models.Manager):
+#     def pending(self):
+#         return self.filter(arrival_datetime__lt=timezone.now())
 
 
 class Trip(models.Model):
@@ -9,17 +16,13 @@ class Trip(models.Model):
     )
     departure_datetime = models.DateTimeField()
     arrival_datetime = models.DateTimeField()
-    status = models.CharField(
-        choices=(
-            ("PENDING", "PENDING"),
-            ("FINISHED", "FINISHED"),
-        ),
-        default="PENDING",
-        max_length=10,
-    )
 
     def __str__(self):
         return f"{self.pk} - {self.driver_routine} on {self.departure_datetime}"
+
+    @property
+    def status(self):
+        return "FINISHED" if self.arrival_datetime < timezone.now() else "PENDING"
 
     def get_avaliable_seats(self):
         return self.driver_routine.available_seats - len(

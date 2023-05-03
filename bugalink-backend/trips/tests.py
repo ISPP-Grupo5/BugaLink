@@ -1,7 +1,5 @@
-
-from datetime import time, datetime, timedelta
-
 import json
+from datetime import datetime, time, timedelta
 
 from django.test import TestCase
 from driver_routines.models import DriverRoutine
@@ -12,137 +10,112 @@ from passengers.models import Passenger
 from payment_methods.models import Balance
 from ratings.models import DriverRating, Report
 from rest_framework.test import APIClient
-from locations.models import Location
 from trips.models import Trip, TripRequest
 from users.models import User
-from driver_routines.models import DriverRoutine
 from users.tests import load_complex_data
-from payment_methods.models import Balance
-from passengers.models import Passenger
-
-
 
 
 def load_trips_extra_data(self):
-    '''
+    """
     Crea:
     * self.driver_routine_2 para self.driver_2, con día de rutina Martes
     * self.driver_routine_3 para self.driver_2, con día de rutina Domingo
     * self.location_3 y self.location_4 para driver_routine_3
-    * self.trip_3(FINISHED) y self.trip_4(PENDING) para self.driver_routine_2 
-    * self.trip_5(FINISHED) y self.trip_6(PENDING) para self.driver_routine_3 
+    * self.trip_3(FINISHED) y self.trip_4(PENDING) para self.driver_routine_2
+    * self.trip_5(FINISHED) y self.trip_6(PENDING) para self.driver_routine_3
     * self.trip_request_3(ACCEPTED) para passenger_2 en self.trip_3
     * self.trip_request_4(PENDING) para passenger_2 en self.trip_4
     * self.trip_request_5(ACCEPTED) para passenger_2 en self.trip_5
     * self.trip_request_6(PENDING) para passenger_2 en self.trip_6
     * DriverRatings con 1 estrella para trip_request
     * DriverRatings con 4 estrellas para trip_request_3
-    '''
+    """
     load_complex_data(self)
-    
+
     # Actualizar atributos de entidades creadas en load_complex_data
     self.driver_2.prefers_talk = True
     self.driver_2.allows_smoke = True
     self.driver_2.save()
-    
+
     self.driver_routine.departure_time_start = datetime(2022, 2, 20, 13, 0).time()
     self.driver_routine.departure_time_end = datetime(2022, 2, 20, 13, 0).time()
     self.driver_routine.arrival_time = datetime(2022, 2, 20, 14, 0).time()
     self.driver_routine.save()
-    
+
     self.trip.departure_datetime = datetime(2022, 2, 20, 13, 0)
     self.trip.arrival_datetime = datetime(2022, 2, 20, 14, 0)
     self.trip.save()
-    
+
     self.trip_2.departure_datetime = datetime(2022, 2, 20, 13, 0)
     self.trip_2.arrival_datetime = datetime(2022, 2, 20, 14, 0)
     self.trip_2.save()
-    
+
     # Nuevas entidades
     self.location_3 = Location.objects.create(
-        address = "Mi otra casa",
-        latitude = 50.1231231,
-        longitude = 123.11118945
+        address="Mi otra casa", latitude=50.1231231, longitude=123.11118945
     )
     self.location_4 = Location.objects.create(
-        address = "Escuela",
-        latitude = 61.1223121231,
-        longitude = 14.467800675
+        address="Escuela", latitude=61.1223121231, longitude=14.467800675
     )
     self.driver_routine_2 = DriverRoutine.objects.create(
-        driver = self.driver_2,
-        price = 60,
+        driver=self.driver_2,
+        price=60,
         is_recurrent=True,
         available_seats=1,
-        departure_time_start = datetime(2022, 2, 21, 14, 0).time(),
-        departure_time_end = datetime(2022, 2, 21, 15, 0).time(),
-        arrival_time = datetime(2022, 2, 21, 14, 0).time(),
-        origin = self.location_1,
-        destination = self.location_2,
-        day_of_week = "Tue",
+        departure_time_start=datetime(2022, 2, 21, 14, 0).time(),
+        departure_time_end=datetime(2022, 2, 21, 15, 0).time(),
+        arrival_time=datetime(2022, 2, 21, 14, 0).time(),
+        origin=self.location_1,
+        destination=self.location_2,
+        day_of_week="Tue",
     )
     self.driver_routine_3 = DriverRoutine.objects.create(
-        driver = self.driver_2,
-        price = 1,
+        driver=self.driver_2,
+        price=1,
         is_recurrent=True,
         available_seats=1,
-        departure_time_start = datetime(2022, 2, 22, 13, 0).time(),
-        departure_time_end = datetime(2022, 2, 22, 14, 0).time(),
-        arrival_time = datetime(2022, 2, 22, 14, 0).time(),
-        origin = self.location_3,
-        destination = self.location_4,
-        day_of_week = "Sun",
+        departure_time_start=datetime(2022, 2, 22, 13, 0).time(),
+        departure_time_end=datetime(2022, 2, 22, 14, 0).time(),
+        arrival_time=datetime(2022, 2, 22, 14, 0).time(),
+        origin=self.location_3,
+        destination=self.location_4,
+        day_of_week="Sun",
     )
     self.trip_3 = Trip.objects.create(
-        driver_routine = self.driver_routine_2,
-        departure_datetime = datetime(2022, 2, 21, 14, 0),
-        arrival_datetime = datetime(2022, 2, 21, 15, 0),
-        status="FINISHED"
+        driver_routine=self.driver_routine_2,
+        departure_datetime=datetime(2022, 2, 21, 14, 0),
+        arrival_datetime=datetime(2022, 2, 21, 15, 0),
     )
     self.trip_4 = Trip.objects.create(
-        driver_routine = self.driver_routine_2,
-        departure_datetime = datetime(2022, 2, 21, 14, 0),
-        arrival_datetime = datetime(2022, 2, 21, 15, 0),
-        status="PENDING"
+        driver_routine=self.driver_routine_2,
+        departure_datetime=datetime(2022, 2, 21, 14, 0),
+        arrival_datetime=datetime(2022, 2, 21, 15, 0),
     )
     self.trip_5 = Trip.objects.create(
-        driver_routine = self.driver_routine_3,
-        departure_datetime = datetime(2022, 2, 22, 13, 0),
-        arrival_datetime = datetime(2022, 2, 22, 14, 0),
-        status="FINISHED"
+        driver_routine=self.driver_routine_3,
+        departure_datetime=datetime(2022, 2, 22, 13, 0),
+        arrival_datetime=datetime(2022, 2, 22, 14, 0),
     )
     self.trip_6 = Trip.objects.create(
-        driver_routine = self.driver_routine_3,
-        departure_datetime = datetime(2022, 2, 22, 13, 0),
-        arrival_datetime = datetime(2022, 2, 22, 14, 0),
-        status="PENDING"
+        driver_routine=self.driver_routine_3,
+        departure_datetime=datetime(2022, 2, 22, 13, 0),
+        arrival_datetime=datetime(2022, 2, 22, 14, 0),
     )
     self.trip_request_3 = TripRequest.objects.create(
-        trip = self.trip_3,
-        status = "ACCEPTED",
-        passenger = self.passenger_2,
-        price=1.2
-    )  
+        trip=self.trip_3, status="ACCEPTED", passenger=self.passenger_2, price=1.2
+    )
     self.trip_request_4 = TripRequest.objects.create(
-        trip = self.trip_4,
-        status = "PENDING",
-        passenger = self.passenger_2,
-        price=1.2
+        trip=self.trip_4, status="PENDING", passenger=self.passenger_2, price=1.2
     )
     self.trip_request_5 = TripRequest.objects.create(
-        trip = self.trip_5,
-        status = "ACCEPTED",
-        passenger = self.passenger_2,
-        price=1.2
-    )  
-    self.trip_request_6 = TripRequest.objects.create(
-        trip = self.trip_6,
-        status = "PENDING",
-        passenger = self.passenger_2,
-        price=1.2
+        trip=self.trip_5, status="ACCEPTED", passenger=self.passenger_2, price=1.2
     )
-    DriverRating.objects.create(trip_request=self.trip_request, rating=1.0)        
-    DriverRating.objects.create(trip_request=self.trip_request_3, rating=4.0)  
+    self.trip_request_6 = TripRequest.objects.create(
+        trip=self.trip_6, status="PENDING", passenger=self.passenger_2, price=1.2
+    )
+    DriverRating.objects.create(trip_request=self.trip_request, rating=1.0)
+    DriverRating.objects.create(trip_request=self.trip_request_3, rating=4.0)
+
 
 class GetTripRecommendationTest(TestCase):
     def setUp(self):
@@ -153,29 +126,21 @@ class GetTripRecommendationTest(TestCase):
         self.trip_3 = Trip.objects.create(
             driver_routine=self.driver_routine,
             departure_datetime=datetime.now() + timedelta(days=1),
-            arrival_datetime=datetime.now()
-            + timedelta(days=1, hours=1),
-            status="PENDING",
+            arrival_datetime=datetime.now() + timedelta(days=1, hours=1),
         )
 
         # Viaje similar asociado a una misma rutina, para devolucion de varios viajes
         self.trip_4 = Trip.objects.create(
             driver_routine=self.driver_routine,
             departure_datetime=datetime.now() + timedelta(days=1),
-            arrival_datetime=datetime.now()
-            + timedelta(days=1, hours=1),
-            status="PENDING",
+            arrival_datetime=datetime.now() + timedelta(days=1, hours=1),
         )
 
         # Rutina con datos similares a la del driver
         self.passenger_routine_1 = PassengerRoutine.objects.create(
             passenger=self.passenger_2,
-            departure_time_start=(
-                datetime.now() - timedelta(hours=1)
-            ).time(),
-            departure_time_end=(
-                datetime.now() + timedelta(hours=1)
-            ).time(),
+            departure_time_start=(datetime.now() - timedelta(hours=1)).time(),
+            departure_time_end=(datetime.now() + timedelta(hours=1)).time(),
             arrival_time=(datetime.now() + timedelta(hours=1)).time(),
             origin=self.location_1,
             destination=self.location_2,
@@ -233,9 +198,7 @@ class GetTripRecommendationTest(TestCase):
         self.trip_5 = Trip.objects.create(
             driver_routine=self.driver_routine_4,
             departure_datetime=datetime.now() + timedelta(days=1),
-            arrival_datetime=datetime.now()
-            + timedelta(days=1, hours=1),
-            status="PENDING",
+            arrival_datetime=datetime.now() + timedelta(days=1, hours=1),
         )
 
         # Origen pasajero
@@ -251,12 +214,8 @@ class GetTripRecommendationTest(TestCase):
         # Passenger Routine
         self.passenger_routine_3 = PassengerRoutine.objects.create(
             passenger=self.passenger_3,
-            departure_time_start=(
-                datetime.now() - timedelta(hours=1)
-            ).time(),
-            departure_time_end=(
-                datetime.now() + timedelta(hours=1)
-            ).time(),
+            departure_time_start=(datetime.now() - timedelta(hours=1)).time(),
+            departure_time_end=(datetime.now() + timedelta(hours=1)).time(),
             arrival_time=(datetime.now() + timedelta(hours=1)).time(),
             origin=self.location_close_origin_3,
             destination=self.location_close_destination_3,
@@ -314,9 +273,7 @@ class GetTripRecommendationTest(TestCase):
         self.trip_6 = Trip.objects.create(
             driver_routine=self.driver_routine_6,
             departure_datetime=datetime.now() + timedelta(days=1),
-            arrival_datetime=datetime.now()
-            + timedelta(days=1, hours=1),
-            status="PENDING",
+            arrival_datetime=datetime.now() + timedelta(days=1, hours=1),
         )
 
         # Origen pasajero
@@ -332,12 +289,8 @@ class GetTripRecommendationTest(TestCase):
         # Passenger Routine
         self.passenger_routine_5 = PassengerRoutine.objects.create(
             passenger=self.passenger_5,
-            departure_time_start=(
-                datetime.now() - timedelta(hours=1)
-            ).time(),
-            departure_time_end=(
-                datetime.now() + timedelta(hours=1)
-            ).time(),
+            departure_time_start=(datetime.now() - timedelta(hours=1)).time(),
+            departure_time_end=(datetime.now() + timedelta(hours=1)).time(),
             arrival_time=(datetime.now() + timedelta(hours=1)).time(),
             origin=self.location_far_origin_5,
             destination=self.location_far_destination_5,
@@ -395,9 +348,7 @@ class GetTripRecommendationTest(TestCase):
         self.trip_8 = Trip.objects.create(
             driver_routine=self.driver_routine_8,
             departure_datetime=datetime.now() + timedelta(days=1),
-            arrival_datetime=datetime.now()
-            + timedelta(days=1, hours=1),
-            status="PENDING",
+            arrival_datetime=datetime.now() + timedelta(days=1, hours=1),
         )
 
         # Origen pasajero
@@ -413,12 +364,8 @@ class GetTripRecommendationTest(TestCase):
         # Passenger Routine
         self.passenger_routine_7 = PassengerRoutine.objects.create(
             passenger=self.passenger_7,
-            departure_time_start=(
-                datetime.now() - timedelta(hours=1)
-            ).time(),
-            departure_time_end=(
-                datetime.now() + timedelta(hours=1)
-            ).time(),
+            departure_time_start=(datetime.now() - timedelta(hours=1)).time(),
+            departure_time_end=(datetime.now() + timedelta(hours=1)).time(),
             arrival_time=(datetime.now() + timedelta(hours=1)).time(),
             origin=self.location_close_origin_7,
             destination=self.location_close_destination_7,
@@ -476,9 +423,7 @@ class GetTripRecommendationTest(TestCase):
         self.trip_10 = Trip.objects.create(
             driver_routine=self.driver_routine_8,
             departure_datetime=datetime.now() + timedelta(days=1),
-            arrival_datetime=datetime.now()
-            + timedelta(days=1, hours=1),
-            status="FINISHED",
+            arrival_datetime=datetime.now() + timedelta(days=1, hours=1),
         )
 
         # Origen pasajero
@@ -494,12 +439,8 @@ class GetTripRecommendationTest(TestCase):
         # Passenger Routine
         self.passenger_routine_9 = PassengerRoutine.objects.create(
             passenger=self.passenger_9,
-            departure_time_start=(
-                datetime.now() - timedelta(hours=1)
-            ).time(),
-            departure_time_end=(
-                datetime.now() + timedelta(hours=1)
-            ).time(),
+            departure_time_start=(datetime.now() - timedelta(hours=1)).time(),
+            departure_time_end=(datetime.now() + timedelta(hours=1)).time(),
             arrival_time=(datetime.now() + timedelta(hours=1)).time(),
             origin=self.location_close_origin_7,
             destination=self.location_close_destination_7,
@@ -557,9 +498,7 @@ class GetTripRecommendationTest(TestCase):
         self.trip_12 = Trip.objects.create(
             driver_routine=self.driver_routine_8,
             departure_datetime=datetime.now() + timedelta(days=1),
-            arrival_datetime=datetime.now()
-            + timedelta(days=1, hours=1),
-            status="PENDING",
+            arrival_datetime=datetime.now() + timedelta(days=1, hours=1),
         )
 
         # Origen pasajero
@@ -575,12 +514,8 @@ class GetTripRecommendationTest(TestCase):
         # Passenger Routine
         self.passenger_routine_11 = PassengerRoutine.objects.create(
             passenger=self.passenger_11,
-            departure_time_start=(
-                datetime.now() - timedelta(days=1)
-            ).time(),
-            departure_time_end=(
-                datetime.now() + timedelta(days=1)
-            ).time(),
+            departure_time_start=(datetime.now() - timedelta(days=1)).time(),
+            departure_time_end=(datetime.now() + timedelta(days=1)).time(),
             arrival_time=(datetime.now() + timedelta(days=1)).time(),
             origin=self.location_close_origin_7,
             destination=self.location_close_destination_7,
@@ -642,26 +577,26 @@ class TripSearchTest(TestCase):
         self.client = APIClient()
         load_trips_extra_data(self)
         self.client.force_authenticate(user=self.user)
-        
+
     # Error por no indicar localizaciones
     def test_get_no_trips_location_error(self):
         url = "/api/v1/trips/search/"
         response = self.client.get(url)
-        data = json.loads(response.content)
+        # data = json.loads(response.content)
         self.assertEqual(response.status_code, 400)
-        
+
     # Error por no indicar origen
     def test_get_no_trips_origin_error(self):
         url = "/api/v1/trips/search/?destination=41.1223121231,14.467800675"
         response = self.client.get(url)
-        data = json.loads(response.content)
+        # data = json.loads(response.content)
         self.assertEqual(response.status_code, 400)
-        
+
     # Error por no indicar destino
     def test_get_no_trips_destination_error(self):
         url = "/api/v1/trips/search/?origin=45.1231231,123.11118945"
         response = self.client.get(url)
-        data = json.loads(response.content)
+        # data = json.loads(response.content)
         self.assertEqual(response.status_code, 400)
 
     # Filtrando por localización, no encuentra viajes
@@ -754,7 +689,7 @@ class TripSearchTest(TestCase):
     def test_get_no_trips_stars_error(self):
         url = "/api/v1/trips/search/?origin=45.1231231,123.11118945&destination=41.1223121231,14.467800675&min_stars=helloworld"
         response = self.client.get(url)
-        data = json.loads(response.content)
+        # data = json.loads(response.content)
         self.assertEqual(response.status_code, 400)
 
     # Filtrando por precio, encuentra dos viajes
@@ -785,7 +720,7 @@ class TripSearchTest(TestCase):
     def test_get_no_trips_price_error(self):
         url = "/api/v1/trips/search/?origin=45.1231231,123.11118945&destination=41.1223121231,14.467800675&min_price=helloworld&max_price=helloworld"
         response = self.client.get(url)
-        data = json.loads(response.content)
+        # data = json.loads(response.content)
         self.assertEqual(response.status_code, 400)
 
     # Filtrando por fecha, encuentra dos viajes
@@ -832,7 +767,7 @@ class TripSearchTest(TestCase):
     def test_get_no_trips_date_error(self):
         url = "/api/v1/trips/search/?origin=45.1231231,123.11118945&destination=41.1223121231,14.467800675&date_from=helloworld&date_to=helloworld"
         response = self.client.get(url)
-        data = json.loads(response.content)
+        # data = json.loads(response.content)
         self.assertEqual(response.status_code, 400)
 
     # Filtrando por horas, encuentra dos viajes
@@ -860,11 +795,11 @@ class TripSearchTest(TestCase):
         self.assertEqual(len(data), 0)  # cantidad de viajes obtenidos
 
     # Error por formato incorrecto en horas
-    def test_get_no_trips_date_error(self):
-        url = "/api/v1/trips/search/?origin=45.1231231,123.11118945&destination=41.1223121231,14.467800675&hour_from=helloworld&date_to=helloworld"
-        response = self.client.get(url)
-        data = json.loads(response.content)
-        self.assertEqual(response.status_code, 400)
+    # def test_get_no_trips_date_error(self):
+    #     url = "/api/v1/trips/search/?origin=45.1231231,123.11118945&destination=41.1223121231,14.467800675&hour_from=helloworld&date_to=helloworld"
+    #     response = self.client.get(url)
+    #     # data = json.loads(response.content)
+    #     self.assertEqual(response.status_code, 400)
 
     # Filtrando por preferencias, encuentra dos viajes
     def test_get_trips_filter_by_preferences(self):
@@ -894,11 +829,11 @@ class TripSearchTest(TestCase):
     def test_get_no_trips_preference_error(self):
         url = "/api/v1/trips/search/?origin=45.1231231,123.11118945&destination=41.1223121231,14.467800675&prefers_music=helloworld"
         response = self.client.get(url)
-        data = json.loads(response.content)
+        # data = json.loads(response.content)
         self.assertEqual(response.status_code, 400)
 
 
-''' DONT WORK - PLEASE CHECK THIS OUT ABRAHAM
+""" DONT WORK - PLEASE CHECK THIS OUT ABRAHAM
 class TripRateTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -921,7 +856,7 @@ class TripRateTest(TestCase):
         self.assertEqual(
             DriverRating.objects.get(trip_request=self.trip_request).rating, 2.3
         )
-'''
+"""
 
 
 class RequestTrip(TestCase):
@@ -934,14 +869,14 @@ class RequestTrip(TestCase):
     # Intenta pagar usando el método de "Balance" y funciona
     def test_request_trip_balance(self):
         url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
-        
+
         balance1 = Balance.objects.get(user=self.user_2).amount
         price = self.trip.driver_routine.price
-        
+
         response = self.client.post(
             url, data={"payment_method": "Balance", "note": "I need a ride"}
         )
-        
+
         balance2 = Balance.objects.get(user=self.user_2).amount
 
         response = self.client.post(
@@ -949,15 +884,17 @@ class RequestTrip(TestCase):
         )
 
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(balance2, balance1 - price)    # Revisamos que el balance se haya actualizado correctamente
+        self.assertEqual(
+            balance2, balance1 - price
+        )  # Revisamos que el balance se haya actualizado correctamente
 
     def test_request_trip_balance_not_enough_money(self):
         url = "/api/v1/trips/" + str(self.trip.id) + "/request/"
-        
-        balance = Balance.objects.get(user=self.user_2).amount
+
+        # balance = Balance.objects.get(user=self.user_2).amount
         self.balance.amount = 0
         self.balance.save()
-        
+
         response = self.client.post(
             url, data={"payment_method": "Balance", "note": "I need a ride"}
         )
@@ -1023,7 +960,8 @@ class ReportTripUserTest(TestCase):
         response = self.client.get(url)
         data = json.loads(response.content)
         self.assertEqual(len(data.get("users")), 2)
-        
+
+
 class TripRequestsTest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -1039,24 +977,26 @@ class TripRequestsTest(TestCase):
 
     # Comprueba cuántos trip_requests se obtienen alterando varias veces los datos
     def test_get_trip_count_request(self):
-        trip_status = self.trip.status
-        trip_request_status = self.trip_request.status
-        trip_request_2_status = self.trip_request_2.status
-        
+        # trip_status = self.trip.status
+        # trip_request_status = self.trip_request.status
+        # trip_request_2_status = self.trip_request_2.status
+
         url = "/api/v1/trip-requests/pending/count/"
         response = self.client.get(url)
         data = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data["count"], 1) #En principio, debería devolver sólo uno
-        
+        self.assertEqual(data["count"], 1)  # En principio, debería devolver sólo uno
+
         self.trip_request_2.status = "ACCEPTED"
         self.trip_request_2.save()
         url = "/api/v1/trip-requests/pending/count/"
         response = self.client.get(url)
         data = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data["count"], 0) #Si el trip_request queda aceptado (o rechazado), dejará de contarse
-        
+        self.assertEqual(
+            data["count"], 0
+        )  # Si el trip_request queda aceptado (o rechazado), dejará de contarse
+
         self.trip.status = "PENDING"
         self.trip.save()
         self.trip_request.status = "PENDING"
@@ -1067,14 +1007,16 @@ class TripRequestsTest(TestCase):
         response = self.client.get(url)
         data = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(data["count"], 2) #Si tanto los trip_requests como los trips están "PENDING", deberían contarse
-        
+        self.assertEqual(
+            data["count"], 2
+        )  # Si tanto los trip_requests como los trips están "PENDING", deberían contarse
+
     def test_put_accept_trip_request(self):
         _id = self.trip_request_2.id
         url = "/api/v1/trip-requests/" + str(_id) + "/accept/"
         self.client.put(url)
         self.assertEqual(TripRequest.objects.get(id=_id).status, "ACCEPTED")
-        
+
     def test_put_reject_trip_request(self):
         _id = self.trip_request_2.id
         url = "/api/v1/trip-requests/" + str(_id) + "/reject/"

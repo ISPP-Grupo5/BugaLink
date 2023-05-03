@@ -1,6 +1,7 @@
 import datetime
 
 from django.db.models import Avg, Q
+from django.utils import timezone
 from locations.models import Location
 from ratings.models import DriverRating
 
@@ -11,7 +12,7 @@ from .serializers import TripSerializer
 def get_recommendations(obj) -> TripSerializer(many=True):
     trips = Trip.objects.filter(
         driver_routine__day_of_week=obj.day_of_week,
-        status="PENDING",
+        departure_datetime__lt=timezone.now(),
     )
 
     recommendable_trips = []

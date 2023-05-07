@@ -49,7 +49,7 @@ export default function Wallet() {
           </div>
         }
       </div>
-      <div className="my-5 flex justify-between space-x-2 px-4">
+      <div className="justify-between my-5 flex space-x-2 px-4">
         <div className="flex-1">
           <Link href={NEXT_ROUTES.RECHARGE_CREDIT}>
             <TransparentButton text="Recargar cuenta" Icon={<Recargar />} />

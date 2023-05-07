@@ -57,7 +57,7 @@ export default function Recharge() {
   const paymentIsDisabled = isPaying || !amount || hasErrors;
 
   return (
-    <AnimatedLayout className="flex flex-col justify-between">
+    <AnimatedLayout className="justify-between flex flex-col">
       <BackButtonText text="Recargar saldo" />
       <div className="flex h-full flex-col overflow-y-scroll bg-white px-4 pb-4">
         <div className="my-3 mt-4 flex w-full flex-col items-center">

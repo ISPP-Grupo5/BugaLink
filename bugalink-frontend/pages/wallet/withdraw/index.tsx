@@ -67,7 +67,7 @@ export default function Withdraw() {
   const [moneyError, setMoneyError] = useState();
 
   return (
-    <AnimatedLayout className="flex h-full flex-col justify-between bg-white">
+    <AnimatedLayout className="justify-between flex h-full flex-col bg-white">
       <BackButtonText text="Retirar saldo" />
       <div className="flex h-full flex-col pb-4">
         <img

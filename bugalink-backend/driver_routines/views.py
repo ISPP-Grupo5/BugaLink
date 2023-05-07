@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import date
 
 from django.shortcuts import get_object_or_404
 from driver_routines.models import DriverRoutine
@@ -58,11 +59,11 @@ class DriverRoutineViewSet(
             # The time will be the departure_time_start
 
             departure_datetime = datetime.combine(
-                next_weekday(datetime.now(), day),
+                next_weekday(datetime.now(), day, routine.departure_time_start),
                 routine.departure_time_start,
             )
             arrival_datetime = datetime.combine(
-                next_weekday(datetime.now(), day),
+                next_weekday(datetime.now(), day, routine.departure_time_start),
                 routine.arrival_time,
             )
 

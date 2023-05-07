@@ -17,11 +17,11 @@ export default function RequestCard({ request, className = '' }: Props) {
   // If we were to use different IDs for them (for example UUIDs), we would
   // need to use a different hook here.
 
-  if (!passenger || isLoading || isError) {
+  const { user } = useUser(passenger?.user);
+
+  if (!user || isLoading || isError) {
     return <RequestCardSkeleton />;
   }
-
-  const { user } = useUser(passenger.user);
 
   return (
     <div className={'flex w-full flex-col bg-white ' + className}>

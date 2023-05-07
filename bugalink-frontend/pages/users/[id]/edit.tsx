@@ -8,7 +8,6 @@ import NEXT_ROUTES from '@/constants/nextRoutes';
 import useUser from '@/hooks/useUser';
 import UserI from '@/interfaces/user';
 import { axiosAuth } from '@/lib/axios';
-import { set } from 'cypress/types/lodash';
 import { GetServerSideProps } from 'next';
 import { signOut } from 'next-auth/react';
 import Pencil from 'public/assets/edit.svg';

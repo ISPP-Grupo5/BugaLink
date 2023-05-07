@@ -4,6 +4,7 @@ import useUser from '@/hooks/useUser';
 import TripRequestI from '@/interfaces/tripRequest';
 import { shortenName } from '@/utils/formatters';
 import TripCard from '../recommendation';
+import usePassenger from '@/hooks/usePassenger';
 
 type Props = {
   request: TripRequestI;
@@ -11,14 +12,16 @@ type Props = {
 };
 
 export default function RequestCard({ request, className = '' }: Props) {
-  const { user, isLoading, isError } = useUser(request.passenger);
+  const { passenger, isLoading, isError } = usePassenger(request.passenger);
   // NOTE: this works now because passengers and drivers have the same ID.
   // If we were to use different IDs for them (for example UUIDs), we would
   // need to use a different hook here.
 
-  if (!user || isLoading || isError) {
+  if (!passenger || isLoading || isError) {
     return <RequestCardSkeleton />;
   }
+
+  const { user } = useUser(passenger.user);
 
   return (
     <div className={'flex w-full flex-col bg-white ' + className}>

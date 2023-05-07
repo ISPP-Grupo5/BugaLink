@@ -3,7 +3,7 @@ import PassengerRoutineI from './passengerRoutine';
 
 type PassengerI = {
   id: number;
-  user: UserI;
+  user: number | UserI;
   routines: PassengerRoutineI[];
 };
 

@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Developer Apps
+    "bugalink_backend",
     "authentication",
     "driver_routines",
     "drivers",
@@ -202,10 +203,9 @@ USE_TZ = True
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "files")
+STATIC_ROOT = os.path.join(BASE_DIR, "/static/")
 MEDIA_URL = "/media/"
-STATIC_ROOT = "static"
 STATIC_URL = "/static/"
-STATICFILES_DIRS = []
 
 
 # TODO: only allow cors requests from the frontend (localhost:3000 or the deployed url)

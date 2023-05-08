@@ -8,8 +8,6 @@ RUN mkdir /code/staticfiles
 WORKDIR /code
 
 ADD requirements.txt /code/
-ADD populate_db.py /code/
-ADD populate_db.json /code/
 
 RUN pip install -r requirements.txt
 

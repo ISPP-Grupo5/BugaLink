@@ -6,7 +6,7 @@ from bugalink_backend import settings
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import redirect
-from django.utils.timezone import timezone
+from django.utils import timezone
 from passenger_routines.models import PassengerRoutine
 from passengers.models import Passenger
 from payment_methods.models import Balance
@@ -133,7 +133,7 @@ class TripRequestViewSet(
     def count(self, request, *args, **kwargs):
         num_pending_requests = TripRequest.objects.filter(
             trip__driver_routine__driver__user=request.user,
-            trip__status="PENDING",
+            trip__arrival_datetime__lt=timezone.now(),
             status="PENDING",
         )
         return Response({"count": num_pending_requests.count()})
@@ -168,7 +168,7 @@ class TripSearchViewSet(
     def get(self, request, *args, **kwargs):
         try:
             # Se busca entre los viajes pendientes
-            trips = Trip.objects.filter(status="PENDING")
+            trips = Trip.objects.filter(arrival_datetime__gt=timezone.now())
             # Comprobacion de campos obligatorios
             if not request.GET.get("origin") or not request.GET.get("destination"):
                 return Response(

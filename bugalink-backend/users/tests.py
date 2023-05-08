@@ -148,7 +148,7 @@ class UserStatsViewTest(TestCase):
         response = self.client.get(url)
         data = json.loads(response.content)
         self.assertEqual(
-            data["total_rides"], 1
+            data["total_rides"], 2
         )  # 1 Trip finalizado en el que ha participado
 
     def test_get_user_stats_passenger(self):

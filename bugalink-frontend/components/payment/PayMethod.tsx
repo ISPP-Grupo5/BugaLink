@@ -18,13 +18,6 @@ export default function PayMethod({
 }: PayMethodProps) {
   return (
     <button
-      onClick={
-        disabled
-          ? () => {
-              return;
-            }
-          : props.onClick
-      }
       className={cn(
         {
           'cursor-auto grayscale': disabled,

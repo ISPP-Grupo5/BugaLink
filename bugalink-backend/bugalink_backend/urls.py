@@ -13,15 +13,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from payment_methods.views import PaymentViewSet
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
+from django.views.static import serve
 from drf_spectacular.views import (  # SpectacularRedocView,
     SpectacularAPIView,
     SpectacularSwaggerView,
 )
+from payment_methods.views import PaymentViewSet
 
 from . import settings
 
@@ -42,4 +43,13 @@ urlpatterns = [
     path("api/v1/", include("chats.urls")),
     path("api/v1/", include("payment_methods.urls")),
     path("api/v1/", include("transactions.urls")),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]  # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Allow serving static files when not in debug mode
+if not settings.DEBUG:
+    urlpatterns += [
+        # Serve static files
+        path("static/<path:path>", serve, {"document_root": settings.STATIC_ROOT}),
+        # Serve media files
+        path("media/<path:path>", serve, {"document_root": settings.MEDIA_ROOT}),
+    ]

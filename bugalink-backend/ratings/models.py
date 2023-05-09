@@ -28,6 +28,10 @@ class Report(models.Model):
     reported_user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="reported_user"
     )
+
+    # NOTE: these fields should be dynamic, we could define getters for them
+    # This leads to inconsistences in the data and lead to bugs if we don't
+    # set them right on the views/factory
     reporter_is_driver = models.BooleanField(default=False)
     reported_is_driver = models.BooleanField(default=False)
     note = models.CharField(max_length=2048)

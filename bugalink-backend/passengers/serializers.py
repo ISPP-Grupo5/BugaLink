@@ -13,7 +13,7 @@ class PassengerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Passenger
-        fields = ("id", "routines", "trips")
+        fields = ("id", "user", "routines", "trips")
 
     def get_routines(self, obj) -> PassengerRoutineSerializer(many=True):
         routines = obj.routines.all()

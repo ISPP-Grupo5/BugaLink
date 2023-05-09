@@ -41,7 +41,7 @@ export default function PayMethod({
         {logo}
       </div>
       <div>
-        <p className="text-xl font-bold">{name}</p>
+        <p className="text-xl font-bold" data-cy={name}>{name}</p>
         <p className="text-sm text-gray">{data}</p>
       </div>
       <div className="ml-auto mr-1">

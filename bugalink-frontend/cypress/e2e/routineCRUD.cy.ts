@@ -44,8 +44,6 @@ describe('userLoginEditing.cy.js', () => {
       .find('input[type="file"]')
       .selectFile('cypress/images/hombre.png', { force: true });
     cy.wait(10000);
-    // cy.intercept('PUT', '/api/v1/drivers/docs').as('drivers-update');
-    // cy.wait('@drivers-update');
   });
 
   it('Routine Creation Test', () => {

@@ -86,13 +86,16 @@ describe('userLoginEditing.cy.js', () => {
     cy.get('svg[aria-label="more"]').click();
     cy.get('p').contains('Editar').click();
     cy.url({ timeout: 60000 }).should('include', '/new');
+    cy.wait(8000);
     cy.get('input[name="origin"]').type('Utr');
     cy.get('strong').contains('Utrera').click();
-    cy.get('input[type="number"]').clear().type('2.9');
-    cy.wait(2000);
+    cy.wait(4000);
+    cy.get('input[type="number"]').clear().type('1.1');
     cy.get('button').contains('Editar').click();
     cy.get('button').contains('Entendido').click();
     cy.url({ timeout: 60000 }).should('include', '/routines');
     cy.contains('Utrera');
   });
 });
+
+export {};

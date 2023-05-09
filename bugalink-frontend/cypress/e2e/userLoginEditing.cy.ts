@@ -8,16 +8,17 @@ describe('spec.cy.js', () => {
     return email;
   };
 
-  beforeEach(() => {
-    email = randomEmail();
-    cy.visit('/signup');
-    cy.get('input[name="email"]').type(email);
-    cy.get('input[name="name"]').type('Lorem');
-    cy.get('input[name="surname"]').type('Ipsum');
-    cy.get('input[name="password"]').type('1234Ejemplo?');
-    cy.contains('REGISTRARSE').click();
-    cy.intercept('POST', '/api/v1/auth/registration').as('register');
-  });
+  // beforeEach(() => {
+  //   email = randomEmail();
+  //   cy.visit('/signup');
+  //   cy.get('input[name="email"]').type(email);
+  //   cy.get('input[name="name"]').type('Lorem');
+  //   cy.get('input[name="surname"]').type('Ipsum');
+  //   cy.get('input[name="password"]').type('1234Ejemplo?');
+  //   cy.contains('REGISTRARSE').click();
+  //   cy.intercept('POST', '/api/v1/auth/registration').as('register');
+  //   cy.wait('@register');
+  // });
 
   afterEach(() => {
     cy.clearCookies();
@@ -26,6 +27,14 @@ describe('spec.cy.js', () => {
 
   // Login
   it('Login Test', () => {
+    email = randomEmail();
+    cy.visit('/signup');
+    cy.get('input[name="email"]').type(email);
+    cy.get('input[name="name"]').type('Lorem');
+    cy.get('input[name="surname"]').type('Ipsum');
+    cy.get('input[name="password"]').type('1234Ejemplo?');
+    cy.contains('REGISTRARSE').click();
+    cy.intercept('POST', '/api/v1/auth/registration').as('register');
     cy.wait('@register');
     cy.visit('/login');
     cy.get('input[id="Correo electrónico"]').type(email);
@@ -36,11 +45,15 @@ describe('spec.cy.js', () => {
 
   // Edit Profile
   it('Edit Profile Test', () => {
+    email = randomEmail();
+    cy.visit('/signup');
+    cy.get('input[name="email"]').type(email);
+    cy.get('input[name="name"]').type('Lorem');
+    cy.get('input[name="surname"]').type('Ipsum');
+    cy.get('input[name="password"]').type('1234Ejemplo?');
+    cy.contains('REGISTRARSE').click();
+    cy.intercept('POST', '/api/v1/auth/registration').as('register');
     cy.wait('@register');
-    cy.visit('/login');
-    cy.get('input[id="Correo electrónico"]').type(email);
-    cy.get('input[id="Contraseña"]').type('1234Ejemplo?');
-    cy.contains('INICIAR SESIÓN').click();
     cy.get('img[alt="Profile picture"]', { timeout: 30000 }).should(
       'be.visible'
     );
@@ -69,3 +82,5 @@ describe('spec.cy.js', () => {
     cy.get('img').should('not.have.value', srcPhoto);
   });
 });
+
+export {};

@@ -107,30 +107,6 @@ describe('template spec', () => {
     cy.intercept('POST', '/api/v1/auth/registration').as('register');
     cy.wait('@register');
     cy.wait(15000);
-    // cy.visit('/login');
-    // cy.get('input[id="Correo electrónico"]').type(email2);
-    // cy.get('input[id="Contraseña"]').type('1234Ejemplo?');
-    // cy.contains('INICIAR SESIÓN').click();
-
-    // cy.wait(2000);
-    // cy.get('img[alt="Profile picture"]', { timeout: 30000 }).should(
-    //   'be.visible'
-    // );
-    // cy.get('img[alt="Profile picture"]').click();
-    // cy.url({ timeout: 60000 }).should('include', '/users');
-    // cy.get('a[href="/wallet"]').click();
-    // cy.get('p', {timeout: 60000}).contains('Recargar cuenta').should('be.visible');
-    // cy.get('p').contains('Recargar cuenta').click();
-    // cy.get('input[type="number"]', {timeout:60000}).type('10');
-    // cy.get('p').contains('VISA/Mastercard').click();
-    // cy.wait(100000);
-    // cy.get('input[id="email"]').type(email2);
-    // cy.get('input[id="cardNumber"]').type('4242424242424242');
-    // cy.get('input[id="cardExpiry"]').type('12/24');
-    // cy.get('input[id="cardCvc"]').type('424');
-    // cy.get('input[id="billingName"]').type(name2);
-    // cy.get('button[type="submit"]').click();
-
     cy.visit('http://127.0.0.1:8000/admin');
     cy.get('input[name="username"]').type('superuser@mail.com');
     cy.get('input[name="password"]').type('4dm1n');
@@ -141,9 +117,7 @@ describe('template spec', () => {
     cy.get('input[name="amount"]').clear().type('10');
     cy.get('input[name="_save"]').click();
     cy.wait(2000);
-
     cy.visit('/');
-
     cy.get('input[type="search"]').type('C. Genaro');
     cy.get('strong').contains('C. Genaro Parladé').click();
     cy.wait(2000);
@@ -175,6 +149,7 @@ describe('template spec', () => {
     cy.get("a[href='/requests/pending']").click();
     cy.wait(5000);
     cy.get('p').contains(name2).click();
+    cy.wait(5000);
     cy.get('button').contains('ACEPTAR').click();
   });
 

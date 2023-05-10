@@ -69,7 +69,7 @@ describe('userLoginEditing.cy.js', () => {
     cy.get('button[data-cy="submit"]').click();
     cy.intercept('POST', '/api/v1/driver-routines').as('driver-routines');
     cy.wait('@driver-routines');
-    cy.get('button[data-cy="Close]"').click();
+    cy.get('button[data-cy="Close"]').click();
     cy.url({ timeout: 60000 }).should('include', '/routines');
     cy.contains('Dos Hermanas');
   });
@@ -84,7 +84,7 @@ describe('userLoginEditing.cy.js', () => {
     cy.url({ timeout: 60000 }).should('include', '/routines');
     cy.wait(4000);
     cy.get('svg[aria-label="more"]').click();
-    cy.get('button[data-cy="submit"]').click();
+    cy.get('p[data-cy="edit"]').click();
     cy.url({ timeout: 60000 }).should('include', '/new');
     cy.wait(8000);
     cy.get('input[name="origin"]').type('Utr');
@@ -92,7 +92,7 @@ describe('userLoginEditing.cy.js', () => {
     cy.wait(4000);
     cy.get('input[type="number"]').clear().type('1.1');
     cy.get('button[data-cy="submit"]').click();
-    cy.get('button[data-cy="Close]"').click();
+    cy.get('button[data-cy="Close"]').click();
     cy.url({ timeout: 60000 }).should('include', '/routines');
     cy.contains('Utrera');
   });

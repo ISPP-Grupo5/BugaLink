@@ -53,7 +53,7 @@ export default function DialogComponent({
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>{onCloseButton}</Button>
+        <Button data-cy="Close" onClick={onClose}>{onCloseButton}</Button>
         {onAccept && onAcceptButton && (
           <Button onClick={onAccept}>{onAcceptButton}</Button>
         )}

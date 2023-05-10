@@ -391,6 +391,7 @@ export default function NewRoutine({
               ) => (
                 <p
                   key={day}
+                  data-cy={day}
                   className={`h-full w-full py-2 transition-colors duration-300 ${
                     selectedDays.includes(day) ? 'bg-turquoise text-white' : ''
                   } ${isEdit ? 'grayscale' : ''}

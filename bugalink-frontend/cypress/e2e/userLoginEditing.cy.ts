@@ -52,8 +52,7 @@ describe('spec.cy.js', () => {
     cy.get('input[name="surname"]').type('Ipsum');
     cy.get('input[name="password"]').type('1234Ejemplo?');
     cy.contains('REGISTRARSE').click();
-    cy.intercept('POST', '/api/v1/auth/registration').as('register');
-    cy.wait('@register');
+    cy.wait(8000);
     cy.get('img[alt="Profile picture"]', { timeout: 30000 }).should(
       'be.visible'
     );

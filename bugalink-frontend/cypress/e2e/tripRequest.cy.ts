@@ -86,15 +86,15 @@ describe('template spec', () => {
     cy.get('strong').contains('Dos Hermanas').click();
     cy.get('input[name="destination"]').type('C. Genaro');
     cy.get('strong').contains('C. Genaro Parladé').click();
-    cy.get('p').contains('L').click();
+    cy.get('p[data-cy="Mon"]').click();
     cy.get('input[type="checkbox"]').click();
     cy.get('input[type="number"]').type('1.2');
     cy.get('textarea').type('This is a sample description');
     cy.wait(2000);
-    cy.get('button').contains('CREAR').click();
+    cy.get('button[data-cy="submit"]').click();
     cy.intercept('POST', '/api/v1/driver-routines').as('driver-routines');
     cy.wait('@driver-routines');
-    cy.get('button').contains('Entendido').click();
+    cy.get('button[data-cy="Close"]').click();
   });
 
   it('Solicitar', () => {
@@ -127,10 +127,11 @@ describe('template spec', () => {
     cy.get('input[value="Mi ubicación"]').clear().type('Dos Her');
     cy.get('strong').contains('Dos Hermanas').click();
     cy.wait(10000);
-    cy.get('p').contains(name).click();
+    const string = "" + name.toString();
+    cy.contains('p', string).click();
     cy.wait(8000);
     cy.get('button', {timeout: 60000}).contains('SOLICITAR').should('be.visible')
-    cy.get('button').contains("SOLICITAR").click();
+    cy.get('button[data-cy="submit"]').click();
     cy.url({ timeout: 60000 }).should('include', '/pay');
     cy.wait(5000);
     cy.get('p[data-cy="Saldo"]').click();
@@ -148,9 +149,10 @@ describe('template spec', () => {
     cy.wait(60000);
     cy.get("a[href='/requests/pending']").click();
     cy.wait(5000);
-    cy.get('p').contains(name2).click();
-    cy.wait(5000);
-    cy.get('button').contains('ACEPTAR').click();
+    const string = "" + name2.toString();
+    cy.contains('p', string).click();
+    cy.wait(10000);
+    cy.get('button[data-cy="submit"]').click();
   });
 
 })

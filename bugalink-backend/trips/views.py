@@ -218,7 +218,7 @@ class TripSearchViewSet(
 
             trips = Trip.objects.filter(Q(pk__in=[trip.pk for trip in trips])).order_by(
                 "-departure_datetime"
-            )[:10]
+            )
 
             return Response(
                 TripSerializer(trips, many=True).data, status=status.HTTP_200_OK

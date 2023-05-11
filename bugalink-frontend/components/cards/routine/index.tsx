@@ -97,7 +97,7 @@ export default function RoutineCard({
         <ThreeDotsMenu>
           <MenuItem>
             <Link href={`${editLink}?id=${id}`}>
-              <p>Editar</p>
+              <p data-cy="edit">Editar</p>
             </Link>
           </MenuItem>
           <MenuItem onClick={deleteRoutine}>

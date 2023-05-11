@@ -13,7 +13,7 @@ export const ThreeDotsMenu = ({ children }) => {
   };
 
   return (
-    <div>
+    <div data-cy="moreOptions">
       <ThreeDotsIcon
         className="absolute top-5 right-1 h-4 cursor-pointer"
         aria-label="more"

@@ -40,7 +40,6 @@ env_variables:
   DJANGO_SETTINGS_MODULE: bugalink_backend.settings
   BACKEND_URL: https://app.bugalink.es
   DEBUG: True
-
   # This setting is used in settings.py to configure your ALLOWED_HOSTS
   # APPENGINE_URL: PROJECT_ID.uc.r.appspot.com
 

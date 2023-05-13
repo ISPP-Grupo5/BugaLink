@@ -12,11 +12,10 @@ export default function TransactionList() {
   const me = data?.user as User;
   const { lastTransactions } = useLastTransactions();
   //Logged user is receiver?
-  const isReceiver = (transaction: LastTransactionsI) =>
-    transaction.receiver?.id == me.user_id;
-  const isPending = (transaction: LastTransactionsI) =>
-    transaction.status === 'PENDING';
-
+  const isReceiver = (transaction: LastTransactionsI) => (transaction.receiver.id == me.user_id);
+  const isPending = (transaction: LastTransactionsI) => (transaction.status === 'PENDING');
+  const isRejected = (transaction: LastTransactionsI) => (transaction.status === 'DECLINED');
+  
   return (
     <div className="divide-y-2 divide-light-gray overflow-y-scroll bg-white">
       {lastTransactions?.map((transaction: LastTransactionsI) => {
@@ -26,6 +25,7 @@ export default function TransactionList() {
           type = 'Pasajero',
           notMe = transaction.sender;
         const pending = isPending(transaction);
+        const rejected = isRejected(transaction);
         const imReceiver = isReceiver(transaction);
         const isWithdraw = transaction.receiver === null;
 
@@ -43,9 +43,8 @@ export default function TransactionList() {
           type = 'Conductor';
           notMe = transaction.receiver;
         }
-
-        if (pending) color = 'text-yellow';
-
+        if (rejected) color = "text-gray";
+        if (pending) color= "text-yellow";
         if (isWithdraw) {
           color = 'text-red';
           sign = '-';
@@ -62,6 +61,7 @@ export default function TransactionList() {
             className={color}
             money={sign + amount}
             isPending={pending}
+            isRejected={rejected}
             isWithdraw={isWithdraw}
           />
         );
@@ -78,6 +78,7 @@ type Params = {
   className: string;
   money: string;
   isPending?: boolean;
+  isRejected?: boolean;
   isWithdraw?: boolean;
 };
 
@@ -88,6 +89,7 @@ export function Transaction({
   className,
   money,
   isPending = false,
+  isRejected = false,
   isWithdraw = false,
 }: Params) {
   return (
@@ -111,9 +113,9 @@ export function Transaction({
 
       <div className="flex-none text-right">
         <p className={'text-lg font-bold ' + className}>{money}</p>
-        {!isWithdraw && isPending && (
-          <p className="text-base text-yellow">Pendiente</p>
-        )}
+        {!isWithdraw && isPending && <p className={'text-base ' + className}>Pendiente</p>}
+        {isRejected && <p className={'text-base ' + className}>Rechazado</p>}
+        
       </div>
     </div>
   );

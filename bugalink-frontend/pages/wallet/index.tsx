@@ -49,7 +49,7 @@ export default function Wallet() {
           </div>
         }
       </div>
-      <div className="my-5 flex justify-between space-x-2 px-4">
+      <div className="justify-between my-5 flex space-x-2 px-4">
         <div className="flex-1">
           <Link href={NEXT_ROUTES.RECHARGE_CREDIT}>
             <TransparentButton text="Recargar cuenta" Icon={<Recargar />} />
@@ -67,10 +67,11 @@ export default function Wallet() {
           />
         </div>
       </div>
-      <p className="rounded-t-3xl bg-white py-5 pl-5 text-left text-3xl text-black">
+
+      <p className="rounded-t-3xl bg-white py-5 pl-5 text-left text-3xl text-black bg-bottom">
         Últimos movimientos
       </p>
-      <div className="h-full divide-y-2 divide-light-gray overflow-y-scroll bg-white">
+      <div className="divide-y-2 divide-light-gray overflow-y-scroll grow bg-white ">
         <TransactionList />
       </div>
     </AnimatedLayout>

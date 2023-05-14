@@ -18,6 +18,9 @@ from users.models import User
 
 from .models import Balance
 from .serializers import BalanceSerializer
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import AllowAny
+import transactions.utils as TransactionUtils
 
 
 class BalanceViewSet(
@@ -122,9 +125,7 @@ class PaymentViewSet(
         trip = Trip.objects.get(id=kwargs["trip_id"])
         user = request.user
         # El post recibe la cantidad en centimos integer
-
-        price = int(float(trip.driver_routine.price)
-                    * 115) if not user.is_pilotuser else int(float(trip.driver_routine.price) * 100)
+        price = int(TransactionUtils.is_pilot_user_price(user, trip.driver_routine.price) * 100)
 
         # Si no hay texto da error al intentar acceder a este dato
         note = note if note else "None"
@@ -167,8 +168,7 @@ class PaymentViewSet(
         trip = Trip.objects.get(id=kwargs["trip_id"])
 
         user = request.user
-        price = trip.driver_routine.price * \
-            decimal.Decimal(1.15) if not user.is_pilotuser else trip.driver_routine.price
+        price = TransactionUtils.is_pilot_user_price(user, trip.driver_routine.price)
         note = request.data.get("note")
 
         balance = Balance.objects.get(user=user)
@@ -179,10 +179,11 @@ class PaymentViewSet(
             )
 
         # Si todo está correcto, se crea el triprequest y se resta el saldo
-        no_errors = TripRequestViewSet.create(self, trip.id, user.id, note)
+        no_errors = TripRequestViewSet.create(self, trip.id, user.id, price, note)
         if no_errors:
             balance.amount -= price
             balance.save()
+            # Si todo está correcto, se crea el triprequest
             return Response(
                 {"message": "Pago realizado con éxito"},
                 status=status.HTTP_201_CREATED,
@@ -198,7 +199,8 @@ class PaymentViewSet(
         note = request.data.get("note")
         trip = Trip.objects.get(id=kwargs["trip_id"])
         # El post recibe la cantidad en centimos integer
-        price = trip.driver_routine.price * decimal.Decimal(1.15)
+        price = TransactionUtils.is_pilot_user_price(request.user, trip.driver_routine.price)
+
 
         url_success = (
             f"https://app.bugalink.es/trips/{kwargs['trip_id']}/pay/success"

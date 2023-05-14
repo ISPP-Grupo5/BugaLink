@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import useTrip from '@/hooks/useTrip';
 import DialogComponent from '@/components/dialog';
+import usePassenger from '@/hooks/usePassenger';
 
 export default function AcceptRequest() {
   const router = useRouter();
@@ -24,8 +25,9 @@ export default function AcceptRequest() {
   const [drawerDecline, setDrawerDecline] = useState(false);
   const [rejectNote, setRejectNote] = useState('');
   const { tripRequest, isLoading, isError } = useTripRequest(id);
+  const { passenger } = usePassenger(tripRequest?.passenger);
   const { userStats, isLoadingStats, isErrorStats } = useUserStats(
-    tripRequest?.passenger
+    passenger?.user
   );
   const { trip } = useTrip(tripRequest?.trip.id);
 

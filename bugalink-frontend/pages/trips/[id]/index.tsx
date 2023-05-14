@@ -186,8 +186,8 @@ export default function Details({ data }) {
                 Precio final {!user.is_pilotuser && '(+15%)'}
               </p>
               <div className="flex space-x-2">
-                {user.is_pilotuser && (
-                  <p className="text-xl font-bold text-red line-through">
+                {!user.is_pilotuser ? (
+                  <p className="text-xl font-bold">
                     {(
                       Number.parseFloat(trip.driver_routine.price) +
                       0.15 * Number.parseFloat(trip.driver_routine.price)
@@ -196,16 +196,27 @@ export default function Details({ data }) {
                       currency: 'EUR',
                     })}
                   </p>
+                ) : (
+                  <div className="flex">
+                    <p className="text-xl font-bold text-red line-through">
+                      {(
+                        Number.parseFloat(trip.driver_routine.price) +
+                        0.15 * Number.parseFloat(trip.driver_routine.price)
+                      ).toLocaleString('es-ES', {
+                        style: 'currency',
+                        currency: 'EUR',
+                      })}
+                    </p>
+                    <p className="ml-4 text-xl font-bold">
+                      {Number.parseFloat(
+                        trip.driver_routine.price
+                      ).toLocaleString('es-ES', {
+                        style: 'currency',
+                        currency: 'EUR',
+                      })}
+                    </p>
+                  </div>
                 )}
-                <p className="text-xl font-bold">
-                  {Number.parseFloat(trip.driver_routine.price).toLocaleString(
-                    'es-ES',
-                    {
-                      style: 'currency',
-                      currency: 'EUR',
-                    }
-                  )}
-                </p>
               </div>
             </div>
             <div className="flex flex-col">

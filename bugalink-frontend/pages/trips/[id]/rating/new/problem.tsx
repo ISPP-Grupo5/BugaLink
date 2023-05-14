@@ -5,6 +5,7 @@ import TextAreaField from '@/components/forms/TextAreaField';
 import { GetServerSideProps } from 'next';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import { axiosAuth } from '@/lib/axios';
+import useTrip from '@/hooks/useTrip';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
@@ -34,8 +35,13 @@ export default function ReportProblem({ data }) {
 
   const [problem, setProblem] = useState('');
 
+  const { trip, isLoading, isError } = useTrip(data);
+
+  const driver= trip? trip.driver : null;
+
+
   const datos = {
-    reported_user_id: data,
+    reported_user_id: driver.user.id,
     note: problem
   }
 

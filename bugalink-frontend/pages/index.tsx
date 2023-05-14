@@ -30,7 +30,7 @@ export default function Home() {
             className="aspect-square h-14"
             href={NEXT_ROUTES.PROFILE(user?.user_id)}
           >
-            {user ? <Avatar src={user.photo} /> : <AvatarSkeleton />}
+            {user ? <Avatar src={user?.photo} /> : <AvatarSkeleton />}
           </Link>
         </span>
 

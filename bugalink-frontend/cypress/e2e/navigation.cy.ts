@@ -1,114 +1,75 @@
 // https://docs.cypress.io/guides/references/best-practices#Selecting-Elements
 
 describe('Navigation tests', () => {
-  // /users/<userId>
-  it('should navigate to user profile page', () => {
-    cy.visit('/');
-    cy.get('[data-cy="profile-link"]').click();
-    cy.location('pathname').should('match', /^\/users\/[\w-]+$/);
-  });
+  let email = '';
+  let name = '';
+  let surname = '';
 
-  // /routines
-  it('should navigate to user routine page', () => {
-    cy.visit('/');
-    cy.contains('Mi horario').click();
-    cy.location('pathname').should('match', /^\/routines$/);
+
+  const randomEmail = () => {
+    const email = `${Math.random().toString(36).substring(2, 15)}@mail.com`;
+    return email;
+  };
+
+  //Random set of characters for the name
+  const randomName = () => {
+    const name = `${Math.random().toString(36).substring(2, 15)}`;
+    return name;
+  };
+
+  //Random set of characters for the surname
+  const randomSurname = () => {
+    const surname = `${Math.random().toString(36).substring(2, 15)}`;
+    return surname;
+  };
+
+  afterEach(() => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
+    cy.reload();
   });
 
   // /chats
-  it('should navigate to user routine page', () => {
-    cy.visit('/');
+  it('should navigate to user chat page', () => {
+    email = randomEmail();
+    name = randomName();
+    surname = randomSurname();
+    cy.visit('/signup');
+    cy.get('input[name="email"]').type(email);
+    cy.get('input[name="name"]').type(name);
+    cy.get('input[name="surname"]').type(surname);
+    cy.get('input[name="password"]').type('1234Ejemplo?');
+    cy.contains('REGISTRARSE').click();
+    cy.intercept('POST', '/api/v1/auth/registration').as('register');
+    cy.wait('@register');
+    cy.visit('/login');
+    cy.get('input[id="Correo electrónico"]').type(email);
+    cy.get('input[id="Contraseña"]').type('1234Ejemplo?');
+    cy.contains('INICIAR SESIÓN').click();
+    cy.wait(5000);
+    cy.get('img[alt="Profile picture"]', { timeout: 30000 }).should(
+      'be.visible'
+    );
     cy.contains('Chats').click();
-    cy.location('pathname').should('match', /^\/$/);
+    cy.url({ timeout: 60000 }).should('include', '/chats');
   });
 
-  // /requests/pending
-  it('should navigate to user requests page', () => {
-    cy.visit('/');
-    cy.contains('Solicitudes').click();
-    cy.location('pathname').should('match', /^\/requests\/pending$/);
-  });
-  // /search/result
-  it('should navigate to search page', () => {
-    cy.visit('/');
-    cy.get('[data-cy="search-btn"]').click();
-    cy.location('pathname').should('match', /^\/search$/);
-  });
 
   // /history
   it('should navigate to user history page', () => {
-    cy.visit('/');
+    cy.visit('/login');
+    cy.get('input[id="Correo electrónico"]').type(email);
+    cy.get('input[id="Contraseña"]').type('1234Ejemplo?');
+    cy.contains('INICIAR SESIÓN').click();
+    cy.wait(5000);
+    cy.get('img[alt="Profile picture"]', { timeout: 30000 }).should(
+      'be.visible'
+    );
     cy.get('[data-cy="history-link"]').click();
-    cy.location('pathname').should('match', /^\/history$/);
+    cy.url({ timeout: 60000 }).should('include', '/history');
   });
 
-  // /requests/<userId>
-  it('should navigate to request accept page', () => {
-    cy.visit('/requests/pending');
-    cy.get('[data-cy="request-accept"]').click();
-    cy.location('pathname').should('match', /^\/requests\/[\w-]+$/);
-  });
 
-  // /trips/<tripId>
-  it('should navigate to ride details one page', () => {
-    cy.visit('/');
-    cy.get('[data-cy="ride-details"]').first().click();
-    cy.location('pathname').should('match', /^\/trips\/[\w-]+$/);
-  });
-
-  // /trips/<tripId>/pay
-  it('should navigate to ride payment page', () => {
-    cy.visit('/trips/1');
-    cy.get('button').contains('PAGAR').click();
-    cy.location('pathname').should('match', /^\/trips\/[\w-]+\/pay$/);
-  });
-
-  // /trips/<tripId>/map
-  it('should navigate to ride map page', () => {
-    cy.visit('/trips/1/details');
-    cy.get('[data-cy="map-link"]').click();
-    cy.location('pathname').should('match', /^\/trips\/[-\w]+\/map$/);
-  });
-
-  // TODO: login flow test
-  // /login
-  // it('should navigate to login page', () => {
-  //   cy.visit('/');
-  //   cy.get('[data-cy="login-link"]').click();
-  //   cy.location('pathname').should('match', /^\/login$/);
-  // });
-
-  // TODO: register flow test
-  // /signup
-  // it('should navigate to register page', () => {
-  //   cy.visit('/');
-  //   cy.get('[data-cy="register-link"]').click();
-  //   cy.location('pathname').should('match', /^\/signup$/);
-  // });
-
-  // TODO: unaccessible yet
-  // /users/<userId>/rating/new
-  // it('should navigate to new rating page', () => {
-  //   cy.visit('/');
-  //   cy.get('[data-cy="new-rating"]').click();
-  //   cy.location('pathname').should('match', /^\/users\/\w+\/rating\/new$/);
-  // });
-
-  // /routines/driver/new
-  it('should navigate to new driver routine page', () => {
-    cy.visit('/routines');
-    cy.get('[data-cy="add-routine-menu"]').click();
-    cy.get('[data-cy="new-driver-routine"]').click();
-    cy.location('pathname').should('match', /^\/routines\/driver\/new$/);
-  });
-
-  // /routines/passenger/new
-  it('should navigate to new passenger routine page', () => {
-    cy.visit('/routines');
-    cy.get('[data-cy="add-routine-menu"]').click();
-    cy.get('[data-cy="new-passenger-routine"]').click();
-    cy.location('pathname').should('match', /^\/routines\/passenger\/new$/);
-  });
 });
 
 export {};

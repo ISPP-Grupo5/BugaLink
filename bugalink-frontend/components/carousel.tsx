@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 import UpcomingCard from './cards/upcoming';
 import UpcomingCardSkeleton from './skeletons/Upcoming';
+import InformativeCard from './cards/informative';
 
 const TWEEN_FACTOR = 0.3;
 
@@ -46,14 +47,20 @@ export default function UpcomingTripsCarousel(props) {
   }, [emblaApi, setTweenValues]);
 
   useEffect(() => {
+    // Everytime upcomingTrips changes, we need to reinitialize the carousel
+    // so it can recalculate the number of slides and the scroll snap list
+    emblaApi?.reInit();
+  }, [upcomingTrips]);
+
+  useEffect(() => {
     if (!emblaApi || !upcomingTrips) return;
 
     onScroll();
     emblaApi.on('scroll', () => {
-      flushSync(() => onScroll());
+      flushSync(onScroll);
     });
     emblaApi.on('reInit', onScroll);
-  }, [emblaApi, onScroll, upcomingTrips]);
+  }, [emblaApi, onScroll]);
 
   // They are used for both skeleton and real cards so we can extract them to a variable here
   // cn is a library that allows you to conditionally concat classNames safely (avoid undefined, etc.)
@@ -66,6 +73,15 @@ export default function UpcomingTripsCarousel(props) {
       'translate-x-4':
         tweenValues[tweenValues.length - 1] > 0.95 || !upcomingTrips,
     });
+
+  if (upcomingTrips && upcomingTrips.length === 0)
+    return (
+      <div className="px-4">
+        <InformativeCard>
+          No tienes ningún viaje para los próximos días.
+        </InformativeCard>
+      </div>
+    );
 
   return (
     <div className="embla">
@@ -94,11 +110,6 @@ export default function UpcomingTripsCarousel(props) {
               )}
             </div>
           ))}
-          {upcomingTrips && upcomingTrips.length === 0 && (
-            <div className="mx-4 mt-4 w-full rounded-md border border-border-color py-3 text-center text-lg font-light text-gray md:mx-5">
-              No tienes ningún viaje para los próximos días.
-            </div>
-          )}
         </div>
       </div>
     </div>

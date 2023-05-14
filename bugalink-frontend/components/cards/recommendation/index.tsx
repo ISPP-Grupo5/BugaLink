@@ -52,7 +52,7 @@ export default function TripCard({
           <p className="text-lg font-semibold leading-5">{name}</p>
         ) : (
           <Entry title={role}>
-            <p className="text-lg font-semibold leading-5">{name}</p>
+            <p className="text-lg font-semibold leading-5" data-cy={name}>{name}</p>
           </Entry>
         )}
       </span>

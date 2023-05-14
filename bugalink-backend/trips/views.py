@@ -1,4 +1,6 @@
+import decimal
 import os
+import transactions.utils as TransactionUtils
 
 import django.core.exceptions
 from bugalink_backend import settings
@@ -103,14 +105,12 @@ class TripRequestViewSet(
     # POST /trips/<id>/request/ (For a passenger to request a trip)
     # POST /trips/<id>/request/ (For a passenger to request a trip)
     @transaction.atomic
-    def create(self, trip_id, user_id, note):
+    def create(self, trip_id, user_id, price, note):
         try:
             trip = Trip.objects.get(id=trip_id)
             user = User.objects.get(id=user_id)
-            price = trip.driver_routine.price
             passenger = Passenger.objects.get(user=user)
-
-            Transaction.objects.create(
+            transaction = Transaction.objects.create(
                 sender=user,
                 receiver=trip.driver_routine.driver.user,
                 amount=price,
@@ -123,13 +123,14 @@ class TripRequestViewSet(
                 reject_note="",
                 passenger=passenger,
                 price=price,
+                transaction=transaction,
             )
             return True
         except django.core.exceptions.ObjectDoesNotExist:
             return False
-            
 
     # GET /trip-requests/pending/count/ (For a driver to get the number of pending requests)
+
     def count(self, request, *args, **kwargs):
         num_pending_requests = TripRequest.objects.filter(
             trip__driver_routine__driver__user=request.user,
@@ -143,6 +144,16 @@ class TripRequestViewSet(
     @action(detail=True, methods=["put"])
     def accept(self, request, *args, **kwargs):
         trip_request = TripRequest.objects.get(id=kwargs["pk"])
+        trip = Trip.objects.get(id=trip_request.trip.pk)
+        free_seats = trip.get_avaliable_seats()
+        if free_seats <= 0:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "error": "El viaje está lleno y no acepta más pasajeros"
+                },
+            )
+        TransactionUtils.accept_transaction(trip_request.transaction)
         trip_request.status = "ACCEPTED"
         trip_request.save()
         return Response(self.get_serializer(trip_request).data)
@@ -151,6 +162,7 @@ class TripRequestViewSet(
     @action(detail=True, methods=["put"])
     def reject(self, request, *args, **kwargs):
         trip_request = TripRequest.objects.get(id=kwargs["pk"])
+        TransactionUtils.reject_transaction(trip_request.transaction)
         trip_request.status = "REJECTED"
         trip_request.save()
         return Response(self.get_serializer(trip_request).data)
@@ -206,7 +218,7 @@ class TripSearchViewSet(
 
             trips = Trip.objects.filter(Q(pk__in=[trip.pk for trip in trips])).order_by(
                 "-departure_datetime"
-            )[:10]
+            )
 
             return Response(
                 TripSerializer(trips, many=True).data, status=status.HTTP_200_OK

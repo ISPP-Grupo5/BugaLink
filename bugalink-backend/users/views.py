@@ -7,7 +7,7 @@ from passenger_routines.models import PassengerRoutine
 from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from trips.models import TripRequest
+from trips.models import Trip, TripRequest
 from trips.serializers import TripRequestSerializer
 from users.models import User
 from users.serializers import (
@@ -112,7 +112,7 @@ class UserUpdateView(APIView):
                 request.user.photo = request.data["photo"]
                 extension = request.data["photo"].name.split(".")[-1]
                 new_filename = f"avatar.{extension}"
-                user.photo.save(new_filename, request.data["photo"]) 
+                user.photo.save(new_filename, request.data["photo"])
             user.first_name = request.data["first_name"]
             user.last_name = request.data["last_name"]
             user.save()
@@ -220,9 +220,15 @@ class UserTripsView(APIView):
         trips_matching_status = UserTripsView.obtainTrips(self, request, id)
 
         # Return the trips with a 200 status code
-        return Response(
-            data=TripRequestSerializer(trips_matching_status, many=True).data
-        )
+        data = TripRequestSerializer(trips_matching_status, many=True).data
+        trips_driver = []
+        for trip_driver in Trip.objects.filter(
+            driver_routine__driver__user=request.user
+        ):
+            if not TripRequest.objects.filter(trip=trip_driver):
+                trips_driver.append(trip_driver)
+        data["viajes_driver_sin_trip_request"] = trips_driver
+        return Response(data=data)
 
 
 class UserStatsView(viewsets.GenericViewSet, mixins.RetrieveModelMixin):

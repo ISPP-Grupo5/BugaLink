@@ -75,12 +75,16 @@ const parseMinutesToHHMM = (minutes : number) => {
   let result = '';
   
   if (hours > 0) {
-    result += `${hours} h y`;
+    result += `${hours} h`;
+  }
+
+  if (hours > 0 && remainingMinutes > 0) {
+    result += ' y ';
   }
   
   if (remainingMinutes > 0) {
     const minuteLabel = remainingMinutes === 1 ? 'min' : 'mins';
-    result += ` ${remainingMinutes} ${minuteLabel}`;
+    result += `${remainingMinutes} ${minuteLabel}`;
   }
 
   return result;

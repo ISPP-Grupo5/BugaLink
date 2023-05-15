@@ -1,7 +1,6 @@
 import { createControlComponent } from '@react-leaflet/core';
 import L from 'leaflet';
 import 'leaflet-routing-machine';
-import { parse } from 'path';
 
 const createRoutineMachineLayer = (props) => {
   const { origin, destination, setTime, setDuration, setTotalDistance } = props;

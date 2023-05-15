@@ -9,6 +9,7 @@ type Props = {
   originCoords: CoordinatesI;
   destinationCoords: CoordinatesI;
   setTime?: (time: number) => void;
+  setDuration?: (duration: string) => void;
 };
 
 export const LeafletMap = dynamic(() => import('./map'), {
@@ -21,6 +22,7 @@ export default function MapPreview({
   originCoords,
   destinationCoords,
   setTime,
+  setDuration
 }: Props) {
   return (
     <Link
@@ -37,6 +39,7 @@ export default function MapPreview({
           originCoords={originCoords}
           destinationCoords={destinationCoords}
           setTime={setTime}
+          setDuration={setDuration}
         />
       </div>
     </Link>

@@ -1,5 +1,4 @@
 import CTAButton from '@/components/buttons/CTA';
-import ExternalLogin from '@/components/externalLogin';
 import TextField from '@/components/forms/TextField';
 import AnimatedLayout from '@/components/layouts/animated';
 import NEXT_ROUTES from '@/constants/nextRoutes';
@@ -87,10 +86,6 @@ export default function Login() {
         <div className="z-10 rounded-t-3xl bg-base-origin text-center">
           <p className=" py-5 text-3xl text-gray ">Iniciar sesión</p>
           <div className="rounded-t-xl bg-white py-5">
-            <ExternalLogin />
-            <p className="font-light text-gray opacity-70">
-              o usa tu cuenta de correo
-            </p>
             <form className="mt-5" ref={formRef}>
               <div className="mr-8 ml-8 flex flex-col space-y-5">
                 <TextField

@@ -4,6 +4,7 @@ import '@/styles/globals.css';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { SessionProvider } from 'next-auth/react';
+import { NotificationManager } from '@/components/notifications/NotificationManager';
 
 export default function MyApp({
   Component,
@@ -70,6 +71,7 @@ export default function MyApp({
       {/* Base layout for new pages */}
       <SessionProvider session={session}>
         <MobileLayout key={router.asPath}>
+          <NotificationManager />
           <Component {...pageProps} />
         </MobileLayout>
       </SessionProvider>

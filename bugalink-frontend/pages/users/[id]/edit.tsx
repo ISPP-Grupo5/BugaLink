@@ -8,6 +8,7 @@ import NEXT_ROUTES from '@/constants/nextRoutes';
 import useUser from '@/hooks/useUser';
 import UserI from '@/interfaces/user';
 import { axiosAuth } from '@/lib/axios';
+import { emitSuccess } from '@/utils/notifications';
 import { GetServerSideProps } from 'next';
 import { signOut } from 'next-auth/react';
 import Pencil from 'public/assets/edit.svg';
@@ -101,6 +102,10 @@ export default function EditProfile({ data }) {
         await axiosAuth
           .put(url, formData)
           .then((res) => {
+            emitSuccess({
+              message:
+                'Perfil actualizado con éxito. Por favor, vuelva a iniciar sesión',
+            });
             signOut({
               callbackUrl: NEXT_ROUTES.LOGIN,
             });
@@ -139,7 +144,7 @@ export default function EditProfile({ data }) {
   };
 
   return (
-    <AnimatedLayout className="justify-between flex h-screen flex-col items-center bg-white">
+    <AnimatedLayout className="flex h-screen flex-col items-center justify-between bg-white">
       <BackButtonText text="Mi perfil" />
       <div className="flex h-full w-full flex-col items-center overflow-y-scroll">
         <div className="mb-5 h-24 w-24">
@@ -181,7 +186,7 @@ export default function EditProfile({ data }) {
         </div>
         <form
           ref={formRef}
-          className="justify-between flex h-full w-full flex-col items-center"
+          className="flex h-full w-full flex-col items-center justify-between"
         >
           <div className="mt-5 flex w-full flex-col items-center space-y-6">
             <TextField

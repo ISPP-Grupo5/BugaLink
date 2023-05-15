@@ -1,20 +1,15 @@
-import decimal
-import os
-import transactions.utils as TransactionUtils
-
 import django.core.exceptions
-from bugalink_backend import settings
+import transactions.utils as TransactionUtils
 from django.db import transaction
 from django.db.models import Q
-from django.shortcuts import redirect
 from passenger_routines.models import PassengerRoutine
 from passengers.models import Passenger
-from payment_methods.models import Balance
-from ratings.models import DriverRating, Report
+from ratings.models import DriverRating
 from ratings.serializers import DriverRatingSerializer, ReportSerializer
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from transactions.models import Transaction
 from trips.models import Trip, TripRequest
 from trips.serializers import (
@@ -25,7 +20,6 @@ from trips.serializers import (
     TripUsersSerializer,
 )
 from users.models import User
-from users.serializers import UserSerializer
 
 from .serializers import TripRateSerializer
 from .utils import (
@@ -45,8 +39,6 @@ from .utils import (
     get_recommendations,
 )
 
-query_format_exception_message = "Existe algún valor inadecuado"
-
 
 class TripViewSet(
     mixins.RetrieveModelMixin,
@@ -63,12 +55,7 @@ class TripViewSet(
         # TODO: untested!!
         # If the one deleting the trip is not the driver who created it, return 403
         if request.user != self.get_object().driver_routine.driver.user:
-            return Response(
-                status=status.HTTP_403_FORBIDDEN,
-                data={
-                    "error": "Un viaje sólo puede ser eliminado por el conductor que lo publicó"
-                },
-            )
+            raise ValidationError("No puedes eliminar un viaje que no es tuyo")
 
         return self.destroy(request, *args, **kwargs)
 
@@ -147,12 +134,7 @@ class TripRequestViewSet(
         trip = Trip.objects.get(id=trip_request.trip.pk)
         free_seats = trip.get_avaliable_seats()
         if free_seats <= 0:
-            return Response(
-                status=status.HTTP_400_BAD_REQUEST,
-                data={
-                    "error": "El viaje está lleno y no acepta más pasajeros"
-                },
-            )
+            raise ValidationError("No hay asientos libres disponibles")
         TransactionUtils.accept_transaction(trip_request.transaction)
         trip_request.status = "ACCEPTED"
         trip_request.save()
@@ -183,10 +165,7 @@ class TripSearchViewSet(
             trips = Trip.objects.filter(status="PENDING")
             # Comprobacion de campos obligatorios
             if not request.GET.get("origin") or not request.GET.get("destination"):
-                return Response(
-                    {"message": "El origen y el destino son obligatorios"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+                raise ValidationError("El origen y el destino son obligatorios")
 
             filter_checks = {
                 "days": check_days,
@@ -223,21 +202,12 @@ class TripSearchViewSet(
             return Response(
                 TripSerializer(trips, many=True).data, status=status.HTTP_200_OK
             )
-        except ValueError:
-            return Response(
-                {"message": query_format_exception_message},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        except django.core.exceptions.FieldError:
-            return Response(
-                {"message": query_format_exception_message},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        except django.core.exceptions.ValidationError:
-            return Response(
-                {"message": query_format_exception_message},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        except (
+            ValueError,
+            django.core.exceptions.FieldError,
+            django.core.exceptions.ValidationError,
+        ):
+            raise ValidationError("Existe algún valor inadecuado")
 
 
 class TripRateViewSet(
@@ -253,25 +223,19 @@ class TripRateViewSet(
         trip = Trip.objects.get(id=trip_id)
         trip_request = None
         if trip.status != "FINISHED":
-            return Response(
-                {"message": "No se puede valorar un viaje que no ha terminado"},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+            raise ValidationError("No puedes valorar un viaje que aún no ha terminado")
         trip_request = TripRequest.objects.filter(
             trip=trip, status="ACCEPTED", passenger__user=request.user
         ).first()
         driver_rating = DriverRating.objects.filter(trip_request=trip_request)
         if len(driver_rating) > 0:
-            return Response(
-                {"message": "Ya ha valorado este viaje"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError("Ya has valorado este viaje")
         if trip_request:
             driver_rating = serializer.create(trip_request)
             response_serializer = DriverRatingSerializer(driver_rating)
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response({"message": "No has participado en este viaje "})
+            raise ValidationError("No has participado en este viaje ")
 
 
 class ReportIssuePostViewSet(
@@ -283,25 +247,15 @@ class ReportIssuePostViewSet(
     def post(self, request, trip_id, *args, **kwargs):
         serializer = TripReportSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        # reported_user_id = serializer.data["reported_user_id"]
 
-        # 404 validations
         try:
             trip = Trip.objects.get(id=trip_id)
-            # reported_user = User.objects.get(id=reported_user_id)
         except Trip.DoesNotExist:
-            return Response(
-                {"message": "El viaje no existe"}, status=status.HTTP_404_NOT_FOUND
-            )
+            raise ValidationError("El viaje no existe")
         except User.DoesNotExist:
-            return Response(
-                {"message": "El usuario al que intenta reportar no existe"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except Exception as e:
-            return Response(
-                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+            raise ValidationError("El usuario al que intenta reportar no existe")
+        except Exception:
+            raise ValidationError("Ha ocurrido un error inesperado")
 
         trip_request = TripRequest.objects.filter(
             trip=trip, passenger__user=request.user, status="ACCEPTED"
@@ -314,10 +268,7 @@ class ReportIssuePostViewSet(
             )
 
         if trip.status != "FINISHED":
-            return Response(
-                {"message": "No se puede reportar un viaje que no ha terminado"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError("No se puede reportar un viaje que no ha terminado")
 
         else:
             report = serializer.create(trip=trip, reporter_user=request.user)

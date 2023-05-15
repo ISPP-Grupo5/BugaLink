@@ -6,6 +6,7 @@ from drivers.serializers import DriverSerializer
 from passenger_routines.models import PassengerRoutine
 from rest_framework import mixins, status, viewsets
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from rest_framework.views import APIView
 from trips.models import TripRequest
 from trips.serializers import TripRequestSerializer
@@ -34,11 +35,8 @@ class UserViewSet(
                 trip__driver_routine__driver__user=user,
                 status="ACCEPTED",
             ).exists():
-                return Response(
-                    data={
-                        "error": "No puedes eliminar tu cuenta si tienes viajes por hacer como conductor."
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
+                raise ValidationError(
+                    "No puedes eliminar tu cuenta si tienes viajes por hacer como conductor"
                 )
             # Delete the driver_routines that the driver has created
             DriverRoutine.objects.filter(driver__user=user).delete()
@@ -91,7 +89,6 @@ class UserViewSet(
             driver.save()
 
         # Get the email entry in the table account_emailaddress and anonymize that email too
-
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -101,10 +98,7 @@ class UserUpdateView(APIView):
     def put(self, request, id):
         user = request.user
         if request.user.id != id:
-            return Response(
-                data={"error": "No tienes permiso para editar esta información"},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+            raise ValidationError("No tienes permiso para editar esta información.")
         serializer = UserUpdateSerializer(request.user, data=request.data)
 
         if serializer.is_valid():
@@ -112,7 +106,7 @@ class UserUpdateView(APIView):
                 request.user.photo = request.data["photo"]
                 extension = request.data["photo"].name.split(".")[-1]
                 new_filename = f"avatar.{extension}"
-                user.photo.save(new_filename, request.data["photo"]) 
+                user.photo.save(new_filename, request.data["photo"])
             user.first_name = request.data["first_name"]
             user.last_name = request.data["last_name"]
             user.save()
@@ -128,10 +122,7 @@ class BecomeDriverView(APIView):
     def post(self, request):
         # If the user is already a driver, return a 400 status code
         if request.user.is_driver:
-            return Response(
-                data={"error": "El usuario ya es un conductor."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError("No puedes hacerte conductor porque ya lo eres")
         # Create a driver profile for the user
         driver = Driver.objects.create(
             user=request.user,
@@ -210,11 +201,8 @@ class UserTripsView(APIView):
     def get(self, request, id):
         # If the user is not the same as the one in the URL, return a 403 status code
         if request.user.id != int(id):
-            return Response(
-                data={
-                    "error": "No tienes permiso para ver los viajes de otro usuario."
-                },
-                status=status.HTTP_403_FORBIDDEN,
+            raise ValidationError(
+                "No tienes permiso para ver los viajes de otro usuario."
             )
 
         trips_matching_status = UserTripsView.obtainTrips(self, request, id)
@@ -249,11 +237,8 @@ class UserTripCountView(APIView):
     def get(self, request, id):
         # If the user is not the same as the one in the URL, return a 403 status code
         if request.user.id != int(id):
-            return Response(
-                data={
-                    "error": "No tienes permiso para ver los viajes de otro usuario."
-                },
-                status=status.HTTP_403_FORBIDDEN,
+            raise ValidationError(
+                "No tienes permiso para ver los viajes de otro usuario."
             )
 
         trips_matching_status = UserTripsView.obtainTrips(self, request, id)

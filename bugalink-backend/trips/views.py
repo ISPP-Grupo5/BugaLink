@@ -162,6 +162,11 @@ class TripRequestViewSet(
     @action(detail=True, methods=["put"])
     def reject(self, request, *args, **kwargs):
         trip_request = TripRequest.objects.get(id=kwargs["pk"])
+        try:
+            TransactionUtils.reject_transaction(trip_request.transaction)
+        except Exception:
+            # This may raise with requests from the populate.py as they may not have a transaction
+            print("Error al rechazar la transacción")
         TransactionUtils.reject_transaction(trip_request.transaction)
         trip_request.status = "REJECTED"
         trip_request.save()

@@ -112,7 +112,7 @@ class UserUpdateView(APIView):
                 request.user.photo = request.data["photo"]
                 extension = request.data["photo"].name.split(".")[-1]
                 new_filename = f"avatar.{extension}"
-                user.photo.save(new_filename, request.data["photo"]) 
+                user.photo.save(new_filename, request.data["photo"])
             user.first_name = request.data["first_name"]
             user.last_name = request.data["last_name"]
             user.save()
@@ -162,6 +162,10 @@ class UserTripsView(APIView):
             request_status_param.split(",") if request_status_param else []
         )
         trip_status_list = trip_status_param.split(",") if trip_status_param else []
+
+        # If we are fetching rejected trip requests, we also want to fetch those that haven't finished yet (trip_status=PENDING)
+        if "REJECTED" in request_status_list:
+            trip_status_list.append("PENDING")
 
         role_param = (
             request.query_params.get("role")

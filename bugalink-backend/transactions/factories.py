@@ -25,6 +25,8 @@ class TransactionFactory(factory.django.DjangoModelFactory):
             return "DECLINED"
         elif self.status == "PENDING":
             return "PENDING"
+        elif self.status == "RECHARGE":
+            return "RECHARGE"
         else:
             return "ACCEPTED"
 

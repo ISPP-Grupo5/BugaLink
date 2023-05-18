@@ -125,7 +125,8 @@ class PaymentViewSet(
         trip = Trip.objects.get(id=kwargs["trip_id"])
         user = request.user
         # El post recibe la cantidad en centimos integer
-        price = int(TransactionUtils.is_pilot_user_price(user, trip.driver_routine.price) * 100)
+        price = int(TransactionUtils.is_pilot_user_price(
+            user, trip.driver_routine.price) * 100)
 
         # Si no hay texto da error al intentar acceder a este dato
         note = note if note else "None"
@@ -199,8 +200,8 @@ class PaymentViewSet(
         note = request.data.get("note")
         trip = Trip.objects.get(id=kwargs["trip_id"])
         # El post recibe la cantidad en centimos integer
-        price = TransactionUtils.is_pilot_user_price(request.user, trip.driver_routine.price)
-
+        price = TransactionUtils.is_pilot_user_price(
+            request.user, trip.driver_routine.price)
 
         url_success = (
             f"https://app.bugalink.es/trips/{kwargs['trip_id']}/pay/success"
@@ -272,6 +273,13 @@ class PaymentViewSet(
             amount = decimal.Decimal(int(session.amount_total)) / 100
             balance.amount += amount
             balance.save()
+            Transaction.objects.create(
+                sender=user,
+                receiver=user,  # The receiver isn't any user, it's the bank
+                amount=amount,
+                date=datetime.now(),
+                status="RECHARGE",
+            )
             return True
         except Exception:
             return False

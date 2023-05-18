@@ -142,6 +142,22 @@ export default function NewRoutine({
         errors.pickTimeTo =
           'La hora de fin debe ser posterior a la hora de inicio';
       }
+
+      const pickTimeFromDate = new Date();
+      pickTimeFromDate.setHours(pickTimeFromHour);
+      pickTimeFromDate.setMinutes(pickTimeFromMinutes);
+
+      const pickTimeToDate = new Date();
+      pickTimeToDate.setHours(pickTimeToHour);
+      pickTimeToDate.setMinutes(pickTimeToMinutes);
+
+      const differenceMs = pickTimeToDate.getTime() - pickTimeFromDate.getTime();
+
+      if (differenceMs > 900000) {
+        errors.pickTimeTo =
+          'El rango de tiempo no puede ser mayor a 15 minutos';
+      }
+
     }
 
     if (!selectedDays || selectedDays.length === 0) {

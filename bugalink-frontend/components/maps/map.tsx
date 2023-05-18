@@ -5,6 +5,7 @@ export default function LeafletMap({
   originCoords,
   destinationCoords,
   setTime = null,
+  setDuration = null,
   setTotalDistance = null,
 }) {
   return (
@@ -22,6 +23,7 @@ export default function LeafletMap({
           origin={originCoords}
           destination={destinationCoords}
           setTime={setTime}
+          setDuration={setDuration}
           setTotalDistance={setTotalDistance}
         />
       )}

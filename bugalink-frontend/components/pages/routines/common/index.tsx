@@ -164,9 +164,6 @@ export default function NewRoutine({
   const validateRoutineForm = (values: FormValues) => {
     const errors: FormErrors = {};
     selectedDays.forEach((day) => {
-      allRoutines.forEach((routine) => {
-        debugger;
-      });
       const existingRoutine = allRoutines.find(
         (routine) =>
           routine.day_of_week === day &&
@@ -310,7 +307,6 @@ export default function NewRoutine({
       const errorsForm = validateForm(values);
       const errors = Object.assign({}, errorsForm, duplicatedRoutineErrors);
       setErrors(errors);
-      console.log(errors)
       if (Object.keys(errors).length === 0) {
         // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites
         const arrivalTime = new Date(Date.now());

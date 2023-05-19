@@ -54,22 +54,26 @@ export default function FileButton({
           'flex w-full cursor-pointer flex-row justify-between rounded-md border-2 p-1 text-left text-base'
         )}
       >
+        <input
+          className="hidden"
+          id={text}
+          type="file"
+          disabled={status === 'Validated'}
+          onChange={handleFileChange}
+        />
         <p className="my-auto"> {text} </p>
         {status === 'Validated' && (
-          <GreenCheck className="fill-green stroke-green" />
+          <GreenCheck
+            className="fill-green stroke-green"
+            width="32"
+            height="32"
+          />
         )}
         {status === 'Waiting validation' && (
           <Hourglass className="stroke-yellow" />
         )}
         {status === 'Waiting upload' && <Upload className="" />}
       </label>
-      <input
-        className="hidden"
-        id={text}
-        type="file"
-        disabled={status === 'Validated'}
-        onChange={handleFileChange}
-      />
     </div>
   );
 }

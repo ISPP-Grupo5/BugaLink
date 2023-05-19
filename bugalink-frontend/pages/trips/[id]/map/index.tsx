@@ -33,6 +33,7 @@ export default function RideMap({ data }) {
   const destination = trip?.driver_routine.destination.address;
 
   const [time, setTime] = useState<number>(0);
+  const [duration, setDuration] = useState<string>('');
   const originCoords = useMapCoordinates(origin);
   const destinationCoords = useMapCoordinates(destination);
 
@@ -40,18 +41,18 @@ export default function RideMap({ data }) {
   const endTime = new Date(trip?.departure_datetime);
   endTime.setMinutes(endTime.getMinutes() + time);
 
-  if (isLoading)
-    return <p>Loading...</p>; // TODO: make skeleton
+  if (isLoading) return <p>Loading...</p>; // TODO: make skeleton
   if (isError) return <p>Error</p>; // TODO: make error message
 
   return (
-    <AnimatedLayout className="flex flex-col justify-between">
+    <AnimatedLayout className="justify-between flex flex-col">
       <BackButton className="absolute left-2 top-2 bg-base-origin py-3 pr-2 shadow-xl" />
       <div className="-mb-8 h-full w-full">
         <LeafletMap
           originCoords={originCoords?.coordinates}
           destinationCoords={destinationCoords?.coordinates}
           setTime={setTime}
+          setDuration={setDuration}
         />
       </div>
       <div className="grid w-full grid-rows-2 rounded-t-3xl bg-white px-5 py-6 drop-shadow-md">
@@ -75,7 +76,7 @@ export default function RideMap({ data }) {
               })}
             </p>
             <div>
-              <p className="text-lg leading-none">{time} minutos</p>
+              <p className="text-lg leading-none">{duration}</p>
               <p className="text-xs font-extralight leading-none tracking-tighter text-gray">
                 aproximadamente
               </p>

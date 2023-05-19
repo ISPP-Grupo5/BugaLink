@@ -1,11 +1,17 @@
 from datetime import datetime
+from datetime import date
 
 from django.shortcuts import get_object_or_404
-from rest_framework import mixins, status, viewsets
-from rest_framework.response import Response
-
 from driver_routines.models import DriverRoutine
-from driver_routines.serializers import DriverRoutineSerializer, DriverRoutineCreateSerializer
+from driver_routines.serializers import (
+    DriverRoutineCreateSerializer,
+    DriverRoutineSerializer,
+)
+from locations.models import Location
+from locations.serializers import LocationSerializer
+from rest_framework import mixins, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from trips.models import Trip
 from utils import next_weekday
 
@@ -22,7 +28,9 @@ class DriverRoutineViewSet(
 
     def get_serializer_class(self):
         if self.action == "create":
-            return DriverRoutineCreateSerializer  # TODO: use different serializer for GET?
+            return (
+                DriverRoutineCreateSerializer  # TODO: use different serializer for GET?
+            )
         return DriverRoutineSerializer
 
     # Individual GET
@@ -51,24 +59,46 @@ class DriverRoutineViewSet(
             # The time will be the departure_time_start
 
             departure_datetime = datetime.combine(
-                next_weekday(datetime.now(), day),
+                next_weekday(datetime.now(), day, routine.departure_time_start),
                 routine.departure_time_start,
             )
             arrival_datetime = datetime.combine(
-                next_weekday(datetime.now(), day),
+                next_weekday(datetime.now(), day, routine.departure_time_start),
                 routine.arrival_time,
             )
 
             Trip.objects.create(
-                driver_routine=routine, departure_datetime=departure_datetime, arrival_datetime = arrival_datetime
+                driver_routine=routine,
+                departure_datetime=departure_datetime,
+                arrival_datetime=arrival_datetime,
             )
 
-        response_serializer = DriverRoutineSerializer(routines,many=True)
+        response_serializer = DriverRoutineSerializer(routines, many=True)
         headers = self.get_success_headers(response_serializer.data)
         # We return the routines created
         return Response(
-            response_serializer.data,
-            
-            headers=headers,
-            status=status.HTTP_201_CREATED
+            response_serializer.data, headers=headers, status=status.HTTP_201_CREATED
         )
+
+    def update(self, request, *args, **kwargs):
+        routine_original = DriverRoutine.objects.get(id=kwargs["pk"])
+        routine_request = request.data
+        serializer = DriverRoutineCreateSerializer(routine_request)
+
+        routine_original.price = routine_request.get("price")
+        routine_original.note = routine_request.get("note")
+        routine_original.available_seats = routine_request.get("available_seats")
+        routine_original.departure_time_start = routine_request.get(
+            "departure_time_start"
+        )
+        routine_original.departure_time_end = routine_request.get("departure_time_end")
+        routine_original.arrival_time = routine_request.get("arrival_time")
+        routine_original.origin = Location.objects.create(
+            **serializer.data.pop("origin")
+        )
+        routine_original.destination = Location.objects.create(
+            **serializer.data.pop("destination")
+        )
+        routine_original.save()
+
+        return Response(routine_request, status=status.HTTP_200_OK)

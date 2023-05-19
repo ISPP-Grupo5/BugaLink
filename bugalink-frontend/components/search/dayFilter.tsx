@@ -1,17 +1,29 @@
 import CTAButton from '@/components/buttons/CTA';
 import { Drawer } from '@mui/material';
-import React, { useState } from 'react';
-import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { useState } from 'react';
+import TagsButton from '../buttons/Tags';
+import { WEEK_DAYS } from '@/constants/weekDays';
 
 type Props = {
   open: boolean;
   setOpen: (open: boolean) => void;
+  days: string;
+  setDays: (value: string) => void;
 };
 
-export default function DayFilter({ open, setOpen }: Props) {
-  const [from, setFrom] = useState();
-  const [to, setTo] = useState();
+export default function DayFilter({
+  open,
+  setOpen,
+  days, // Mon,Tue,Fri
+  setDays,
+}: Props) {
+  const options = WEEK_DAYS;
+  const [daysProvisional, setDaysProvisional] = useState(days.split(','));
+
+  const handleApplyFilters = () => {
+    setDays(daysProvisional.join(','));
+    setOpen(false);
+  };
 
   return (
     <Drawer
@@ -30,46 +42,40 @@ export default function DayFilter({ open, setOpen }: Props) {
     >
       <div className="rounded-t-lg bg-white">
         <div className="ml-6 mt-2 mr-5">
-          <p className="font-lato text-xl font-bold">Día</p>
-          <p className="text-xs">En base al día en el que deseas viajar</p>
-          <span className="mt-4 grid grid-cols-2 items-center justify-center gap-y-3 gap-x-3 text-xl">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              {/* pasa los valores de los estados como las propiedades value de los MobileDatePicker */}
-              <MobileDatePicker
-                label="Desde"
-                value={from}
-                onChange={(newValue) => setFrom(newValue)}
-                sx={{
-                  fontFamily: 'Lato, sans-serif',
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
-                    {
-                      borderColor: '#7cc3c4',
-                    },
-                  '& .MuiFormLabel-root.Mui-focused': {
-                    color: '#7cc3c4',
-                  },
+          <p className="font-lato text-xl font-bold">Día de la semana</p>
+          <p className="text-xs">Indica qué días quieres viajar</p>
+          <span className="mt-4 flex flex-wrap space-x-2 text-xl">
+            {Object.entries(options).map(([short, spanish]) => (
+              <div
+                key={short}
+                onClick={() => {
+                  // If the option is already selected, set it to 0
+                  const isSelected = daysProvisional.includes(short);
+                  if (isSelected) {
+                    setDaysProvisional(
+                      daysProvisional.filter((day) => day !== short)
+                    );
+                  } else {
+                    setDaysProvisional([...daysProvisional, short]);
+                  }
                 }}
-              />
-              <MobileDatePicker
-                label="Hasta"
-                value={to}
-                onChange={(newValue) => setTo(newValue)}
-                sx={{
-                  fontFamily: 'Lato, sans-serif',
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
-                    {
-                      borderColor: '#7cc3c4',
-                    },
-                  '& .MuiFormLabel-root.Mui-focused': {
-                    color: '#7cc3c4',
-                  },
-                }}
-              />
-            </LocalizationProvider>
+              >
+                <TagsButton
+                  text={spanish}
+                  selected={daysProvisional.includes(short)}
+                  className="mb-2 w-min"
+                  ratingOptions
+                />
+              </div>
+            ))}
           </span>
         </div>
-        <div className="my-5 flex flex-col items-center">
-          <CTAButton className="w-11/12" text={'FILTRAR'} />
+        <div className="my-3 mb-5 flex flex-col items-center">
+          <CTAButton
+            className="w-11/12"
+            text={'FILTRAR'}
+            onClick={handleApplyFilters}
+          />
         </div>
       </div>
     </Drawer>

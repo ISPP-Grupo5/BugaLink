@@ -8,3 +8,5 @@ dispatch:
       service: api
     - url: '*/ws*'
       service: api
+    - url: '*/media/*'
+      service: api

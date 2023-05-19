@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Developer Apps
+    "bugalink_backend",
     "authentication",
     "driver_routines",
     "drivers",
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     "transactions",
     # Third-party packages
     "paypal",
+    "paypalrestsdk",
     "drf_spectacular",
     "rest_framework",
     "channels",
@@ -91,7 +93,9 @@ WSGI_APPLICATION = "bugalink_backend.wsgi.application"
 # Database
 # If you wish to use some other database other than the default sqlite
 # Make sure to update the value of DATABASE_URL in your .env file
+APP_ENGINE = False
 if os.environ.get("IS_APP_ENGINE"):
+    APP_ENGINE = True
     DATABASES = {
         "default": {
             "ENGINE": config("ENGINE"),
@@ -183,6 +187,9 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 
 ALLOWED_HOSTS = ["*"]
 STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
+WEBHOOK_SECRET = config("WEBHOOK_SECRET")
+PAYPAL_CLIENT_ID = config("PAYPAL_CLIENT_ID")
+PAYPAL_SECRET_KEY = config("PAYPAL_SECRET_KEY")
 
 LANGUAGE_CODE = "en-us"
 
@@ -194,12 +201,11 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_ROOT = "static"
-STATIC_URL = "/static/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "files")
+STATIC_ROOT = os.path.join(BASE_DIR, "/static/")
 MEDIA_URL = "/media/"
-STATICFILES_DIRS = []
+STATIC_URL = "/static/"
 
 
 # TODO: only allow cors requests from the frontend (localhost:3000 or the deployed url)

@@ -1,5 +1,6 @@
 import { BackButtonText } from '@/components/buttons/Back';
 import RoutineCard from '@/components/cards/routine';
+import DialogComponent from '@/components/dialog';
 import AnimatedLayout from '@/components/layouts/animated';
 import RoutineCardSkeleton from '@/components/skeletons/Routine';
 import NEXT_ROUTES from '@/constants/nextRoutes';
@@ -30,7 +31,7 @@ const mergeRoutines = (
       id: routine.id,
       origin: routine.origin,
       destination: routine.destination,
-      day: routine.day_of_week,
+      day_of_week: routine.day_of_week,
       departure_time_start: parseDate(routine.departure_time_start), // 18:00:00 -> 18:00
       departure_time_end: parseDate(routine.departure_time_end), // 18:00:00 -> 18:00
       type: routine.type,
@@ -60,6 +61,8 @@ export default function MyRoutines() {
   const isLoading = passengerIsLoading || driverIsLoading;
   const isError = passengerIsError || driverIsError;
 
+  const [openDialog, setOpenDialog] = useState(false);
+
   return (
     <AnimatedLayout className="flex flex-col bg-white">
       <BackButtonText text={'Mi horario'} />
@@ -70,7 +73,9 @@ export default function MyRoutines() {
             {isLoading || isError
               ? [1, 2].map((id) => <RoutineCardSkeleton key={id} />)
               : allRoutines
-                  .filter((routine: GenericRoutineI) => routine.day === day)
+                  .filter(
+                    (routine: GenericRoutineI) => routine.day_of_week === day
+                  )
                   .map((routine: GenericRoutineI) => (
                     <RoutineCard
                       key={routine.id + routine.origin.address}
@@ -81,12 +86,13 @@ export default function MyRoutines() {
                       type={routine.type}
                       origin={routine.origin.address}
                       destination={routine.destination.address}
+                      setOpenDialog={setOpenDialog}
                     />
                   ))}
             {!isLoading &&
               !isError &&
               allRoutines.filter(
-                (routine: GenericRoutineI) => routine.day === day
+                (routine: GenericRoutineI) => routine.day_of_week === day
               ).length === 0 && (
                 <div className="w-full rounded-md border border-border-color py-2 text-center font-light text-gray">
                   No tienes horario para este día
@@ -96,6 +102,14 @@ export default function MyRoutines() {
         ))}
       </div>
       <AddRoutineMenu user={user} />
+      <DialogComponent
+        title="Rutina eliminada"
+        description="La rutina se ha eliminado correctamente."
+        onClose={() => setOpenDialog(false)}
+        onCloseButton="Entendido"
+        open={openDialog}
+        setOpen={setOpenDialog}
+      />
     </AnimatedLayout>
   );
 }

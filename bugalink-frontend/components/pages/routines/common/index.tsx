@@ -1,6 +1,7 @@
 import { BackButton } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
 import PlusMinusCounter from '@/components/buttons/PlusMinusCounter';
+import DialogComponent from '@/components/dialog';
 import TextAreaField from '@/components/forms/TextAreaField';
 import TextField from '@/components/forms/TextField';
 import TimePicker from '@/components/forms/TimePicker';
@@ -15,15 +16,26 @@ import PassengerRoutineI from '@/interfaces/passengerRoutine';
 import { axiosAuth } from '@/lib/axios';
 import { parseDate } from '@/utils/formatters';
 import { useLoadScript } from '@react-google-maps/api';
+import { all } from 'cypress/types/bluebird';
 import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { getGeocode, getLatLng } from 'use-places-autocomplete';
 
 const MIN_FREE_SEATS = 1;
 const MAX_FREE_SEATS = 8;
+
+const DAYS_TO_SPANISH = {
+  Mon: 'L',
+  Tue: 'M',
+  Wed: 'X',
+  Thu: 'J',
+  Fri: 'V',
+  Sat: 'S',
+  Sun: 'D',
+};
 
 const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 const daysToApi = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -32,6 +44,8 @@ type Props = {
   userType: 'passenger' | 'driver';
   freeSeatsNumber?: number;
   setFreeSeatsNumber?: (freeSeats: number) => void;
+  routineDetailsDriver?: DriverRoutineI;
+  routineDetailsPassenger?: PassengerRoutineI;
 };
 
 export const LeafletMap = dynamic(() => import('@/components/maps/map'), {
@@ -54,7 +68,7 @@ const mergeRoutines = (
       id: routine.id,
       origin: routine.origin,
       destination: routine.destination,
-      day: routine.day_of_week,
+      day_of_week: routine.day_of_week,
       departure_time_start: parseDate(routine.departure_time_start), // 18:00:00 -> 18:00
       departure_time_end: parseDate(routine.departure_time_end), // 18:00:00 -> 18:00
       type: routine.type,
@@ -84,21 +98,23 @@ export default function NewRoutine({
   userType,
   freeSeatsNumber,
   setFreeSeatsNumber,
+  routineDetailsDriver,
+  routineDetailsPassenger,
 }: Props) {
   const [pickTimeFrom, setPickTimeFrom] = useState('12:00');
   const [pickTimeTo, setPickTimeTo] = useState('12:10');
   const [time, setTime] = useState<number>(0);
-  const [selectedDays, setSeletedDays] = useState([]);
-  const arrivalTime = new Date(Date.now());
-  arrivalTime.setHours(Number(pickTimeFrom?.split(':')[0]));
-  arrivalTime.setMinutes(Number(pickTimeFrom?.split(':')[1]) + time);
+  const [selectedDays, setSelectedDays] = useState([]);
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
+  const [repeatTrip, setRepeatTrip] = useState(false);
 
   const [originCoords, setOriginCoords] = useState(undefined);
   const [destinationCoords, setDestinationCoords] = useState(undefined);
   const [totalDistance, setTotalDistance] = useState<number>(0);
-  const [price, setPrice] = useState('');
+  const [price, setPrice] = useState(
+    routineDetailsDriver ? routineDetailsDriver.price : ''
+  );
   const [errors, setErrors] = useState<FormErrors>({});
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
@@ -127,19 +143,37 @@ export default function NewRoutine({
     return i;
   }
 
+  const timeInRange = (time: string, startDate: string, endDate: string) => {
+    const timeArray = time.split(':');
+    const hours = parseInt(timeArray[0]);
+    const minutes = parseInt(timeArray[1]);
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes);
+    date.setFullYear(2000, 1, 1);
+
+    const dateStart = new Date(startDate);
+    dateStart.setFullYear(2000, 1, 1);
+
+    const dateEnd = new Date(endDate);
+    dateEnd.setFullYear(2000, 1, 1);
+
+    return date >= dateStart && date <= dateEnd;
+  }
+
   const validateRoutineForm = (values: FormValues) => {
     const errors: FormErrors = {};
-    const daysOfWeek = [];
-    for (const day in selectedDays) {
-      daysOfWeek.push(daysToApi[days.indexOf(selectedDays[day])]);
-    }
-    daysOfWeek.forEach((day) => {
+    selectedDays.forEach((day) => {
+      allRoutines.forEach((routine) => {
+        debugger;
+      });
       const existingRoutine = allRoutines.find(
         (routine) =>
-          routine.day === day &&
-          `${addZero(routine.departure_time_start.getHours())}:${addZero(routine.departure_time_start.getMinutes())}` === values.pickTimeFrom &&
-          `${addZero(routine.departure_time_end.getHours())}:${addZero(routine.departure_time_end.getMinutes())}` === values.pickTimeTo
+          routine.day_of_week === day &&
+          (timeInRange(values.pickTimeFrom, routine.departure_time_start, routine.departure_time_end) ||
+          timeInRange(values.pickTimeTo, routine.departure_time_start, routine.departure_time_end))
       );
+
       if (existingRoutine) {
         errors.selectedDays = `Ya existe una rutina para esta hora y día: ${days[daysToApi.indexOf(day)]}`;
         errors.pickTimeFrom = 'Ya existe una rutina para esta hora y día';
@@ -149,6 +183,17 @@ export default function NewRoutine({
     setErrors(errors)
     return errors;
   };
+  
+  const isEdit = routineDetailsDriver || routineDetailsPassenger;
+
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const onCloseDialog = () => {
+    setOpenDialog(false);
+
+    router.push(NEXT_ROUTES.MY_ROUTINES);
+  };
+
   //arrivalTime.setMinutes
   const validateForm = (values: FormValues) => {
     const errors: FormErrors = {};
@@ -189,6 +234,22 @@ export default function NewRoutine({
         errors.pickTimeTo =
           'La hora de fin debe ser posterior a la hora de inicio';
       }
+
+      const pickTimeFromDate = new Date();
+      pickTimeFromDate.setHours(pickTimeFromHour);
+      pickTimeFromDate.setMinutes(pickTimeFromMinutes);
+
+      const pickTimeToDate = new Date();
+      pickTimeToDate.setHours(pickTimeToHour);
+      pickTimeToDate.setMinutes(pickTimeToMinutes);
+
+      const differenceMs = pickTimeToDate.getTime() - pickTimeFromDate.getTime();
+
+      if (differenceMs > 900000) {
+        errors.pickTimeTo =
+          'El rango de tiempo no puede ser mayor a 15 minutos';
+      }
+
     }
 
     if (!selectedDays || selectedDays.length === 0) {
@@ -200,9 +261,21 @@ export default function NewRoutine({
         errors.price = 'El precio no debe ser un valor negativo';
       } else if (!values.price) {
         errors.price = 'Por favor, ingrese un precio';
-      } else if (values.price > totalDistance * 0.1 * 2) {
+      } else if (!/^\d+(\.\d{1,2})?$/.test(values.price.toString())) {
+        errors.price = 'El precio debe tener máximo dos cifras decimales';
+      } else if (
+        totalDistance * 0.1 > 0.0 &&
+        (values.price > totalDistance * 0.1 * 2 ||
+          values.price < (totalDistance * 0.1) / 2)
+      ) {
         errors.price =
-          'El precio no puede ser mayor que el doble del precio recomendado';
+          'El precio debe situarse entre la mitad y el doble del precio recomendado';
+      } else if (
+        totalDistance * 0.1 == 0.0 &&
+        (values.price < 0.3 || values.price > 0.8)
+      ) {
+        errors.price =
+          'Para una distancia tan corta se debe establecer un precio de entre 30 y 80 céntimos';
       }
     }
 
@@ -212,16 +285,14 @@ export default function NewRoutine({
   };
 
   const libraries = useMemo(() => ['places'], []);
-  const [note, setNote] = useState('');
+  const [note, setNote] = useState(
+    routineDetailsDriver ? routineDetailsDriver.note : ''
+  );
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     libraries: libraries as any,
   });
-
-  if (!isLoaded) {
-    return <p>Loading...</p>;
-  }
 
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setIsSendingForm(true);
@@ -242,10 +313,10 @@ export default function NewRoutine({
       console.log(errors)
       if (Object.keys(errors).length === 0) {
         // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites
-        const daysOfWeek = [];
-        for (const day in selectedDays) {
-          daysOfWeek.push(daysToApi[days.indexOf(selectedDays[day])]);
-        }
+        const arrivalTime = new Date(Date.now());
+        arrivalTime.setHours(Number(pickTimeFrom?.split(':')[0]));
+        arrivalTime.setMinutes(Number(pickTimeFrom?.split(':')[1]) + time);
+
         const data = {
           origin: {
             address: origin,
@@ -257,32 +328,87 @@ export default function NewRoutine({
             latitude: destinationCoords.lat.toString(),
             longitude: destinationCoords.lng.toString(),
           },
-          days_of_week: daysOfWeek,
+          days_of_week: selectedDays,
           departure_time_start: pickTimeFrom,
           departure_time_end: pickTimeTo,
           arrival_time:
             '' + arrivalTime.getHours() + ':' + arrivalTime.getMinutes(),
           price: price,
           note: note,
-          is_recurrent: false,
+          is_recurrent: repeatTrip,
           available_seats: freeSeatsNumber,
         };
 
-        const url =
-          userType === 'driver' ? 'driver-routines/' : 'passenger-routines/';
-        axiosAuth
-          .post(url, data)
-          .then((response) => {
-            router.push(NEXT_ROUTES.MY_ROUTINES);
-          })
-          .catch((error) => {
-            setIsSendingForm(false);
-          });
+        if (isEdit) {
+          const url =
+            userType === 'driver'
+              ? `driver-routines/${routineDetailsDriver.id}/update/`
+              : `passenger-routines/${routineDetailsPassenger.id}/update/`;
+          axiosAuth
+            .put(url, data)
+            .then((response) => {
+              setOpenDialog(true);
+            })
+            .catch((error) => {
+              setIsSendingForm(false);
+            });
+        } else {
+          const url =
+            userType === 'driver' ? 'driver-routines/' : 'passenger-routines/';
+          axiosAuth
+            .post(url, data)
+            .then((response) => {
+              setOpenDialog(true);
+            })
+            .catch((error) => {
+              setIsSendingForm(false);
+            });
+        }
       } else {
         setIsSendingForm(false);
       }
     }
   };
+
+  useEffect(() => {
+    if (!routineDetailsDriver && !routineDetailsPassenger) return;
+    const routine = (routineDetailsDriver ||
+      routineDetailsPassenger) as GenericRoutineI;
+
+    setOrigin(routine.origin.address);
+    setDestination(routine.destination.address);
+    setOriginCoords({
+      lat: routine.origin.latitude,
+      lng: routine.origin.longitude,
+    });
+    setDestinationCoords({
+      lat: routine.destination.latitude,
+      lng: routine.destination.longitude,
+    });
+    setPickTimeFrom(
+      routine.departure_time_start.length > 5
+        ? routine.departure_time_start.substring(0, 5)
+        : routine.departure_time_start
+    );
+    setPickTimeTo(
+      routine.departure_time_end.length > 5
+        ? routine.departure_time_end.substring(0, 5)
+        : routine.departure_time_end
+    );
+    setSelectedDays([routine.day_of_week]);
+
+    if (routineDetailsDriver) {
+      const driverRoutine = routine as DriverRoutineI;
+
+      setPrice(driverRoutine.price);
+      setNote(driverRoutine.note);
+      setFreeSeatsNumber(driverRoutine.available_seats);
+    }
+  }, [routineDetailsDriver, routineDetailsPassenger]);
+
+  if (!isLoaded) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <AnimatedLayout className="bg-white">
@@ -304,6 +430,7 @@ export default function NewRoutine({
         <form
           ref={formRef}
           className="flex w-full flex-none flex-col rounded-t-3xl bg-white px-10 pb-4 pt-8"
+          autoComplete="off"
         >
           <PlacesAutocomplete
             onAddressSelect={(address) => {
@@ -315,6 +442,7 @@ export default function NewRoutine({
             }}
             placeholder="Desde"
             name="origin"
+            defaultValue={origin}
             error={errors.origin}
           />
 
@@ -328,6 +456,7 @@ export default function NewRoutine({
             }}
             placeholder="Hasta"
             name="destination"
+            defaultValue={destination}
             error={errors.destination}
           />
           <div className="mb-4 flex flex-col">
@@ -366,24 +495,32 @@ export default function NewRoutine({
                 : 'divide-light-gray border-light-gray'
             }`}
           >
-            {days.map((day: string) => (
-              <p
-                key={day}
-                className={`h-full w-full py-2 transition-colors duration-300 ${
-                  selectedDays.includes(day) ? 'bg-turquoise text-white' : ''
-                }`}
-                onClick={() => {
-                  delete errors.selectedDays;
-                  if (selectedDays.includes(day)) {
-                    setSeletedDays(selectedDays.filter((d) => d !== day));
-                  } else {
-                    setSeletedDays([...selectedDays, day]);
-                  }
-                }}
-              >
-                {day}
-              </p>
-            ))}
+            {Object.entries(DAYS_TO_SPANISH).map(
+              (
+                [day, shortDay] // L, M, X...
+              ) => (
+                <p
+                  key={day}
+                  data-cy={day}
+                  className={`h-full w-full py-2 transition-colors duration-300 ${
+                    selectedDays.includes(day) ? 'bg-turquoise text-white' : ''
+                  } ${isEdit ? 'grayscale' : ''}
+                `}
+                  onClick={() => {
+                    if (isEdit) return; // Don't allow editing days
+                    delete errors.selectedDays;
+
+                    if (selectedDays.includes(day)) {
+                      setSelectedDays(selectedDays.filter((d) => d !== day));
+                    } else {
+                      setSelectedDays([...selectedDays, day]);
+                    }
+                  }}
+                >
+                  {shortDay}
+                </p>
+              )
+            )}
           </span>
           {errors.selectedDays && (
             <div className="mt-1 text-xs font-medium text-red">
@@ -408,19 +545,27 @@ export default function NewRoutine({
                   )
                 }
               />
-
-              <div className="mt-2 flex flex-row place-content-center items-center space-x-4">
-                <input type="checkbox" className="h-5 w-5" />
-                <label className="text-xl font-bold">No repetir el viaje</label>
-              </div>
+              {!isEdit && (
+                <div className="mt-4 flex flex-col items-center justify-center">
+                  <div className="mt-2 flex flex-row place-content-center items-center space-x-4">
+                    <input
+                      type="checkbox"
+                      className="h-5 w-5 accent-turquoise"
+                      onChange={() => setRepeatTrip(!repeatTrip)}
+                    />
+                    <label className="text-xl font-bold">¡Hazme rutina!</label>
+                  </div>
+                  <span>Repite este trayecto cada semana</span>
+                </div>
+              )}
               <label className="mt-4 text-xl font-bold">
                 Establece un precio por pasajero
               </label>
               <p>
-                El precio recomendado para este trayecto (0.10€/km) es de{' '}
-                {Math.round((totalDistance * 0.1 + Number.EPSILON) * 1000) /
-                  1000}
-                €
+                El precio recomendado para este trayecto (0.10€/km) es de:{' '}
+                {(totalDistance * 0.1).toFixed(2) != '0.00'
+                  ? `${(totalDistance * 0.1).toFixed(2)}€`
+                  : 'entre 30 y 80 céntimos'}
               </p>
               <div className="my-3 mt-4 flex flex-col">
                 <TextField
@@ -450,13 +595,27 @@ export default function NewRoutine({
             </div>
           )}
           <CTAButton
-            text={isSendingForm ? 'PROCESANDO...' : 'CREAR'}
+            text={
+              isSendingForm
+                ? 'PROCESANDO...'
+                : routineDetailsDriver || routineDetailsPassenger
+                ? 'Editar'
+                : 'CREAR'
+            }
             disabled={isSendingForm}
             className="mt-4 w-full"
             onClick={handleButtonClick}
           />
         </form>
       </div>
+      <DialogComponent
+        title="Acción realizada"
+        description="Tu rutina ha sido actualizada o creada con éxito."
+        onClose={onCloseDialog}
+        onCloseButton="Entendido"
+        open={openDialog}
+        setOpen={setOpenDialog}
+      />
     </AnimatedLayout>
   );
 }

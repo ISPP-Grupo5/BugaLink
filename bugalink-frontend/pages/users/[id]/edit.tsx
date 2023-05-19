@@ -1,12 +1,15 @@
 import Avatar from '@/components/avatar';
 import { BackButtonText } from '@/components/buttons/Back';
 import CTAButton from '@/components/buttons/CTA';
-import DialogDeleteAccount from '@/components/dialogs/deleteAccount';
+import DialogComponent from '@/components/dialog';
 import TextField from '@/components/forms/TextField';
 import AnimatedLayout from '@/components/layouts/animated';
+import NEXT_ROUTES from '@/constants/nextRoutes';
 import useUser from '@/hooks/useUser';
 import UserI from '@/interfaces/user';
+import { axiosAuth } from '@/lib/axios';
 import { GetServerSideProps } from 'next';
+import { signOut } from 'next-auth/react';
 import Pencil from 'public/assets/edit.svg';
 import { useEffect, useRef, useState } from 'react';
 
@@ -41,14 +44,22 @@ export default function EditProfile({ data }) {
     if (!user) return;
     setName(user.first_name);
     setSurname(user.last_name);
+    setPhotoURL(user.photo);
   }, [user]);
+
   const [name, setName] = useState<string>('');
   const [surname, setSurname] = useState<string>('');
+  const [file, setFile] = useState<File>();
+  const [photoURL, setPhotoURL] = useState<string>('');
+
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [openDialogError, setOpenDialogError] = useState<boolean>(false);
 
   const [errors, setErrors] = useState<FormErrors>({});
 
   const formRef = useRef<HTMLFormElement>(null);
+
+  const [isSendingForm, setIsSendingForm] = useState(false);
 
   const validateForm = (values: FormValues) => {
     const errors: FormErrors = {};
@@ -66,7 +77,8 @@ export default function EditProfile({ data }) {
     return errors;
   };
 
-  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    setIsSendingForm(true);
     event.preventDefault();
     if (formRef.current) {
       const formData = new FormData(formRef.current);
@@ -79,9 +91,26 @@ export default function EditProfile({ data }) {
       setErrors(errors);
       if (Object.keys(errors).length === 0) {
         // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites
-        console.log(
-          'Los datos del formulario son válidos. ¡Enviando formulario!'
-        );
+        const url = `users/${user.id}/edit`;
+
+        const formData = new FormData();
+        if (file !== undefined) formData.append('photo', file);
+        formData.append('first_name', name);
+        formData.append('last_name', surname);
+
+        await axiosAuth
+          .put(url, formData)
+          .then((res) => {
+            signOut({
+              callbackUrl: NEXT_ROUTES.LOGIN,
+            });
+          })
+          .catch((err) => {
+            setOpenDialogError(true);
+            setIsSendingForm(false);
+          });
+      } else {
+        setIsSendingForm(false);
       }
     }
   };
@@ -91,6 +120,22 @@ export default function EditProfile({ data }) {
   ) => {
     event.preventDefault();
     setOpenDialog(true);
+  };
+
+  const handleDeleteAccount = async (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+    try {
+      const response = await axiosAuth.delete(`/users/${user.id}`);
+      if (response.status === 204) {
+        await signOut({
+          callbackUrl: NEXT_ROUTES.LOGIN,
+        });
+      }
+    } catch (error) {
+      alert(error?.response?.data?.error || 'Error al eliminar la cuenta');
+    }
   };
 
   return (
@@ -118,12 +163,13 @@ export default function EditProfile({ data }) {
                   img.src = e.target.result as string;
                 };
                 reader.readAsDataURL(file);
-                // Set to state
+                setFile(file);
+                setPhotoURL(URL.createObjectURL(file));
               }}
             />
             <Avatar
               id="profilePicture"
-              src={user.photo}
+              src={photoURL}
               className="my-2 w-full outline outline-8 outline-white"
             />
             <div id="check" className="absolute -bottom-2 -right-2">
@@ -166,7 +212,7 @@ export default function EditProfile({ data }) {
             </button>
             <p className="mb-2 text-sm font-semibold text-gray">
               Usuario desde el{' '}
-              {new Date(user.date_joined).toLocaleDateString('es-ES', {
+              {new Date(user?.date_joined).toLocaleDateString('es-ES', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
@@ -174,16 +220,29 @@ export default function EditProfile({ data }) {
             </p>
             <CTAButton
               className="w-11/12"
-              text="GUARDAR"
+              text={isSendingForm ? 'PROCESANDO...' : 'GUARDAR'}
               onClick={handleSubmit}
             />
           </div>
         </form>
       </div>
-      <DialogDeleteAccount
-        userId={user.id}
+      <DialogComponent
+        title="Eliminar mi cuenta"
+        description="Vas a eliminar tu cuenta, ¿estás seguro?"
+        onClose={() => setOpenDialog(false)}
+        onCloseButton="Cancelar"
+        onAccept={handleDeleteAccount}
+        onAcceptButton="Eliminar cuenta"
         open={openDialog}
         setOpen={setOpenDialog}
+      />
+      <DialogComponent
+        title="Error al editar el perfil"
+        description="Ha ocurrido un error al editar el perfil, por favor, inténtelo de nuevo más tarde."
+        onClose={() => setOpenDialogError(false)}
+        onCloseButton="Cerrar"
+        open={openDialogError}
+        setOpen={setOpenDialogError}
       />
     </AnimatedLayout>
   );

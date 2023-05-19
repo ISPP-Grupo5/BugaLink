@@ -9,6 +9,6 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
-        fields = ("sender", "receiver", "status", "is_refund", "amount")
+        fields = ("sender", "receiver", "status", "is_refund", "amount", "date")
 
 

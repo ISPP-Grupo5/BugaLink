@@ -12,4 +12,12 @@ module.exports = withPWA({
 
     return config;
   },
+  images: {
+    domains: [
+      'localhost',
+      '127.0.0.1',
+      'app.bugalink.es',
+      'www.app.bugalink.es',
+    ],
+  },
 });

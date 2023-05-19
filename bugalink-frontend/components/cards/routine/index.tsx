@@ -6,14 +6,17 @@ import { useState } from 'react';
 import MapPin from '/public/assets/map-pin.svg';
 import OrigenPin from '/public/assets/origen-pin.svg';
 import SteeringWheel from '/public/assets/steering-wheel.svg';
+import NEXT_ROUTES from '@/constants/nextRoutes';
+import Link from 'next/link';
 
 type Props = {
   id: number;
-  departureHourStart: Date;
-  departureHourEnd: Date;
+  departureHourStart: string;
+  departureHourEnd: string;
   type: 'driverRoutine' | 'passengerRoutine';
   origin: string;
   destination: string;
+  setOpenDialog?: (open: boolean) => void;
 };
 
 export default function RoutineCard({
@@ -23,9 +26,13 @@ export default function RoutineCard({
   type,
   origin,
   destination,
+  setOpenDialog,
 }: Props) {
   const isDriver = type === 'driverRoutine';
   const [isDeleted, setIsDeleted] = useState(false);
+  const editLink = isDriver
+    ? NEXT_ROUTES.NEW_ROUTINE_DRIVER
+    : NEXT_ROUTES.NEW_ROUTINE_PASSENGER;
 
   async function deleteRoutine() {
     const url = isDriver ? 'driver-routines' : 'passenger-routines';
@@ -33,6 +40,7 @@ export default function RoutineCard({
       await axiosAuth.delete(`${url}/${id}`);
       //TODO Recargar tarjetas de manera correcta en un futuro
       setIsDeleted(true);
+      setOpenDialog(true);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -50,12 +58,12 @@ export default function RoutineCard({
       <div className="relative grid w-full grid-cols-2 grid-rows-2 gap-2.5 p-1.5 pb-0">
         <Entry title={'Hora de salida'}>
           🕓️{' '}
-          {departureHourStart.toLocaleTimeString('es-ES', {
+          {new Date(departureHourStart).toLocaleTimeString('es-ES', {
             hour: '2-digit',
             minute: '2-digit',
           })}{' '}
           —{' '}
-          {departureHourEnd.toLocaleTimeString('es-ES', {
+          {new Date(departureHourEnd).toLocaleTimeString('es-ES', {
             hour: '2-digit',
             minute: '2-digit',
           })}
@@ -88,7 +96,9 @@ export default function RoutineCard({
         </Entry>
         <ThreeDotsMenu>
           <MenuItem>
-            <p>Editar</p>
+            <Link href={`${editLink}?id=${id}`}>
+              <p data-cy="edit">Editar</p>
+            </Link>
           </MenuItem>
           <MenuItem onClick={deleteRoutine}>
             <p className="text-red">Eliminar</p>

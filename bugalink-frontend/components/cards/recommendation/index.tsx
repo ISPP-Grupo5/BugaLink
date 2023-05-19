@@ -8,7 +8,7 @@ import OrigenPin from '/public/assets/origen-pin.svg';
 
 type Params = {
   type?: 'driver' | 'passenger';
-  rating: number;
+  rating?: number;
   name: string;
   avatar: string;
   origin: string;
@@ -52,7 +52,7 @@ export default function TripCard({
           <p className="text-lg font-semibold leading-5">{name}</p>
         ) : (
           <Entry title={role}>
-            <p className="text-lg font-semibold leading-5">{name}</p>
+            <p className="text-lg font-semibold leading-5" data-cy={name}>{name}</p>
           </Entry>
         )}
       </span>

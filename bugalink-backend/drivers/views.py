@@ -1,14 +1,9 @@
-from requests import Response
-from rest_framework import mixins, status, viewsets
-from rest_framework.decorators import action
 from drivers.models import Driver
 from drivers.serializers import DriverSerializer, PreferencesSerializer
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from users.models import User
-
-from . import models as m
 
 
 class DriverViewSet(
@@ -37,9 +32,9 @@ class DriverViewSet(
             )
 
         try:
-            driver = m.Driver.objects.get(user=user)
+            driver = Driver.objects.get(user=user)
         except Driver.DoesNotExist:
-            driver = m.Driver.objects.create(user=user)
+            driver = Driver.objects.create(user=user)
 
         user.is_driver = True
 
@@ -103,7 +98,10 @@ class DriverPreferencesView(
 
     def actualizar(self, request, *args, **kwargs):
         driver_id = kwargs.get("pk")
-        if not self.request.user.is_driver or self.request.user.driver.id != driver_id:
+        if (
+            not self.request.user.is_validated_driver
+            or self.request.user.driver.id != driver_id
+        ):
             return Response(
                 data={"error": "No tienes permiso para editar esta información"},
                 status=status.HTTP_403_FORBIDDEN,

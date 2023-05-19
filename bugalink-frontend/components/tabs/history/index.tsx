@@ -107,19 +107,27 @@ const HistoryList = ({ trips, type, isLoading, isError }) => {
       {isLoading || isError
         ? [1, 2, 3, 4].map((i) => <TripCardSkeleton key={i} />)
         : trips.map((tripRequest: TripRequestI) => (
-            <TripCard
-              key={tripRequest.id}
-              type={type}
-              rating={0.0}
-              name={`${tripRequest.trip.driver.user.first_name} ${tripRequest.trip.driver.user.last_name}`}
-              avatar={tripRequest.trip.driver.user.photo}
-              origin={tripRequest.trip.driver_routine.origin.address}
-              destination={tripRequest.trip.driver_routine.destination.address}
-              date={tripRequest.trip.departure_datetime}
-              price={Number.parseFloat(tripRequest.trip.driver_routine.price)}
-              href={NEXT_ROUTES.RATING_TRIP(tripRequest.trip.id)}
-              isHistory
-            />
+            <div className="relative" key={tripRequest.id}>
+              {tripRequest.status === 'REJECTED' && (
+                <p className="absolute top-0 right-0 rounded-tr-3xl rounded-bl-3xl bg-light-red py-2 px-4 text-white">
+                  Solicitud rechazada
+                </p>
+              )}
+              <TripCard
+                type={type}
+                rating={0.0}
+                name={`${tripRequest.trip.driver.user.first_name} ${tripRequest.trip.driver.user.last_name}`}
+                avatar={tripRequest.trip.driver.user.photo}
+                origin={tripRequest.trip.driver_routine.origin.address}
+                destination={
+                  tripRequest.trip.driver_routine.destination.address
+                }
+                date={tripRequest.trip.departure_datetime}
+                price={Number.parseFloat(tripRequest.trip.driver_routine.price)}
+                href={NEXT_ROUTES.RATING_TRIP(tripRequest.trip.id)}
+                isHistory
+              />
+            </div>
           ))}
     </div>
   );

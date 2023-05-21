@@ -255,6 +255,13 @@ class PaymentViewSet(
             amount = decimal.Decimal(int(session.amount_total)) / 100
             balance.amount += amount
             balance.save()
+            Transaction.objects.create(
+                sender=user,
+                receiver=user,  # The receiver isn't any user, it's the bank
+                amount=amount,
+                date=datetime.now(),
+                status="RECHARGE",
+            )
             return True
         except Exception:
             return False

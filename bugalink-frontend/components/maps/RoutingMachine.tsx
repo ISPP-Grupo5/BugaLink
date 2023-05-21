@@ -3,7 +3,7 @@ import L from 'leaflet';
 import 'leaflet-routing-machine';
 
 const createRoutineMachineLayer = (props) => {
-  const { origin, destination, setTime, setTotalDistance } = props;
+  const { origin, destination, setTime, setDuration, setTotalDistance } = props;
 
   const originIcon = L.icon({
     iconUrl:
@@ -49,7 +49,10 @@ const createRoutineMachineLayer = (props) => {
     instance.on('routesfound', (e) => {
       const routes = e.routes;
       const summary = routes[0].summary;
-      setTime(Math.round((summary.totalTime % 3600) / 60));
+      const minutes = Math.round(summary.totalTime / 60);
+      setTime(minutes);
+      const tripDuration = parseMinutesToHHMM(minutes);
+      if(setDuration) setDuration(tripDuration);
     });
   }
 
@@ -62,6 +65,28 @@ const createRoutineMachineLayer = (props) => {
   }
 
   return instance;
+};
+
+const parseMinutesToHHMM = (minutes : number) => {
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  
+  let result = '';
+  
+  if (hours > 0) {
+    result += `${hours} h`;
+  }
+
+  if (hours > 0 && remainingMinutes > 0) {
+    result += ' y ';
+  }
+  
+  if (remainingMinutes > 0) {
+    const minuteLabel = remainingMinutes === 1 ? 'min' : 'mins';
+    result += `${remainingMinutes} ${minuteLabel}`;
+  }
+
+  return result;
 };
 
 const RoutingMachine = createControlComponent(createRoutineMachineLayer);

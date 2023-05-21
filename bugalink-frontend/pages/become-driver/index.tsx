@@ -8,6 +8,7 @@ import { signOut } from 'next-auth/react';
 import Check from 'public/assets/check-license.svg';
 import CityDriver from 'public/assets/city-driver.svg';
 import { useEffect, useState } from 'react';
+import FileDownload from '@/components/files';
 
 export default function BecomeDriver() {
   const [driverLicenseStatus, setDriverLicenseStatus] =
@@ -67,6 +68,7 @@ export default function BecomeDriver() {
         <div className="text-base">
           <p className="mb-4">1. Sube los documentos necesarios: </p>
           <span className="space-y-2 ">
+            <FileDownload />
             <FileButton
               text="Declaración jurada"
               fileName="sworn_declaration"
@@ -82,15 +84,8 @@ export default function BecomeDriver() {
               setStatus={setDriverLicenseStatus}
             />
             <FileButton
-              text="Documento de identidad (anverso)"
+              text="Documento de identidad"
               fileName="dni_front"
-              statusName="dni_status"
-              status={dniStatus}
-              setStatus={setDniStatus}
-            />
-            <FileButton
-              text="Documento de identidad (reverso)"
-              fileName="dni_back"
               statusName="dni_status"
               status={dniStatus}
               setStatus={setDniStatus}

@@ -8,11 +8,17 @@ import TimePicker from '@/components/forms/TimePicker';
 import AnimatedLayout from '@/components/layouts/animated';
 import PlacesAutocomplete from '@/components/maps/placesAutocomplete';
 import NEXT_ROUTES from '@/constants/nextRoutes';
+import useDriver from '@/hooks/useDriver';
+import usePassenger from '@/hooks/usePassenger';
 import DriverRoutineI from '@/interfaces/driverRoutine';
 import GenericRoutineI from '@/interfaces/genericRoutine';
 import PassengerRoutineI from '@/interfaces/passengerRoutine';
 import { axiosAuth } from '@/lib/axios';
+import { parseDate } from '@/utils/formatters';
 import { useLoadScript } from '@react-google-maps/api';
+import { all } from 'cypress/types/bluebird';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -31,6 +37,9 @@ const DAYS_TO_SPANISH = {
   Sun: 'D',
 };
 
+const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+const daysToApi = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
 type Props = {
   userType: 'passenger' | 'driver';
   freeSeatsNumber?: number;
@@ -47,6 +56,26 @@ export const EmptyLeafletMap = dynamic(
   () => import('@/components/maps/emptyMap'),
   { ssr: false }
 );
+
+const mergeRoutines = (
+  passengerRoutines: PassengerRoutineI[],
+  driverRoutines: DriverRoutineI[]
+): GenericRoutineI[] => {
+  const allRoutines = [];
+  for (const routine of [...passengerRoutines, ...driverRoutines]) {
+    // We add a card for each day of the week the routine is repeated
+    allRoutines.push({
+      id: routine.id,
+      origin: routine.origin,
+      destination: routine.destination,
+      day_of_week: routine.day_of_week,
+      departure_time_start: parseDate(routine.departure_time_start), // 18:00:00 -> 18:00
+      departure_time_end: parseDate(routine.departure_time_end), // 18:00:00 -> 18:00
+      type: routine.type,
+    });
+  }
+  return allRoutines;
+};
 
 interface FormErrors {
   origin?: string;
@@ -92,6 +121,66 @@ export default function NewRoutine({
 
   const [isSendingForm, setIsSendingForm] = useState(false);
 
+  const { data } = useSession();
+  const user = data?.user as User;
+  const {
+    passenger,
+    isLoading: passengerIsLoading,
+    isError: passengerIsError,
+  } = usePassenger(user?.passenger_id);
+  const {
+    driver,
+    isLoading: driverIsLoading,
+    isError: driverIsError,
+  } = useDriver(user?.driver_id);
+
+  const passengerRoutines = passenger?.routines || [];
+  const driverRoutines = driver?.routines || [];
+  const allRoutines = mergeRoutines(passengerRoutines, driverRoutines);
+
+  const addZero = (i: any) => {
+    if (i < 10) {i = "0" + i}
+    return i;
+  }
+
+  const timeInRange = (time: string, startDate: string, endDate: string) => {
+    const timeArray = time.split(':');
+    const hours = parseInt(timeArray[0]);
+    const minutes = parseInt(timeArray[1]);
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes);
+    date.setFullYear(2000, 1, 1);
+
+    const dateStart = new Date(startDate);
+    dateStart.setFullYear(2000, 1, 1);
+
+    const dateEnd = new Date(endDate);
+    dateEnd.setFullYear(2000, 1, 1);
+
+    return date >= dateStart && date <= dateEnd;
+  }
+
+  const validateRoutineForm = (values: FormValues) => {
+    const errors: FormErrors = {};
+    selectedDays.forEach((day) => {
+      const existingRoutine = allRoutines.find(
+        (routine) =>
+          routine.day_of_week === day &&
+          (timeInRange(values.pickTimeFrom, routine.departure_time_start, routine.departure_time_end) ||
+          timeInRange(values.pickTimeTo, routine.departure_time_start, routine.departure_time_end))
+      );
+
+      if (existingRoutine) {
+        errors.selectedDays = `Ya existe una rutina para esta hora y día: ${days[daysToApi.indexOf(day)]}`;
+        errors.pickTimeFrom = 'Ya existe una rutina para esta hora y día';
+        errors.pickTimeTo = 'Ya existe una rutina para esta hora y día';
+      }
+    });
+    setErrors(errors)
+    return errors;
+  };
+  
   const isEdit = routineDetailsDriver || routineDetailsPassenger;
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -214,8 +303,9 @@ export default function NewRoutine({
         pickTimeTo: formData.get('pickTimeTo') as string,
         price: formData.get('price') as unknown as number,
       };
-
-      const errors = validateForm(values);
+      const duplicatedRoutineErrors = validateRoutineForm(values);
+      const errorsForm = validateForm(values);
+      const errors = Object.assign({}, errorsForm, duplicatedRoutineErrors);
       setErrors(errors);
       if (Object.keys(errors).length === 0) {
         // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites

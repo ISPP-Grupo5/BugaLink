@@ -33,6 +33,7 @@ export default function RideMap({ data }) {
   const destination = trip?.driver_routine.destination.address;
 
   const [time, setTime] = useState<number>(0);
+  const [duration, setDuration] = useState<string>('');
   const originCoords = useMapCoordinates(origin);
   const destinationCoords = useMapCoordinates(destination);
 
@@ -51,6 +52,7 @@ export default function RideMap({ data }) {
           originCoords={originCoords?.coordinates}
           destinationCoords={destinationCoords?.coordinates}
           setTime={setTime}
+          setDuration={setDuration}
         />
       </div>
       <div className="grid w-full grid-rows-2 rounded-t-3xl bg-white px-5 py-6 drop-shadow-md">
@@ -74,7 +76,7 @@ export default function RideMap({ data }) {
               })}
             </p>
             <div>
-              <p className="text-lg leading-none">{time} minutos</p>
+              <p className="text-lg leading-none">{duration}</p>
               <p className="text-xs font-extralight leading-none tracking-tighter text-gray">
                 aproximadamente
               </p>

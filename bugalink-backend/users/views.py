@@ -154,6 +154,10 @@ class UserTripsView(APIView):
         )
         trip_status_list = trip_status_param.split(",") if trip_status_param else []
 
+        # If we are fetching rejected trip requests, we also want to fetch those that haven't finished yet (trip_status=PENDING)
+        if "REJECTED" in request_status_list:
+            trip_status_list.append("PENDING")
+
         role_param = (
             request.query_params.get("role")
             if request.query_params.get("role")

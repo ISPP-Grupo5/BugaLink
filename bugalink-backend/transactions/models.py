@@ -13,6 +13,7 @@ class Transaction(models.Model):
             ("PENDING", "PENDING"),
             ("ACCEPTED", "ACCEPTED"),
             ("DECLINED", "DECLINED"),
+            ("RECHARGE", "RECHARGE")
         ),
         default="PENDING",
     )

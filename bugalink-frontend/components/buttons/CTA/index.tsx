@@ -18,6 +18,7 @@ export default function CTAButton({
       } ${className}`}
       disabled={disabled}
       onClick={onClick}
+      data-cy="submit"
     >
       {text}
     </button>

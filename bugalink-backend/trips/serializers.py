@@ -82,7 +82,7 @@ class TripRequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TripRequest
-        fields = ("id", "trip", "passenger", "status", "note")
+        fields = ("id", "trip", "passenger", "status", "note", "reject_note")
 
 
 class TripRequestCreateSerializer(serializers.ModelSerializer):

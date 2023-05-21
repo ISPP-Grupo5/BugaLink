@@ -8,11 +8,17 @@ import TimePicker from '@/components/forms/TimePicker';
 import AnimatedLayout from '@/components/layouts/animated';
 import PlacesAutocomplete from '@/components/maps/placesAutocomplete';
 import NEXT_ROUTES from '@/constants/nextRoutes';
+import useDriver from '@/hooks/useDriver';
+import usePassenger from '@/hooks/usePassenger';
 import DriverRoutineI from '@/interfaces/driverRoutine';
 import GenericRoutineI from '@/interfaces/genericRoutine';
 import PassengerRoutineI from '@/interfaces/passengerRoutine';
 import { axiosAuth } from '@/lib/axios';
+import { parseDate } from '@/utils/formatters';
 import { useLoadScript } from '@react-google-maps/api';
+import { all } from 'cypress/types/bluebird';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -31,6 +37,9 @@ const DAYS_TO_SPANISH = {
   Sun: 'D',
 };
 
+const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+const daysToApi = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
 type Props = {
   userType: 'passenger' | 'driver';
   freeSeatsNumber?: number;
@@ -47,6 +56,26 @@ export const EmptyLeafletMap = dynamic(
   () => import('@/components/maps/emptyMap'),
   { ssr: false }
 );
+
+const mergeRoutines = (
+  passengerRoutines: PassengerRoutineI[],
+  driverRoutines: DriverRoutineI[]
+): GenericRoutineI[] => {
+  const allRoutines = [];
+  for (const routine of [...passengerRoutines, ...driverRoutines]) {
+    // We add a card for each day of the week the routine is repeated
+    allRoutines.push({
+      id: routine.id,
+      origin: routine.origin,
+      destination: routine.destination,
+      day_of_week: routine.day_of_week,
+      departure_time_start: parseDate(routine.departure_time_start), // 18:00:00 -> 18:00
+      departure_time_end: parseDate(routine.departure_time_end), // 18:00:00 -> 18:00
+      type: routine.type,
+    });
+  }
+  return allRoutines;
+};
 
 interface FormErrors {
   origin?: string;
@@ -92,6 +121,66 @@ export default function NewRoutine({
 
   const [isSendingForm, setIsSendingForm] = useState(false);
 
+  const { data } = useSession();
+  const user = data?.user as User;
+  const {
+    passenger,
+    isLoading: passengerIsLoading,
+    isError: passengerIsError,
+  } = usePassenger(user?.passenger_id);
+  const {
+    driver,
+    isLoading: driverIsLoading,
+    isError: driverIsError,
+  } = useDriver(user?.driver_id);
+
+  const passengerRoutines = passenger?.routines || [];
+  const driverRoutines = driver?.routines || [];
+  const allRoutines = mergeRoutines(passengerRoutines, driverRoutines);
+
+  const addZero = (i: any) => {
+    if (i < 10) {i = "0" + i}
+    return i;
+  }
+
+  const timeInRange = (time: string, startDate: string, endDate: string) => {
+    const timeArray = time.split(':');
+    const hours = parseInt(timeArray[0]);
+    const minutes = parseInt(timeArray[1]);
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes);
+    date.setFullYear(2000, 1, 1);
+
+    const dateStart = new Date(startDate);
+    dateStart.setFullYear(2000, 1, 1);
+
+    const dateEnd = new Date(endDate);
+    dateEnd.setFullYear(2000, 1, 1);
+
+    return date >= dateStart && date <= dateEnd;
+  }
+
+  const validateRoutineForm = (values: FormValues) => {
+    const errors: FormErrors = {};
+    selectedDays.forEach((day) => {
+      const existingRoutine = allRoutines.find(
+        (routine) =>
+          routine.day_of_week === day &&
+          (timeInRange(values.pickTimeFrom, routine.departure_time_start, routine.departure_time_end) ||
+          timeInRange(values.pickTimeTo, routine.departure_time_start, routine.departure_time_end))
+      );
+
+      if (existingRoutine) {
+        errors.selectedDays = `Ya existe una rutina para esta hora y día: ${days[daysToApi.indexOf(day)]}`;
+        errors.pickTimeFrom = 'Ya existe una rutina para esta hora y día';
+        errors.pickTimeTo = 'Ya existe una rutina para esta hora y día';
+      }
+    });
+    setErrors(errors)
+    return errors;
+  };
+  
   const isEdit = routineDetailsDriver || routineDetailsPassenger;
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -142,6 +231,22 @@ export default function NewRoutine({
         errors.pickTimeTo =
           'La hora de fin debe ser posterior a la hora de inicio';
       }
+
+      const pickTimeFromDate = new Date();
+      pickTimeFromDate.setHours(pickTimeFromHour);
+      pickTimeFromDate.setMinutes(pickTimeFromMinutes);
+
+      const pickTimeToDate = new Date();
+      pickTimeToDate.setHours(pickTimeToHour);
+      pickTimeToDate.setMinutes(pickTimeToMinutes);
+
+      const differenceMs = pickTimeToDate.getTime() - pickTimeFromDate.getTime();
+
+      if (differenceMs > 900000) {
+        errors.pickTimeTo =
+          'El rango de tiempo no puede ser mayor a 15 minutos';
+      }
+
     }
 
     if (!selectedDays || selectedDays.length === 0) {
@@ -153,9 +258,21 @@ export default function NewRoutine({
         errors.price = 'El precio no debe ser un valor negativo';
       } else if (!values.price) {
         errors.price = 'Por favor, ingrese un precio';
-      } else if (values.price > totalDistance * 0.1 * 2) {
+      } else if (!/^\d+(\.\d{1,2})?$/.test(values.price.toString())) {
+        errors.price = 'El precio debe tener máximo dos cifras decimales';
+      } else if (
+        totalDistance * 0.1 > 0.0 &&
+        (values.price > totalDistance * 0.1 * 2 ||
+          values.price < (totalDistance * 0.1) / 2)
+      ) {
         errors.price =
-          'El precio no puede ser mayor que el doble del precio recomendado';
+          'El precio debe situarse entre la mitad y el doble del precio recomendado';
+      } else if (
+        totalDistance * 0.1 == 0.0 &&
+        (values.price < 0.3 || values.price > 0.8)
+      ) {
+        errors.price =
+          'Para una distancia tan corta se debe establecer un precio de entre 30 y 80 céntimos';
       }
     }
 
@@ -186,8 +303,9 @@ export default function NewRoutine({
         pickTimeTo: formData.get('pickTimeTo') as string,
         price: formData.get('price') as unknown as number,
       };
-
-      const errors = validateForm(values);
+      const duplicatedRoutineErrors = validateRoutineForm(values);
+      const errorsForm = validateForm(values);
+      const errors = Object.assign({}, errorsForm, duplicatedRoutineErrors);
       setErrors(errors);
       if (Object.keys(errors).length === 0) {
         // Aquí puedes hacer la llamada a la API o enviar los datos a donde los necesites
@@ -379,6 +497,7 @@ export default function NewRoutine({
               ) => (
                 <p
                   key={day}
+                  data-cy={day}
                   className={`h-full w-full py-2 transition-colors duration-300 ${
                     selectedDays.includes(day) ? 'bg-turquoise text-white' : ''
                   } ${isEdit ? 'grayscale' : ''}
@@ -439,10 +558,10 @@ export default function NewRoutine({
                 Establece un precio por pasajero
               </label>
               <p>
-                El precio recomendado para este trayecto (0.10€/km) es de{' '}
-                {Math.round((totalDistance * 0.1 + Number.EPSILON) * 1000) /
-                  1000}
-                €
+                El precio recomendado para este trayecto (0.10€/km) es de:{' '}
+                {(totalDistance * 0.1).toFixed(2) != '0.00'
+                  ? `${(totalDistance * 0.1).toFixed(2)}€`
+                  : 'entre 30 y 80 céntimos'}
               </p>
               <div className="my-3 mt-4 flex flex-col">
                 <TextField

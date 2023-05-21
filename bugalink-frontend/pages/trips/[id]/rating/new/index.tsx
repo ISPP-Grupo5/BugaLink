@@ -5,13 +5,12 @@ import AnimatedLayout from '@/components/layouts/animated';
 import StarRating from '@/components/starRating';
 import NEXT_ROUTES from '@/constants/nextRoutes';
 import useTrip from '@/hooks/useTrip';
-import useUserStats from '@/hooks/useUserStats';
-import axios, { axiosAuth } from '@/lib/axios';
+import { axiosAuth } from '@/lib/axios';
 import { Drawer } from '@mui/material';
 import { GetServerSideProps } from 'next';
 import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ReportProblem from '../new/problem';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -130,7 +129,7 @@ export default function RatingScreen({ data }) {
             },
           }}
         >
-          <ReportProblem />
+          <ReportProblem data={tripId}/>
         </Drawer>
       </div>
     </AnimatedLayout>

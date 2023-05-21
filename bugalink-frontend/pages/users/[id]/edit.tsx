@@ -53,6 +53,7 @@ export default function EditProfile({ data }) {
   const [photoURL, setPhotoURL] = useState<string>('');
 
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [openDialogError, setOpenDialogError] = useState<boolean>(false);
 
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -84,7 +85,6 @@ export default function EditProfile({ data }) {
       const values: FormValues = {
         name: formData.get('name') as string,
         surname: formData.get('surname') as string,
-        // TODO: handle submit photo as binary (file itself). Be inspired by become-driver page
       };
 
       const errors = validateForm(values);
@@ -94,7 +94,7 @@ export default function EditProfile({ data }) {
         const url = `users/${user.id}/edit`;
 
         const formData = new FormData();
-        formData.append('photo', file);
+        if (file !== undefined) formData.append('photo', file);
         formData.append('first_name', name);
         formData.append('last_name', surname);
 
@@ -106,6 +106,7 @@ export default function EditProfile({ data }) {
             });
           })
           .catch((err) => {
+            setOpenDialogError(true);
             setIsSendingForm(false);
           });
       } else {
@@ -234,6 +235,14 @@ export default function EditProfile({ data }) {
         onAcceptButton="Eliminar cuenta"
         open={openDialog}
         setOpen={setOpenDialog}
+      />
+      <DialogComponent
+        title="Error al editar el perfil"
+        description="Ha ocurrido un error al editar el perfil, por favor, inténtelo de nuevo más tarde."
+        onClose={() => setOpenDialogError(false)}
+        onCloseButton="Cerrar"
+        open={openDialogError}
+        setOpen={setOpenDialogError}
       />
     </AnimatedLayout>
   );

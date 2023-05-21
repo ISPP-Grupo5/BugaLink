@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import useTrip from '@/hooks/useTrip';
 import DialogComponent from '@/components/dialog';
+import usePassenger from '@/hooks/usePassenger';
 
 export default function AcceptRequest() {
   const router = useRouter();
@@ -24,8 +25,9 @@ export default function AcceptRequest() {
   const [drawerDecline, setDrawerDecline] = useState(false);
   const [rejectNote, setRejectNote] = useState('');
   const { tripRequest, isLoading, isError } = useTripRequest(id);
+  const { passenger } = usePassenger(tripRequest?.passenger);
   const { userStats, isLoadingStats, isErrorStats } = useUserStats(
-    tripRequest?.passenger
+    passenger?.user
   );
   const { trip } = useTrip(tripRequest?.trip.id);
 
@@ -37,12 +39,12 @@ export default function AcceptRequest() {
 
   const onCloseDialogAccept = () => {
     setOpenDialogAccept(false);
-    router.push(NEXT_ROUTES.HOME);
+    router.push(NEXT_ROUTES.PENDING_REQUESTS);
   };
 
   const onCloseDialogReject = () => {
     setOpenDialogReject(false);
-    router.push(NEXT_ROUTES.HOME);
+    router.push(NEXT_ROUTES.PENDING_REQUESTS);
   };
 
   const handleAcceptTripRequest = async (
@@ -82,9 +84,9 @@ export default function AcceptRequest() {
   const { origin, destination } = tripRequest.trip.driver_routine;
 
   return (
-    <AnimatedLayout className="justify-between flex flex-col">
+    <AnimatedLayout className="flex flex-col justify-between">
       <BackButtonText text="Solicitud de viaje" />
-      <div className="justify-between flex h-full flex-col overflow-y-scroll bg-white px-6 pb-4 pt-2">
+      <div className="flex h-full flex-col justify-between overflow-y-scroll bg-white px-6 pb-4 pt-2">
         <ProfileHeader user={userStats} />
         <p className="mt-4 text-justify text-sm font-normal text-dark-gray">
           Nota del pasajero
@@ -133,7 +135,7 @@ export default function AcceptRequest() {
         />
       </div>
       {/* Trip request */}
-      <div className="shadossw-t-md justify-between z-50 flex w-full flex-col items-center rounded-t-lg bg-white py-6 px-4">
+      <div className="shadossw-t-md z-50 flex w-full flex-col items-center justify-between rounded-t-lg bg-white py-6 px-4">
         <div className="flex flex-row pb-3">
           <p
             className="text-md cursor-pointer font-medium text-red-dark"
@@ -193,7 +195,7 @@ export default function AcceptRequest() {
       </div>
       <DialogComponent
         title="Acción realizada"
-        description="El viaje se aceptó correctamente."
+        description="El viaje ha sido aceptado correctamente."
         onClose={onCloseDialogAccept}
         onCloseButton="Entendido"
         open={openDialogAccept}
@@ -201,7 +203,7 @@ export default function AcceptRequest() {
       />
       <DialogComponent
         title="Acción realizada"
-        description="El viaje rechazó correctamente."
+        description="El viaje ha sido rechazado correctamente."
         onClose={onCloseDialogReject}
         onCloseButton="Entendido"
         open={openDialogReject}

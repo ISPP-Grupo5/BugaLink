@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 import UpcomingCard from './cards/upcoming';
 import UpcomingCardSkeleton from './skeletons/Upcoming';
+import InformativeCard from './cards/informative';
 
 const TWEEN_FACTOR = 0.3;
 
@@ -73,6 +74,15 @@ export default function UpcomingTripsCarousel(props) {
         tweenValues[tweenValues.length - 1] > 0.95 || !upcomingTrips,
     });
 
+  if (upcomingTrips && upcomingTrips.length === 0)
+    return (
+      <div className="px-4">
+        <InformativeCard>
+          No tienes ningún viaje para los próximos días.
+        </InformativeCard>
+      </div>
+    );
+
   return (
     <div className="embla">
       <div className="embla__viewport" ref={upcomingTrips && emblaRef}>
@@ -100,11 +110,6 @@ export default function UpcomingTripsCarousel(props) {
               )}
             </div>
           ))}
-          {upcomingTrips && upcomingTrips.length === 0 && (
-            <div className="mx-4 mt-4 w-full rounded-md border border-border-color py-3 text-center text-lg font-light text-gray md:mx-5">
-              No tienes ningún viaje para los próximos días.
-            </div>
-          )}
         </div>
       </div>
     </div>

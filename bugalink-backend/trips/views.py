@@ -328,7 +328,7 @@ class CreateNextWeekTrip(viewsets.GenericViewSet):
         try:
             trips = Trip.objects.filter(
                 Q(departure_datetime__lt=datetime.datetime.now())
-                & ~Q(status="FINISHED")
+                & Q(arrival_datetime__lt=timezone.now())
             )
             week_begin_date = (
                 datetime.date.today()
@@ -346,9 +346,6 @@ class CreateNextWeekTrip(viewsets.GenericViewSet):
                 "Sun": 6,
             }
             for trip in trips:
-                trip.status = "FINISHED"
-                trip.save()  # Quizas sea mejor actualizarlo despues de guardar el de la semana que viene.
-
                 departure_date = week_begin_date + datetime.timedelta(
                     days=7 + day_mapper[trip.driver_routine.day_of_week]
                 )

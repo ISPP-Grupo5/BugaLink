@@ -265,7 +265,7 @@ export default function SearchResults({ data }) {
       <div className="z-50 bg-white pt-4">
         <div className="grid grid-cols-9 grid-rows-2 place-content-center place-items-center gap-y-2 px-2">
           <BackButton className="bg-white" />
-          <div className="justify-between row-span-2 flex h-full w-full flex-col items-center py-4 text-turquoise">
+          <div className="row-span-2 flex h-full w-full flex-col items-center justify-between py-4 text-turquoise">
             <SourcePin className="h-5 w-5 flex-none" />
             <ThreeDots className="w-5 flex-none" />
             <TargetPin className="h-5 w-5 flex-none" />
@@ -326,7 +326,7 @@ export default function SearchResults({ data }) {
         </div>
         <div className="flex justify-center py-2">
           {trips && (
-            <p className="text-xs font-thin text-gray">
+            <p className="text-md font-thin text-gray">
               Hay {trips.length} resultados que coinciden con tu búsqueda
             </p>
           )}

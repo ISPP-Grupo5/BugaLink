@@ -3,6 +3,7 @@ import FileButton from '@/components/buttons/File';
 import AnimatedLayout from '@/components/layouts/animated';
 import DocumentStatusI from '@/interfaces/documents';
 import { axiosAuth } from '@/lib/axios';
+import { emitSuccess } from '@/utils/notifications';
 import { signOut } from 'next-auth/react';
 import Check from 'public/assets/check-license.svg';
 import CityDriver from 'public/assets/city-driver.svg';
@@ -44,6 +45,11 @@ export default function BecomeDriver() {
       dniStatus === 'Validated' &&
       swornDeclaration === 'Validated'
     ) {
+      emitSuccess({
+        title: 'Ya eres conductor',
+        message:
+          '¡Enhorabuena! Ya eres conductor. Vuelve a iniciar sesión para disfrutar de todas las funcionalidades',
+      });
       signOut({
         callbackUrl: '/',
       }); // For forcing token refresh. Ideally this would be done by refreshing the auth token

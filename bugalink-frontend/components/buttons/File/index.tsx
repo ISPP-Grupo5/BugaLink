@@ -55,6 +55,7 @@ export default function FileButton({
         )}
       >
         <input
+          accept="image/*,application/pdf"
           className="hidden"
           id={text}
           type="file"

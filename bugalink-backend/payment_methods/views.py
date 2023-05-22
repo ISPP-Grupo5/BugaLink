@@ -3,6 +3,7 @@ from datetime import datetime
 
 import paypalrestsdk
 import stripe
+import transactions.utils as TransactionUtils
 from bugalink_backend import settings
 from django.db import transaction
 from django.http import HttpResponse
@@ -10,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import mixins, status, viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from transactions.models import Transaction
 from trips.models import Trip, TripRequest
 from trips.serializers import TripRequestSerializer
@@ -18,9 +20,6 @@ from users.models import User
 
 from .models import Balance
 from .serializers import BalanceSerializer
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.permissions import AllowAny
-import transactions.utils as TransactionUtils
 
 
 class BalanceViewSet(
@@ -38,16 +37,12 @@ class BalanceViewSet(
             try:
                 user = User.objects.get(id=user_id)
             except User.DoesNotExist:
-                return Response(
-                    {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
-                )
+                raise ValidationError("Usuario inexistente")
             balance = Balance.objects.get(user=user)
             serializer = self.serializer_class(balance)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response(
-                {"error": "User ID not provided"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            raise ValidationError("Usuario inexistente")
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
@@ -60,33 +55,23 @@ class BalanceViewSet(
         requested_withdraw_amount = float(request.data.get("amount").replace(",", "."))
         current_balance_cents = int(balance.amount * 100)
         # Cents are used here because comparisons between float and decimal fail sometimes
-        # if the float has 2 decimals, maybe has to do something with floating point precision
+        # if the float has 2 decimals. Maybe it has to do something with floating point precision
         # and arithmetics. https://docs.python.org/3/tutorial/floatingpoint.html
         if current_balance_cents < int(requested_withdraw_amount * 100):
-            return Response(
-                {"error": "You don't have enough balance"},
-                status=status.HTTP_400_BAD_REQUEST,
+            raise ValidationError(
+                "No tienes suficientes fondos en tu cuenta para realizar esta operación."
             )
 
         # Check that the balance the user wants to withdraw is greater than 0
         if requested_withdraw_amount <= 0:
-            return Response(
-                {"error": "The amount must be greater than 0"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError("La cantidad a retirar debe ser mayor a 0€")
 
         # Check that the balance the user wants to withdraw is less than 1000
         if requested_withdraw_amount > 1000:
-            return Response(
-                {"error": "The amount must be less than 1000"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError("La cantidad a retirar debe ser inferior a 1000€")
 
         if iban is None:
-            return Response(
-                {"error": "IBAN not provided"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError("El IBAN es obligatorio")
 
         balance.amount = float(balance.amount) - requested_withdraw_amount
         balance.save()
@@ -125,8 +110,9 @@ class PaymentViewSet(
         trip = Trip.objects.get(id=kwargs["trip_id"])
         user = request.user
         # El post recibe la cantidad en centimos integer
-        price = int(TransactionUtils.is_pilot_user_price(
-            user, trip.driver_routine.price) * 100)
+        price = int(
+            TransactionUtils.is_pilot_user_price(user, trip.driver_routine.price) * 100
+        )
 
         # Si no hay texto da error al intentar acceder a este dato
         note = note if note else "None"
@@ -174,10 +160,7 @@ class PaymentViewSet(
 
         balance = Balance.objects.get(user=user)
         if balance.amount < price:
-            return Response(
-                {"error": "Saldo insuficiente"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError("Saldo insuficiente")
 
         # Si todo está correcto, se crea el triprequest y se resta el saldo
         no_errors = TripRequestViewSet.create(self, trip.id, user.id, price, note)
@@ -190,9 +173,8 @@ class PaymentViewSet(
                 status=status.HTTP_201_CREATED,
             )
         else:
-            return Response(
-                {"error": "Error al realizar el pago"},
-                status=status.HTTP_400_BAD_REQUEST,
+            raise ValidationError(
+                "Ha habido un error al realizar el pago. Intétalo de nuevo más tarde."
             )
 
     @transaction.atomic
@@ -201,7 +183,8 @@ class PaymentViewSet(
         trip = Trip.objects.get(id=kwargs["trip_id"])
         # El post recibe la cantidad en centimos integer
         price = TransactionUtils.is_pilot_user_price(
-            request.user, trip.driver_routine.price)
+            request.user, trip.driver_routine.price
+        )
 
         url_success = (
             f"https://app.bugalink.es/trips/{kwargs['trip_id']}/pay/success"
@@ -261,9 +244,8 @@ class PaymentViewSet(
                     return Response({"url": redirect_url})
 
         else:
-            return Response(
-                status=status.HTTP_400_BAD_REQUEST,
-                data={"error": "Failed to create PayPal payment"},
+            raise ValidationError(
+                "Ha habido un error realizando el pago. Inténtalo con otro método de pago."
             )
 
     def recharge_balance(self, session):
@@ -406,9 +388,8 @@ class RechargeViewSet(
                     return Response({"url": redirect_url})
 
         else:
-            return Response(
-                status=status.HTTP_400_BAD_REQUEST,
-                data={"error": "Failed to create PayPal payment"},
+            raise ValidationError(
+                "Ha habido un error realizando la recarga. Inténtalo con otro método de pago"
             )
 
     # POST /recharge/credit-card/

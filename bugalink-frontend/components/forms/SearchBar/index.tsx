@@ -46,7 +46,7 @@ export default function SearchBar() {
             query: {
               origin: `${position?.lat},${position?.lng}`,
               originAddress: 'Mi ubicación',
-              destination: `${destinationCoords.lat},${destinationCoords.lng}`,
+              destination: `${destinationCoords?.lat},${destinationCoords?.lng}`,
               destinationAddress: destinationAddress,
             },
           });

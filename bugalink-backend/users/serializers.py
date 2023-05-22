@@ -1,15 +1,16 @@
+import os
+
 from django.db.models import Avg
+from django.utils import timezone
 from drivers.models import Driver
 from passengers.models import Passenger
 from ratings.models import DriverRating
 from rest_framework import serializers
 from trips.models import Trip, TripRequest
 from users.models import User
-import os
+
 
 class UserSerializer(serializers.ModelSerializer):
-    
-
     class Meta:
         model = User
         # NOTE: Add more fields as needed in the JSON response
@@ -102,10 +103,12 @@ class UserStatsSerializer(UserRatingSerializer):
 
     def get_total_rides(self, obj) -> serializers.IntegerField:
         trips_requests_where_user_is_passenger = TripRequest.objects.filter(
-            passenger__user=obj, status="ACCEPTED", trip__status="FINISHED"
+            passenger__user=obj,
+            status="ACCEPTED",
+            trip__departure_datetime__lt=timezone.now(),
         ).count()
         trips_where_user_is_driver = Trip.objects.filter(
-            driver_routine__driver__user=obj, status="FINISHED"
+            driver_routine__driver__user=obj, departure_datetime__lt=timezone.now()
         ).count()
         total_rides = (
             trips_where_user_is_driver + trips_requests_where_user_is_passenger

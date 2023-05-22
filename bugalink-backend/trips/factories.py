@@ -58,13 +58,6 @@ class TripFactory(factory.django.DjangoModelFactory):
         )
     )
 
-    @factory.lazy_attribute
-    def status(self):
-        if self.arrival_datetime < datetime.now(tz=timezone.utc):
-            return "FINISHED"
-        else:
-            return "PENDING"
-
 
 class TripRequestFactory(factory.django.DjangoModelFactory):
     class Meta:

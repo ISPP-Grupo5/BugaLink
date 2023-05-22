@@ -1,6 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 from trips.views import (
+    CreateNextWeekTrip,
     ReportIssueGetViewSet,
     ReportIssuePostViewSet,
     TripRateViewSet,
@@ -41,5 +42,6 @@ urlpatterns = [
     path(
         "trip-requests/<int:pk>/reject/", TripRequestViewSet.as_view({"put": "reject"})
     ),
+    path("trips/create_next_week_trips/", CreateNextWeekTrip.as_view({"post": "post"})),
     path("", include(router.urls)),
 ]

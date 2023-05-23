@@ -1,6 +1,7 @@
 from django.db.models import Q
-from rest_framework import status, viewsets
+from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from users.models import User
 
 from .models import Conversation
@@ -16,16 +17,10 @@ class GetConversationView(viewsets.GenericViewSet):
         other_user = User.objects.get(id=user_id)
 
         if not other_user:
-            return Response(
-                {"message": "User does not exist"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            raise ValidationError("El usuario no existe")
 
         if other_user == request.user:
-            return Response(
-                {"message": "You cannot chat with yourself"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError("No puedes chatear contigo mismo")
 
         # Filter by conversations where the both me and the other user take place
         conversation = Conversation.objects.filter(

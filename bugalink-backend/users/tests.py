@@ -67,13 +67,11 @@ def load_complex_data(self):
         driver_routine=self.driver_routine,
         departure_datetime=datetime.now(),
         arrival_datetime=datetime.now(),
-        status="FINISHED",
     )
     self.trip_2 = Trip.objects.create(
         driver_routine=self.driver_routine,
         departure_datetime=datetime.now(),
         arrival_datetime=datetime.now(),
-        status="PENDING",
     )
     self.trip_request = TripRequest.objects.create(
         trip=self.trip, status="ACCEPTED", passenger=self.passenger_2, price=1.2
@@ -150,7 +148,7 @@ class UserStatsViewTest(TestCase):
         response = self.client.get(url)
         data = json.loads(response.content)
         self.assertEqual(
-            data["total_rides"], 1
+            data["total_rides"], 2
         )  # 1 Trip finalizado en el que ha participado
 
     def test_get_user_stats_passenger(self):

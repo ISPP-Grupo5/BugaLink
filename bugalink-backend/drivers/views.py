@@ -3,6 +3,7 @@ from drivers.serializers import DriverSerializer, PreferencesSerializer
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from users.models import User
 
 
@@ -26,10 +27,7 @@ class DriverViewSet(
         try:
             user = request.user
         except User.DoesNotExist:
-            return Response(
-                status=status.HTTP_400_BAD_REQUEST,
-                data={"error": "User does not exist"},
-            )
+            raise ValidationError("El usuario no existe")
 
         try:
             driver = Driver.objects.get(user=user)
@@ -102,9 +100,6 @@ class DriverPreferencesView(
             not self.request.user.is_validated_driver
             or self.request.user.driver.id != driver_id
         ):
-            return Response(
-                data={"error": "No tienes permiso para editar esta información"},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+            raise ValidationError("No tienes permiso para editar esta información")
         else:
             return self.update(request, *args, **kwargs)

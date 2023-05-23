@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "rest_framework",
     "channels",
+    "drf_standardized_errors",
     # Auth modules
     "rest_framework.authtoken",
     "dj_rest_auth",
@@ -152,6 +153,8 @@ REST_FRAMEWORK = {
     ],
     # Activate drf_spectacular
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    # Activate drf_standardized_errors
+    "EXCEPTION_HANDLER": "drf_standardized_errors.handler.exception_handler",
 }
 
 SIMPLE_JWT = {

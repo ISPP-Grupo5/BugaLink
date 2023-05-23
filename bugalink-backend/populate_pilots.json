@@ -446,7 +446,6 @@
     {
       "user_id": 37
     }
-
   ],
   "Driver": [
     {
@@ -844,120 +843,100 @@
     {
       "driver_routine_id": 1,
       "departure_datetime": "2023-03-09T08:00:00",
-      "arrival_datetime": "2023-03-09T09:00:00",
-      "status": "PENDING"
+      "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 2,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 3,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 4,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 5,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 6,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 7,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 8,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 9,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 10,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 11,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 12,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 13,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 14,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 15,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 16,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 17,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 18,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 19,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     },
     {
       "driver_routine_id": 20,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00",
       "arrival_datetime": "2023-03-09T09:00:00"
     }
@@ -1015,7 +994,7 @@
       "trip_id": 7,
       "status": "PENDING",
       "note": "Hola me gustaría ir en su vehículo.",
-      "reject_note": "",  
+      "reject_note": "",
       "passenger_id": 8,
       "price": 2.0
     },
@@ -1039,7 +1018,7 @@
       "trip_id": 10,
       "status": "PENDING",
       "note": "Hola me gustaría ir en su vehículo.",
-      "reject_note": "",  
+      "reject_note": "",
       "passenger_id": 11,
       "price": 2.0
     },

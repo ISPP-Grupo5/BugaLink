@@ -1,5 +1,4 @@
 from datetime import datetime
-from datetime import date
 
 from django.shortcuts import get_object_or_404
 from driver_routines.models import DriverRoutine
@@ -8,10 +7,9 @@ from driver_routines.serializers import (
     DriverRoutineSerializer,
 )
 from locations.models import Location
-from locations.serializers import LocationSerializer
 from rest_framework import mixins, status, viewsets
-from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from trips.models import Trip
 from utils import next_weekday
 
@@ -42,11 +40,8 @@ class DriverRoutineViewSet(
 
     def create(self, request, *args, **kwargs):
         if not request.user.is_driver:
-            return Response(
-                {
-                    "error": "Debes ser un conductor para crear una rutina como conductor."
-                },
-                status=status.HTTP_403_FORBIDDEN,
+            raise ValidationError(
+                "Debes ser un conductor para crear una rutina como conductor"
             )
 
         serializer = self.get_serializer(data=request.data)

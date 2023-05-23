@@ -175,30 +175,25 @@
     {
       "driver_routine_id": 1,
       "departure_datetime": "2023-03-09T08:00:00.000Z",
-      "arrival_datetime": "2023-03-09T09:00:00.000Z",
-      "status": "PENDING"
+      "arrival_datetime": "2023-03-09T09:00:00.000Z"
     },
     {
       "driver_routine_id": 2,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00.000Z",
       "arrival_datetime": "2023-03-09T09:00:00.000Z"
     },
     {
       "driver_routine_id": 3,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00.000Z",
       "arrival_datetime": "2023-03-09T09:00:00.000Z"
     },
     {
       "driver_routine_id": 4,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00.000Z",
       "arrival_datetime": "2023-03-09T09:00:00.000Z"
     },
     {
       "driver_routine_id": 5,
-      "status": "PENDING",
       "departure_datetime": "2023-03-09T08:00:00.000Z",
       "arrival_datetime": "2023-03-09T09:00:00.000Z"
     }

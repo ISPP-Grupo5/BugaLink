@@ -1,19 +1,18 @@
 
 import datetime
-import os
-import transactions.utils as TransactionUtils
+
+from chats.models import Conversation
 import django.core.exceptions
 import transactions.utils as TransactionUtils
 from django.db import transaction
 from django.db.models import Q
-from django.shortcuts import redirect
 from django.utils import timezone
 from passenger_routines.models import PassengerRoutine
 from passengers.models import Passenger
 from ratings.models import DriverRating
 from ratings.serializers import DriverRatingSerializer, ReportSerializer
 from rest_framework import mixins, status, viewsets
-from rest_framework.decorators import action, api_view
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from transactions.models import Transaction
@@ -116,6 +115,10 @@ class TripRequestViewSet(
                 price=price,
                 transaction=transaction,
             )
+            Conversation.objects.get_or_create(
+                initiator=user,
+                receiver=trip.driver_routine.driver.user,
+            )
             return True
         except django.core.exceptions.ObjectDoesNotExist:
             return False
@@ -128,7 +131,7 @@ class TripRequestViewSet(
     def count(self, request, *args, **kwargs):
         num_pending_requests = TripRequest.objects.filter(
             trip__driver_routine__driver__user=request.user,
-            trip__arrival_datetime__lt=timezone.now(),
+            trip__arrival_datetime__gte=timezone.now(),
             status="PENDING",
         )
         return Response({"count": num_pending_requests.count()})

@@ -37,7 +37,6 @@ export default function Pay() {
         await axiosAuth.post(`trips/${id}/checkout-balance/`, data);
         router.replace(NEXT_ROUTES.PAY_SUCCESS(id));
       } catch (error) {
-        alert('Saldo insuficiente o error en el pago');
         setIsPaying(false);
       }
     }
@@ -60,7 +59,6 @@ export default function Pay() {
         );
         router.push(data.url);
       } catch (error) {
-        alert('Error en el pago');
         setIsPaying(false);
       }
     }
@@ -81,14 +79,13 @@ export default function Pay() {
         );
         router.push(data.url);
       } catch (error) {
-        alert('Error en el pago');
         setIsPaying(false);
       }
     }
   };
 
   return (
-    <AnimatedLayout className="justify-between flex flex-col">
+    <AnimatedLayout className="flex flex-col justify-between">
       <BackButtonText text="Pago del viaje" />
       <div className="flex h-full flex-col overflow-y-scroll bg-white px-4 pb-4">
         <div className="flex flex-col">
@@ -98,7 +95,6 @@ export default function Pay() {
               <p className="text-lg">Saldo disponible</p>
               <p className="text-5xl font-bold">{amount}</p>
             </div>
-            <AddMethod text="Añadir método de pago" />
           </div>
         </div>
         <br />

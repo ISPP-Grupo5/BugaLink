@@ -9,7 +9,6 @@ from utils import DAYS_OF_WEEK
 
 
 class PassengerRoutineSerializer(serializers.Serializer):
-    # TODO: is all this shit necessary?
     id = serializers.IntegerField(read_only=True)
     origin = LocationSerializer()
     destination = LocationSerializer()
@@ -26,7 +25,6 @@ class PassengerRoutineSerializer(serializers.Serializer):
     def create(self, validated_data):
         origin_data = validated_data.pop("origin")
         destination_data = validated_data.pop("destination")
-        # TODO: try to bring existing location if it exists
         origin = Location.objects.create(**origin_data)
         destination = Location.objects.create(**destination_data)
 
@@ -41,7 +39,6 @@ class PassengerRoutineSerializer(serializers.Serializer):
 
 
 class PassengerRoutineCreateSerializer(serializers.Serializer):
-    # TODO: is all this shit necessary?
     id = serializers.IntegerField(read_only=True)
     origin = LocationSerializer()
     destination = LocationSerializer()

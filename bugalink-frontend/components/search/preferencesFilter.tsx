@@ -36,7 +36,6 @@ export default function PreferencesFilter({ open, setOpen }: Props) {
           <p className="mb-6 text-sm">
             En base a las preferencias y normas de los conductores
           </p>
-          {/* TODO: This code is copypasted from the profile, make a component!! */}
           <div className="my-4 grid grid-cols-2 grid-rows-2 place-items-center gap-3">
             <PreferenceBox
               checked={allowSmoke}

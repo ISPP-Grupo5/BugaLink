@@ -120,17 +120,6 @@ class RequestTripPayment(TestCase):
             payload, header, endpoint_secret, tolerance=10
         )
 
-        # TODO Seems like the header is not being sent correctly, when excuting the post
-        # returns the stripe.error.SignatureVerificationError, but verify_header is working properly.
-
-        # response = self.client.post(webhook_url, data=event_data, format = 'json', header = header, HTTP_STRIPE_SIGNATURE = signature)
-
-        # Assert that the response status code is 200 (or any other expected value)
-        # self.assertEqual(response.status_code, 200)
-
-        # Assert that the response content is empty or contains the expected content
-        # self.assertContains(response, 'Expected content', status_code=200)
-
     def test_recharge_balance(self):
         price = 12
         price_cents = 1200
@@ -154,8 +143,8 @@ class RequestTripPayment(TestCase):
                 "note": "Example note",
             },
             mode="payment",
-            success_url="https://bugalink.es",  # TODO crear pantalla de pagado
-            cancel_url="https://bugalink.es",  # TODO pantalla de cancelado
+            success_url="https://bugalink.es",
+            cancel_url="https://bugalink.es",
         )
 
         # Call the recharge_balance function

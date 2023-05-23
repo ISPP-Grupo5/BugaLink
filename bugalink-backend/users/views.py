@@ -1,3 +1,4 @@
+from django.utils import timezone
 from allauth.account.models import EmailAddress
 from django.db import transaction
 from driver_routines.models import DriverRoutine
@@ -180,13 +181,18 @@ class UserTripsView(APIView):
 
         trips_by_user = trips_where_user_is_passenger | trips_where_user_is_driver
 
-        trips_by_trip_status = (
-            trips_by_user.filter(trip__status__in=trip_status_list)
-            if trip_status_list
-            else trips_by_user
-        )
-
         # Filter the trips based on the status values
+        if "FINISHED" in trip_status_list:
+            trips_by_trip_status = trips_by_user.filter(
+                trip__arrival_datetime__lt=timezone.now()
+            )
+        elif "PENDING" in trip_status_list:
+            trips_by_trip_status = trips_by_user.filter(
+                trip__arrival_datetime__gte=timezone.now()
+            )
+        else:
+            trips_by_trip_status = trips_by_user
+
         trips_matching_status = (
             trips_by_trip_status.filter(status__in=request_status_list)
             if request_status_list

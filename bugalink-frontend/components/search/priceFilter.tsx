@@ -1,7 +1,6 @@
 import CTAButton from '@/components/buttons/CTA';
 import { Drawer } from '@mui/material';
 import Slider from '@mui/material/Slider';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 type Props = {

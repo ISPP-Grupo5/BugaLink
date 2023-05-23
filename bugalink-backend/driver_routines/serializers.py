@@ -42,7 +42,6 @@ class DriverRoutineSerializer(serializers.ModelSerializer):
         if not destination:
             destination = Location.objects.create(**destination_data)
 
-        # TODO: see if it's the same as self.request.user.driver
         driver = self.context["request"].user.driver
 
         return DriverRoutine.objects.create(

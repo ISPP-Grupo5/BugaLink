@@ -38,7 +38,6 @@ export default function RoutineCard({
     const url = isDriver ? 'driver-routines' : 'passenger-routines';
     try {
       await axiosAuth.delete(`${url}/${id}`);
-      //TODO Recargar tarjetas de manera correcta en un futuro
       setIsDeleted(true);
       setOpenDialog(true);
     } catch (error) {

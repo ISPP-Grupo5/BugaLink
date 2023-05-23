@@ -73,8 +73,8 @@ export default function AcceptRequest() {
     }
   };
 
-  if (isLoading || isLoadingStats) return <p>Loading...</p>; // TODO: make skeleton
-  if (isError || isErrorStats) return <p>Error</p>; // TODO: make error message
+  if (isLoading || isLoadingStats) return <p>Loading...</p>;
+  if (isError || isErrorStats) return <p>Error</p>;
 
   // salida a las 21:00 y llegada a las 21:00 mas el tiempo de viaje
   const startTime = new Date(tripRequest.trip.departure_datetime);

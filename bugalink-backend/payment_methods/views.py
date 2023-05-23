@@ -307,7 +307,6 @@ class PaymentViewSet(
 
         return HttpResponse(status=200)
 
-    # TODO Paypal tiene los webhooks caidos por lo que esto no recibe nada, solo recibo con un simulator que me proporcionan
     @csrf_exempt
     def webhook_paypal_view(self, request):
         if "HTTP_PAYPAL_TRANSMISSION_ID" not in request.META:

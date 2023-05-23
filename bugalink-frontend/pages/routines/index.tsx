@@ -82,7 +82,6 @@ export default function MyRoutines() {
                       id={routine.id}
                       departureHourStart={routine.departure_time_start}
                       departureHourEnd={routine.departure_time_end}
-                      // TODO: bad practice, use meaningful names instead of type 21 and type 2 (remeber DP1)
                       type={routine.type}
                       origin={routine.origin.address}
                       destination={routine.destination.address}

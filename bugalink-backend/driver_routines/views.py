@@ -26,9 +26,7 @@ class DriverRoutineViewSet(
 
     def get_serializer_class(self):
         if self.action == "create":
-            return (
-                DriverRoutineCreateSerializer  # TODO: use different serializer for GET?
-            )
+            return DriverRoutineCreateSerializer
         return DriverRoutineSerializer
 
     # Individual GET

@@ -7,7 +7,6 @@ export default function useChatSocket(chatId: string | number, user: User) {
   const getSocketUrl = useCallback(() => {
     return new Promise<string>((resolve) => {
       if (user?.access && chatId) {
-        // TODO: use env variable for backend url and check that it works
         if (process.env.NODE_ENV === 'production') {
           resolve(
             `wss://app.bugalink.es/ws/chat/${chatId}/?token=${user.access}`

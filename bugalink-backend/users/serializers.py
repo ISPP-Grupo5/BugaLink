@@ -21,7 +21,6 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "photo",
             "date_joined",
-            # TODO: these are IDs. Send them as driver_id, passenger_id to make it clearer in the front
             "passenger",
             "driver",
         )

@@ -291,9 +291,17 @@ class PaymentViewSet(
                 note = (
                     session.metadata.note if session.metadata.note != "None" else None
                 )
-                return TripRequestViewSet.create(
-                    self, session.metadata.trip_id, session.metadata.user_id, note
+                trip = Trip.objects.get(id=session.metadata.trip_id)
+                user = User.objects.get(id=session.metadata.user_id)
+                price = TransactionUtils.is_pilot_user_price(
+                    user, trip.driver_routine.price)
+                payed_with_sucess = TripRequestViewSet.create(
+                    self, session.metadata.trip_id, session.metadata.user_id, price, note
                 )
+                if payed_with_sucess:
+                    return HttpResponse(status=200)
+                else:
+                    return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
             elif session.line_items.data[0].description == "Recharge":  # Recargar saldo
                 recharge_with_sucess = PaymentViewSet.recharge_balance(self, session)
                 if recharge_with_sucess:

@@ -28,7 +28,7 @@ const requestInterceptorWithAuth = async (config) => {
 };
 
 const errorInterceptor = async (error: AxiosError) => {
-  const IGNORED_ERRORS = ['not_authenticated'];
+  const IGNORED_ERRORS = ['not_authenticated', 'not_found'];
   const response = error.response?.data as APIError;
   response.errors?.forEach((err) => {
     const title = `${err.code}`;

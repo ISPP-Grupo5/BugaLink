@@ -115,17 +115,25 @@ class TripRequestViewSet(
                 price=price,
                 transaction=transaction,
             )
-            Conversation.objects.get_or_create(
-                initiator=user,
+            
+            initiator_is_user = Conversation.objects.filter(
+                initiatior=user,
                 receiver=trip.driver_routine.driver.user,
-            )
+            ).exists()
+
+            receiver_is_user = Conversation.objects.filter(
+                receiver=user,
+                initiator=trip.driver_routine.driver.user,
+            ).exists()
+
+            if not initiator_is_user and not receiver_is_user:
+                 Conversation.objects.get_or_create(
+                    initiator=user,
+                    receiver=trip.driver_routine.driver.user,
+                )
             return True
         except django.core.exceptions.ObjectDoesNotExist:
             return False
-
-        return Response(
-            self.get_serializer(trip_request).data, status=status.HTTP_201_CREATED
-        )
 
     # GET /trip-requests/pending/count/ (For a driver to get the number of pending requests)
     def count(self, request, *args, **kwargs):

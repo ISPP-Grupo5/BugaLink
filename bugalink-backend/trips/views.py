@@ -117,7 +117,7 @@ class TripRequestViewSet(
             )
             
             initiator_is_user = Conversation.objects.filter(
-                initiatior=user,
+                initiator=user,
                 receiver=trip.driver_routine.driver.user,
             ).exists()
 

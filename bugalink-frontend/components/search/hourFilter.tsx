@@ -84,7 +84,6 @@ export default function HourFilter({
           </span>
         </div>
         <div className="my-5 flex flex-col items-center">
-          {/* TODO: If there are errors, it should not let you filter */}
           <CTAButton
             className="w-11/12"
             text={'FILTRAR'}

@@ -38,7 +38,6 @@ export default function TextField({
       className={`relative flex flex-col ${parentClassName || ''}`}
       data-te-input-wrapper-init
     >
-      {/* TODO: extract showPassword logic to a different component that encapsulates TextField and adds the icon and functionality on top */}
       <input
         type={showPassword ? 'text' : type}
         className={`peer block min-h-[auto] rounded-lg border-none bg-transparent py-3 px-4 text-lg outline outline-1 transition-all duration-200 ease-linear motion-reduce:transition-none ${inputClassName} ${

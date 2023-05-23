@@ -158,11 +158,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    # TODO: make access token expire after 60 minutes once we have the frontend
-    # asking for a new token when the old one expires. We are doing this because
-    # we need the auth mechanism to work for now.
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=99),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
 }
 
 # drf_spectacular config
@@ -211,7 +208,6 @@ MEDIA_URL = "/media/"
 STATIC_URL = "/static/"
 
 
-# TODO: only allow cors requests from the frontend (localhost:3000 or the deployed url)
 CORS_ORIGIN_ALLOW_ALL = True
 
 ASGI_APPLICATION = "bugalink_backend.asgi.application"

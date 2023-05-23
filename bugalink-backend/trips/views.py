@@ -1,4 +1,3 @@
-
 import datetime
 import os
 import transactions.utils as TransactionUtils
@@ -58,8 +57,6 @@ class TripViewSet(
         return self.retrieve(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
-        # TODO: untested!!
-        # If the one deleting the trip is not the driver who created it, return 403
         if request.user != self.get_object().driver_routine.driver.user:
             raise ValidationError("No puedes eliminar un viaje que no es tuyo")
 

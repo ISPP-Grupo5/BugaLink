@@ -33,5 +33,4 @@ class TransactionFactory(factory.django.DjangoModelFactory):
     # If the trip_request status is REJECTED, the transaction is a refund
     is_refund = factory.LazyAttribute(lambda x: x.status == "REJECTED")
 
-    # TODO: the date should be the moment when the trip request was made
     date = factory.LazyAttribute(lambda x: datetime.now(tz=timezone.utc))

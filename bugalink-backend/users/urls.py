@@ -15,7 +15,6 @@ router.register(r"users", UserViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),
-    # TODO: the endpoint below doesn't work if we add a "/"
     path("users/become-driver", BecomeDriverView.as_view()),
     path("users/<int:id>/trip-requests/", UserTripsView.as_view()),
     path("users/<int:id>/edit/", UserUpdateView.as_view()),

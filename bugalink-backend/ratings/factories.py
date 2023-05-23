@@ -24,7 +24,6 @@ class ReportFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Report
 
-    # TODO: lazy attributes for all 4 booleans
     print("Creating reports...")
 
     trip = factory.SubFactory("trips.factories.TripFactory")

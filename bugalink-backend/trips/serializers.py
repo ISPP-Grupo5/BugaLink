@@ -90,7 +90,6 @@ class TripRequestCreateSerializer(serializers.ModelSerializer):
         model = TripRequest
         fields = ("id", "note")
 
-    # TODO: Verificar que no se solicita un viaje a si mismo y que no lo ha solicitado ya
     def create(self, validated_data):
         # Get the trip from the URL path
         trip_id = self.context["view"].kwargs["trip_id"]

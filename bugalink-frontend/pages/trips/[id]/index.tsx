@@ -66,13 +66,13 @@ export default function Details({ data }) {
   const freeSeats = trip?.driver_routine.available_seats - occupiedSeats;
 
   if (isLoading || isLoadingStats || isLoadingPreferences)
-    return <p>Loading...</p>; // TODO: make skeleton
-  if (isError || isErrorStats || isErrorPreferences) return <p>Error</p>; // TODO: make error message
+    return <p>Loading...</p>;
+  if (isError || isErrorStats || isErrorPreferences) return <p>Error</p>;
 
   return (
     <AnimatedLayout>
       <div className="flex h-screen flex-col items-center justify-center">
-        <span className="justify-between flex w-full items-center bg-white px-2">
+        <span className="flex w-full items-center justify-between bg-white px-2">
           <BackButtonText text="Detalles del viaje" />
           <BookmarkTripButton className="mr-2 scale-125" trip={trip} />
         </span>
@@ -113,7 +113,6 @@ export default function Details({ data }) {
             <p className="text-sm text-gray">Fecha y hora</p>
             <p className="text-md text-justify font-medium">
               📅 Todos los {WEEK_DAYS[trip?.driver_routine.day_of_week]} a las{' '}
-              {/*TODO: el toLocaleString creo que está sumando dos horas, REVISAR */}
               {startTime.toLocaleString('es-ES', {
                 hour: '2-digit',
                 minute: '2-digit',
@@ -122,7 +121,6 @@ export default function Details({ data }) {
           </div>
           <div className="py-2">
             <p className="text-sm text-gray">Sobre el conductor</p>
-            {/* TODO: coger estos datos de las constantes de preferences.ts */}
             <p className="text-md text-justify font-medium">
               {preferences?.prefers_talk
                 ? '🗣 Prefiero hablar durante el viaje'
@@ -173,7 +171,7 @@ export default function Details({ data }) {
         </div>
         {/* Trip request */}
         <div className="w-full rounded-t-xl bg-white py-6 px-5 shadow-t-md">
-          <div className="justify-between flex flex-row items-center">
+          <div className="flex flex-row items-center justify-between">
             <div className="flex flex-col">
               <p className="text-sm font-normal">Tipo de viaje</p>
               <p className="text-xl font-bold">

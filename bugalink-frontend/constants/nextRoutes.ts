@@ -3,7 +3,7 @@ const NEXT_ROUTES = {
   LOGIN: '/login',
   SIGN_UP: '/signup',
   PROFILE: (userId) => `/users/${userId}`,
-  EDIT_PROFILE: (userId) => `/users/${userId}/edit`, // TODO: replace with /profile/edit to avoid people guessing other user's ids
+  EDIT_PROFILE: (userId) => `/users/${userId}/edit`,
   WALLET: '/wallet',
   RECHARGE_CREDIT: '/wallet/recharge',
   WITHDRAW_BALANCE: '/wallet/withdraw',

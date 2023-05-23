@@ -35,7 +35,6 @@ class DriverFactory(factory.django.DjangoModelFactory):
     driver_license = None
     sworn_declaration = None
 
-    # TODO: not working, always returning true. Manage in a future
     if factory.LazyAttributeSequence(random_bool):
         dni_status = "Validated"
         dni_front = factory.django.ImageField(color="blue", filename="dni_front.jpg")

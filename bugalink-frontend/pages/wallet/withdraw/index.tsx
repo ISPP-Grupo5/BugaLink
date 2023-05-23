@@ -8,6 +8,7 @@ import useBalance from '@/hooks/useBalance';
 import { axiosAuth } from '@/lib/axios';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import Image from 'next/image';
 
 const getErrorMessage = (errors: any, fieldName: string, value: any) => {
   if (!errors[fieldName]) return null;
@@ -40,7 +41,6 @@ export default function Withdraw() {
         setIsLoading(false);
       }
     } catch (error) {
-      console.log(error);
       setIsLoading(false);
     }
   };
@@ -67,10 +67,12 @@ export default function Withdraw() {
   const [moneyError, setMoneyError] = useState();
 
   return (
-    <AnimatedLayout className="justify-between flex h-full flex-col bg-white">
+    <AnimatedLayout className="flex h-full flex-col justify-between bg-white">
       <BackButtonText text="Retirar saldo" />
       <div className="flex h-full flex-col pb-4">
-        <img
+        <Image
+          width={400}
+          height={350}
           src="/assets/withdraw.png"
           alt="Retirar saldo"
           className="w-full"

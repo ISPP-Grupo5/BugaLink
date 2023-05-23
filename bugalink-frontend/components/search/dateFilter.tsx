@@ -46,11 +46,6 @@ export default function DateFilter({
       return;
     }
     if (errorPickDate) return;
-    // TODO: fix bug, when setting a day it sets in the day before
-    // Probably because we are in Spain (GMT +2 with the summer timezone)
-    // and the dateTime is using 00:00:00, so when we trim the time,
-    // it stays in the previous day
-    // The current workaround is to add 12 hours but it's not the optimal solution
     dateFromProvisional &&
       !isNaN(dateFromProvisional.date()) &&
       setDateFrom(

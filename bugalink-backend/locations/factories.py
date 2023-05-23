@@ -19,8 +19,6 @@ class LocationFactory(factory.django.DjangoModelFactory):
 
     print("Creating locations...")
 
-    # TODO: not working, probably it would be better to create random locations and then
-    # assign them to the trips randomly
     latitude = factory.LazyAttribute(lambda x: x.values[0])
     longitude = factory.LazyAttribute(lambda x: x.values[1])
     address = factory.LazyAttribute(lambda x: x.values[2])
